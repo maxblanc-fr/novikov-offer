@@ -625,7 +625,7 @@ const DATA = {
         {ic:"🎭", name:{ru:"Развлекательные программы", en:"Entertainment Programs"},
           desc:{ru:"Интерактивные программы, игры и конкурсы для гостей мероприятия.", en:"Interactive programs, games and contests for your guests."},
           tags:["Битва полов","Слово мужчины","Восьмое чудо","Вторая половинка","Отгадай мелодию","Мафия","Миллионер","Импровизатор","Баттл поколений"],
-          price:{ru:"от 45 000 ₽ / 2 ч", en:"from 45 000 ₽ / 2 h"}},
+          price:{ru:"46 000 ₽ / 2 ч", en:"46 000 ₽ / 2 h"}},
         {ic:"🎲", name:{ru:"Интерактивные игры", en:"Interactive Games"},
           desc:{ru:"Игры для гостей с профессиональным ведущим — 45–60 минут. Цена за гостя; можно комбинировать несколько. Пример — для 12 гостей.",
                 en:"Guest games hosted by a professional MC — 45–60 minutes. Price per guest; combine several. Example shown for 12 guests."},
@@ -638,7 +638,7 @@ const DATA = {
           ],
           note:{ru:"<b>Цена за гостя за одну игру.</b> Музыкальное бинго — бинго + дискотека + караоке. Казино — слепая дегустация со ставками (не винное).",
                 en:"<b>Price per guest per game.</b> Music Bingo = bingo + disco + karaoke. Casino = blind tasting with betting (non-wine)."}},
-        {ic:"💐", name:{ru:"Флористическое оформление", en:"Floral Décor"},
+        {ic:"💐", modal:"floral", modalLabel:{ru:"Посмотреть примеры", en:"View examples"}, name:{ru:"Флористическое оформление", en:"Floral Décor"},
           desc:{ru:"Оформление залов и столов под концепцию мероприятия: композиции, президиум, свечи и декор. Портфолио реализованных примеров доступно.",
                 en:"Décor for halls and tables tailored to your concept: arrangements, head table, candles and styling. Portfolio of past work available."},
           price:{ru:"Стоимость — по запросу", en:"Price on request"}},
@@ -1300,12 +1300,12 @@ function renderSection(s, i){
         <div class="svc-h"><span class="svc-ic">${it.ic}</span><div><b>${it.name[LANG]}</b></div></div>
         <p class="svc-d">${it.desc[LANG]}</p>
         ${isCakes?teaser:(it.tags?`<div class="svc-tags">${it.tags.map(t=>`<span>${T(t)}</span>`).join("")}</div>`:"")}
-        ${it.modal?`<span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${isCakes?(LANG==="ru"?`Смотреть ${CAKE.designs} дизайнов и начинки`:`View ${CAKE.designs} designs & fillings`):(LANG==="ru"?"Смотреть фото":"View photos")}</span>`:""}
+        ${it.modal?`<span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${isCakes?(LANG==="ru"?`Смотреть ${CAKE.designs} дизайнов и начинки`:`View ${CAKE.designs} designs & fillings`):(it.modalLabel?it.modalLabel[LANG]:(LANG==="ru"?"Смотреть фото":"View photos"))}</span>`:""}
         ${it.tiers?`<div class="svc-tiers">${it.tiers.map(t=>`<div><span>${t.l[LANG]}</span><b>${T(t.p)}</b><em>${T(t.n)}</em></div>`).join("")}</div>`:""}
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
         ${it.price?`<div class="svc-price">${it.price[LANG]}</div>`:""}
       </div>`;}).join("")+`</div>`
-    + cakeModal();
+    + cakeModal() + floralModal();
   }
   else if(s.type==="bar"){
     body = `<div class="bar-grid">`+ s.cats.map(cat=>`
@@ -1509,6 +1509,30 @@ function switchCakeTab(tab){
   loadCakeTab(m, +tab.dataset.cakeTab);
 }
 
+/* ---------- Floral décor modal ---------- */
+const FLORAL = { count:26 };
+function floralUrls(){ return Array.from({length:FLORAL.count}, (_,k)=>`uploads/floral/${k+1}.jpg`); }
+function floralModal(){
+  const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
+  const grid = floralUrls().map((u,k)=>`<div class="design-item" data-floral="${k}"><img loading="lazy" src="${u}" alt=""></div>`).join("");
+  return `<div class="hall-modal cake-modal" id="hm-floral" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Флористическое оформление":"Floral décor"}">
+    <div class="hm-card">
+      <div class="hm-head">
+        <div class="hm-title"><b>${LANG==="ru"?"Флористическое оформление":"Floral Décor"}</b></div>
+        <span class="hm-cap">${LANG==="ru"?"Примеры реализованных оформлений · стоимость по запросу":"Examples of past décor · price on request"}</span>
+      </div>
+      <div class="hm-gallery cake-gallery cake-gallery--list"><div class="design-grid">${grid}</div></div>
+      <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
+    </div>
+  </div>`;
+}
+function openFloralModal(){
+  const m = document.getElementById("hm-floral"); if(!m) return;
+  m.hidden = false;
+  requestAnimationFrame(()=> m.classList.add("open"));
+  document.body.classList.add("modal-open");
+}
+
 /* ---------- Lightbox (enlarged cake design) ---------- */
 const LB = {urls:[], idx:0};
 function ensureLightbox(){
@@ -1587,11 +1611,12 @@ function wireModals(){
       if(e.target.closest("#lightbox")) return;
     }
     const di = e.target.closest(".design-item");
-    if(di){ openLightbox(cakeDesignUrls(), +di.dataset.design || 0); return; }
+    if(di){ if(di.dataset.floral !== undefined) openLightbox(floralUrls(), +di.dataset.floral); else openLightbox(cakeDesignUrls(), +di.dataset.design || 0); return; }
     const card = e.target.closest(".ven-clickable");
     if(card){ openHallModal(card.dataset.hall); return; }
     const svc = e.target.closest(".svc-clickable");
     if(svc && svc.dataset.modal === "cakes"){ openCakeModal(); return; }
+    if(svc && svc.dataset.modal === "floral"){ openFloralModal(); return; }
     const tab = e.target.closest(".hm-tab");
     if(tab){ if(tab.dataset.cakeTab !== undefined) switchCakeTab(tab); else switchHallTab(tab); return; }
     if(e.target.closest(".hm-close")){ closeHallModal(e.target.closest(".hall-modal")); return; }
@@ -1609,6 +1634,7 @@ function wireModals(){
       const el = e.target;
       if(el.classList && el.classList.contains("ven-clickable")){ e.preventDefault(); openHallModal(el.dataset.hall); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "cakes"){ e.preventDefault(); openCakeModal(); }
+      else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "floral"){ e.preventDefault(); openFloralModal(); }
     }
   });
 }
