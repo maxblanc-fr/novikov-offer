@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="Индивидуальный фартук для именинника">
+  <defs>
+    <linearGradient id="bbg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8E0A1B"/>
+      <stop offset="1" stop-color="#4A0E14"/>
+    </linearGradient>
+    <linearGradient id="bcloth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#EFEAE0"/>
+      <stop offset="1" stop-color="#DDD3C4"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="300" fill="url(#bbg)"/>
+  <g transform="translate(240,150)">
+    <path d="M-34,-96 C-34,-140 34,-140 34,-96" fill="none" stroke="#C7BBA8" stroke-width="9" stroke-linecap="round"/>
+    <path d="M-58,-4 q-46,6 -78,26" fill="none" stroke="#C7BBA8" stroke-width="9" stroke-linecap="round"/>
+    <path d="M58,-4 q46,6 78,26" fill="none" stroke="#C7BBA8" stroke-width="9" stroke-linecap="round"/>
+    <path d="M-32,-96 L32,-96 L36,-52 Q60,-42 60,-6 L54,116 Q0,130 -54,116 L-60,-6 Q-60,-42 -36,-52 Z" fill="url(#bcloth)" stroke="#C7BBA8" stroke-width="2"/>
+    <!-- gold star -->
+    <path d="M0,-62 l6.2,13.2 14.5,1.8 -10.7,9.9 2.8,14.3 -12.8,-7.1 -12.8,7.1 2.8,-14.3 -10.7,-9.9 14.5,-1.8 Z" fill="#E8A33D"/>
+    <!-- name placeholder -->
+    <text x="0" y="6" text-anchor="middle" fill="#8E0A1B" font-family="Arial, sans-serif" font-weight="900" font-size="26" letter-spacing="1">ИМЯ</text>
+    <text x="0" y="30" text-anchor="middle" fill="#4A0E14" font-family="Arial, sans-serif" font-weight="700" font-size="9" letter-spacing="3">ИМЕНИННИКА</text>
+    <rect x="-42" y="48" width="84" height="46" rx="3" fill="none" stroke="#B9AC96" stroke-width="2.5"/>
+  </g>
+  <text x="240" y="278" text-anchor="middle" fill="#EFEAE0" font-family="Arial, sans-serif" font-weight="700" font-size="15" letter-spacing="1">ПЕРСОНАЛЬНЫЙ ФАРТУК С ИМЕНЕМ</text>
+</svg>

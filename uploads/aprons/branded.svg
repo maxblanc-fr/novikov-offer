@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="Брендированный фартук">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4A0E14"/>
+      <stop offset="1" stop-color="#2A0408"/>
+    </linearGradient>
+    <linearGradient id="cloth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#EFEAE0"/>
+      <stop offset="1" stop-color="#DDD3C4"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="300" fill="url(#bg)"/>
+  <g transform="translate(240,150)">
+    <!-- neck strap -->
+    <path d="M-34,-96 C-34,-140 34,-140 34,-96" fill="none" stroke="#C7BBA8" stroke-width="9" stroke-linecap="round"/>
+    <!-- waist ties -->
+    <path d="M-58,-4 q-46,6 -78,26" fill="none" stroke="#C7BBA8" stroke-width="9" stroke-linecap="round"/>
+    <path d="M58,-4 q46,6 78,26" fill="none" stroke="#C7BBA8" stroke-width="9" stroke-linecap="round"/>
+    <!-- apron body -->
+    <path d="M-32,-96 L32,-96 L36,-52 Q60,-42 60,-6 L54,116 Q0,130 -54,116 L-60,-6 Q-60,-42 -36,-52 Z" fill="url(#cloth)" stroke="#C7BBA8" stroke-width="2"/>
+    <!-- pocket -->
+    <rect x="-42" y="34" width="84" height="52" rx="3" fill="none" stroke="#B9AC96" stroke-width="2.5"/>
+    <line x1="0" y1="34" x2="0" y2="86" stroke="#B9AC96" stroke-width="2"/>
+    <!-- logo -->
+    <text x="0" y="-8" text-anchor="middle" fill="#8E0A1B" font-family="Arial, sans-serif" font-weight="900" font-size="20" letter-spacing="1">NOVIKOV</text>
+    <text x="0" y="12" text-anchor="middle" fill="#4A0E14" font-family="Arial, sans-serif" font-weight="700" font-size="9" letter-spacing="4">SCHOOL</text>
+  </g>
+  <text x="240" y="278" text-anchor="middle" fill="#EFEAE0" font-family="Arial, sans-serif" font-weight="700" font-size="15" letter-spacing="1">ВАШ ЛОГОТИП НА ФАРТУКЕ</text>
+</svg>
