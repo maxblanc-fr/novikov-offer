@@ -343,6 +343,9 @@
   .cake-teaser-more small{font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
   .card-banner{margin-bottom:14px; border:1px solid var(--line); overflow:hidden; background:var(--bone-2);}
   .card-banner img{width:100%; height:auto; display:block;}
+  .svc-foot{margin-top:auto; display:flex; flex-direction:column; gap:10px;}
+  .svc-foot .ven-more{margin-top:0;}
+  .svc-foot .svc-price{margin-top:0;}
   /* ---------- lightbox (enlarged design photo) ---------- */
   .lightbox{position:fixed; inset:0; z-index:1300; display:flex; align-items:center; justify-content:center; padding:26px; background:rgba(20,3,6,.88); backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:opacity .18s ease;}
   .lightbox.open{opacity:1; pointer-events:auto;}
@@ -1301,15 +1304,17 @@ function renderSection(s, i){
         : it.cardImgs ? `<div class="cake-teaser" aria-hidden="true">${it.cardImgs.map(u=>`<img loading="lazy" src="${u}" alt="">`).join("")}${it.cardMore?`<span class="cake-teaser-more">+${it.cardMore}<small>${LANG==="ru"?"ещё":"more"}</small></span>`:""}</div>`
         : it.cardImg ? `<div class="card-banner"><img loading="lazy" src="${it.cardImg}" alt=""></div>`
         : it.tags ? `<div class="svc-tags">${it.tags.map(t=>`<span>${T(t)}</span>`).join("")}</div>` : "";
+      const venMore = it.modal ? `<span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${isCakes?(LANG==="ru"?`Смотреть ${CAKE.designs} дизайнов и начинки`:`View ${CAKE.designs} designs & fillings`):(it.modalLabel?it.modalLabel[LANG]:(LANG==="ru"?"Смотреть фото":"View photos"))}</span>` : "";
+      const grouped = !!(it.modal && it.price);
       return `
       <div class="svc-card${it.modal?" svc-clickable":""}"${it.modal?` data-modal="${it.modal}" role="button" tabindex="0"`:""}>
         <div class="svc-h"><span class="svc-ic">${it.ic}</span><div><b>${it.name[LANG]}</b></div></div>
         <p class="svc-d">${it.desc[LANG]}</p>
         ${visual}
-        ${it.modal?`<span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${isCakes?(LANG==="ru"?`Смотреть ${CAKE.designs} дизайнов и начинки`:`View ${CAKE.designs} designs & fillings`):(it.modalLabel?it.modalLabel[LANG]:(LANG==="ru"?"Смотреть фото":"View photos"))}</span>`:""}
+        ${it.modal && !grouped ? venMore : ""}
         ${it.tiers?`<div class="svc-tiers">${it.tiers.map(t=>`<div><span>${t.l[LANG]}</span><b>${T(t.p)}</b><em>${T(t.n)}</em></div>`).join("")}</div>`:""}
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
-        ${it.price?`<div class="svc-price">${it.price[LANG]}</div>`:""}
+        ${grouped ? `<div class="svc-foot">${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : (it.price?`<div class="svc-price">${it.price[LANG]}</div>`:"")}
       </div>`;}).join("")+`</div>`
     + cakeModal() + floralModal();
   }
