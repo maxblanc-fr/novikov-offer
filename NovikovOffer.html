@@ -16,7 +16,8 @@
   :root{
     --red:#D6122B; --red-deep:#8E0A1B; --maroon:#4A0E14; --maroon-dark:#2A0408;
     --ink:#121212; --bone:#F4F1EC; --bone-2:#E9E4DC; --card:#FBF8F2; --white:#fff;
-    --line:#E4DACC; --muted:#7c6f64; --ink-soft:#4a3d36; --red-lite:#FF8A98;
+    --line:#DCCFBC; --muted:#7c6f64; --ink-soft:#4a3d36; --red-lite:#FF8A98;
+    --card-shadow:0 1px 2px rgba(74,14,20,.05), 0 5px 16px rgba(74,14,20,.05);
     --green:#2FAF6B; --amber:#E8A33D;
     --display:'Anton',sans-serif; --head:'Archivo',sans-serif; --body:'Manrope',sans-serif;
     --nav-h:64px;
@@ -50,10 +51,13 @@
   nav.sections{
     position:sticky; top:var(--nav-h); z-index:40; background:var(--bone-2);
     border-bottom:1px solid var(--line);
-    display:flex; gap:8px; overflow-x:auto; padding:10px clamp(10px,4vw,42px); scrollbar-width:thin;
+    display:flex; gap:8px; overflow-x:auto; padding:10px clamp(10px,4vw,42px); scrollbar-width:none;
   }
-  nav.sections::-webkit-scrollbar{height:6px}
-  nav.sections::-webkit-scrollbar-thumb{background:#cdbba6;border-radius:0}
+  nav.sections::-webkit-scrollbar{display:none}
+  nav.sections.nav-fade{
+    -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 52px),transparent);
+    mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 52px),transparent);
+  }
   nav.sections a{
     flex:none; padding:7px 14px; border-radius:0; font-family:var(--head); font-weight:700;
     text-transform:uppercase; letter-spacing:.05em; font-size:11.5px;
@@ -111,13 +115,30 @@
     background:var(--card); border:1px solid var(--line); border-radius:0;
     padding:18px 20px;
   }
-  .set h3{margin:0 0 3px; font-family:var(--head); font-weight:900; font-size:15px; color:var(--ink); letter-spacing:.01em; text-transform:uppercase}
+  .set,.svc-card,.ven-card,.rows,.ff-card,.cat,.notecard,.ven-incl > div{box-shadow:var(--card-shadow)}
+  .set h3{margin:0 0 10px; font-family:var(--head); font-weight:900; font-size:15px; color:var(--ink); letter-spacing:.01em; text-transform:uppercase}
   .set .h-en{font-family:var(--head); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:12px}
   .set ul{list-style:none; margin:0; padding:0}
   .set li{padding:8px 0 8px 20px; position:relative; border-top:1px solid var(--line); font-size:14.5px}
   .set li:first-child{border-top:0}
   .set li::before{content:"›"; position:absolute; left:2px; top:7px; color:var(--red); font-family:var(--display); font-size:15px; line-height:1}
   .set .course{font-family:var(--head); font-weight:700; font-size:9.5px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:1px}
+
+  /* ---------- Set format: legend, filter, card badges ---------- */
+  .fmt-legend{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin:0 0 12px;}
+  .fmt-tile{display:flex; gap:13px; align-items:flex-start; background:var(--card); border:1px solid var(--line); border-left:3px solid var(--red); padding:14px 16px; box-shadow:var(--card-shadow);}
+  .fmt-tile-ic{font-size:24px; line-height:1.15; flex:none;}
+  .fmt-tile b{display:block; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:13px; color:var(--ink);}
+  .fmt-tile p{margin:3px 0 7px; font-size:13px; color:var(--ink-soft); line-height:1.5;}
+  .fmt-tile-p{font-family:var(--head); font-weight:900; font-size:12.5px; color:var(--red);}
+  .fmt-legend-note{margin:0 0 16px; font-size:13px; color:var(--muted); line-height:1.55;}
+  .fmt-legend-note a{color:var(--red); font-weight:700; text-decoration:underline; text-underline-offset:2px;}
+  .set-filter{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 6px;}
+  .sf-btn{padding:9px 16px; border:1px solid var(--line); background:#fff; color:var(--red-deep); font-family:var(--head); font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:11.5px; cursor:pointer; transition:.15s;}
+  .sf-btn:hover{border-color:var(--red); color:var(--red);}
+  .sf-btn.active{background:var(--red); border-color:var(--red); color:#fff;}
+  .set-groupwrap[hidden]{display:none;}
+  .set-fmt{display:inline-flex; align-items:center; gap:5px; margin:0 0 9px; padding:3px 9px; font-family:var(--head); font-weight:700; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; border:1px solid var(--line); background:var(--bone-2); color:var(--ink-soft);}
 
   /* ---------- Priced rows / tables ---------- */
   .rows{background:var(--card); border:1px solid var(--line); border-radius:0; overflow:hidden}
@@ -190,7 +211,7 @@
   .svc-tiers div span{flex:1}
   .svc-tiers div b{color:var(--red); font-family:var(--head); font-weight:900}
   .svc-tiers div em{color:var(--muted); font-style:normal; font-size:12px; min-width:44px; text-align:right}
-  .svc-price{margin-top:auto; background:linear-gradient(135deg,var(--red),var(--red-deep)); color:#fff; border-radius:0; padding:10px 12px; font-family:var(--head); font-weight:700; font-size:13.5px; text-align:center; letter-spacing:.02em}
+  .svc-price{margin-top:auto; background:linear-gradient(135deg,var(--red),var(--red-deep)); color:#fff; border-radius:0; padding:10px 14px; font-family:var(--head); font-weight:700; font-size:13px; line-height:1.45; text-align:center; letter-spacing:.02em}
 
   /* ---------- Notecard ---------- */
   .notecard{background:var(--card); border:1px solid var(--line); border-radius:0; padding:20px 24px; font-size:15px}
@@ -256,9 +277,16 @@
   .ven-clickable{cursor:pointer; position:relative; transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease; outline:none;}
   .ven-clickable:hover{border-color:var(--red); transform:translateY(-2px); box-shadow:0 7px 22px rgba(74,14,20,.15);}
   .ven-clickable:focus-visible{border-color:var(--red); box-shadow:0 0 0 2px var(--red);}
-  .ven-more{display:inline-flex; align-items:center; gap:6px; margin-top:11px; color:var(--red); font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:11px;}
-  .ven-more svg{opacity:.92; transition:transform .16s ease;}
-  .ven-clickable:hover .ven-more svg{transform:scale(1.12);}
+  .ven-more{
+    display:inline-flex; align-items:center; justify-content:center; gap:7px; margin-top:12px;
+    padding:9px 14px; border:1.5px solid var(--red); background:transparent;
+    color:var(--red); font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:11px;
+    transition:background .15s ease, color .15s ease;
+  }
+  .ven-more::after{content:"→"; font-family:var(--body); font-weight:800; font-size:13px; line-height:1; transition:transform .15s ease;}
+  .ven-more svg{opacity:.92;}
+  .ven-clickable:hover .ven-more, .svc-clickable:hover .ven-more{background:var(--red); color:#fff;}
+  .ven-clickable:hover .ven-more::after, .svc-clickable:hover .ven-more::after{transform:translateX(3px);}
   .ven-hint{display:flex; align-items:flex-start; gap:9px; margin-top:16px; background:var(--card); border:1px solid var(--line); border-left:3px solid var(--red); padding:12px 15px; font-size:13.5px; color:var(--ink-soft); line-height:1.5;}
   .ven-hint svg{flex:none; color:var(--red); margin-top:1px;}
   /* ---------- hall photo modal ---------- */
@@ -304,9 +332,26 @@
   .fill-txt p{margin:0; font-size:12.5px; color:var(--ink-soft); line-height:1.5;}
   @media(max-width:560px){ .fill-item{flex-direction:column;} .fill-img{width:100%; height:120px;} }
   .design-grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(190px,1fr));}
-  .design-item{aspect-ratio:1/1; overflow:hidden; border:1px solid var(--line); background:var(--bone);}
-  .design-item img{width:100%; height:100%; object-fit:cover; display:block;}
+  .design-item{aspect-ratio:1/1; overflow:hidden; border:1px solid var(--line); background:var(--bone); cursor:zoom-in;}
+  .design-item img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .25s ease;}
+  .design-item:hover img{transform:scale(1.05);}
   @media(max-width:560px){ .design-grid{grid-template-columns:1fr 1fr;} }
+  /* ---------- cake teaser strip (in services card) ---------- */
+  .cake-teaser{display:flex; gap:8px; margin-bottom:14px;}
+  .cake-teaser img{flex:1 1 0; width:0; min-width:0; aspect-ratio:1/1; object-fit:cover; border:1px solid var(--line); display:block;}
+  .cake-teaser-more{flex:1 1 0; aspect-ratio:1/1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; background:var(--bone-2); border:1px solid var(--line); color:var(--red-deep); font-family:var(--head); font-weight:900; font-size:16px; line-height:1;}
+  .cake-teaser-more small{font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+  /* ---------- lightbox (enlarged design photo) ---------- */
+  .lightbox{position:fixed; inset:0; z-index:1300; display:flex; align-items:center; justify-content:center; padding:26px; background:rgba(20,3,6,.88); backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:opacity .18s ease;}
+  .lightbox.open{opacity:1; pointer-events:auto;}
+  .lightbox[hidden]{display:none;}
+  .lightbox img{max-width:min(92vw,880px); max-height:82vh; background:var(--bone); border:1px solid rgba(255,255,255,.2); box-shadow:0 30px 90px rgba(0,0,0,.55);}
+  .lb-nav{position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border:0; background:rgba(255,255,255,.92); color:var(--red-deep); font-size:24px; line-height:1; cursor:pointer; display:grid; place-items:center; transition:.15s;}
+  .lb-nav:hover{background:#fff;}
+  .lb-nav.prev{left:14px;} .lb-nav.next{right:14px;}
+  .lb-close{position:absolute; top:16px; right:16px;}
+  .lb-count{position:absolute; top:20px; left:20px; background:rgba(28,4,8,.7); color:#fff; font-family:var(--head); font-weight:700; font-size:12px; letter-spacing:.04em; padding:5px 11px;}
+  @media(max-width:560px){ .lb-nav{width:38px; height:38px; font-size:20px;} .lb-nav.prev{left:8px;} .lb-nav.next{right:8px;} }
   .cake-custom{max-width:460px; margin:auto; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; padding:30px 20px;}
   .cake-custom-ic{font-size:46px; line-height:1;}
   .cake-custom b{font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:20px; color:var(--ink);}
@@ -451,7 +496,7 @@ const DATA = {
       note:{ru:"3 блюда на гостя · цена зависит от формата (см. «Форматы и цены»)", en:"3 courses per guest · priced by format (see “Formats & Pricing”)"},
       intro:{ru:"Один и тот же сет можно приготовить в командном или индивидуальном формате — они различаются процессом и ценой. В индивидуальном формате отдельные компоненты десертов готовятся общими на группу.", en:"The same set can be prepared in a team or individual format — they differ in process and price. In the individual format some dessert components are prepared jointly for the group."},
       groups:[
-        {head:{ru:"Доступны в обоих форматах", en:"Available in both formats"}, items:[
+        {head:{ru:"Любой формат на выбор", en:"Any format — your choice"}, fmt:"both", items:[
         {ru:"Итальянские хиты", en:"Italian Hits", d:["Вителло Тонато — ростбиф с соусом из тунца","Паста с грибами и трюфельной эмульсией","Семифредо с шоколадом"]},
         {ru:"Южная Америка", en:"South America", d:["Эмпанадас с креветками","Фланк стейк с соусом чимичури и пюре из батата","Трес лечес"]},
         {ru:"Мейд ин Чайна", en:"Made in China", d:["Хрустящие баклажаны по-кантонски","Рисовая лапша с креветками и курицей","Желе из кокосового молока и манго"]},
@@ -466,7 +511,7 @@ const DATA = {
         {ru:"Хиты Бангкока", en:"Bangkok Hits", d:["Спринг ролл с уткой и соевыми ростками","Том ям с креветками и курицей","Жареное молоко с клубничным джемом"]},
         {ru:"Дольче Вита", en:"La Dolce Vita", d:["Артишоки по-римски","Лазанья болоньезе","Шоколадный фондан с мороженым"]}
         ]},
-        {head:{ru:"Только командный формат", en:"Team format only"}, items:[
+        {head:{ru:"Только командой — готовите вместе", en:"Team cooking only"}, fmt:"team", items:[
         {ru:"Пикник у моря", en:"Picnic by the Sea", d:["Страчателла с персиками гриль и прошутто","Лосось на гриле с лимонным маслом и картофельным салатом с огурцом и зеленью","Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе"]},
         {ru:"Обед на веранде", en:"Lunch on the Veranda", d:["Салат с кукурузой на гриле, авокадо, хрустящим беконом и йогуртовым ранч-соусом","Медальоны из вырезки с грибным BBQ кремом и брокколи гриль","Летний коблер с персиком и ягодами"]},
         {ru:"Ужин в саду", en:"Dinner in the Garden", d:["Арбуз и фета с дымком и соусом малиновый винегрет","Стейк-салат с летним чимичурри, мини-картофель и томаты черри","Абрикосы гриль с миндальным крамблом и лавандовым заварным кремом"]},
@@ -476,7 +521,7 @@ const DATA = {
         {ru:"Московские легенды", en:"Moscow Legends", d:["Салат «Столичный»","Пельмени с тремя видами мяса","Заварные кольца с творожным кремом"]},
         {ru:"Традиционный праздничный обед", en:"Traditional Festive Lunch", d:["Закуска из утиной грудки с листьями салата и брусничным соусом","Веллингтон с соусом Бордолез","Грушевый Тарт Татен с ванильным мороженым"]}
         ]},
-        {head:{ru:"Только индивидуальный формат", en:"Individual format only"}, items:[
+        {head:{ru:"Только индивидуально — каждый готовит сам", en:"Individual cooking only"}, fmt:"solo", items:[
         {ru:"Греческие каникулы", en:"Greek Holidays", d:["Мезе баклажан и паприка с лепёшкой","Осьминог с картофелем и соусом дзадзыки","Катаифи"]},
         {ru:"Голодные игры", en:"The Hunger Games", d:["Салат из утиной грудки с печёными овощами","Стейк Мачете и зелёный салат","Мильфёй с кремом и ягодами"]},
         {ru:"Загадочный Восток", en:"The Mysterious East", d:["Печёный баклажан с сыром и томатной сальсой","Кебаб из баранины с овощным табуле","Пахлава с мороженым"]},
@@ -579,7 +624,7 @@ const DATA = {
           price:{ru:"2 200 ₽ / гость за коктейль", en:"2 200 ₽ / guest per cocktail"}},
         {ic:"🎭", name:{ru:"Развлекательные программы", en:"Entertainment Programs"},
           desc:{ru:"Интерактивные программы, игры и конкурсы для гостей мероприятия.", en:"Interactive programs, games and contests for your guests."},
-          tags:["Битва полов","Слово мужчины","Восьмое чудо","Вторая половинка"],
+          tags:["Битва полов","Слово мужчины","Восьмое чудо","Вторая половинка","Отгадай мелодию","Мафия","Миллионер","Импровизатор","Баттл поколений"],
           price:{ru:"от 45 000 ₽ / 2 ч", en:"from 45 000 ₽ / 2 h"}},
         {ic:"🎲", name:{ru:"Интерактивные игры", en:"Interactive Games"},
           desc:{ru:"Игры для гостей с профессиональным ведущим — 45–60 минут. Цена за гостя; можно комбинировать несколько. Пример — для 12 гостей.",
@@ -609,7 +654,7 @@ const DATA = {
         {ic:"🎂", name:{ru:"Индивидуальные фартуки для именинников", en:"Personalised Aprons for the Birthday Guest"},
           desc:{ru:"Персональный фартук с именем именинника — приятный подарок и памятная деталь праздника.",
                 en:"A personalised apron with the birthday guest's name — a lovely gift and a memorable detail of the celebration."},
-          price:{ru:"5 500 ₽ / шт", en:"5 500 ₽ / piece"}}
+          price:{ru:"8 600 ₽ / шт", en:"8 600 ₽ / piece"}}
       ]
     },
     {
@@ -779,6 +824,7 @@ function render(){
   applyI18n();
   wireScrollSpy();
   wireCarousels();
+  wireNavFade();
 }
 
 /* carousel interaction (arrows, dots, keyboard, swipe) */
@@ -1070,6 +1116,11 @@ const TR={
 "4 400 ₽/гость":"4 400 ₽/guest",
 "6 600 ₽/гость":"6 600 ₽/guest",
 "Битва полов":"Battle of the Sexes",
+"Отгадай мелодию":"Guess the Melody",
+"Мафия":"Mafia",
+"Миллионер":"Millionaire",
+"Импровизатор":"Improviser",
+"Баттл поколений":"Battle of Generations",
 "Слово мужчины":"Man's Word",
 "Восьмое чудо":"Eighth Wonder",
 "Вторая половинка":"Better Half",
@@ -1151,16 +1202,46 @@ function renderSection(s, i){
   let body="";
   if(s.type==="sets"){
     const c = I18N.courses[LANG];
-    const setCard = it => { const cc=it.d.length===3?c:[]; return `
+    const FMTB = {
+      both:{ru:"👥·👤 оба формата", en:"👥·👤 both formats"},
+      team:{ru:"👥 командный", en:"👥 team"},
+      solo:{ru:"👤 индивидуальный", en:"👤 individual"}
+    };
+    const setCard = (it, fmt) => { const cc=it.d.length===3?c:[]; const b=fmt&&FMTB[fmt]; return `
       <div class="set">
+        ${b?`<span class="set-fmt set-fmt--${fmt}">${b[LANG]}</span>`:""}
         <h3>${it[LANG]}</h3>${it.price?`<div class="set-price">${it.price[LANG]}</div>`:""}
-        ${LANG==="ru"?`<div class="h-en">${it.en}</div>`:`<div class="h-en">${it.ru}</div>`}
         <ul>${it.d.map((dish,i)=>`<li><span class="course">${cc[i]||""}</span>${T(dish)}</li>`).join("")}</ul>
       </div>`; };
-    const grid = list => `<div class="grid sets${s.wide?" sets-wide":""}">`+ list.map(setCard).join("") + `</div>`;
-    const pre = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + (s.canape?`<div class="rows canape-block"><div class="subhead"><b>${s.canape.n[LANG]}</b> <span class="badge">${LANG==="ru"?"Включено":"Included"}</span><span class="wt">· ${T(s.canape.wt)}</span></div><div class="set-list">${s.canape.d.map(x=>`<div>${T(x)}</div>`).join("")}</div></div>`:"");
-    body = pre + (s.groups
-      ? s.groups.map(g=>`<div class="set-group"><span class="set-group-t">${g.head[LANG]}</span><span class="set-group-n">${g.items.length}</span></div>`+grid(g.items)).join("")
+    const grid = (list, fmt) => `<div class="grid sets${s.wide?" sets-wide":""}">`+ list.map(it=>setCard(it, fmt)).join("") + `</div>`;
+    let legend = "";
+    if(s.groups){
+      const cnt = f => s.groups.reduce((a,g)=>a+((g.fmt===f||g.fmt==="both")?g.items.length:0),0);
+      const total = s.groups.reduce((a,g)=>a+g.items.length,0);
+      legend = `<div class="fmt-legend">
+        <div class="fmt-tile"><span class="fmt-tile-ic">👥</span><div>
+          <b>${LANG==="ru"?"Командный формат":"Team format"}</b>
+          <p>${LANG==="ru"?"Гости готовят блюда сета вместе, одной командой — живой, весёлый процесс.":"Guests cook the set together as one team — a lively, fun process."}</p>
+          <span class="fmt-tile-p">${LANG==="ru"?"от 11 900 ₽/чел":"from 11 900 ₽/person"}</span>
+        </div></div>
+        <div class="fmt-tile"><span class="fmt-tile-ic">👤</span><div>
+          <b>${LANG==="ru"?"Индивидуальный формат":"Individual format"}</b>
+          <p>${LANG==="ru"?"Каждый гость готовит свой сет сам под руководством шефа — обучающий формат.":"Each guest cooks their own set guided by the chef — an educational format."}</p>
+          <span class="fmt-tile-p">${LANG==="ru"?"от 12 900 ₽/чел":"from 12 900 ₽/person"}</span>
+        </div></div>
+      </div>
+      <p class="fmt-legend-note">${LANG==="ru"
+        ?`Один и тот же сет доступен в одном или обоих форматах — смотрите отметку на карточке. Отдельные компоненты десертов в индивидуальном формате готовятся общими на группу. Подробнее о ценах — в разделе <a href="#formats">«Форматы и цены»</a>.`
+        :`Each set is available in one or both formats — see the label on the card. In the individual format some dessert components are prepared jointly for the group. Pricing details — in <a href="#formats">“Formats &amp; Pricing”</a>.`}</p>
+      <div class="set-filter" role="tablist" aria-label="${LANG==="ru"?"Фильтр по формату":"Format filter"}">
+        <button type="button" class="sf-btn active" data-sf="all">${LANG==="ru"?`Все сеты (${total})`:`All sets (${total})`}</button>
+        <button type="button" class="sf-btn" data-sf="team">${LANG==="ru"?`👥 Командный формат (${cnt("team")})`:`👥 Team format (${cnt("team")})`}</button>
+        <button type="button" class="sf-btn" data-sf="solo">${LANG==="ru"?`👤 Индивидуальный формат (${cnt("solo")})`:`👤 Individual format (${cnt("solo")})`}</button>
+      </div>`;
+    }
+    const pre = ((s.intro && !s.groups)?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + (s.canape?`<div class="rows canape-block"><div class="subhead"><b>${s.canape.n[LANG]}</b> <span class="badge">${LANG==="ru"?"Включено":"Included"}</span><span class="wt">· ${T(s.canape.wt)}</span></div><div class="set-list">${s.canape.d.map(x=>`<div>${T(x)}</div>`).join("")}</div></div>`:"");
+    body = legend + pre + (s.groups
+      ? s.groups.map(g=>`<div class="set-groupwrap" data-fmt="${g.fmt||""}"><div class="set-group"><span class="set-group-t">${g.head[LANG]}</span><span class="set-group-n">${g.items.length}</span></div>${grid(g.items, g.fmt)}</div>`).join("")
       : grid(s.items));
   }
   else if(s.type==="priced"){
@@ -1211,22 +1292,25 @@ function renderSection(s, i){
     + s.halls.map(hallModal).join("");
   }
   else if(s.type==="services"){
-    body = `<div class="svc-grid">`+ s.items.map(it=>`
+    body = `<div class="svc-grid">`+ s.items.map(it=>{
+      const isCakes = it.modal==="cakes";
+      const teaser = isCakes ? `<div class="cake-teaser" aria-hidden="true">${[1,2,3,4].map(k=>`<img loading="lazy" src="uploads/cake-designs-v2/cd0${k}.jpg" alt="">`).join("")}<span class="cake-teaser-more">+${CAKE.designs-4}<small>${LANG==="ru"?"ещё":"more"}</small></span></div>` : "";
+      return `
       <div class="svc-card${it.modal?" svc-clickable":""}"${it.modal?` data-modal="${it.modal}" role="button" tabindex="0"`:""}>
-        <div class="svc-h"><span class="svc-ic">${it.ic}</span><div><b>${it.name[LANG]}</b><span class="svc-en">${LANG==="ru"?it.name.en:it.name.ru}</span></div></div>
+        <div class="svc-h"><span class="svc-ic">${it.ic}</span><div><b>${it.name[LANG]}</b></div></div>
         <p class="svc-d">${it.desc[LANG]}</p>
-        ${it.tags?`<div class="svc-tags">${it.tags.map(t=>`<span>${T(t)}</span>`).join("")}</div>`:""}
-        ${it.modal?`<span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${LANG==="ru"?"Смотреть фото и дизайны":"View photos & designs"}</span>`:""}
+        ${isCakes?teaser:(it.tags?`<div class="svc-tags">${it.tags.map(t=>`<span>${T(t)}</span>`).join("")}</div>`:"")}
+        ${it.modal?`<span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${isCakes?(LANG==="ru"?`Смотреть ${CAKE.designs} дизайнов и начинки`:`View ${CAKE.designs} designs & fillings`):(LANG==="ru"?"Смотреть фото":"View photos")}</span>`:""}
         ${it.tiers?`<div class="svc-tiers">${it.tiers.map(t=>`<div><span>${t.l[LANG]}</span><b>${T(t.p)}</b><em>${T(t.n)}</em></div>`).join("")}</div>`:""}
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
         ${it.price?`<div class="svc-price">${it.price[LANG]}</div>`:""}
-      </div>`).join("")+`</div>`
+      </div>`;}).join("")+`</div>`
     + cakeModal();
   }
   else if(s.type==="bar"){
     body = `<div class="bar-grid">`+ s.cats.map(cat=>`
       <div class="cat">
-        <div class="ch"><b>${cat[LANG]}</b><span class="en">${LANG==="ru"?cat.en:cat.ru}</span>${cat.unit?`<span class="unit">${T(cat.unit)}</span>`:""}</div>
+        <div class="ch"><b>${cat[LANG]}</b>${cat.unit?`<span class="unit">${T(cat.unit)}</span>`:""}</div>
         ${cat.items.map(([n,desc,price])=>`<div class="bi"><span class="n"><b>${T(n)}</b>${desc?` <span>${T(desc)}</span>`:""}</span><span class="p">${fmt(price)} ₽</span></div>`).join("")}
       </div>`).join("")+`</div>`;
   }
@@ -1379,18 +1463,18 @@ const CAKE = {
   designs:56,
   tabs:[
     {ru:"Начинки", en:"Fillings", type:"fillings"},
-    {ru:"Дизайны тортов", en:"Cake Designs", type:"designs"},
-    {ru:"Свой дизайн", en:"Your Design", type:"custom"}
+    {ru:"Дизайны тортов", en:"Cake Designs", type:"designs"}
   ]
 };
 function cakeModal(){
   const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
-  const tabs = CAKE.tabs.map((t,i)=>`<button type="button" class="hm-tab${i===0?" active":""}" data-cake-tab="${i}" role="tab" aria-selected="${i===0}">${LANG==="ru"?t.ru:t.en}</button>`).join("");
+  const tabCount = t => t.type==="fillings" ? CAKE.fillings.length : CAKE.designs;
+  const tabs = CAKE.tabs.map((t,i)=>`<button type="button" class="hm-tab${i===0?" active":""}" data-cake-tab="${i}" role="tab" aria-selected="${i===0}">${LANG==="ru"?t.ru:t.en} (${tabCount(t)})</button>`).join("");
   return `<div class="hall-modal cake-modal" id="hm-cakes" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Торты":"Cakes"}">
     <div class="hm-card">
       <div class="hm-head">
-        <div class="hm-title"><b>${LANG==="ru"?"Торты":"Cakes"}</b></div>
-        <span class="hm-cap">${LANG==="ru"?"Начинка по выбору · оформление и фигурки как на фото":"Filling of choice · decoration and figurines as shown"}</span>
+        <div class="hm-title"><b>${LANG==="ru"?"Торты":"Cakes"}</b><span class="hm-area">${LANG==="ru"?"4 900 ₽/кг · минимум 2 кг":"4 900 ₽/kg · min 2 kg"}</span></div>
+        <span class="hm-cap">${LANG==="ru"?"Начинка по выбору · оформление и фигурки как на фото · декор оплачивается и весит дополнительно":"Filling of choice · decoration and figurines as shown · décor is priced and weighed separately"}</span>
       </div>
       <div class="hm-tabs" role="tablist">${tabs}</div>
       <div class="hm-gallery cake-gallery"></div>
@@ -1398,20 +1482,19 @@ function cakeModal(){
     </div>
   </div>`;
 }
+function cakeDesignUrls(){
+  return Array.from({length:CAKE.designs}, (_,k)=>`uploads/cake-designs-v2/cd${String(k+1).padStart(2,"0")}.jpg`);
+}
 function loadCakeTab(m, i){
   const g = m.querySelector(".cake-gallery"); if(!g) return;
   const t = CAKE.tabs[i];
   g.classList.toggle("cake-gallery--list", t.type === "fillings" || t.type === "designs");
-  if(t.type === "custom"){
-    g.innerHTML = `<div class="cake-custom"><span class="cake-custom-ic">🎨</span><b>${LANG==="ru"?"Свой дизайн торта":"Your own cake design"}</b><p>${LANG==="ru"?"Пришлите менеджеру референс или идею — воплотим ваш торт под концепцию праздника.":"Send your manager a reference or idea — we'll create your cake to match the celebration."}</p><span class="cake-custom-price">${LANG==="ru"?"Цена по запросу":"Price on request"}</span></div>`;
-    return;
-  }
   if(t.type === "fillings"){
     g.innerHTML = `<div class="fill-list">${CAKE.fillings.map((n,k)=>`<div class="fill-item"><img class="fill-img" loading="lazy" src="uploads/cake-fillings/${k+1}.jpg" alt=""><div class="fill-txt"><b>${T(n)}</b><p>${T(CAKE.fillDesc[k])}</p></div></div>`).join("")}</div>`;
     return;
   }
-  const urls = Array.from({length:CAKE.designs}, (_,k)=>`uploads/cake-designs-v2/cd${String(k+1).padStart(2,"0")}.jpg`);
-  g.innerHTML = `<div class="design-grid">${urls.map(u=>`<div class="design-item"><img loading="lazy" src="${u}" alt=""></div>`).join("")}</div>`;
+  const custom = `<div class="cake-custom"><span class="cake-custom-ic">🎨</span><b>${LANG==="ru"?"Не нашли своё? Сделаем свой дизайн":"Didn't find yours? We'll make your design"}</b><p>${LANG==="ru"?"Пришлите менеджеру референс или идею — воплотим ваш торт под концепцию праздника.":"Send your manager a reference or idea — we'll create your cake to match the celebration."}</p><span class="cake-custom-price">${LANG==="ru"?"Цена по запросу":"Price on request"}</span></div>`;
+  g.innerHTML = `<div class="design-grid">${cakeDesignUrls().map((u,k)=>`<div class="design-item" data-design="${k}"><img loading="lazy" src="${u}" alt=""></div>`).join("")}</div>` + custom;
 }
 function openCakeModal(){
   const m = document.getElementById("hm-cakes"); if(!m) return;
@@ -1426,10 +1509,85 @@ function switchCakeTab(tab){
   loadCakeTab(m, +tab.dataset.cakeTab);
 }
 
+/* ---------- Lightbox (enlarged cake design) ---------- */
+const LB = {urls:[], idx:0};
+function ensureLightbox(){
+  if(document.getElementById("lightbox")) return;
+  const d = document.createElement("div");
+  d.id = "lightbox"; d.className = "lightbox"; d.hidden = true;
+  d.setAttribute("role","dialog"); d.setAttribute("aria-modal","true");
+  d.innerHTML = `<button type="button" class="lb-nav prev" data-d="-1" aria-label="${LANG==="ru"?"Назад":"Previous"}">‹</button>
+    <img alt="">
+    <button type="button" class="lb-nav next" data-d="1" aria-label="${LANG==="ru"?"Вперёд":"Next"}">›</button>
+    <div class="lb-count"></div>
+    <button type="button" class="hm-close lb-close" aria-label="${LANG==="ru"?"Закрыть":"Close"}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button>`;
+  document.body.appendChild(d);
+}
+function lbShow(){
+  const d = document.getElementById("lightbox"); if(!d) return;
+  d.querySelector("img").src = LB.urls[LB.idx];
+  d.querySelector(".lb-count").innerHTML = `<b>${LB.idx+1}</b> / ${LB.urls.length}`;
+}
+function openLightbox(urls, i){
+  ensureLightbox();
+  LB.urls = urls; LB.idx = ((i%urls.length)+urls.length)%urls.length;
+  lbShow();
+  const d = document.getElementById("lightbox");
+  d.hidden = false;
+  requestAnimationFrame(()=> d.classList.add("open"));
+}
+function closeLightbox(){
+  const d = document.getElementById("lightbox"); if(!d) return;
+  d.classList.remove("open");
+  setTimeout(()=>{ if(!d.classList.contains("open")) d.hidden = true; }, 200);
+}
+function lbGo(dir){
+  if(!LB.urls.length) return;
+  LB.idx = ((LB.idx + dir) % LB.urls.length + LB.urls.length) % LB.urls.length;
+  lbShow();
+}
+
+/* ---------- Set format filter ---------- */
+function applySetFilter(btn){
+  const bar = btn.closest(".set-filter"); if(!bar) return;
+  bar.querySelectorAll(".sf-btn").forEach(b=>b.classList.toggle("active", b===btn));
+  const v = btn.dataset.sf;
+  document.querySelectorAll("#sets .set-groupwrap").forEach(w=>{
+    const f = w.dataset.fmt;
+    w.hidden = !(v==="all" || f==="both" || f===v);
+  });
+}
+
+/* ---------- Nav overflow fade hint ---------- */
+function updNavFade(){
+  const nav = document.getElementById("nav"); if(!nav) return;
+  nav.classList.toggle("nav-fade", nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 4);
+}
+function wireNavFade(){
+  const nav = document.getElementById("nav"); if(!nav) return;
+  if(!nav.dataset.fadeWired){
+    nav.dataset.fadeWired = "1";
+    nav.addEventListener("scroll", updNavFade, {passive:true});
+    window.addEventListener("resize", updNavFade);
+  }
+  updNavFade();
+}
+
 let modalsWired = false;
 function wireModals(){
   if(modalsWired) return; modalsWired = true;
   document.addEventListener("click", e=>{
+    const sf = e.target.closest(".sf-btn");
+    if(sf){ applySetFilter(sf); return; }
+    const lbEl = document.getElementById("lightbox");
+    if(lbEl && !lbEl.hidden){
+      const nav = e.target.closest(".lb-nav");
+      if(nav){ lbGo(+nav.dataset.d); return; }
+      if(e.target.closest(".lb-close") || e.target === lbEl){ closeLightbox(); return; }
+      if(e.target.closest("#lightbox")) return;
+    }
+    const di = e.target.closest(".design-item");
+    if(di){ openLightbox(cakeDesignUrls(), +di.dataset.design || 0); return; }
     const card = e.target.closest(".ven-clickable");
     if(card){ openHallModal(card.dataset.hall); return; }
     const svc = e.target.closest(".svc-clickable");
@@ -1440,7 +1598,13 @@ function wireModals(){
     if(e.target.classList.contains("hall-modal")){ closeHallModal(e.target); }
   });
   document.addEventListener("keydown", e=>{
-    if(e.key === "Escape"){ const open = document.querySelector(".hall-modal.open"); if(open){ closeHallModal(open); return; } }
+    const lbEl = document.getElementById("lightbox");
+    const lbOpen = lbEl && lbEl.classList.contains("open");
+    if(e.key === "Escape"){
+      if(lbOpen){ closeLightbox(); return; }
+      const open = document.querySelector(".hall-modal.open"); if(open){ closeHallModal(open); return; }
+    }
+    if(lbOpen && (e.key === "ArrowLeft" || e.key === "ArrowRight")){ lbGo(e.key==="ArrowLeft"?-1:1); return; }
     if(e.key === "Enter" || e.key === " "){
       const el = e.target;
       if(el.classList && el.classList.contains("ven-clickable")){ e.preventDefault(); openHallModal(el.dataset.hall); }
