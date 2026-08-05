@@ -343,9 +343,10 @@
   .cake-teaser-more small{font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
   .card-banner{margin-bottom:14px; border:1px solid var(--line); overflow:hidden; background:var(--bone-2);}
   .card-banner img{width:100%; height:auto; display:block;}
-  .svc-foot{margin-top:auto; display:flex; flex-direction:column; gap:10px;}
+  .svc-foot{margin-top:auto; display:flex; flex-direction:column; gap:12px;}
   .svc-foot .ven-more{margin-top:0;}
   .svc-foot .svc-price{margin-top:0;}
+  .svc-foot .cake-teaser{margin-bottom:0;}
   /* ---------- lightbox (enlarged design photo) ---------- */
   .lightbox{position:fixed; inset:0; z-index:1300; display:flex; align-items:center; justify-content:center; padding:26px; background:rgba(20,3,6,.88); backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:opacity .18s ease;}
   .lightbox.open{opacity:1; pointer-events:auto;}
@@ -1310,11 +1311,11 @@ function renderSection(s, i){
       <div class="svc-card${it.modal?" svc-clickable":""}"${it.modal?` data-modal="${it.modal}" role="button" tabindex="0"`:""}>
         <div class="svc-h"><span class="svc-ic">${it.ic}</span><div><b>${it.name[LANG]}</b></div></div>
         <p class="svc-d">${it.desc[LANG]}</p>
-        ${visual}
+        ${grouped ? "" : visual}
         ${it.modal && !grouped ? venMore : ""}
         ${it.tiers?`<div class="svc-tiers">${it.tiers.map(t=>`<div><span>${t.l[LANG]}</span><b>${T(t.p)}</b><em>${T(t.n)}</em></div>`).join("")}</div>`:""}
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
-        ${grouped ? `<div class="svc-foot">${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : (it.price?`<div class="svc-price">${it.price[LANG]}</div>`:"")}
+        ${grouped ? `<div class="svc-foot">${visual}${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : (it.price?`<div class="svc-price">${it.price[LANG]}</div>`:"")}
       </div>`;}).join("")+`</div>`
     + cakeModal() + floralModal();
   }
