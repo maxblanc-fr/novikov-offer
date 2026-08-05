@@ -124,21 +124,34 @@
   .set li::before{content:"›"; position:absolute; left:2px; top:7px; color:var(--red); font-family:var(--display); font-size:15px; line-height:1}
   .set .course{font-family:var(--head); font-weight:700; font-size:9.5px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:1px}
 
-  /* ---------- Set format: legend, filter, card badges ---------- */
-  .fmt-legend{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin:0 0 12px;}
-  .fmt-tile{display:flex; gap:13px; align-items:flex-start; background:var(--card); border:1px solid var(--line); border-left:3px solid var(--red); padding:14px 16px; box-shadow:var(--card-shadow);}
-  .fmt-tile-ic{font-size:24px; line-height:1.15; flex:none;}
-  .fmt-tile b{display:block; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:13px; color:var(--ink);}
-  .fmt-tile p{margin:3px 0 7px; font-size:13px; color:var(--ink-soft); line-height:1.5;}
-  .fmt-tile-p{font-family:var(--head); font-weight:900; font-size:12.5px; color:var(--red);}
-  .fmt-legend-note{margin:0 0 16px; font-size:13px; color:var(--muted); line-height:1.55;}
-  .fmt-legend-note a{color:var(--red); font-weight:700; text-decoration:underline; text-underline-offset:2px;}
-  .set-filter{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 6px;}
-  .sf-btn{padding:9px 16px; border:1px solid var(--line); background:#fff; color:var(--red-deep); font-family:var(--head); font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:11.5px; cursor:pointer; transition:.15s;}
-  .sf-btn:hover{border-color:var(--red); color:var(--red);}
-  .sf-btn.active{background:var(--red); border-color:var(--red); color:#fff;}
-  .set-groupwrap[hidden]{display:none;}
-  .set-fmt{display:inline-flex; align-items:center; gap:5px; margin:0 0 9px; padding:3px 9px; font-family:var(--head); font-weight:700; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; border:1px solid var(--line); background:var(--bone-2); color:var(--ink-soft);}
+  /* ---------- Culinary part: format tabs + level cards ---------- */
+  .mc-tabs{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 18px;}
+  .mc-tab{display:flex; align-items:center; gap:13px; text-align:left; padding:14px 18px; border:1px solid var(--line); background:var(--card); box-shadow:var(--card-shadow); font-family:var(--body); cursor:pointer; transition:background .15s ease, border-color .15s ease;}
+  .mc-tab-ic{font-size:24px; line-height:1; flex:none;}
+  .mc-tab-tx{display:flex; flex-direction:column; gap:2px; min-width:0;}
+  .mc-tab-tx b{font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:13.5px; color:var(--ink); line-height:1.25;}
+  .mc-tab-tx em{font-style:normal; font-size:12.5px; color:var(--muted);}
+  .mc-tab:hover{border-color:var(--red);}
+  .mc-tab.active{background:linear-gradient(135deg,var(--red),var(--red-deep)); border-color:var(--red-deep);}
+  .mc-tab.active .mc-tab-tx b{color:#fff;}
+  .mc-tab.active .mc-tab-tx em{color:rgba(255,255,255,.85);}
+  .mc-panel[hidden]{display:none;}
+  .mc-panel-d{max-width:900px; margin:0 0 16px; font-size:14.5px; color:var(--ink-soft); line-height:1.6;}
+  .lvl-cards{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 22px;}
+  .lvl-card{display:flex; flex-direction:column; align-items:flex-start; gap:7px; text-align:left; padding:16px 18px; border:1px solid var(--line); border-top:3px solid var(--line); background:var(--card); box-shadow:var(--card-shadow); font-family:var(--body); cursor:pointer; transition:border-color .15s ease, background .15s ease;}
+  .lvl-card:hover{border-color:var(--red); border-top-color:var(--red);}
+  .lvl-card.active{border-color:var(--red); border-top-color:var(--red); background:#fff;}
+  .lvl-n{font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.03em; font-size:14px; color:var(--ink);}
+  .lvl-card.active .lvl-n{color:var(--red-deep);}
+  .lvl-p{font-family:var(--display); font-size:26px; line-height:1; color:var(--red);}
+  .lvl-p small{margin-left:5px; font-family:var(--body); font-weight:700; font-size:12px; color:var(--muted);}
+  .lvl-inc{font-size:12.5px; color:var(--ink-soft); line-height:1.45;}
+  .lvl-cnt{margin-top:auto; padding-top:6px; font-family:var(--head); font-weight:700; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+  .lvl-card.active .lvl-cnt{color:var(--red);}
+  .lvl-panel[hidden]{display:none;}
+  .lvl-prem{margin:0 0 14px; background:var(--card); border:1px solid var(--line); border-left:3px solid var(--red); padding:12px 15px; font-size:13.5px; color:var(--ink-soft); line-height:1.5; box-shadow:var(--card-shadow);}
+  @media(max-width:820px){ .lvl-cards{grid-template-columns:1fr;} }
+  @media(max-width:640px){ .mc-tabs{grid-template-columns:1fr;} }
 
   /* ---------- Priced rows / tables ---------- */
   .rows{background:var(--card); border:1px solid var(--line); border-radius:0; overflow:hidden}
@@ -427,10 +440,49 @@ const I18N = {
   set:{ru:"Сет", en:"Set"}
 };
 
+/* ---------- SET CATALOGUE ----------
+   Единый справочник сетов. Уровни (стандартный / авторский / эксклюзивный)
+   ссылаются на сеты по ключу — чтобы перенести сет в другой уровень,
+   достаточно передвинуть ключ в списке `ids` нужного уровня ниже.        */
+const SETS = {
+  italian:      {ru:"Итальянские хиты", en:"Italian Hits", d:["Вителло Тонато — ростбиф с соусом из тунца","Паста с грибами и трюфельной эмульсией","Семифредо с шоколадом"]},
+  southamerica: {ru:"Южная Америка", en:"South America", d:["Эмпанадас с креветками","Фланк стейк с соусом чимичури и пюре из батата","Трес лечес"]},
+  china:        {ru:"Мейд ин Чайна", en:"Made in China", d:["Хрустящие баклажаны по-кантонски","Рисовая лапша с креветками и курицей","Желе из кокосового молока и манго"]},
+  sicily:       {ru:"Отпуск на Сицилии", en:"Vacation in Sicily", d:["Салат из осьминога с печёным картофелем","Лингвини с креветками","Панна-котта с клубникой"]},
+  mensclassic:  {ru:"Мужская классика", en:"Men's Classic", d:["Стейк-салат","Бефстроганов с картофельным пюре и битыми огурцами","Морковный пирог"]},
+  america:      {ru:"Однажды в Америке", en:"Once Upon a Time in America", d:["Жареный романо с куриной грудкой","Чизбургер с карамелизированным луком и беконом","Шоколадный брауни с вишней"]},
+  sea:          {ru:"Морские приключения", en:"Sea Adventures", d:["Севиче из тунца с цитрусами","Папильот из палтуса с овощами","Десерт балерины Павловой"]},
+  festive:      {ru:"Яркий праздничный ужин", en:"Bright Festive Dinner", d:["Салат с маринованной тыквой, яблоком и голубым сыром","Ризотто с камчатским крабом и жареным артишоком","Карамелизированные мандарины со сливочным кремом"]},
+  francaise:    {ru:"А-ля Франсез", en:"À la Française", d:["Вишисуаз","Утиная грудка с сельдереем и черникой","Профитроли с заварным кремом и шоколадом"]},
+  green:        {ru:"Зелёное меню", en:"Green Menu", d:["Салат с киноа, авокадо и печёным перцем","Чечевичный дал с мятным соусом","Пудинг из тапиоки с манго"]},
+  speciallunch: {ru:"Обед для особого случая", en:"Lunch for a Special Occasion", d:["Мимоза с копчёной форелью","Запечённый цыплёнок с кукурузным кремом и соусом ЖУ","Имбирный бисквит с тыквенным кремом и орехами"]},
+  bangkok:      {ru:"Хиты Бангкока", en:"Bangkok Hits", d:["Спринг ролл с уткой и соевыми ростками","Том ям с креветками и курицей","Жареное молоко с клубничным джемом"]},
+  dolcevita:    {ru:"Дольче Вита", en:"La Dolce Vita", d:["Артишоки по-римски","Лазанья болоньезе","Шоколадный фондан с мороженым"]},
+  picnic:       {ru:"Пикник у моря", en:"Picnic by the Sea", d:["Страчателла с персиками гриль и прошутто","Лосось на гриле с лимонным маслом и картофельным салатом с огурцом и зеленью","Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе"]},
+  veranda:      {ru:"Обед на веранде", en:"Lunch on the Veranda", d:["Салат с кукурузой на гриле, авокадо, хрустящим беконом и йогуртовым ранч-соусом","Медальоны из вырезки с грибным BBQ кремом и брокколи гриль","Летний коблер с персиком и ягодами"]},
+  garden:       {ru:"Ужин в саду", en:"Dinner in the Garden", d:["Арбуз и фета с дымком и соусом малиновый винегрет","Стейк-салат с летним чимичурри, мини-картофель и томаты черри","Абрикосы гриль с миндальным крамблом и лавандовым заварным кремом"]},
+  nice:         {ru:"Выходные в Ницце", en:"Weekend in Nice", d:["Салат Нисуаз","Филе миньон со спаржей и голландским соусом","Крем-брюле"]},
+  mediterranean:{ru:"Средиземноморский уикенд", en:"Mediterranean Weekend", d:["Салат из морепродуктов","Филе дикого сибаса с соусом из спаржи","Тарт с лимонным курдом"]},
+  tbilisi:      {ru:"Обед в Тбилиси", en:"Lunch in Tbilisi", d:["Грузинский салат с ореховой заправкой","Хачапури по-мегрельски","Цыпленок по-чкмерски"]},
+  moscow:       {ru:"Московские легенды", en:"Moscow Legends", d:["Салат «Столичный»","Пельмени с тремя видами мяса","Заварные кольца с творожным кремом"]},
+  traditional:  {ru:"Традиционный праздничный обед", en:"Traditional Festive Lunch", d:["Закуска из утиной грудки с листьями салата и брусничным соусом","Веллингтон с соусом Бордолез","Грушевый Тарт Татен с ванильным мороженым"]},
+  greek:        {ru:"Греческие каникулы", en:"Greek Holidays", d:["Мезе баклажан и паприка с лепёшкой","Осьминог с картофелем и соусом дзадзыки","Катаифи"]},
+  hungergames:  {ru:"Голодные игры", en:"The Hunger Games", d:["Салат из утиной грудки с печёными овощами","Стейк Мачете и зелёный салат","Мильфёй с кремом и ягодами"]},
+  east:         {ru:"Загадочный Восток", en:"The Mysterious East", d:["Печёный баклажан с сыром и томатной сальсой","Кебаб из баранины с овощным табуле","Пахлава с мороженым"]},
+  steak:        {ru:"Не просто стейк", en:"Not Just a Steak", d:["Говядина в хрустящей корочке с овощами под азиатским соусом","Лукум из мраморной говядины с белыми грибами","Тёплый салат с говядиной и чёрно-перечным соусом","Кофейный кекс с вишней и шоколадным кремом"]},
+  ocean:        {ru:"Океан на тарелке", en:"Ocean on a Plate", d:["Креветки в хрустящем тесте с кисло-сладким соусом и зелёными овощами","Салат с кальмаром и соусом романеско","Стейк из лосося с брокколи и пиментой из болгарского перца","Мусс манго-маракуйя со штрейзелем из орео"]},
+  frenchkiss:   {ru:"Французский поцелуй", en:"French Kiss", d:["Тартар из говядины с хрустящими гренками","Филе миньон со спаржей и голландским соусом","Тарт татен с ванильным мороженым"]},
+  asian:        {ru:"Азиатские хиты", en:"Asian Hits", d:["Суп том ям","Лапша удон с курицей","Салат с баклажанами и томатами в сладком соусе","Конфеты матча-имбирь"]},
+  basicsfish:   {ru:"Основы кулинарии: рыба", en:"Culinary Basics: Fish", d:["Сочный стейк из лосося","Дорадо, запечённое целиком с травами и лимоном","Котлеты из красной и белой рыбы с добавлением креветок"]},
+  fishmeat:     {ru:"И рыба, и мясо!", en:"Both Fish and Meat!", d:["Тартар из томатов с моцареллой","Сибас в кокосовом карри с ароматным жасминовым рисом","Стейк мачете с перечным соусом и картофелем ранч","Шоколадный брауни с ванильным мороженым"]},
+  excl1:        {ru:"Эксклюзивный сет 1", en:"Exclusive Set 1", d:["Салат с фуа-гра, козьим сыром и чёрной смородиной","Каннелони с рикоттой и овощами под томатным соусом, с каперсами и таджаскими оливками, с фалангой краба","Десерт «Наполеон» с кремом, кули из шампанского и запечёнными яблоками"]},
+  excl2:        {ru:"Эксклюзивный сет 2", en:"Exclusive Set 2", d:["Тартар из говядины в косточке с соусом и свежим трюфелем","Тонкий край Вагю с тарт татеном из шалота и перье из мадеры","Меренговый рулет с фисташками и малиной"]}
+};
+
 /* ---------- OFFER DATA ---------- */
 const DATA = {
   stats:[
-    {n:"25", ru:"тематических сетов", en:"themed sets"},
+    {n:"30", ru:"тематических сетов", en:"themed sets"},
     {n:"5",  ru:"форматов мероприятий", en:"event formats"},
     {n:"8", ru:"залов на площадке", en:"halls at the venue"},
     {n:"100+", ru:"позиций в барной карте", en:"drinks on the bar card"},
@@ -443,21 +495,32 @@ const DATA = {
       sub:{ru:"Выберите формат мероприятия — цены за человека, действуют с апреля 2026", en:"Choose your event format — prices per person, valid from April 2026"},
       note:{ru:"Стандартное меню; замена блюда +500 ₽", en:"Standard menu; dish swap +500 ₽"},
       groups:[
-        {head:{ru:"Групповые форматы (командная готовка)", en:"Group formats (team cooking)"},
-         note:{ru:"Во все групповые форматы включён фуршет «Small Set» — 180 г холодных закусок на гостя.",
-               en:"All group formats include the «Small Set» buffet — 180 g of cold bites per guest."}, items:[
-          {n:{ru:"Стандартный мастер-класс", en:"Standard masterclass"},
-            d:{ru:"Командный, развлекательный формат. 4 блюда — 12 900 ₽.",
-               en:"Team, entertainment format. 4 dishes — 12 900 ₽."}, p:"11 900 ₽"},
+        {head:{ru:"Командный мастер-класс — 3 уровня", en:"Team masterclass — 3 levels"},
+         note:{ru:"Гости готовят сет вместе, одной командой. Фуршет включён в цену каждого уровня; подборка сетов — в разделе «Кулинарная часть».",
+               en:"Guests cook the set together as one team. The buffet is included at every level; set selection — see “Culinary Programme”."}, items:[
+          {n:{ru:"Стандартный", en:"Standard"},
+            d:{ru:"Фуршет «Small Set» (180 г) включён.", en:"«Small Set» buffet (180 g) included."}, p:"11 900 ₽"},
+          {n:{ru:"Авторский", en:"Author’s"},
+            d:{ru:"Фуршет «Medium Set» (240 г) включён.", en:"«Medium Set» buffet (240 g) included."}, p:"13 900 ₽"},
+          {n:{ru:"Эксклюзивный", en:"Exclusive"},
+            d:{ru:"Премиум-меню (фуа-гра, Вагю, трюфель, краб). Фуршет «Large Set» (310 г) включён. Согласование за неделю.",
+               en:"Premium menu (foie gras, Wagyu, truffle, crab). «Large Set» buffet (310 g) included. Confirm one week ahead."}, p:"15 900 ₽"}
+        ]},
+        {head:{ru:"Индивидуальный мастер-класс — 3 уровня", en:"Individual masterclass — 3 levels"},
+         note:{ru:"Каждый гость готовит свой сет сам под руководством шефа. Фуршет включён в цену каждого уровня.",
+               en:"Each guest cooks their own set guided by the chef. The buffet is included at every level."}, items:[
+          {n:{ru:"Стандартный", en:"Standard"},
+            d:{ru:"Фуршет «Small Set» (180 г) включён.", en:"«Small Set» buffet (180 g) included."}, p:"12 900 ₽"},
+          {n:{ru:"Авторский", en:"Author’s"},
+            d:{ru:"Фуршет «Medium Set» (240 г) включён.", en:"«Medium Set» buffet (240 g) included."}, p:"14 900 ₽"},
+          {n:{ru:"Эксклюзивный", en:"Exclusive"},
+            d:{ru:"Премиум-меню (фуа-гра, Вагю, трюфель, краб). Фуршет «Large Set» (310 г) включён. Согласование за неделю.",
+               en:"Premium menu (foie gras, Wagyu, truffle, crab). «Large Set» buffet (310 g) included. Confirm one week ahead."}, p:"16 900 ₽"}
+        ]},
+        {head:{ru:"Другие форматы", en:"Other formats"}, items:[
           {n:{ru:"Демо-ужин", en:"Demo-dinner"},
             d:{ru:"Шеф готовит и рассказывает о блюдах, гости наблюдают. До 3 часов.",
-               en:"The chef cooks and narrates while guests watch. Up to 3 h."}, p:"12 900 ₽"},
-          {n:{ru:"Индивидуальный формат на мероприятии", en:"Individual format at the event"},
-            d:{ru:"Каждый участник готовит сам, обучающий формат, 3 часа.",
-               en:"Each participant cooks their own dishes; educational, 3 h."}, p:"12 900 ₽"},
-          {n:{ru:"Эксклюзив-меню", en:"Exclusive menu"},
-            d:{ru:"Изысканное меню премиум-уровня (фуа-гра, Вагю, трюфель, краб). Согласование за неделю.",
-               en:"Refined premium-level menu (foie gras, Wagyu, truffle, crab). Confirm one week ahead."}, p:"16 900 ₽"}
+               en:"The chef cooks and narrates while guests watch. Up to 3 h."}, p:"12 900 ₽"}
         ]},
         {head:{ru:"Индивидуальный мастер-класс (приватный)", en:"Individual masterclass (private)"}, items:[
           {n:{ru:"Утро / день · будни", en:"Morning / day · weekdays"},
@@ -497,59 +560,41 @@ const DATA = {
     },
     {
       id:"sets", type:"sets",
-      title:{ru:"Меню сетов", en:"Set Menu"},
-      sub:{ru:"30 сетов · командный и индивидуальный формат", en:"30 sets · team and individual format"},
-      note:{ru:"3 блюда на гостя · цена зависит от формата (см. «Форматы и цены»)", en:"3 courses per guest · priced by format (see “Formats & Pricing”)"},
-      intro:{ru:"Один и тот же сет можно приготовить в командном или индивидуальном формате — они различаются процессом и ценой. В индивидуальном формате отдельные компоненты десертов готовятся общими на группу.", en:"The same set can be prepared in a team or individual format — they differ in process and price. In the individual format some dessert components are prepared jointly for the group."},
-      groups:[
-        {head:{ru:"Любой формат на выбор", en:"Any format — your choice"}, fmt:"both", items:[
-        {ru:"Итальянские хиты", en:"Italian Hits", d:["Вителло Тонато — ростбиф с соусом из тунца","Паста с грибами и трюфельной эмульсией","Семифредо с шоколадом"]},
-        {ru:"Южная Америка", en:"South America", d:["Эмпанадас с креветками","Фланк стейк с соусом чимичури и пюре из батата","Трес лечес"]},
-        {ru:"Мейд ин Чайна", en:"Made in China", d:["Хрустящие баклажаны по-кантонски","Рисовая лапша с креветками и курицей","Желе из кокосового молока и манго"]},
-        {ru:"Отпуск на Сицилии", en:"Vacation in Sicily", d:["Салат из осьминога с печёным картофелем","Лингвини с креветками","Панна-котта с клубникой"]},
-        {ru:"Мужская классика", en:"Men's Classic", d:["Стейк-салат","Бефстроганов с картофельным пюре и битыми огурцами","Морковный пирог"]},
-        {ru:"Однажды в Америке", en:"Once Upon a Time in America", d:["Жареный романо с куриной грудкой","Чизбургер с карамелизированным луком и беконом","Шоколадный брауни с вишней"]},
-        {ru:"Морские приключения", en:"Sea Adventures", d:["Севиче из тунца с цитрусами","Папильот из палтуса с овощами","Десерт балерины Павловой"]},
-        {ru:"Яркий праздничный ужин", en:"Bright Festive Dinner", d:["Салат с маринованной тыквой, яблоком и голубым сыром","Ризотто с камчатским крабом и жареным артишоком","Карамелизированные мандарины со сливочным кремом"]},
-        {ru:"А-ля Франсез", en:"À la Française", d:["Вишисуаз","Утиная грудка с сельдереем и черникой","Профитроли с заварным кремом и шоколадом"]},
-        {ru:"Зелёное меню", en:"Green Menu", d:["Салат с киноа, авокадо и печёным перцем","Чечевичный дал с мятным соусом","Пудинг из тапиоки с манго"]},
-        {ru:"Обед для особого случая", en:"Lunch for a Special Occasion", d:["Мимоза с копчёной форелью","Запечённый цыплёнок с кукурузным кремом и соусом ЖУ","Имбирный бисквит с тыквенным кремом и орехами"]},
-        {ru:"Хиты Бангкока", en:"Bangkok Hits", d:["Спринг ролл с уткой и соевыми ростками","Том ям с креветками и курицей","Жареное молоко с клубничным джемом"]},
-        {ru:"Дольче Вита", en:"La Dolce Vita", d:["Артишоки по-римски","Лазанья болоньезе","Шоколадный фондан с мороженым"]}
-        ]},
-        {head:{ru:"Только командой — готовите вместе", en:"Team cooking only"}, fmt:"team", items:[
-        {ru:"Пикник у моря", en:"Picnic by the Sea", d:["Страчателла с персиками гриль и прошутто","Лосось на гриле с лимонным маслом и картофельным салатом с огурцом и зеленью","Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе"]},
-        {ru:"Обед на веранде", en:"Lunch on the Veranda", d:["Салат с кукурузой на гриле, авокадо, хрустящим беконом и йогуртовым ранч-соусом","Медальоны из вырезки с грибным BBQ кремом и брокколи гриль","Летний коблер с персиком и ягодами"]},
-        {ru:"Ужин в саду", en:"Dinner in the Garden", d:["Арбуз и фета с дымком и соусом малиновый винегрет","Стейк-салат с летним чимичурри, мини-картофель и томаты черри","Абрикосы гриль с миндальным крамблом и лавандовым заварным кремом"]},
-        {ru:"Выходные в Ницце", en:"Weekend in Nice", d:["Салат Нисуаз","Филе миньон со спаржей и голландским соусом","Крем-брюле"]},
-        {ru:"Средиземноморский уикенд", en:"Mediterranean Weekend", d:["Салат из морепродуктов","Филе дикого сибаса с соусом из спаржи","Тарт с лимонным курдом"]},
-        {ru:"Обед в Тбилиси", en:"Lunch in Tbilisi", d:["Грузинский салат с ореховой заправкой","Хачапури по-мегрельски","Цыпленок по-чкмерски"]},
-        {ru:"Московские легенды", en:"Moscow Legends", d:["Салат «Столичный»","Пельмени с тремя видами мяса","Заварные кольца с творожным кремом"]},
-        {ru:"Традиционный праздничный обед", en:"Traditional Festive Lunch", d:["Закуска из утиной грудки с листьями салата и брусничным соусом","Веллингтон с соусом Бордолез","Грушевый Тарт Татен с ванильным мороженым"]}
-        ]},
-        {head:{ru:"Только индивидуально — каждый готовит сам", en:"Individual cooking only"}, fmt:"solo", items:[
-        {ru:"Греческие каникулы", en:"Greek Holidays", d:["Мезе баклажан и паприка с лепёшкой","Осьминог с картофелем и соусом дзадзыки","Катаифи"]},
-        {ru:"Голодные игры", en:"The Hunger Games", d:["Салат из утиной грудки с печёными овощами","Стейк Мачете и зелёный салат","Мильфёй с кремом и ягодами"]},
-        {ru:"Загадочный Восток", en:"The Mysterious East", d:["Печёный баклажан с сыром и томатной сальсой","Кебаб из баранины с овощным табуле","Пахлава с мороженым"]},
-        {ru:"Не просто стейк", en:"Not Just a Steak", d:["Говядина в хрустящей корочке с овощами под азиатским соусом","Лукум из мраморной говядины с белыми грибами","Тёплый салат с говядиной и чёрно-перечным соусом","Кофейный кекс с вишней и шоколадным кремом"]},
-        {ru:"Океан на тарелке", en:"Ocean on a Plate", d:["Креветки в хрустящем тесте с кисло-сладким соусом и зелёными овощами","Салат с кальмаром и соусом романеско","Стейк из лосося с брокколи и пиментой из болгарского перца","Мусс манго-маракуйя со штрейзелем из орео"]},
-        {ru:"Французский поцелуй", en:"French Kiss", d:["Тартар из говядины с хрустящими гренками","Филе миньон со спаржей и голландским соусом","Тарт татен с ванильным мороженым"]},
-        {ru:"Азиатские хиты", en:"Asian Hits", d:["Суп том ям","Лапша удон с курицей","Салат с баклажанами и томатами в сладком соусе","Конфеты матча-имбирь"]},
-        {ru:"Основы кулинарии: рыба", en:"Culinary Basics: Fish", d:["Сочный стейк из лосося","Дорадо, запечённое целиком с травами и лимоном","Котлеты из красной и белой рыбы с добавлением креветок"]},
-        {ru:"И рыба, и мясо!", en:"Both Fish and Meat!", d:["Тартар из томатов с моцареллой","Сибас в кокосовом карри с ароматным жасминовым рисом","Стейк мачете с перечным соусом и картофелем ранч","Шоколадный брауни с ванильным мороженым"]}
-        ]}
-      ]
-    },
-    {
-      id:"exclusive", type:"sets",
-      title:{ru:"Эксклюзивные сеты", en:"Exclusive Sets"},
-      sub:{ru:"2 сета — премиум-меню", en:"2 sets — premium menu"},
-      wide:true,
-      note:{ru:"Фуа-гра, Вагю, трюфель, краб · согласование за неделю", en:"Foie gras, Wagyu, truffle, crab · confirm a week ahead"},
-      items:[
-        {ru:"Сет 1", en:"Set 1", d:["Салат с фуа-гра, козьим сыром и чёрной смородиной","Каннелони с рикоттой и овощами под томатным соусом, с каперсами и таджаскими оливками, с фалангой краба","Десерт «Наполеон» с кремом, кули из шампанского и запечёнными яблоками"]},
-        {ru:"Сет 2", en:"Set 2", d:["Тартар из говядины в косточке с соусом и свежим трюфелем","Тонкий край Вагю с тарт татеном из шалота и перье из мадеры","Меренговый рулет с фисташками и малиной"]}
-      ]
+      title:{ru:"Кулинарная часть", en:"Culinary Programme"},
+      sub:{ru:"Командный или индивидуальный мастер-класс \u00b7 три уровня в каждом", en:"Team or individual masterclass \u00b7 three levels each"},
+      note:{ru:"3 блюда на гостя \u00b7 фуршет включён в стоимость", en:"3 courses per guest \u00b7 buffet included"},
+      intro:{ru:"Сначала выберите формат готовки, затем уровень — от него зависят подборка сетов, включённый фуршет и цена за гостя.",
+             en:"First choose the cooking format, then the level — it defines the set selection, the included buffet and the price per guest."},
+      tabs:[
+        {k:"team", ic:"\ud83d\udc65",
+         n:{ru:"Командный мастер-класс", en:"Team masterclass"},
+         short:{ru:"Готовите вместе", en:"Cook together"},
+         d:{ru:"Гости готовят сет вместе, одной командой — живой, азартный формат, который сплачивает компанию.",
+            en:"Guests cook the set together as one team — a lively, competitive format that brings the group together."},
+         levels:[
+           {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"11 900 \u20bd", buffet:"Small Set", bwt:"180 г",
+            ids:["italian","china","mensclassic","sea","francaise","speciallunch","dolcevita","veranda","nice","tbilisi","traditional"]},
+           {k:"author", n:{ru:"Авторский", en:"Author\u2019s"}, price:"13 900 \u20bd", buffet:"Medium Set", bwt:"240 г",
+            ids:["southamerica","sicily","america","festive","green","bangkok","picnic","garden","mediterranean","moscow"]},
+           {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"15 900 \u20bd", buffet:"Large Set", bwt:"310 г", prem:true,
+            ids:["excl1","excl2"]}
+         ]},
+        {k:"solo", ic:"\ud83d\udc64",
+         n:{ru:"Индивидуальный мастер-класс", en:"Individual masterclass"},
+         short:{ru:"Каждый готовит сам", en:"Everyone cooks their own"},
+         d:{ru:"Каждый гость готовит свой сет сам под руководством шефа — обучающий формат. Отдельные компоненты десертов готовятся общими на группу.",
+            en:"Each guest cooks their own set guided by the chef — an educational format. Some dessert components are prepared jointly for the group."},
+         levels:[
+           {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"12 900 \u20bd", buffet:"Small Set", bwt:"180 г",
+            ids:["italian","sicily","mensclassic","festive","green","bangkok","greek","east","ocean","asian","fishmeat"]},
+           {k:"author", n:{ru:"Авторский", en:"Author\u2019s"}, price:"14 900 \u20bd", buffet:"Medium Set", bwt:"240 г",
+            ids:["southamerica","china","america","sea","francaise","speciallunch","dolcevita","hungergames","steak","frenchkiss","basicsfish"]},
+           {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"16 900 \u20bd", buffet:"Large Set", bwt:"310 г", prem:true,
+            ids:["excl1","excl2"]}
+         ]}
+      ],
+      premNote:{ru:"Фуа-гра, Вагю, трюфель, краб \u00b7 меню согласовывается за неделю до мероприятия",
+                en:"Foie gras, Wagyu, truffle, crab \u00b7 menu confirmed a week before the event"}
     },
     {
       id:"buffet", icon:"🥂", type:"buffet",
@@ -1208,47 +1253,39 @@ function renderSection(s, i){
   let body="";
   if(s.type==="sets"){
     const c = I18N.courses[LANG];
-    const FMTB = {
-      both:{ru:"👥·👤 оба формата", en:"👥·👤 both formats"},
-      team:{ru:"👥 командный", en:"👥 team"},
-      solo:{ru:"👤 индивидуальный", en:"👤 individual"}
-    };
-    const setCard = (it, fmt) => { const cc=it.d.length===3?c:[]; const b=fmt&&FMTB[fmt]; return `
+    const setCard = it => { const cc = it.d.length===3 ? c : []; return `
       <div class="set">
-        ${b?`<span class="set-fmt set-fmt--${fmt}">${b[LANG]}</span>`:""}
-        <h3>${it[LANG]}</h3>${it.price?`<div class="set-price">${it.price[LANG]}</div>`:""}
+        <h3>${it[LANG]}</h3>
         <ul>${it.d.map((dish,i)=>`<li><span class="course">${cc[i]||""}</span>${T(dish)}</li>`).join("")}</ul>
       </div>`; };
-    const grid = (list, fmt) => `<div class="grid sets${s.wide?" sets-wide":""}">`+ list.map(it=>setCard(it, fmt)).join("") + `</div>`;
-    let legend = "";
-    if(s.groups){
-      const cnt = f => s.groups.reduce((a,g)=>a+((g.fmt===f||g.fmt==="both")?g.items.length:0),0);
-      const total = s.groups.reduce((a,g)=>a+g.items.length,0);
-      legend = `<div class="fmt-legend">
-        <div class="fmt-tile"><span class="fmt-tile-ic">👥</span><div>
-          <b>${LANG==="ru"?"Командный формат":"Team format"}</b>
-          <p>${LANG==="ru"?"Гости готовят блюда сета вместе, одной командой — живой, весёлый процесс.":"Guests cook the set together as one team — a lively, fun process."}</p>
-          <span class="fmt-tile-p">${LANG==="ru"?"от 11 900 ₽/чел":"from 11 900 ₽/person"}</span>
-        </div></div>
-        <div class="fmt-tile"><span class="fmt-tile-ic">👤</span><div>
-          <b>${LANG==="ru"?"Индивидуальный формат":"Individual format"}</b>
-          <p>${LANG==="ru"?"Каждый гость готовит свой сет сам под руководством шефа — обучающий формат.":"Each guest cooks their own set guided by the chef — an educational format."}</p>
-          <span class="fmt-tile-p">${LANG==="ru"?"от 12 900 ₽/чел":"from 12 900 ₽/person"}</span>
-        </div></div>
-      </div>
-      <p class="fmt-legend-note">${LANG==="ru"
-        ?`Один и тот же сет доступен в одном или обоих форматах — смотрите отметку на карточке. Отдельные компоненты десертов в индивидуальном формате готовятся общими на группу. Подробнее о ценах — в разделе <a href="#formats">«Форматы и цены»</a>.`
-        :`Each set is available in one or both formats — see the label on the card. In the individual format some dessert components are prepared jointly for the group. Pricing details — in <a href="#formats">“Formats &amp; Pricing”</a>.`}</p>
-      <div class="set-filter" role="tablist" aria-label="${LANG==="ru"?"Фильтр по формату":"Format filter"}">
-        <button type="button" class="sf-btn active" data-sf="all">${LANG==="ru"?`Все сеты (${total})`:`All sets (${total})`}</button>
-        <button type="button" class="sf-btn" data-sf="team">${LANG==="ru"?`👥 Командный формат (${cnt("team")})`:`👥 Team format (${cnt("team")})`}</button>
-        <button type="button" class="sf-btn" data-sf="solo">${LANG==="ru"?`👤 Индивидуальный формат (${cnt("solo")})`:`👤 Individual format (${cnt("solo")})`}</button>
-      </div>`;
-    }
-    const pre = ((s.intro && !s.groups)?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + (s.canape?`<div class="rows canape-block"><div class="subhead"><b>${s.canape.n[LANG]}</b> <span class="badge">${LANG==="ru"?"Включено":"Included"}</span><span class="wt">· ${T(s.canape.wt)}</span></div><div class="set-list">${s.canape.d.map(x=>`<div>${T(x)}</div>`).join("")}</div></div>`:"");
-    body = legend + pre + (s.groups
-      ? s.groups.map(g=>`<div class="set-groupwrap" data-fmt="${g.fmt||""}"><div class="set-group"><span class="set-group-t">${g.head[LANG]}</span><span class="set-group-n">${g.items.length}</span></div>${grid(g.items, g.fmt)}</div>`).join("")
-      : grid(s.items));
+    const grid = ids => `<div class="grid sets">`+ ids.map(id=>setCard(SETS[id])).join("") + `</div>`;
+    const nSets = n => {
+      if(LANG!=="ru") return `${n} ${n===1?"set":"sets"}`;
+      const t = n%10, h = n%100;
+      const w = (t===1 && h!==11) ? "сет" : (t>=2 && t<=4 && (h<12 || h>14)) ? "сета" : "сетов";
+      return `${n} ${w} на выбор`;
+    };
+    const first = s.tabs[0].k;
+    const tabBar = `<div class="mc-tabs" role="tablist" aria-label="${LANG==="ru"?"Формат мастер-класса":"Masterclass format"}">`
+      + s.tabs.map(t=>`
+        <button type="button" class="mc-tab${t.k===first?" active":""}" data-mcfmt="${t.k}" role="tab" aria-selected="${t.k===first}">
+          <span class="mc-tab-ic">${t.ic}</span>
+          <span class="mc-tab-tx"><b>${t.n[LANG]}</b><em>${t.short[LANG]}</em></span>
+        </button>`).join("") + `</div>`;
+    const lvlCard = (t,l) => `
+      <button type="button" class="lvl-card${l.k==="std"?" active":""}" data-mcfmt="${t.k}" data-mclvl="${l.k}" role="tab" aria-selected="${l.k==="std"}">
+        <span class="lvl-n">${l.n[LANG]}</span>
+        <span class="lvl-p">${T(l.price)}<small>${LANG==="ru"?"/гость":"/guest"}</small></span>
+        <span class="lvl-inc">✓ ${LANG==="ru"?"Фуршет":"Buffet"} ${l.buffet} · ${T(l.bwt)} — ${LANG==="ru"?"включён":"included"}</span>
+        <span class="lvl-cnt">${nSets(l.ids.length)}</span>
+      </button>`;
+    const panels = s.tabs.map(t=>`
+      <div class="mc-panel" data-mcfmt="${t.k}"${t.k===first?"":" hidden"}>
+        <p class="mc-panel-d">${t.d[LANG]}</p>
+        <div class="lvl-cards" role="tablist" aria-label="${LANG==="ru"?"Уровень":"Level"}">${t.levels.map(l=>lvlCard(t,l)).join("")}</div>
+        ${t.levels.map(l=>`<div class="lvl-panel" data-mcfmt="${t.k}" data-mclvl="${l.k}"${l.k==="std"?"":" hidden"}>${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${grid(l.ids)}</div>`).join("")}
+      </div>`).join("");
+    body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + tabBar + panels;
   }
   else if(s.type==="priced"){
     body = `<div class="rows">`+ s.groups.map(g=>`
@@ -1583,15 +1620,22 @@ function lbGo(dir){
   lbShow();
 }
 
-/* ---------- Set format filter ---------- */
-function applySetFilter(btn){
-  const bar = btn.closest(".set-filter"); if(!bar) return;
-  bar.querySelectorAll(".sf-btn").forEach(b=>b.classList.toggle("active", b===btn));
-  const v = btn.dataset.sf;
-  document.querySelectorAll("#sets .set-groupwrap").forEach(w=>{
-    const f = w.dataset.fmt;
-    w.hidden = !(v==="all" || f==="both" || f===v);
+/* ---------- Culinary part: format tabs + level cards ---------- */
+function applyMcTab(btn){
+  const f = btn.dataset.mcfmt;
+  document.querySelectorAll("#sets .mc-tab").forEach(b=>{
+    const on = b.dataset.mcfmt === f;
+    b.classList.toggle("active", on); b.setAttribute("aria-selected", on);
   });
+  document.querySelectorAll("#sets .mc-panel").forEach(p=>{ p.hidden = p.dataset.mcfmt !== f; });
+}
+function applyLvlTab(btn){
+  const f = btn.dataset.mcfmt, l = btn.dataset.mclvl;
+  document.querySelectorAll(`#sets .lvl-card[data-mcfmt="${f}"]`).forEach(b=>{
+    const on = b.dataset.mclvl === l;
+    b.classList.toggle("active", on); b.setAttribute("aria-selected", on);
+  });
+  document.querySelectorAll(`#sets .lvl-panel[data-mcfmt="${f}"]`).forEach(p=>{ p.hidden = p.dataset.mclvl !== l; });
 }
 
 /* ---------- Nav overflow fade hint ---------- */
@@ -1613,8 +1657,10 @@ let modalsWired = false;
 function wireModals(){
   if(modalsWired) return; modalsWired = true;
   document.addEventListener("click", e=>{
-    const sf = e.target.closest(".sf-btn");
-    if(sf){ applySetFilter(sf); return; }
+    const lvlBtn = e.target.closest(".lvl-card");
+    if(lvlBtn){ applyLvlTab(lvlBtn); return; }
+    const mcBtn = e.target.closest(".mc-tab");
+    if(mcBtn){ applyMcTab(mcBtn); return; }
     const lbEl = document.getElementById("lightbox");
     if(lbEl && !lbEl.hidden){
       const nav = e.target.closest(".lb-nav");
