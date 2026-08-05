@@ -483,7 +483,7 @@ const SETS = {
 const DATA = {
   stats:[
     {n:"30", ru:"тематических сетов", en:"themed sets"},
-    {n:"5",  ru:"форматов мероприятий", en:"event formats"},
+    {n:"4",  ru:"формата мероприятий", en:"event formats"},
     {n:"8", ru:"залов на площадке", en:"halls at the venue"},
     {n:"100+", ru:"позиций в барной карте", en:"drinks on the bar card"},
     {n:"6", ru:"доп. услуг", en:"add-on services"}
@@ -494,10 +494,13 @@ const DATA = {
       title:{ru:"Форматы и цены", en:"Formats & Pricing"},
       sub:{ru:"Выберите формат мероприятия — цены за человека, действуют с апреля 2026", en:"Choose your event format — prices per person, valid from April 2026"},
       note:{ru:"Стандартное меню; замена блюда +500 ₽", en:"Standard menu; dish swap +500 ₽"},
+      intro:{ru:"Все указанные форматы длятся 4 часа с приветствием гостей и дегустацией.",
+             en:"All listed formats run 4 hours, including the guest welcome and the tasting."},
       groups:[
-        {head:{ru:"Командный мастер-класс — 3 уровня", en:"Team masterclass — 3 levels"},
-         note:{ru:"Гости готовят сет вместе, одной командой. Фуршет включён в цену каждого уровня; подборка сетов — в разделе «Кулинарная часть».",
-               en:"Guests cook the set together as one team. The buffet is included at every level; set selection — see “Culinary Programme”."}, items:[
+        {head:{ru:"Командный мастер-класс — 3 уровня (командный или индивидуальный вид готовки)",
+               en:"Team masterclass — 3 levels (team or individual cooking)"},
+         note:{ru:"Гости готовят сет вместе одной командой — или каждый свой сет под руководством шефа. Цена одинаковая. Фуршет включён в цену каждого уровня; подборка сетов — в разделе «Кулинарная часть».",
+               en:"Guests cook the set together as one team — or each their own set guided by the chef. The price is the same. The buffet is included at every level; set selection — see “Culinary Programme”."}, items:[
           {n:{ru:"Стандартный", en:"Standard"},
             d:{ru:"Фуршет «Small Set» (180 г) включён.", en:"«Small Set» buffet (180 g) included."}, p:"11 900 ₽"},
           {n:{ru:"Авторский", en:"Author’s"},
@@ -506,32 +509,21 @@ const DATA = {
             d:{ru:"Премиум-меню (фуа-гра, Вагю, трюфель, краб). Фуршет «Large Set» (310 г) включён. Согласование за неделю.",
                en:"Premium menu (foie gras, Wagyu, truffle, crab). «Large Set» buffet (310 g) included. Confirm one week ahead."}, p:"15 900 ₽"}
         ]},
-        {head:{ru:"Индивидуальный мастер-класс — 3 уровня", en:"Individual masterclass — 3 levels"},
-         note:{ru:"Каждый гость готовит свой сет сам под руководством шефа. Фуршет включён в цену каждого уровня.",
-               en:"Each guest cooks their own set guided by the chef. The buffet is included at every level."}, items:[
-          {n:{ru:"Стандартный", en:"Standard"},
-            d:{ru:"Фуршет «Small Set» (180 г) включён.", en:"«Small Set» buffet (180 g) included."}, p:"12 900 ₽"},
-          {n:{ru:"Авторский", en:"Author’s"},
-            d:{ru:"Фуршет «Medium Set» (240 г) включён.", en:"«Medium Set» buffet (240 g) included."}, p:"14 900 ₽"},
-          {n:{ru:"Эксклюзивный", en:"Exclusive"},
-            d:{ru:"Премиум-меню (фуа-гра, Вагю, трюфель, краб). Фуршет «Large Set» (310 г) включён. Согласование за неделю.",
-               en:"Premium menu (foie gras, Wagyu, truffle, crab). «Large Set» buffet (310 g) included. Confirm one week ahead."}, p:"16 900 ₽"}
-        ]},
-        {head:{ru:"Другие форматы", en:"Other formats"}, items:[
+        {head:{ru:"Open kitchen", en:"Open kitchen"}, items:[
           {n:{ru:"Демо-ужин", en:"Demo-dinner"},
-            d:{ru:"Шеф готовит и рассказывает о блюдах, гости наблюдают. До 3 часов.",
-               en:"The chef cooks and narrates while guests watch. Up to 3 h."}, p:"12 900 ₽"}
+            d:{ru:"Шеф готовит и рассказывает о блюдах, гости наблюдают. 30 мин — встреча гостей, затем 3,5 часа шеф готовит, общается и рассказывает гостям о приготовленных блюдах.",
+               en:"The chef cooks and narrates while guests watch. 30 min guest welcome, then 3.5 h with the chef cooking, talking to guests and presenting every dish."}, p:"12 900 ₽"}
         ]},
-        {head:{ru:"Индивидуальный мастер-класс (приватный)", en:"Individual masterclass (private)"}, items:[
+        {head:{ru:"Приватный мастер-класс (максимум 5 гостей)", en:"Private masterclass (max 5 guests)"}, items:[
           {n:{ru:"Утро / день · будни", en:"Morning / day · weekdays"},
-            d:{ru:"3 часа, 3–4 блюда под руководством шефа; каждый участник готовит сам.",
-               en:"3 h, 3–4 dishes with a chef; each participant cooks individually."}, p:"40 000 ₽ + 10 000 ₽/чел"},
+            d:{ru:"3–4 блюда под руководством шефа; каждый участник готовит сам.",
+               en:"3–4 dishes with a chef; each participant cooks individually."}, p:"40 000 ₽ + 10 000 ₽/чел"},
           {n:{ru:"Вечер будни / выходные", en:"Weekday evening / weekends"},
             d:{ru:"Тот же формат в вечернее и выходное время.", en:"The same format in the evening and on weekends."}, p:"99 000 ₽ + 10 000 ₽/чел"}
         ]}
       ],
-      foot:{ru:"Стандартное мероприятие — от 6 человек. Индивидуальная готовка: до 5 человек — по цене индивидуального мастер-класса; 6–12 человек — по цене мероприятия (12 900 ₽/чел).",
-            en:"Standard event — from 6 guests. Individual cooking: up to 5 guests — individual-masterclass pricing; 6–12 guests — event price (12 900 ₽/person)."}
+      foot:{ru:"Стандартное мероприятие — от 6 человек. Индивидуальная готовка: до 5 человек — по цене приватного мастер-класса; от 6 человек — по цене мероприятия (от 11 900 ₽/чел).",
+            en:"Standard event — from 6 guests. Individual cooking: up to 5 guests — private-masterclass pricing; from 6 guests — event price (from 11 900 ₽/person)."}
     },
     {
       id:"venues", icon:"🏛️", type:"venues",
@@ -585,11 +577,11 @@ const DATA = {
          d:{ru:"Каждый гость готовит свой сет сам под руководством шефа — обучающий формат. Отдельные компоненты десертов готовятся общими на группу.",
             en:"Each guest cooks their own set guided by the chef — an educational format. Some dessert components are prepared jointly for the group."},
          levels:[
-           {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"12 900 \u20bd", buffet:"Small Set", bwt:"180 г",
+           {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"11 900 \u20bd", buffet:"Small Set", bwt:"180 г",
             ids:["italian","sicily","mensclassic","festive","green","bangkok","greek","east","ocean","asian","fishmeat"]},
-           {k:"author", n:{ru:"Авторский", en:"Author\u2019s"}, price:"14 900 \u20bd", buffet:"Medium Set", bwt:"240 г",
+           {k:"author", n:{ru:"Авторский", en:"Author\u2019s"}, price:"13 900 \u20bd", buffet:"Medium Set", bwt:"240 г",
             ids:["southamerica","china","america","sea","francaise","speciallunch","dolcevita","hungergames","steak","frenchkiss","basicsfish"]},
-           {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"16 900 \u20bd", buffet:"Large Set", bwt:"310 г", prem:true,
+           {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"15 900 \u20bd", buffet:"Large Set", bwt:"310 г", prem:true,
             ids:["excl1","excl2"]}
          ]}
       ],
@@ -607,8 +599,20 @@ const DATA = {
         {name:"Medium Set", badge:"NEW", wt:"240 г", price:1700, d:["Брускетта с гуакамоле и тартаром из тунца","Рийет из форели с икрой палтуса","Тарталетка с пате из печени цыплёнка с мастардой из груши","Креветка в панко со сладким чили","Хумус с грибами","Гриссини с брезаолой и песто в шоте","Камамбер на ананасовом конфитюре с грецким орехом"]},
         {name:"Large Set", badge:"NEW", wt:"310 г", price:2150, d:["Брускетта с гуакамоле и тартаром из тунца","Брускетта с пастрами из говядины и соусом тонато","Брускетта с запечённым баклажаном, перцем и фетой","Брускетта на бородинском хлебе с треской","Тарталетка с пате из печени цыплёнка с мастардой из груши","Гриссини с брезаолой и песто в шоте","Мухаммара с креветкой и огурцом","Груша с пармой и горгонзолой","Камамбер на ананасовом конфитюре с грецким орехом"]}
       ],
-      kids:{ title:{ru:"Детский фуршет", en:"Kids Buffet"}, name:"Kid Set", badge:"NEW", price:1200,
-             d:["Фруктовый стаканчик (160 г)","Овощные палочки с айоли (90 г)","Лимонад на выбор: мята-лайм, манго-маракуйя (350 мл)"] },
+      kids:{ title:{ru:"Детский фуршет", en:"Kids Buffet"},
+             note:{ru:"заказ от 3 штук", en:"minimum order — 3 pieces"},
+             items:[
+               {ru:"Овощные палочки с айоли", en:"Veggie sticks with aioli", wt:"90 г", price:375},
+               {ru:"Картофель фри", en:"French fries", wt:"100 г", price:375},
+               {ru:"Клаб-сэндвич с лососем", en:"Club sandwich with salmon", info:"режем на 4 части", price:980},
+               {ru:"Клаб-сэндвич с курицей", en:"Club sandwich with chicken", info:"режем на 4 части", price:750},
+               {ru:"Клаб-сэндвич с ветчиной и сыром", en:"Club sandwich with ham & cheese", info:"режем на 4 части", price:870},
+               {ru:"Наггетсы с фри и кетчупом", en:"Nuggets with fries & ketchup", wt:"155 г", price:430},
+               {ru:"Мини-гамбургер с куриной котлетой", en:"Mini burger with chicken patty", wt:"150 г", price:375},
+               {ru:"Мини-пицца «Маргарита»", en:"Mini pizza Margherita", wt:"180 г", price:430},
+               {ru:"Мини-пицца с ветчиной и сыром", en:"Mini pizza with ham & cheese", wt:"180 г", price:540},
+               {ru:"Мини-пицца «Пепперони»", en:"Mini pizza Pepperoni", wt:"180 г", price:540}
+             ] },
       platters:[
         {ru:"Сырная тарелка с мёдом и орехами", en:"Cheese platter with honey & nuts", info:"козий сыр, пармезан, дор блю, камамбер", wt:"550 г", price:4050},
         {ru:"Мясная тарелка", en:"Meat platter", badge:"NEW", info:"брезаола, ростбиф, сырокопчёная утиная грудка, коппа сыровяленая", wt:"295 г", price:4050},
@@ -652,15 +656,16 @@ const DATA = {
                 en:"<b>How the wine is counted:</b> 1 bottle per round per 15 guests (0.75 L ≈ 15 × 50 ml pours). Up to 15 — 1 bottle/round; from 16 — 2; from 31 — 3. Price steps up at 16, 31, 46 guests. Each extra round opens +1 bottle per 15 guests."},
           price:{ru:"Сомелье 2 000 ₽/гость · 3 раунда", en:"Sommelier 2 000 ₽/guest · 3 rounds"}},
         {ic:"🎰", name:{ru:"Дегустационные казино", en:"Tasting Casinos"},
-          desc:{ru:"Крупье проводит слепую дегустацию со ставками фишками — гости угадывают напитки. Цена = ставка за гостя × число раундов (по умолчанию 3). Пример — для 12 гостей, 3 раунда.",
-                en:"A croupier runs a blind tasting with chip bets — guests guess the drinks. Price = per-guest rate × number of rounds (3 by default). Example — 12 guests, 3 rounds."},
+          desc:{ru:"Сомелье-крупье проводит слепую дегустацию со ставками фишками — гости угадывают напитки. Цена = сомелье 1 500 ₽/гость + ставка за гостя × число раундов (по умолчанию 3). Пример стоимости — для 12 гостей, 3 раунда.",
+                en:"A sommelier-croupier runs a blind tasting with chip bets — guests guess the drinks. Price = sommelier 1 500 ₽/guest + per-guest rate × number of rounds (3 by default). Example cost shown for 12 guests, 3 rounds."},
           tiers:[
-            {l:{ru:"Коктейльное казино", en:"Cocktail Casino"}, p:"1 050 ₽/гость · раунд", n:"3 раунда ≈ 37 800 ₽"},
-            {l:{ru:"Пивное казино", en:"Beer Casino"},          p:"1 050 ₽/гость · раунд", n:"3 раунда ≈ 37 800 ₽"},
-            {l:{ru:"Виски-казино", en:"Whiskey Casino"},        p:"1 200 ₽/гость · раунд", n:"3 раунда ≈ 43 200 ₽"}
+            {l:{ru:"Коктейльное казино", en:"Cocktail Casino"}, p:"1 050 ₽/гость · раунд", n:"3 раунда ≈ 55 800 ₽"},
+            {l:{ru:"Пивное казино", en:"Beer Casino"},          p:"1 050 ₽/гость · раунд", n:"3 раунда ≈ 55 800 ₽"},
+            {l:{ru:"Виски-казино", en:"Whiskey Casino"},        p:"1 200 ₽/гость · раунд", n:"3 раунда ≈ 61 200 ₽"}
           ],
-          note:{ru:"<b>Ставка за гостя за каждый раунд.</b> Каждый раунд — новая серия напитков вслепую. Стоимость = ставка × количество раундов × число гостей. Обычно 3 раунда; раунды можно добавить или убрать.",
-                en:"<b>Per-guest rate for each round.</b> Every round is a new blind flight. Total = rate × rounds × guests. Usually 3 rounds; add or drop rounds as you like."}},
+          note:{ru:"<b>Ставка за гостя за каждый раунд</b> — плюс работа сомелье 1 500 ₽/гость. Каждый раунд — новая серия напитков вслепую. Стоимость = сомелье × число гостей + ставка × количество раундов × число гостей. Обычно 3 раунда; раунды можно добавить или убрать.",
+                en:"<b>Per-guest rate for each round</b> — plus the sommelier at 1 500 ₽/guest. Every round is a new blind flight. Total = sommelier × guests + rate × rounds × guests. Usually 3 rounds; add or drop rounds as you like."},
+          price:{ru:"Сомелье 1 500 ₽/гость · 3 раунда", en:"Sommelier 1 500 ₽/guest · 3 rounds"}},
         {ic:"🍸", name:{ru:"Коктейльный мастер-класс", en:"Cocktail Masterclass"},
           desc:{ru:"Профессиональный бармен знакомит с барным инвентарём и техниками — гости готовят коктейли сами. 15–20 мин на коктейль, ~3 в час. Цена — за коктейль на человека. Пример — для 12 гостей.",
                 en:"A professional bartender introduces bar tools and techniques — guests mix their own cocktails. 15–20 min per cocktail, ~3/hour. Price is per guest per cocktail. Example shown for 12 guests."},
@@ -684,11 +689,10 @@ const DATA = {
             {l:{ru:"Музыкальное бинго", en:"Music Bingo"},   p:"2 200 ₽/гость", n:"≈ 26 400 ₽"},
             {l:{ru:"Квиз", en:"Quiz"},                        p:"2 200 ₽/гость", n:"≈ 26 400 ₽"},
             {l:{ru:"Угадай мелодию", en:"Name That Tune"},    p:"2 200 ₽/гость", n:"≈ 26 400 ₽"},
-            {l:{ru:"Игра 100 к 1", en:"100 to 1"},            p:"2 200 ₽/гость", n:"≈ 26 400 ₽"},
-            {l:{ru:"Казино", en:"Casino"},                    p:"2 200 ₽/гость", n:"≈ 26 400 ₽"}
+            {l:{ru:"Игра 100 к 1", en:"100 to 1"},            p:"2 200 ₽/гость", n:"≈ 26 400 ₽"}
           ],
-          note:{ru:"<b>Цена за гостя за одну игру.</b> Музыкальное бинго — бинго + дискотека + караоке. Казино — слепая дегустация со ставками (не винное).",
-                en:"<b>Price per guest per game.</b> Music Bingo = bingo + disco + karaoke. Casino = blind tasting with betting (non-wine)."}},
+          note:{ru:"<b>Цена за гостя за одну игру.</b> Музыкальное бинго — бинго + дискотека + караоке.",
+                en:"<b>Price per guest per game.</b> Music Bingo = bingo + disco + karaoke."}},
         {ic:"💐", modal:"floral", modalLabel:{ru:"Посмотреть примеры", en:"View examples"}, cardImgs:["uploads/floral/1.jpg","uploads/floral/8.jpg","uploads/floral/15.jpg","uploads/floral/22.jpg"], cardMore:22, name:{ru:"Флористическое оформление", en:"Floral Décor"},
           desc:{ru:"Оформление залов и столов под концепцию мероприятия: композиции, президиум, свечи и декор. Портфолио реализованных примеров доступно.",
                 en:"Décor for halls and tables tailored to your concept: arrangements, head table, candles and styling. Portfolio of past work available."},
@@ -698,11 +702,11 @@ const DATA = {
                 en:"Custom author cakes. Any colour and texture; décor is priced and weighed separately."},
           tags:["Кукис энд крим","Яблочный синнабон","Мак-лимон","Шоколад-кокос","Фисташковый чизкейк","Сникерс","Апельсин-манго-маракуйя"],
           price:{ru:"4 900 ₽/кг · минимум 2 кг (без учёта декора)", en:"4 900 ₽/kg · min 2 kg (décor extra)"}},
-        {ic:"👕", cardImg:"uploads/aprons/branded.svg", name:{ru:"Брендированные фартуки", en:"Branded Aprons"},
+        {ic:"👕", cardImg:"uploads/aprons/branded.jpg", name:{ru:"Брендированные фартуки", en:"Branded Aprons"},
           desc:{ru:"Фартуки с вашим логотипом — гости готовят в них на мастер-классе и забирают с собой. Отличный корпоративный сувенир.",
                 en:"Aprons with your logo — guests cook in them at the masterclass and keep them. A great corporate keepsake."},
           price:{ru:"4 500 ₽ / шт", en:"4 500 ₽ / piece"}},
-        {ic:"🎂", cardImg:"uploads/aprons/birthday.svg", name:{ru:"Индивидуальные фартуки для именинников", en:"Personalised Aprons for the Birthday Guest"},
+        {ic:"🎂", cardImg:"uploads/aprons/birthday.jpg", name:{ru:"Индивидуальные фартуки для именинников", en:"Personalised Aprons for the Birthday Guest"},
           desc:{ru:"Персональный фартук с именем именинника — приятный подарок и памятная деталь праздника.",
                 en:"A personalised apron with the birthday guest's name — a lovely gift and a memorable detail of the celebration."},
           price:{ru:"8 600 ₽ / шт", en:"8 600 ₽ / piece"}}
@@ -1156,6 +1160,11 @@ const TR={
 "50 г":"50 g",
 "55 г":"55 g",
 "45 г":"45 g",
+"90 г":"90 g",
+"100 г":"100 g",
+"150 г":"150 g",
+"155 г":"155 g",
+"режем на 4 части":"cut into 4 pieces",
 "8 500 ₽/бут.":"8 500 ₽/bottle",
 "11 500 ₽/бут.":"11 500 ₽/bottle",
 "14 500 ₽/бут.":"14 500 ₽/bottle",
@@ -1298,13 +1307,14 @@ function renderSection(s, i){
       <div class="subhead">${cp.name}${cp.badge?` <span class="badge">${cp.badge}</span>`:""}<span class="wt">· ${T(cp.wt)}</span><span class="price">${fmt(cp.price)} ₽</span></div>
       <div class="set-list">${cp.d.map(x=>`<div>${T(x)}</div>`).join("")}</div>
     `).join("");
-    const kidsHtml = s.kids ? `<div class="subhead">${s.kids.title[LANG]} · ${s.kids.name}${s.kids.badge?` <span class="badge">${s.kids.badge}</span>`:""}<span class="price">${fmt(s.kids.price)} ₽</span></div><div class="set-list">${s.kids.d.map(x=>`<div>${T(x)}</div>`).join("")}</div>` : "";
-    const platHead = LANG==="ru"?"Тарелки":"Platters";
-    const platHtml = s.platters.map(p=>`
+    const bRow = p=>`
       <div class="row">
         <span class="name">${p[LANG]}${p.badge?` <span class="badge">${p.badge}</span>`:""}${p.info?` <em>— ${T(p.info)}</em>`:""}</span>
-        <span class="wt">${T(p.wt)}</span><span class="price">${fmt(p.price)} ₽</span>
-      </div>`).join("");
+        <span class="wt">${p.wt?T(p.wt):""}</span><span class="price">${fmt(p.price)} ₽</span>
+      </div>`;
+    const kidsHtml = s.kids ? `<div class="subhead">${s.kids.title[LANG]}${s.kids.note?`<span class="wt">· ${s.kids.note[LANG]}</span>`:""}</div>`+s.kids.items.map(bRow).join("") : "";
+    const platHead = LANG==="ru"?"Тарелки":"Platters";
+    const platHtml = s.platters.map(bRow).join("");
     const groupsHtml = s.groups ? s.groups.map(g=>`<div class="subhead">${g[LANG]||g.ru}</div>`+g.rows.map(r=>`<div class="row"><span class="name">${r[LANG]||T(r.ru)}</span><span class="wt">${T(r.wt)}</span><span class="price">${fmt(r.price)} ₽</span></div>`).join("")).join("") : "";
     body = `<div class="rows">${setsHtml}${kidsHtml}<div class="subhead">${platHead}</div>${platHtml}${groupsHtml}</div>`;
   }
@@ -1312,7 +1322,7 @@ function renderSection(s, i){
     body = `<div class="notecard">${s.html[LANG]}</div>`;
   }
   else if(s.type==="formats"){
-    body = `<div class="rows">`+ s.groups.map(g=>`
+    body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="rows">`+ s.groups.map(g=>`
       <div class="subhead">${g.head[LANG]}</div>
       ${g.note?`<div class="grp-note">${g.note[LANG]}</div>`:""}
       ${g.items.map(it=>`<div class="fmt-row"><div class="fx"><b>${it.n[LANG]}</b><span class="fd">${it.d[LANG]}</span></div><span class="fp">${T(it.p)}</span></div>`).join("")}
