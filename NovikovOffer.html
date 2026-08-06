@@ -498,9 +498,7 @@ const DATA = {
              en:"All listed formats run 4 hours, including the guest welcome and the tasting."},
       groups:[
         {head:{ru:"Командный мастер-класс — 3 уровня (командный или индивидуальный вид готовки)",
-               en:"Team masterclass — 3 levels (team or individual cooking)"},
-         note:{ru:"Гости готовят сет вместе одной командой — или каждый свой сет под руководством шефа. Цена одинаковая. Фуршет включён в цену каждого уровня; подборка сетов — в разделе «Кулинарная часть».",
-               en:"Guests cook the set together as one team — or each their own set guided by the chef. The price is the same. The buffet is included at every level; set selection — see “Culinary Programme”."}, items:[
+               en:"Team masterclass — 3 levels (team or individual cooking)"}, items:[
           {n:{ru:"Стандартный", en:"Standard"},
             d:{ru:"Фуршет «Small Set» (180 г) включён.", en:"«Small Set» buffet (180 g) included."}, p:"11 900 ₽"},
           {n:{ru:"Авторский", en:"Author’s"},
@@ -561,8 +559,8 @@ const DATA = {
         {k:"team", ic:"\ud83d\udc65",
          n:{ru:"Командный мастер-класс", en:"Team masterclass"},
          short:{ru:"Готовите вместе", en:"Cook together"},
-         d:{ru:"Гости готовят сет вместе, одной командой — живой, азартный формат, который сплачивает компанию.",
-            en:"Guests cook the set together as one team — a lively, competitive format that brings the group together."},
+         d:{ru:"Гости готовят сет вместе, одной командой — живой, азартный формат, который сплачивает компанию. 1 час готовки.",
+            en:"Guests cook the set together as one team — a lively, competitive format that brings the group together. 1 hour of cooking."},
          levels:[
            {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"11 900 \u20bd", buffet:"Small Set", bwt:"180 г",
             ids:["italian","china","mensclassic","sea","francaise","speciallunch","dolcevita","veranda","nice","tbilisi","traditional"]},
@@ -574,8 +572,8 @@ const DATA = {
         {k:"solo", ic:"\ud83d\udc64",
          n:{ru:"Индивидуальный мастер-класс", en:"Individual masterclass"},
          short:{ru:"Каждый готовит сам", en:"Everyone cooks their own"},
-         d:{ru:"Каждый гость готовит свой сет сам под руководством шефа — обучающий формат. Отдельные компоненты десертов готовятся общими на группу.",
-            en:"Each guest cooks their own set guided by the chef — an educational format. Some dessert components are prepared jointly for the group."},
+         d:{ru:"Каждый гость готовит свой сет сам под руководством шефа — обучающий формат. Отдельные компоненты десертов готовятся общими на группу. Примерно 3 часа готовки.",
+            en:"Each guest cooks their own set guided by the chef — an educational format. Some dessert components are prepared jointly for the group. Around 3 hours of cooking."},
          levels:[
            {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"11 900 \u20bd", buffet:"Small Set", bwt:"180 г",
             ids:["italian","sicily","mensclassic","festive","green","bangkok","greek","east","ocean","asian","fishmeat"]},
@@ -669,7 +667,8 @@ const DATA = {
         {ic:"🍸", name:{ru:"Коктейльный мастер-класс", en:"Cocktail Masterclass"},
           desc:{ru:"Профессиональный бармен знакомит с барным инвентарём и техниками — гости готовят коктейли сами. 15–20 мин на коктейль, ~3 в час. Цена — за коктейль на человека. Пример — для 12 гостей.",
                 en:"A professional bartender introduces bar tools and techniques — guests mix their own cocktails. 15–20 min per cocktail, ~3/hour. Price is per guest per cocktail. Example shown for 12 guests."},
-          tags:["Pornstar Martini","Lemon Pie","Russian Rye","Clover Club","Cosmopolitan","Negroni","Espresso Martini","French 75","Old Fashioned","New York Sour","Lynchburg Lemonade","Mojito","Moscow Mule","Soul Happiness","Hemingway Daiquiri","Caipirinha"],
+          modal:"cocktails", modalLabel:{ru:"Смотреть меню коктейлей", en:"View cocktail menu"},
+          cardImgs:["uploads/cocktails/pornstar-martini.webp","uploads/cocktails/clover-club.webp","uploads/cocktails/negroni.webp","uploads/cocktails/mojito.webp"], cardMore:26,
           tiers:[
             {l:{ru:"1 коктейль", en:"1 cocktail"},  p:"2 200 ₽/гость", n:"≈ 26 400 ₽"},
             {l:{ru:"2 коктейля", en:"2 cocktails"}, p:"4 400 ₽/гость", n:"≈ 52 800 ₽"},
@@ -1364,7 +1363,7 @@ function renderSection(s, i){
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
         ${grouped ? `<div class="svc-foot">${visual}${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : (it.price?`<div class="svc-price">${it.price[LANG]}</div>`:"")}
       </div>`;}).join("")+`</div>`
-    + cakeModal() + floralModal();
+    + cakeModal() + floralModal() + cocktailModal();
   }
   else if(s.type==="bar"){
     body = `<div class="bar-grid">`+ s.cats.map(cat=>`
@@ -1592,6 +1591,152 @@ function openFloralModal(){
   document.body.classList.add("modal-open");
 }
 
+/* ---------- Cocktail masterclass menu modal ----------
+   Меню перенесено один-в-один из калькулятора EventyOn
+   (v2/src/lib/cocktails/cocktailMenu.ts): те же названия, категории, описания
+   и фотографии из public/uploads/cocktails/. Модалка только показывает меню —
+   выбор и подсчёт цены остаются в калькуляторе.                            */
+const COCKTAILS = {
+  cats:[
+    {k:"hits",    n:{ru:"Хиты", en:"Hits"}},
+    {k:"classic", n:{ru:"Вечная классика", en:"Timeless Classics"}},
+    {k:"whisky",  n:{ru:"Виски-сет", en:"Whisky Set"}},
+    {k:"fresh",   n:{ru:"Fresh & Fruits", en:"Fresh & Fruits"}},
+    {k:"carib",   n:{ru:"Carribean", en:"Caribbean"}}
+  ],
+  items:[
+    {c:"hits", img:"pornstar-martini", n:"Pornstar Martini",
+      d:{ru:"Кисло-сладкий, фруктовый и такой освежающий — признан настоящей современной классикой и одним из самых популярных коктейлей в мире.",
+         en:"Sweet-and-sour, fruity and wonderfully refreshing — a modern classic and one of the most popular cocktails in the world."}},
+    {c:"hits", img:"lemon-pie", n:"Lemon Pie",
+      d:{ru:"Идеальный женский коктейль с яичным ликёром Адвокат, медовым сиропом и лимончелло. Сладкий, нежный, лёгкий.",
+         en:"An elegant, delicate cocktail with Advocaat egg liqueur, honey syrup and limoncello. Sweet, gentle and light."}},
+    {c:"hits", img:"russian-rye", n:"Russian Rye",
+      d:{ru:"Удивительное сочетание вкусов, подобранное согласно принципам русской кухни.",
+         en:"A surprising combination of flavours built on the principles of Russian cuisine."}},
+    {c:"hits", img:"from-italy-with-love", n:"From Italy with love",
+      d:{ru:"Яркий и насыщенный коктейль на основе традиционных итальянских напитков.",
+         en:"A bright, full-bodied cocktail built on traditional Italian spirits."}},
+    {c:"hits", img:"limoncello-basilic-sour", n:"Limoncello basil sour",
+      d:{ru:"Яркий цитрусовый вкус ликёра Лимончелло в дуэте с базиликом — ощущение средиземноморской кухни.",
+         en:"The bright citrus of limoncello paired with basil — a taste of the Mediterranean."}},
+    {c:"hits", img:"clover-club", n:"Clover Club",
+      d:{ru:"Красивый нежно-розовый цвет, насыщенный яркий вкус и бархатистая текстура — этот коктейль вы запомните надолго.",
+         en:"A soft pink colour, a rich vivid taste and a velvety texture — a cocktail you will remember for a long time."}},
+
+    {c:"classic", img:"negroni", n:"Negroni",
+      d:{ru:"Универсальный напиток, простой в приготовлении, в меру крепкий, стильный и неизменно вкусный.",
+         en:"A versatile drink — simple to make, moderately strong, stylish and reliably delicious."}},
+    {c:"classic", img:"espresso-martini", n:"Espresso Martini",
+      d:{ru:"Ароматный, насыщенный, по-кофейному «крепкий» и по-алкогольному «мягкий» коктейль.",
+         en:"Aromatic and rich — strong the way coffee is, smooth the way a good spirit is."}},
+    {c:"classic", img:"french-75", n:"French 75",
+      d:{ru:"Тонкий и изящный коктейль с ярким цитрусовым ароматом. Нестареющая классика на джине.",
+         en:"Fine and elegant, with a bright citrus aroma. A timeless gin classic."}},
+    {c:"classic", img:"bramble", n:"Bramble",
+      d:{ru:"Запоминается сбалансированным ярким ягодным вкусом — один из любимых миксов в Великобритании.",
+         en:"Memorable for its balanced, vivid berry flavour — one of Britain's favourite mixes."}},
+    {c:"classic", img:"kuznechik", n:"Grasshopper",
+      d:{ru:"Любите простые десертные коктейли? Сливочно-мятный коктейль на основе ликёров.",
+         en:"Fond of simple dessert cocktails? A creamy mint mix built on liqueurs."}},
+    {c:"classic", img:"bloody-mary", n:"Bloody Mary",
+      d:{ru:"Самый известный в мире коктейль с водкой и томатным соком. Специи, соль, перец, табаско и Вустершир делают вкус незабываемым.",
+         en:"The world's best-known vodka and tomato juice cocktail. Spices, salt, pepper, Tabasco and Worcestershire make the taste unforgettable."}},
+    {c:"classic", img:"cosmopolitan", n:"Cosmopolitan",
+      d:{ru:"Изысканный и элегантный, словно фламинго на тонкой стеклянной ножке. Легендарный кисло-сладкий коктейль.",
+         en:"Refined and elegant, like a flamingo on a slender glass stem. The legendary sweet-and-sour cocktail."}},
+
+    {c:"whisky", img:"marakuya-mandarin-sour", n:"Mandarin & Passion Fruit Sour",
+      d:{ru:"Сочный ароматный коктейль на основе бурбона в стиле Sour — с белком, но поражает лёгкостью.",
+         en:"A juicy, aromatic bourbon sour — made with egg white, yet strikingly light."}},
+    {c:"whisky", img:"perdo-manhatten", n:"Pedro Manhattan",
+      d:{ru:"Твист на основе бурбона: крепкий, янтарно-коньячный и чуть горьковатый микс.",
+         en:"A bourbon twist: strong, amber-cognac in character and pleasantly bitter."}},
+    {c:"whisky", img:"old-fashioned", n:"Old fashioned",
+      d:{ru:"Легендарный коктейль, популярный даже спустя 130 лет после появления.",
+         en:"A legendary cocktail, still popular 130 years after it first appeared."}},
+    {c:"whisky", img:"lynchburg-lemonade", n:"Lynchburg lemonade",
+      d:{ru:"Многогранный вкус — кислые, сладкие, горькие и слегка пряные ноты. Основа — виски Jack Daniel’s.",
+         en:"A many-sided taste — sour, sweet, bitter and lightly spiced notes, on a base of Jack Daniel’s."}},
+    {c:"whisky", img:"new-york-sour", n:"New York Sour",
+      d:{ru:"Крепкий кислый коктейль на бурбоне с добавлением яичного белка и лимонного сока.",
+         en:"A strong sour on bourbon with egg white and lemon juice."}},
+
+    {c:"fresh", img:"breath-of-bali", n:"Breath of Bali",
+      d:{ru:"Напоминает о солнечных пляжах Бали. Ягодный коктейль на основе водки и малинового пюре.",
+         en:"A reminder of Bali’s sunny beaches — a berry cocktail on vodka and raspberry purée."}},
+    {c:"fresh", img:"mojito", n:"Mojito",
+      d:{ru:"Лёгкий коктейль с Острова свободы: ром, сок лайма, сахарный сироп и свежая мята.",
+         en:"A light cocktail from the Island of Freedom: rum, lime juice, sugar syrup and fresh mint."}},
+    {c:"fresh", img:"malina-marakuya", n:"Raspberry & Passion Fruit",
+      d:{ru:"Приятное сочетание сочной маракуйи со сладкой малиной на основе водки.",
+         en:"A pleasing pairing of juicy passion fruit and sweet raspberry on a vodka base."}},
+    {c:"fresh", img:"moscow-mule", n:"Moscow Mule",
+      d:{ru:"Имбирно-огуречный коктейль на основе водки и джинджер-эля. Утоляет жажду эмоций.",
+         en:"A ginger-and-cucumber cocktail on vodka and ginger ale. Quenches a thirst for excitement."}},
+    {c:"fresh", img:"soul-hapipiness", n:"Soul happiness",
+      d:{ru:"Освежающий коктейль на основе арбуза и текилы — характерный вкус позднего лета.",
+         en:"A refreshing watermelon and tequila cocktail — the signature taste of late summer."}},
+    {c:"fresh", img:"nordic-cranberry", n:"Nordic Cranberry",
+      d:{ru:"Вкус северной природы: сбалансированное сочетание джина, клюквы и лёгкой нотки розмарина.",
+         en:"The taste of the northern wild: a balanced mix of gin, cranberry and a light note of rosemary."}},
+
+    {c:"carib", img:"hemenguei-daiquiri", n:"Hemingway daiquiri",
+      d:{ru:"Кубинский Дайкири — любимый напиток Хемингуэя, спасавшегося им от карибского зноя.",
+         en:"The Cuban daiquiri — Hemingway’s own remedy for the Caribbean heat."}},
+    {c:"carib", img:"berries-punch", n:"Berries punch",
+      d:{ru:"Кислинка цитрусовых, сладость клубники и малины, белый ром — настоящий витаминный заряд.",
+         en:"Citrus tang, sweet strawberry and raspberry, white rum — a real vitamin charge."}},
+    {c:"carib", img:"la-pina-de-plata", n:"La pina de plata",
+      d:{ru:"На основе бразильского рома кашаса — сочный тропический ананас прекрасно его дополняет.",
+         en:"Built on Brazilian cachaça — juicy tropical pineapple completes it perfectly."}},
+    {c:"carib", img:"cocojambo", n:"Coco Jambo",
+      d:{ru:"Тропический сауэр на кубинском роме, ликёре куантро и яичном белке, с нотками базилика. Один из самых популярных наших коктейлей!",
+         en:"A tropical sour on Cuban rum, Cointreau and egg white, with notes of basil. One of our most popular cocktails!"}},
+    {c:"carib", img:"caipirinha", n:"Caipirinha",
+      d:{ru:"Бразильский кисло-сладкий коктейль из кашасы, лайма и сахарного сиропа — визитная карточка Бразилии.",
+         en:"A Brazilian sweet-and-sour of cachaça, lime and sugar syrup — the country’s calling card."}},
+    {c:"carib", img:"klubnika-mango-kokos", n:"Strawberry, Mango & Coconut",
+      d:{ru:"Прекрасное сочетание сладкой клубники, кокоса и пюре манго на основе рома.",
+         en:"A lovely combination of sweet strawberry, coconut and mango purée on a rum base."}}
+  ]
+};
+function cocktailModal(){
+  const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
+  const cnt = k => COCKTAILS.items.filter(x=>x.c===k).length;
+  const tabs = COCKTAILS.cats.map((c,i)=>`<button type="button" class="hm-tab${i===0?" active":""}" data-ck-cat="${c.k}" role="tab" aria-selected="${i===0}">${c.n[LANG]} (${cnt(c.k)})</button>`).join("");
+  const n = COCKTAILS.items.length;
+  return `<div class="hall-modal cake-modal" id="hm-cocktails" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Меню коктейлей":"Cocktail menu"}">
+    <div class="hm-card">
+      <div class="hm-head">
+        <div class="hm-title"><b>${LANG==="ru"?"Коктейльный мастер-класс":"Cocktail Masterclass"}</b><span class="hm-area">${LANG==="ru"?"2 200 ₽ / гость за коктейль":"2 200 ₽ / guest per cocktail"}</span></div>
+        <span class="hm-cap">${LANG==="ru"?`${n} коктейлей на выбор · гости готовят сами под руководством бармена · обычно 2–3 коктейля за мероприятие`:`${n} cocktails to choose from · guests mix them themselves with a bartender · usually 2–3 per event`}</span>
+      </div>
+      <div class="hm-tabs" role="tablist">${tabs}</div>
+      <div class="hm-gallery cake-gallery cake-gallery--list"></div>
+      <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
+    </div>
+  </div>`;
+}
+function loadCocktailCat(m, k){
+  const g = m.querySelector(".cake-gallery"); if(!g) return;
+  g.innerHTML = `<div class="fill-list">${COCKTAILS.items.filter(x=>x.c===k).map(x=>
+    `<div class="fill-item"><img class="fill-img" loading="lazy" src="uploads/cocktails/${x.img}.webp" alt=""><div class="fill-txt"><b>${x.n}</b><p>${x.d[LANG]}</p></div></div>`
+  ).join("")}</div>`;
+}
+function openCocktailModal(){
+  const m = document.getElementById("hm-cocktails"); if(!m) return;
+  m.hidden = false;
+  requestAnimationFrame(()=> m.classList.add("open"));
+  document.body.classList.add("modal-open");
+  loadCocktailCat(m, COCKTAILS.cats[0].k);
+}
+function switchCocktailCat(tab){
+  const m = tab.closest(".hall-modal"); if(!m) return;
+  m.querySelectorAll(".hm-tabs .hm-tab").forEach(t=>{ const on = t===tab; t.classList.toggle("active", on); t.setAttribute("aria-selected", on); });
+  loadCocktailCat(m, tab.dataset.ckCat);
+}
+
 /* ---------- Lightbox (enlarged cake design) ---------- */
 const LB = {urls:[], idx:0};
 function ensureLightbox(){
@@ -1685,8 +1830,14 @@ function wireModals(){
     const svc = e.target.closest(".svc-clickable");
     if(svc && svc.dataset.modal === "cakes"){ openCakeModal(); return; }
     if(svc && svc.dataset.modal === "floral"){ openFloralModal(); return; }
+    if(svc && svc.dataset.modal === "cocktails"){ openCocktailModal(); return; }
     const tab = e.target.closest(".hm-tab");
-    if(tab){ if(tab.dataset.cakeTab !== undefined) switchCakeTab(tab); else switchHallTab(tab); return; }
+    if(tab){
+      if(tab.dataset.ckCat !== undefined) switchCocktailCat(tab);
+      else if(tab.dataset.cakeTab !== undefined) switchCakeTab(tab);
+      else switchHallTab(tab);
+      return;
+    }
     if(e.target.closest(".hm-close")){ closeHallModal(e.target.closest(".hall-modal")); return; }
     if(e.target.classList.contains("hall-modal")){ closeHallModal(e.target); }
   });
@@ -1703,6 +1854,7 @@ function wireModals(){
       if(el.classList && el.classList.contains("ven-clickable")){ e.preventDefault(); openHallModal(el.dataset.hall); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "cakes"){ e.preventDefault(); openCakeModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "floral"){ e.preventDefault(); openFloralModal(); }
+      else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "cocktails"){ e.preventDefault(); openCocktailModal(); }
     }
   });
 }
