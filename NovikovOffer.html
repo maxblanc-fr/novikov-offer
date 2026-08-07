@@ -137,6 +137,27 @@
   .mc-tab.active .mc-tab-tx em{color:rgba(255,255,255,.85);}
   .mc-panel[hidden]{display:none;}
   .mc-panel-d{max-width:900px; margin:0 0 16px; font-size:14.5px; color:var(--ink-soft); line-height:1.6;}
+  /* Horizontal timing band: every step is as wide as it is long. */
+  .mc-top{margin:0 0 18px;}
+  .mc-top .mc-panel-d{margin:0 0 15px;}
+  .mc-tl{border:1px solid var(--line); background:var(--card); box-shadow:var(--card-shadow); padding:13px 16px 15px;}
+  .mc-tl-h{display:flex; align-items:baseline; gap:9px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--line);}
+  .mc-tl-h b{font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.07em; font-size:11.5px; color:var(--red-deep);}
+  .mc-tl-h span{font-size:11.5px; color:var(--muted);}
+  .mc-tl-track{list-style:none; margin:0; padding:0; display:flex; gap:7px; align-items:stretch;}
+  .mc-tl-track li{flex-basis:0; min-width:0; display:flex; flex-direction:column; gap:7px;}
+  .mc-tl-bar{height:9px; background:var(--bone-2); border:1px solid var(--line);}
+  .mc-tl-track li.hi .mc-tl-bar{background:var(--red); border-color:var(--red-deep);}
+  .mc-tl-d{font-family:var(--head); font-weight:900; font-size:12px; color:var(--ink); line-height:1;}
+  .mc-tl-track li.hi .mc-tl-d{color:var(--red-deep);}
+  .mc-tl-t{font-size:11.5px; color:var(--ink-soft); line-height:1.35;}
+  /* Below ~560px a 30-minute step would be ~45px wide, so fall back to stacked rows. */
+  @media(max-width:560px){
+    .mc-tl-track{flex-direction:column; gap:9px;}
+    .mc-tl-track li{flex-direction:row; align-items:center; gap:10px;}
+    .mc-tl-bar{width:8px; height:auto; align-self:stretch; min-height:26px; flex:none;}
+    .mc-tl-d{flex:none; width:52px; font-size:11.5px;}
+  }
   .lvl-cards{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 22px;}
   .lvl-card{display:flex; flex-direction:column; align-items:flex-start; gap:7px; text-align:left; padding:16px 18px; border:1px solid var(--line); border-top:3px solid var(--line); background:var(--card); box-shadow:var(--card-shadow); font-family:var(--body); cursor:pointer; transition:border-color .15s ease, background .15s ease;}
   .lvl-card:hover{border-color:var(--red); border-top-color:var(--red);}
@@ -360,6 +381,32 @@
   .svc-foot .ven-more{margin-top:0;}
   .svc-foot .svc-price{margin-top:0;}
   .svc-foot .cake-teaser{margin-bottom:0;}
+  /* ---------- art modal (painting + candle making) ---------- */
+  .art-gallery{padding:0;}
+  .art-sec{padding:18px 16px 22px; border-bottom:1px solid var(--line);}
+  .art-sec:last-child{border-bottom:0;}
+  .art-sec-h{display:flex; align-items:baseline; gap:10px; margin-bottom:10px;}
+  .art-sec-h b{font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:15px; color:var(--red-deep); line-height:1.2;}
+  .art-count{flex:none; font-family:var(--head); font-weight:700; font-size:11px; letter-spacing:.06em; color:var(--muted); background:var(--bone-2); border:1px solid var(--line); padding:2px 8px;}
+  .art-txt{margin:0 0 12px; font-size:13.5px; color:var(--ink-soft); line-height:1.6;}
+  .art-intro{padding:16px; border-bottom:1px solid var(--line); background:var(--bone-2);}
+  .art-intro .art-txt{margin:0; font-size:14px;}
+  .art-intro .art-price{margin-top:13px;}
+  .art-intro .art-slot{margin:0;}
+  .art-intro .art-slot--price{margin-top:12px;}
+  /* Reserved space for copy and prices the client still has to write. */
+  .art-slot{margin:0 0 12px; padding:10px 12px; border:1px dashed var(--line); background:var(--bone-2); color:var(--muted); font-size:12px; letter-spacing:.02em;}
+  .art-slot--price{margin:12px 0 0; display:inline-block;}
+  .art-price{margin-top:12px; display:inline-block; background:var(--red); color:#fff; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:13px; padding:9px 18px;}
+  .art-chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .art-chip{display:inline-flex; align-items:center; gap:6px; padding:6px 11px; border:1px solid var(--line); background:var(--bone); cursor:pointer; font-family:var(--head); font-weight:700; text-transform:uppercase; letter-spacing:.03em; font-size:11px; color:var(--muted); transition:color .15s ease, background .15s ease, border-color .15s ease;}
+  .art-chip span{font-weight:900; font-size:10px; opacity:.7;}
+  .art-chip:hover{color:var(--ink); border-color:var(--red);}
+  .art-chip.active{background:var(--red); border-color:var(--red); color:#fff;}
+  /* Canvases are portrait, so a square crop would cut every composition. */
+  .art-sec .design-grid{grid-template-columns:repeat(auto-fill,minmax(158px,1fr));}
+  .art-sec .design-item{aspect-ratio:4/5;}
+  @media(max-width:560px){ .art-sec{padding:14px 12px 18px;} .art-sec .design-grid{grid-template-columns:1fr 1fr;} }
   /* ---------- lightbox (enlarged design photo) ---------- */
   .lightbox{position:fixed; inset:0; z-index:1300; display:flex; align-items:center; justify-content:center; padding:26px; background:rgba(20,3,6,.88); backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:opacity .18s ease;}
   .lightbox.open{opacity:1; pointer-events:auto;}
@@ -370,6 +417,8 @@
   .lb-nav.prev{left:14px;} .lb-nav.next{right:14px;}
   .lb-close{position:absolute; top:16px; right:16px;}
   .lb-count{position:absolute; top:20px; left:20px; background:rgba(28,4,8,.7); color:#fff; font-family:var(--head); font-weight:700; font-size:12px; letter-spacing:.04em; padding:5px 11px;}
+  .lb-cap{position:absolute; left:50%; bottom:22px; transform:translateX(-50%); max-width:min(88vw,720px); text-align:center; background:rgba(28,4,8,.72); color:#fff; font-size:13px; letter-spacing:.02em; padding:7px 14px;}
+  .lb-cap:empty{display:none;}
   @media(max-width:560px){ .lb-nav{width:38px; height:38px; font-size:20px;} .lb-nav.prev{left:8px;} .lb-nav.next{right:8px;} }
   .cake-custom{max-width:460px; margin:auto; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; padding:30px 20px;}
   .cake-custom-ic{font-size:46px; line-height:1;}
@@ -497,8 +546,8 @@ const DATA = {
       intro:{ru:"Все указанные форматы длятся 4 часа с приветствием гостей и дегустацией.",
              en:"All listed formats run 4 hours, including the guest welcome and the tasting."},
       groups:[
-        {head:{ru:"Командный мастер-класс — 3 уровня (командный или индивидуальный вид готовки)",
-               en:"Team masterclass — 3 levels (team or individual cooking)"}, items:[
+        {head:{ru:"Кулинарный мастер-класс — 3 уровня (командный или индивидуальный вид готовки)",
+               en:"Culinary masterclass — 3 levels (team or individual cooking)"}, items:[
           {n:{ru:"Стандартный", en:"Standard"},
             d:{ru:"Фуршет «Small Set» (180 г) включён.", en:"«Small Set» buffet (180 g) included."}, p:"11 900 ₽"},
           {n:{ru:"Авторский", en:"Author’s"},
@@ -561,6 +610,12 @@ const DATA = {
          short:{ru:"Готовите вместе", en:"Cook together"},
          d:{ru:"Гости готовят сет вместе, одной командой — живой, азартный формат, который сплачивает компанию. 1 час готовки.",
             en:"Guests cook the set together as one team — a lively, competitive format that brings the group together. 1 hour of cooking."},
+         tl:[
+           {m:30,  ru:"Сбор гостей и дегустация фуршета", en:"Guest welcome and buffet tasting"},
+           {m:60,  ru:"Готовим в командах", en:"Cooking in teams", hi:true},
+           {m:30,  ru:"Дегустируем приготовленное", en:"Tasting what you cooked"},
+           {m:120, ru:"Свободное время: общение, игры и активности", en:"Free time: mingling, games and activities"}
+         ],
          levels:[
            {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"11 900 \u20bd", buffet:"Small Set", bwt:"180 г",
             ids:["italian","china","mensclassic","sea","francaise","speciallunch","dolcevita","veranda","nice","tbilisi","traditional"]},
@@ -574,6 +629,11 @@ const DATA = {
          short:{ru:"Каждый готовит сам", en:"Everyone cooks their own"},
          d:{ru:"Каждый гость готовит свой сет сам под руководством шефа — обучающий формат. Отдельные компоненты десертов готовятся общими на группу. Примерно 3 часа готовки.",
             en:"Each guest cooks their own set guided by the chef — an educational format. Some dessert components are prepared jointly for the group. Around 3 hours of cooking."},
+         tl:[
+           {m:30,  ru:"Сбор гостей и дегустация фуршета", en:"Guest welcome and buffet tasting"},
+           {m:180, ru:"Готовим выбранный сет — каждый сам себе", en:"Cooking the chosen set — everyone their own", hi:true},
+           {m:30,  ru:"Дегустируем приготовленное", en:"Tasting what you cooked"}
+         ],
          levels:[
            {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"11 900 \u20bd", buffet:"Small Set", bwt:"180 г",
             ids:["italian","sicily","mensclassic","festive","green","bangkok","greek","east","ocean","asian","fishmeat"]},
@@ -677,10 +737,12 @@ const DATA = {
           note:{ru:"<b>2 200 ₽ за коктейль на гостя</b> (ингредиенты + работа бармена). Количество коктейлей — на выбор, обычно 2–3 за мероприятие. Мохито, Moscow Mule и Lynchburg Lemonade доступны без алкоголя.",
                 en:"<b>2 200 ₽ per cocktail per guest</b> (ingredients + bartender). Number of cocktails is your choice — usually 2–3 per event. Mojito, Moscow Mule and Lynchburg Lemonade available non-alcoholic."},
           price:{ru:"2 200 ₽ / гость за коктейль", en:"2 200 ₽ / guest per cocktail"}},
-        {ic:"🎭", name:{ru:"Развлекательные программы", en:"Entertainment Programs"},
-          desc:{ru:"Интерактивные программы, игры и конкурсы для гостей мероприятия.", en:"Interactive programs, games and contests for your guests."},
-          tags:["Битва полов","Слово мужчины","Восьмое чудо","Вторая половинка","Отгадай мелодию","Мафия","Миллионер","Импровизатор","Баттл поколений"],
-          price:{ru:"46 000 ₽ / 2 ч", en:"46 000 ₽ / 2 h"}},
+        {ic:"🎨", modal:"art", modalLabel:{ru:"Смотреть работы", en:"View works"},
+          cardImgs:["uploads/art/painting/acrylic/provence/03.jpg","uploads/art/painting/acrylic/sea/01.jpg","uploads/art/painting/wine/02.jpg","uploads/art/candles/04.jpg"], cardMore:119,
+          name:{ru:"Арт", en:"Art"},
+          desc:{ru:"Творческие мастер-классы — рисование и свечеварение. До 8 человек в зале. В каталоге 114 авторских работ: акрил, вино, кофе.",
+                en:"Creative masterclasses — painting and candle making. Up to 8 guests per hall. 114 works in the catalogue: acrylic, wine, coffee."},
+          price:{ru:"Рисование 6 000 ₽ · свечеварение 5 500 ₽ / гость", en:"Painting 6 000 ₽ · candle making 5 500 ₽ / guest"}},
         {ic:"🎲", name:{ru:"Интерактивные игры", en:"Interactive Games"},
           desc:{ru:"Игры для гостей с профессиональным ведущим — 45–60 минут. Цена за гостя; можно комбинировать несколько. Пример — для 12 гостей.",
                 en:"Guest games hosted by a professional MC — 45–60 minutes. Price per guest; combine several. Example shown for 12 guests."},
@@ -1174,15 +1236,6 @@ const TR={
 "2 200 ₽/гость":"2 200 ₽/guest",
 "4 400 ₽/гость":"4 400 ₽/guest",
 "6 600 ₽/гость":"6 600 ₽/guest",
-"Битва полов":"Battle of the Sexes",
-"Отгадай мелодию":"Guess the Melody",
-"Мафия":"Mafia",
-"Миллионер":"Millionaire",
-"Импровизатор":"Improviser",
-"Баттл поколений":"Battle of Generations",
-"Слово мужчины":"Man's Word",
-"Восьмое чудо":"Eighth Wonder",
-"Вторая половинка":"Better Half",
 "Кукис энд крим":"Cookies and Cream",
 "Яблочный синнабон":"Apple Cinnamon Bun",
 "Мак-лимон":"Poppy-Lemon",
@@ -1289,7 +1342,7 @@ function renderSection(s, i){
       </button>`;
     const panels = s.tabs.map(t=>`
       <div class="mc-panel" data-mcfmt="${t.k}"${t.k===first?"":" hidden"}>
-        <p class="mc-panel-d">${t.d[LANG]}</p>
+        <div class="mc-top"><p class="mc-panel-d">${t.d[LANG]}</p>${t.tl?mcTimeline(t.tl):""}</div>
         <div class="lvl-cards" role="tablist" aria-label="${LANG==="ru"?"Уровень":"Level"}">${t.levels.map(l=>lvlCard(t,l)).join("")}</div>
         ${t.levels.map(l=>`<div class="lvl-panel" data-mcfmt="${t.k}" data-mclvl="${l.k}"${l.k==="std"?"":" hidden"}>${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${grid(l.ids)}</div>`).join("")}
       </div>`).join("");
@@ -1363,7 +1416,7 @@ function renderSection(s, i){
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
         ${grouped ? `<div class="svc-foot">${visual}${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : (it.price?`<div class="svc-price">${it.price[LANG]}</div>`:"")}
       </div>`;}).join("")+`</div>`
-    + cakeModal() + floralModal() + cocktailModal();
+    + cakeModal() + floralModal() + cocktailModal() + artModal();
   }
   else if(s.type==="bar"){
     body = `<div class="bar-grid">`+ s.cats.map(cat=>`
@@ -1737,8 +1790,138 @@ function switchCocktailCat(tab){
   loadCocktailCat(m, tab.dataset.ckCat);
 }
 
+/* ---------- Art modal (painting + candle making) ----------
+   Две вкладки: «Рисование» (акрил → вино → кофе) и «Свечеварение».
+   ТЕКСТЫ И ЦЕНЫ пока пустые — впишите строки в ART.copy / ART.price,
+   пустое значение рисует пунктирное место под будущий текст.        */
+const ART = {
+  tabs:[
+    {key:"painting", ru:"Рисование",    en:"Painting"},
+    {key:"candles",  ru:"Свечеварение", en:"Candle Making"}
+  ],
+  cats:[
+    {slug:"animals", ru:"Животные", en:"Animals", t:["Capybara","Cat Kiss","Cockatoo","Colibri","Colorful Mood","Cutie","Funny Racoon","Golden Butterfly","Hug The Panda","Jungle!","King Bird","On Style","Owl","Parrot","Puppy","Queen Of Cats","Raccoon","Rainbow Bird","Singing Cat","Smart Frog","Sunset Child","The Dog","White Rabbit","Wonder Cat","Yes, It's Me!","You're High"]},
+    {slug:"interior", ru:"Интерьерные", en:"Interior", t:["Big City Life","Buddha","California Dreaming","Cappadocia","Donat","Eiffel Tower","Evening Streets","Flamenco","Fresh Citrus","Fresh Lips","Gorgeous","Krik.munch","Louboutin","Manhattan","Matilda","Mountain View","New York","Paris, I Love You!","Pina Colada","Pirates Bay","Relax","Robin","Silver Sails","Starlook","Strangers","Strokes","The Starry Night","The Swan","Triple S","Wine Not"]},
+    {slug:"sea", ru:"Море", en:"Sea", t:["Blue Lagoon","Harmony Inside","Horizon","Lighthouse","Maldives Coast","Maldives","Paradise Island","Sardinia","Sea View","Sea. Crimea","Summer Vibes","Sunset Coast","Waves Of Freedom"]},
+    {slug:"shadow", ru:"Силуэты", en:"Silhouettes", t:["Body Beauty","Color Girl","Elle","Fashion Provocation","Flower Head","Foxy Lady","Il","Little Black Dress","Madame Louise","Mermaid","Monica","True Beauty"]},
+    {slug:"flowers", ru:"Цветы", en:"Flowers", t:["Chanel #5","Crimean Garden","Golden Flower","Ice And Flame","Iris","May Bee","Tulip Sunset","Vincent Flowers","White Poppy"]},
+    {slug:"portrait", ru:"Портреты", en:"Portraits", t:["Cry Baby","Face Line","Frida Kahlo","Margo","Naomi","Odri","Space Girl","Toxic"]},
+    {slug:"provence", ru:"Прованс", en:"Provence", t:["Adventure","Javelin Blue","La Lavanda","Little Verona","Midday Summer","Morning In The Mountains","Provence","Tuscany"]},
+    {slug:"ship", ru:"Корабли", en:"Ships", t:["Disappear","Miami","Mist Ship","Regatta","Scarlet Sails","Venezia"]},
+    {slug:"cartoon", ru:"Мультяшные", en:"Cartoon", t:["Batman","Spider"]}
+  ],
+  wine:3, coffee:1, candles:5,
+  /* Conditions and price are per tab, not per section: acrylic, wine and coffee
+     are techniques inside one and the same painting masterclass. */
+  copy:{
+    painting:{ru:"В одном зале — максимум 8 человек, длительность 2 часа. Каждый участник рисует любую картину из галереи или свой референс — акрилом, вином или кофе.",
+              en:"Up to 8 guests per hall, 2 hours. Each guest paints any work from the gallery — or their own reference — in acrylic, wine or coffee."},
+    candles:{ru:"В одном зале — максимум 8 человек, длительность 80 минут. Гости смешивают воск с ароматом и цветом и заливают свечу.",
+             en:"Up to 8 guests per hall, 80 minutes. Guests blend wax with scent and colour, then pour their own candle."}
+  },
+  price:{
+    painting:{ru:"6 000 ₽ / гость", en:"6 000 ₽ / guest"},
+    candles:{ru:"5 500 ₽ / гость", en:"5 500 ₽ / guest"}
+  }
+};
+const ART_TOTAL = ART.cats.reduce((n,c)=>n+c.t.length,0);
+
+function artUrls(group){
+  const pad = k => String(k+1).padStart(2,"0");
+  if(group==="wine")    return Array.from({length:ART.wine},    (_,k)=>`uploads/art/painting/wine/${pad(k)}.jpg`);
+  if(group==="coffee")  return Array.from({length:ART.coffee},  (_,k)=>`uploads/art/painting/coffee/${pad(k)}.jpg`);
+  if(group==="candles") return Array.from({length:ART.candles}, (_,k)=>`uploads/art/candles/${pad(k)}.jpg`);
+  if(group==="all")     return ART.cats.flatMap(c=>artUrls(c.slug));
+  const c = ART.cats.find(x=>x.slug===group);
+  return c ? c.t.map((_,k)=>`uploads/art/painting/acrylic/${c.slug}/${pad(k)}.jpg`) : [];
+}
+/* Titles come from the source filenames and are shown as lightbox captions. */
+function artTitles(group){
+  if(group==="all") return ART.cats.flatMap(c=>c.t);
+  const c = ART.cats.find(x=>x.slug===group);
+  return c ? c.t : [];
+}
+function artAttr(s){ return String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+
+function artSlot(kind, key){
+  const v = ART[kind][key] && ART[kind][key][LANG];
+  if(v) return kind==="price" ? `<div class="art-price">${v}</div>` : `<p class="art-txt">${v}</p>`;
+  const lbl = kind==="price"
+    ? (LANG==="ru" ? "Цена — добавим" : "Price — to come")
+    : (LANG==="ru" ? "Описание — добавим" : "Description — to come");
+  return `<div class="art-slot art-slot--${kind}">${lbl}</div>`;
+}
+function artGrid(group){
+  const urls = artUrls(group), caps = artTitles(group);
+  return `<div class="design-grid">${urls.map((u,k)=>`<div class="design-item" data-art-group="${group}" data-art="${k}"><img loading="lazy" src="${u}" alt="${artAttr(caps[k])}"></div>`).join("")}</div>`;
+}
+function artChips(active){
+  const chip = (slug,label,n)=>`<button type="button" class="art-chip${slug===active?" active":""}" data-art-cat="${slug}">${label}<span>${n}</span></button>`;
+  return `<div class="art-chips">${chip("all", LANG==="ru"?"Все":"All", ART_TOTAL)}${ART.cats.map(c=>chip(c.slug, LANG==="ru"?c.ru:c.en, c.t.length)).join("")}</div>`;
+}
+function artSection(key, title, count, inner){
+  return `<section class="art-sec" data-art-sec="${key}">
+    <div class="art-sec-h"><b>${title}</b><span class="art-count">${count}</span></div>
+    ${inner}
+  </section>`;
+}
+/* Conditions + price for a whole tab, shown above its galleries. */
+function artIntro(key){
+  return `<div class="art-intro">${artSlot("copy",key)}${artSlot("price",key)}</div>`;
+}
+function artModal(){
+  const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
+  const tabs = ART.tabs.map((t,i)=>`<button type="button" class="hm-tab${i===0?" active":""}" data-art-tab="${i}" role="tab" aria-selected="${i===0}">${LANG==="ru"?t.ru:t.en}</button>`).join("");
+  /* NB: the id must not be "hm-art" — the venue hall whose slug is "art" already
+     renders a modal with that id earlier in the document, and getElementById wins it. */
+  return `<div class="hall-modal cake-modal" id="hm-art-svc" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Арт":"Art"}">
+    <div class="hm-card">
+      <div class="hm-head">
+        <div class="hm-title"><b>${LANG==="ru"?"Арт":"Art"}</b></div>
+        <span class="hm-cap">${LANG==="ru"?"Рисование и свечеварение · работы из каталога мастер-классов":"Painting and candle making · works from the masterclass catalogue"}</span>
+      </div>
+      <div class="hm-tabs" role="tablist">${tabs}</div>
+      <div class="hm-gallery cake-gallery art-gallery"></div>
+      <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
+    </div>
+  </div>`;
+}
+function loadArtTab(m, i){
+  const g = m.querySelector(".art-gallery"); if(!g) return;
+  g.classList.add("cake-gallery--list");
+  if(ART.tabs[i].key === "painting"){
+    g.innerHTML = artIntro("painting")
+    + artSection("acrylic", LANG==="ru"?"Рисование акрилом":"Acrylic Painting", ART_TOTAL,
+                 artChips("all") + `<div class="art-acrylic-grid">${artGrid("all")}</div>`)
+    + artSection("wine",   LANG==="ru"?"Рисование вином":"Wine Painting",   ART.wine,   artGrid("wine"))
+    + artSection("coffee", LANG==="ru"?"Рисование кофе":"Coffee Painting",  ART.coffee, artGrid("coffee"));
+  } else {
+    g.innerHTML = artIntro("candles")
+    + artSection("candles", LANG==="ru"?"Свечеварение":"Candle Making", ART.candles, artGrid("candles"));
+  }
+  g.scrollTop = 0;
+}
+function openArtModal(){
+  const m = document.getElementById("hm-art-svc"); if(!m) return;
+  m.hidden = false;
+  requestAnimationFrame(()=> m.classList.add("open"));
+  document.body.classList.add("modal-open");
+  loadArtTab(m, 0);
+}
+function switchArtTab(tab){
+  const m = tab.closest(".hall-modal"); if(!m) return;
+  m.querySelectorAll(".hm-tabs .hm-tab").forEach(t=>{ const on = t===tab; t.classList.toggle("active", on); t.setAttribute("aria-selected", on); });
+  loadArtTab(m, +tab.dataset.artTab);
+}
+function switchArtCat(btn){
+  const sec = btn.closest(".art-sec"); if(!sec) return;
+  sec.querySelectorAll(".art-chip").forEach(b=>b.classList.toggle("active", b===btn));
+  const holder = sec.querySelector(".art-acrylic-grid");
+  if(holder) holder.innerHTML = artGrid(btn.dataset.artCat);
+}
+
 /* ---------- Lightbox (enlarged cake design) ---------- */
-const LB = {urls:[], idx:0};
+const LB = {urls:[], idx:0, caps:[]};
 function ensureLightbox(){
   if(document.getElementById("lightbox")) return;
   const d = document.createElement("div");
@@ -1748,6 +1931,7 @@ function ensureLightbox(){
     <img alt="">
     <button type="button" class="lb-nav next" data-d="1" aria-label="${LANG==="ru"?"Вперёд":"Next"}">›</button>
     <div class="lb-count"></div>
+    <div class="lb-cap"></div>
     <button type="button" class="hm-close lb-close" aria-label="${LANG==="ru"?"Закрыть":"Close"}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button>`;
   document.body.appendChild(d);
 }
@@ -1755,10 +1939,12 @@ function lbShow(){
   const d = document.getElementById("lightbox"); if(!d) return;
   d.querySelector("img").src = LB.urls[LB.idx];
   d.querySelector(".lb-count").innerHTML = `<b>${LB.idx+1}</b> / ${LB.urls.length}`;
+  const cap = d.querySelector(".lb-cap");
+  if(cap) cap.textContent = LB.caps[LB.idx] || "";
 }
-function openLightbox(urls, i){
+function openLightbox(urls, i, caps){
   ensureLightbox();
-  LB.urls = urls; LB.idx = ((i%urls.length)+urls.length)%urls.length;
+  LB.urls = urls; LB.caps = caps || []; LB.idx = ((i%urls.length)+urls.length)%urls.length;
   lbShow();
   const d = document.getElementById("lightbox");
   d.hidden = false;
@@ -1776,6 +1962,24 @@ function lbGo(dir){
 }
 
 /* ---------- Culinary part: format tabs + level cards ---------- */
+function tlDur(m){
+  if(LANG !== "ru") return m < 60 ? `${m} min` : (m % 60 ? `${Math.floor(m/60)} h ${m%60} min` : `${m/60} h`);
+  if(m < 60) return `${m} мин`;
+  const h = m / 60;
+  return `${h} ${h === 1 ? "час" : (h < 5 ? "часа" : "часов")}`;
+}
+/* Bar widths are proportional to each step, so the shape of the day reads at a glance. */
+function mcTimeline(steps){
+  const total = steps.reduce((n,s)=>n+s.m, 0);
+  return `<div class="mc-tl">
+    <div class="mc-tl-h"><b>${LANG==="ru"?"Тайминг":"Timing"}</b><span>${LANG==="ru"?"всего":"total"} ${tlDur(total)}</span></div>
+    <ol class="mc-tl-track">${steps.map(s=>`<li${s.hi?' class="hi"':''} style="flex-grow:${s.m}">
+        <span class="mc-tl-bar"></span>
+        <span class="mc-tl-d">${tlDur(s.m)}</span>
+        <span class="mc-tl-t">${s[LANG]}</span>
+      </li>`).join("")}</ol>
+  </div>`;
+}
 function applyMcTab(btn){
   const f = btn.dataset.mcfmt;
   document.querySelectorAll("#sets .mc-tab").forEach(b=>{
@@ -1823,18 +2027,27 @@ function wireModals(){
       if(e.target.closest(".lb-close") || e.target === lbEl){ closeLightbox(); return; }
       if(e.target.closest("#lightbox")) return;
     }
+    const chip = e.target.closest(".art-chip");
+    if(chip){ switchArtCat(chip); return; }
     const di = e.target.closest(".design-item");
-    if(di){ if(di.dataset.floral !== undefined) openLightbox(floralUrls(), +di.dataset.floral); else openLightbox(cakeDesignUrls(), +di.dataset.design || 0); return; }
+    if(di){
+      if(di.dataset.artGroup !== undefined) openLightbox(artUrls(di.dataset.artGroup), +di.dataset.art || 0, artTitles(di.dataset.artGroup));
+      else if(di.dataset.floral !== undefined) openLightbox(floralUrls(), +di.dataset.floral);
+      else openLightbox(cakeDesignUrls(), +di.dataset.design || 0);
+      return;
+    }
     const card = e.target.closest(".ven-clickable");
     if(card){ openHallModal(card.dataset.hall); return; }
     const svc = e.target.closest(".svc-clickable");
     if(svc && svc.dataset.modal === "cakes"){ openCakeModal(); return; }
     if(svc && svc.dataset.modal === "floral"){ openFloralModal(); return; }
     if(svc && svc.dataset.modal === "cocktails"){ openCocktailModal(); return; }
+    if(svc && svc.dataset.modal === "art"){ openArtModal(); return; }
     const tab = e.target.closest(".hm-tab");
     if(tab){
       if(tab.dataset.ckCat !== undefined) switchCocktailCat(tab);
       else if(tab.dataset.cakeTab !== undefined) switchCakeTab(tab);
+      else if(tab.dataset.artTab !== undefined) switchArtTab(tab);
       else switchHallTab(tab);
       return;
     }
@@ -1855,6 +2068,7 @@ function wireModals(){
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "cakes"){ e.preventDefault(); openCakeModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "floral"){ e.preventDefault(); openFloralModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "cocktails"){ e.preventDefault(); openCocktailModal(); }
+      else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "art"){ e.preventDefault(); openArtModal(); }
     }
   });
 }
