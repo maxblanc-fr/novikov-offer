@@ -492,7 +492,12 @@ const I18N = {
 /* ---------- SET CATALOGUE ----------
    Единый справочник сетов. Уровни (стандартный / авторский / эксклюзивный)
    ссылаются на сеты по ключу — чтобы перенести сет в другой уровень,
-   достаточно передвинуть ключ в списке `ids` нужного уровня ниже.        */
+   достаточно передвинуть ключ в списке `ids` нужного уровня ниже.
+
+   Разделение стандартный / авторский задаётся внутренним прайсом, а не
+   на глаз: сверяйтесь с рабочей таблицей, прежде чем двигать ключи.
+   Порядок ключей внутри уровня — по возрастанию, в том же порядке, что
+   и в таблице.                                                           */
 const SETS = {
   italian:      {ru:"Итальянские хиты", en:"Italian Hits", d:["Вителло Тонато — ростбиф с соусом из тунца","Паста с грибами и трюфельной эмульсией","Семифредо с шоколадом"]},
   southamerica: {ru:"Южная Америка", en:"South America", d:["Эмпанадас с креветками","Фланк стейк с соусом чимичури и пюре из батата","Трес лечес"]},
@@ -507,9 +512,6 @@ const SETS = {
   speciallunch: {ru:"Обед для особого случая", en:"Lunch for a Special Occasion", d:["Мимоза с копчёной форелью","Запечённый цыплёнок с кукурузным кремом и соусом ЖУ","Имбирный бисквит с тыквенным кремом и орехами"]},
   bangkok:      {ru:"Хиты Бангкока", en:"Bangkok Hits", d:["Спринг ролл с уткой и соевыми ростками","Том ям с креветками и курицей","Жареное молоко с клубничным джемом"]},
   dolcevita:    {ru:"Дольче Вита", en:"La Dolce Vita", d:["Артишоки по-римски","Лазанья болоньезе","Шоколадный фондан с мороженым"]},
-  picnic:       {ru:"Пикник у моря", en:"Picnic by the Sea", d:["Страчателла с персиками гриль и прошутто","Лосось на гриле с лимонным маслом и картофельным салатом с огурцом и зеленью","Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе"]},
-  veranda:      {ru:"Обед на веранде", en:"Lunch on the Veranda", d:["Салат с кукурузой на гриле, авокадо, хрустящим беконом и йогуртовым ранч-соусом","Медальоны из вырезки с грибным BBQ кремом и брокколи гриль","Летний коблер с персиком и ягодами"]},
-  garden:       {ru:"Ужин в саду", en:"Dinner in the Garden", d:["Арбуз и фета с дымком и соусом малиновый винегрет","Стейк-салат с летним чимичурри, мини-картофель и томаты черри","Абрикосы гриль с миндальным крамблом и лавандовым заварным кремом"]},
   nice:         {ru:"Выходные в Ницце", en:"Weekend in Nice", d:["Салат Нисуаз","Филе миньон со спаржей и голландским соусом","Крем-брюле"]},
   mediterranean:{ru:"Средиземноморский уикенд", en:"Mediterranean Weekend", d:["Салат из морепродуктов","Филе дикого сибаса с соусом из спаржи","Тарт с лимонным курдом"]},
   tbilisi:      {ru:"Обед в Тбилиси", en:"Lunch in Tbilisi", d:["Грузинский салат с ореховой заправкой","Хачапури по-мегрельски","Цыпленок по-чкмерски"]},
@@ -531,7 +533,7 @@ const SETS = {
 /* ---------- OFFER DATA ---------- */
 const DATA = {
   stats:[
-    {n:"30", ru:"тематических сетов", en:"themed sets"},
+    {n:"27", ru:"тематических сетов", en:"themed sets"},
     {n:"4",  ru:"формата мероприятий", en:"event formats"},
     {n:"8", ru:"залов на площадке", en:"halls at the venue"},
     {n:"100+", ru:"позиций в барной карте", en:"drinks on the bar card"},
@@ -618,9 +620,9 @@ const DATA = {
          ],
          levels:[
            {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"11 900 \u20bd", buffet:"Small Set", bwt:"180 г",
-            ids:["italian","china","mensclassic","sea","francaise","speciallunch","dolcevita","veranda","nice","tbilisi","traditional"]},
+            ids:["green","china","bangkok","dolcevita","tbilisi","francaise","moscow","southamerica","mensclassic"]},
            {k:"author", n:{ru:"Авторский", en:"Author\u2019s"}, price:"13 900 \u20bd", buffet:"Medium Set", bwt:"240 г",
-            ids:["southamerica","sicily","america","festive","green","bangkok","picnic","garden","mediterranean","moscow"]},
+            ids:["speciallunch","italian","america","sicily","sea","traditional","mediterranean","nice","festive"]},
            {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"15 900 \u20bd", buffet:"Large Set", bwt:"310 г", prem:true,
             ids:["excl1","excl2"]}
          ]},
@@ -636,9 +638,9 @@ const DATA = {
          ],
          levels:[
            {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"11 900 \u20bd", buffet:"Small Set", bwt:"180 г",
-            ids:["italian","sicily","mensclassic","festive","green","bangkok","greek","east","ocean","asian","fishmeat"]},
+            ids:["green","china","bangkok","dolcevita","francaise","southamerica","mensclassic","speciallunch","hungergames","italian","east"]},
            {k:"author", n:{ru:"Авторский", en:"Author\u2019s"}, price:"13 900 \u20bd", buffet:"Medium Set", bwt:"240 г",
-            ids:["southamerica","china","america","sea","francaise","speciallunch","dolcevita","hungergames","steak","frenchkiss","basicsfish"]},
+            ids:["america","greek","sicily","sea","asian","fishmeat","festive","frenchkiss","ocean","steak","basicsfish"]},
            {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"15 900 \u20bd", buffet:"Large Set", bwt:"310 г", prem:true,
             ids:["excl1","excl2"]}
          ]}
@@ -1003,15 +1005,6 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
-"Страчателла с персиками гриль и прошутто":"Stracciatella with grilled peaches and prosciutto",
-"Лосось на гриле с лимонным маслом и картофельным салатом с огурцом и зеленью":"Grilled salmon with lemon butter and potato salad with cucumber and herbs",
-"Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе":"Mango sorbet with strawberries, basil, passion fruit confit and lime meringue",
-"Салат с кукурузой на гриле, авокадо, хрустящим беконом и йогуртовым ранч-соусом":"Salad with grilled corn, avocado, crispy bacon and yogurt ranch dressing",
-"Медальоны из вырезки с грибным BBQ кремом и брокколи гриль":"Tenderloin medallions with mushroom BBQ cream and grilled broccoli",
-"Летний коблер с персиком и ягодами":"Summer peach and berry cobbler",
-"Арбуз и фета с дымком и соусом малиновый винегрет":"Smoked watermelon and feta with raspberry vinaigrette",
-"Стейк-салат с летним чимичурри, мини-картофель и томаты черри":"Steak salad with summer chimichurri, baby potatoes and cherry tomatoes",
-"Абрикосы гриль с миндальным крамблом и лавандовым заварным кремом":"Grilled apricots with almond crumble and lavender custard",
 "Салат Нисуаз":"Niçoise salad",
 "Филе миньон со спаржей и голландским соусом":"Filet mignon with asparagus and hollandaise",
 "Крем-брюле":"Crème brûlée",
