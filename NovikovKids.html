@@ -906,18 +906,25 @@ const DATA = {
 
         {gh:{ru:"Декор и съёмка", en:"Décor & Photography"}},
 
-        {ic:"🎈", name:{ru:"Украшение воздушными шарами", en:"Balloon Décor"},
-          desc:{ru:"Оформление зала шарами под цвета праздника — арки, фонтаны, композиции у фотозоны и на столе именинника.",
-                en:"Balloon styling in the colours of the party — arches, bouquets and arrangements by the photo zone and the birthday table."},
+        {ic:"🎈", modal:"balloons", modalLabel:{ru:"Смотреть каталог и цены", en:"View catalogue & prices"},
+          cardImgs:["uploads/balloons/01.jpg","uploads/balloons/02.jpg","uploads/balloons/12.jpg","uploads/balloons/06.jpg"], cardMore:11,
+          name:{ru:"Украшение воздушными шарами", en:"Balloon Décor"},
+          desc:{ru:"Оформление зала шарами под цвета праздника: фонтаны и композиции у фотозоны и на столе именинника, цифра возраста, фигуры любимых персонажей и именные букеты.",
+                en:"Balloon styling in the colours of the party: bouquets and arrangements by the photo zone and the birthday table, an age numeral, favourite-character figures and personalised bouquets."},
           tiers:[
-            {l:{ru:"Однотонные, 50 шт", en:"Solid colour, 50 pcs"}, p:"23 000 ₽", n:""},
-            {l:{ru:"Однотонные, 100 шт", en:"Solid colour, 100 pcs"}, p:"46 000 ₽", n:""}
-          ]},
+            {l:{ru:"Ассорти, 25 см", en:"Assorted, 25 cm"}, p:"23 000 ₽", n:"50 шт"},
+            {l:{ru:"Ассорти, 25 см", en:"Assorted, 25 cm"}, p:"46 000 ₽", n:"100 шт"},
+            {l:{ru:"Цифра возраста", en:"Age numeral"}, p:"8 000 ₽", n:"1 шт"}
+          ],
+          price:{ru:"от 8 000 ₽ · полный прайс в каталоге", en:"from 8 000 ₽ · full price list in the catalogue"}},
 
         {ic:"📸", name:{ru:"Фотозона", en:"Photo Zone"},
-          desc:{ru:"Оформленная зона для фотографий под тему праздника: фон, декор и реквизит. Собирается под ваш сценарий и цветовую гамму.",
-                en:"A styled backdrop for photos matched to the party theme: background, décor and props, built around your concept and colour scheme."},
-          price:{ru:"", en:""}},
+          desc:{ru:"Оформленная зона для фотографий под тему праздника: фон, декор и реквизит. Собирается под ваш сценарий и цветовую гамму. Хорошо сочетается с оформлением шарами.",
+                en:"A styled backdrop for photos matched to the party theme: background, décor and props, built around your concept and colour scheme. Pairs well with the balloon décor."},
+          tiers:[
+            {l:{ru:"Фон с пайетками и неоновая надпись", en:"Sequin backdrop with neon sign"}, p:"40 000 ₽", n:"аренда"},
+            {l:{ru:"Неоновая надпись под заказ", en:"Custom neon sign"}, p:"от 30 000 ₽", n:"ваш текст"}
+          ]},
 
         {ic:"📷", name:{ru:"Профессиональный фотограф", en:"Professional Photographer"},
           min:{ru:"минимум 2 часа", en:"minimum 2 hours"},
@@ -1227,7 +1234,7 @@ function renderSection(s, i){
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
         ${grouped ? `<div class="svc-foot">${visual}${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : priceHtml}
       </div>`;}).join("")+`</div>`
-    + cakeModal() + floralModal();
+    + cakeModal() + floralModal() + balloonModal();
   }
 
   return `<section class="block" id="${s.id}">${head(s, i)}${body}</section>`;
@@ -1438,6 +1445,81 @@ function openFloralModal(){
   document.body.classList.add("modal-open");
 }
 
+/* ---------- Balloon décor modal (catalogue prices + examples) ---------- */
+const BALLOONS = {
+  photos:15,
+  groups:[
+    {n:{ru:"Шары для оформления зала", en:"Balloons for the room"}, rows:[
+      {ru:"Ассорти, 25 см", en:"Assorted, 25 cm", info:"любые цвета", u:"50 шт", price:23000},
+      {ru:"Ассорти, 25 см", en:"Assorted, 25 cm", info:"любые цвета", u:"100 шт", price:46000},
+      {ru:"Ассорти, 35 см", en:"Assorted, 35 cm", info:"любые цвета", u:"50 шт", price:30000},
+      {ru:"Ассорти, 35 см", en:"Assorted, 35 cm", info:"любые цвета", u:"100 шт", price:60000},
+      {ru:"Хром, 25 см", en:"Chrome, 25 cm", info:"любые цвета", u:"50 шт", price:30000},
+      {ru:"Хром, 25 см", en:"Chrome, 25 cm", info:"любые цвета", u:"100 шт", price:60000},
+      {ru:"Хром, 35 см", en:"Chrome, 35 cm", info:"любые цвета", u:"50 шт", price:37000},
+      {ru:"Хром, 35 см", en:"Chrome, 35 cm", info:"любые цвета", u:"100 шт", price:74000},
+      {ru:"Макарон, 35 см", en:"Macaron, 35 cm", info:"пастельные оттенки", u:"50 шт", price:30000},
+      {ru:"Макарон, 35 см", en:"Macaron, 35 cm", info:"пастельные оттенки", u:"100 шт", price:60000},
+      {ru:"С конфетти, 25 см", en:"With confetti, 25 cm", u:"10 шт", price:11000},
+      {ru:"С конфетти, 35 см", en:"With confetti, 35 cm", u:"10 шт", price:12000},
+      {ru:"Фольгированные фигуры", en:"Foil shapes", info:"звёзды, сердца, смайлы", u:"5 шт", price:11000},
+      {ru:"С печатью", en:"Printed", info:"имя именинника или поздравление", u:"100 шт", price:81000}
+    ]},
+    {n:{ru:"Большие шары и фигуры", en:"Large balloons & figures"}, rows:[
+      {ru:"Цифра возраста", en:"Age numeral", info:"тиффани, золото, серебро, розовое золото, фуксия, чёрный", u:"1 шт", price:8000},
+      {ru:"Большой шар с перьями", en:"Large feathered balloon", u:"1 шт", price:12000},
+      {ru:"Ходячая фигура", en:"Walking figure", u:"1 шт", price:16000},
+      {ru:"Фигуры-персонажи", en:"Character figures", info:"динозавры, фламинго, единорог, дракон, енот, зайчик, оленёнок", u:"1 шт", price:"8 000 – 10 000"}
+    ]},
+    {n:{ru:"Букеты из шаров", en:"Balloon bouquets"}, rows:[
+      {ru:"Букет из шаров", en:"Balloon bouquet", info:"8 вариантов на день рождения плюс тематические", u:"1 шт", price:"20 000 – 34 000"}
+    ]}
+  ],
+  tabs:[
+    {ru:"Цены", en:"Prices", type:"prices"},
+    {ru:"Примеры", en:"Examples", type:"photos"}
+  ]
+};
+function balloonUrls(){ return Array.from({length:BALLOONS.photos}, (_,k)=>`uploads/balloons/${String(k+1).padStart(2,"0")}.jpg`); }
+function balloonModal(){
+  const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
+  const tabs = BALLOONS.tabs.map((t,i)=>`<button type="button" class="hm-tab${i===0?" active":""}" data-bal-tab="${i}" role="tab" aria-selected="${i===0}">${LANG==="ru"?t.ru:t.en}${t.type==="photos"?` (${BALLOONS.photos})`:""}</button>`).join("");
+  return `<div class="hall-modal cake-modal" id="hm-balloons" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Украшение воздушными шарами":"Balloon décor"}">
+    <div class="hm-card">
+      <div class="hm-head">
+        <div class="hm-title"><b>${LANG==="ru"?"Украшение воздушными шарами":"Balloon Décor"}</b><span class="hm-area">${LANG==="ru"?"от 8 000 ₽":"from 8 000 ₽"}</span></div>
+        <span class="hm-cap">${LANG==="ru"?"Цвета подбираются под тему праздника · монтаж до приезда гостей · состав композиций согласовывается с менеджером":"Colours are matched to the party theme · installed before the guests arrive · the arrangement is agreed with your manager"}</span>
+      </div>
+      <div class="hm-tabs" role="tablist">${tabs}</div>
+      <div class="hm-gallery cake-gallery cake-gallery--list"></div>
+      <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
+    </div>
+  </div>`;
+}
+function loadBalloonTab(m, i){
+  const g = m.querySelector(".cake-gallery"); if(!g) return;
+  if(BALLOONS.tabs[i].type === "photos"){
+    g.innerHTML = `<div class="design-grid">${balloonUrls().map((u,k)=>`<div class="design-item" data-balloon="${k}"><img loading="lazy" src="${u}" alt=""></div>`).join("")}</div>`;
+    return;
+  }
+  g.innerHTML = `<div class="rows">` + BALLOONS.groups.map(gr=>
+    `<div class="subhead">${gr.n[LANG]}</div>` + gr.rows.map(r=>
+      `<div class="row"><span class="name">${r[LANG]}${r.info?` <em>— ${T(r.info)}</em>`:""}</span><span class="wt">${T(r.u)}</span><span class="price">${typeof r.price==="number"?fmt(r.price):r.price} ₽</span></div>`
+    ).join("")).join("") + `</div>`;
+}
+function openBalloonModal(){
+  const m = document.getElementById("hm-balloons"); if(!m) return;
+  m.hidden = false;
+  requestAnimationFrame(()=> m.classList.add("open"));
+  document.body.classList.add("modal-open");
+  loadBalloonTab(m, 0);
+}
+function switchBalloonTab(tab){
+  const m = tab.closest(".hall-modal"); if(!m) return;
+  m.querySelectorAll(".hm-tabs .hm-tab").forEach(t=>{ const on = t===tab; t.classList.toggle("active", on); t.setAttribute("aria-selected", on); });
+  loadBalloonTab(m, +tab.dataset.balTab);
+}
+
 /* ---------- Lightbox ---------- */
 const LB = {urls:[], caps:[], idx:0};
 function ensureLightbox(){
@@ -1540,6 +1622,7 @@ function wireModals(){
     const di = e.target.closest(".design-item");
     if(di){
       if(di.dataset.floral !== undefined) openLightbox(floralUrls(), +di.dataset.floral);
+      else if(di.dataset.balloon !== undefined) openLightbox(balloonUrls(), +di.dataset.balloon);
       else openLightbox(cakeDesignUrls(), +di.dataset.design || 0);
       return;
     }
@@ -1548,9 +1631,11 @@ function wireModals(){
     const svc = e.target.closest(".svc-clickable");
     if(svc && svc.dataset.modal === "cakes"){ openCakeModal(); return; }
     if(svc && svc.dataset.modal === "floral"){ openFloralModal(); return; }
+    if(svc && svc.dataset.modal === "balloons"){ openBalloonModal(); return; }
     const tab = e.target.closest(".hm-tab");
     if(tab){
       if(tab.dataset.cakeTab !== undefined) switchCakeTab(tab);
+      else if(tab.dataset.balTab !== undefined) switchBalloonTab(tab);
       else switchHallTab(tab);
       return;
     }
@@ -1570,6 +1655,7 @@ function wireModals(){
       if(el.classList && el.classList.contains("ven-clickable")){ e.preventDefault(); openHallModal(el.dataset.hall); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "cakes"){ e.preventDefault(); openCakeModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "floral"){ e.preventDefault(); openFloralModal(); }
+      else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "balloons"){ e.preventDefault(); openBalloonModal(); }
     }
   });
 }
