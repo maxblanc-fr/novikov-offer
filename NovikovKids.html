@@ -475,6 +475,40 @@
   .mc-tl-track li.opt .mc-tl-t,.mc-tl-track li.opt .mc-tl-d{color:var(--muted)}
   .mc-tl-note{margin:10px 0 0; font-size:12.5px; color:var(--muted); line-height:1.5}
 
+  /* Dish picker — one card per course. Replaces the old two-column grey run of
+     text: the dish is the thing being chosen here, so it gets full-size ink type
+     and room to breathe, and each course reads as its own object. */
+  /* align-items:start — courses have uneven dish counts, and a card sized to its own
+     list reads better than one stretched to the tallest with an empty tail. */
+  .menu-grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(296px,1fr)); align-items:start}
+  @media(max-width:700px){ .menu-grid{grid-template-columns:1fr} }
+  .menu-card{
+    background:#fff; border:1px solid var(--line); border-top:3px solid var(--red);
+    box-shadow:var(--card-shadow); display:flex; flex-direction:column;
+  }
+  .menu-card-h{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 20px 12px; background:var(--card); border-bottom:1px solid var(--line);
+  }
+  .menu-card-h b{
+    font-family:var(--head); font-weight:900; text-transform:uppercase;
+    letter-spacing:.05em; font-size:13.5px; color:var(--maroon); line-height:1;
+  }
+  .menu-card-h span{
+    margin-left:auto; font-family:var(--head); font-weight:900; font-size:11px;
+    color:#fff; background:var(--red); padding:4px 9px; line-height:1;
+  }
+  .menu-card ul{list-style:none; margin:0; padding:4px 0 6px}
+  .menu-card li{
+    position:relative; padding:11px 20px 11px 38px;
+    font-size:15px; line-height:1.45; color:var(--ink);
+  }
+  .menu-card li + li{border-top:1px solid rgba(220,207,188,.5)}
+  .menu-card li::before{
+    content:"›"; position:absolute; left:20px; top:10px;
+    font-family:var(--display); font-size:16px; line-height:1; color:var(--red);
+  }
+
   /* Age panel intro */
   .age-note{
     margin:0 0 18px; padding:12px 16px; background:var(--card); border:1px solid var(--line);
@@ -613,8 +647,8 @@ const DATA = {
       title:{ru:"Кулинарная программа", en:"Culinary Programme"},
       sub:{ru:"Три возрастные группы · своё меню и свой тайминг в каждой", en:"Three age groups · own menu and timing in each"},
       note:{ru:"Дети готовят в командах · 1 час готовки", en:"Children cook in teams · 1 hour of cooking"},
-      intro:{ru:"Сначала выберите возраст — от него зависят меню, набор пакетов и цена. Блюда собираются из списка; для 8–10 и 11–14 лет есть и готовые сеты «Шеф рекомендует».",
-             en:"Start with the age group — it defines the menu, the packages and the price. Dishes are picked from the list; ages 8–10 and 11–14 also have ready-made «Chef recommends» sets."},
+      intro:{ru:"Сначала выберите возраст — от него зависят меню, набор пакетов и цена. Внутри каждого возраста ребёнок сам собирает своё меню из списка блюд.",
+             en:"Start with the age group — it defines the menu, the packages and the price. Within each group the child builds their own menu from the dish list."},
       ages:[
         {k:"a47", ic:"🧸",
          n:{ru:"4–7 лет", en:"Ages 4–7"},
@@ -673,14 +707,6 @@ const DATA = {
               {ru:"Интерактивная игра на выбор — 1 час", en:"An interactive game of your choice — 1 hour"}
             ]}
          ],
-         chef:[
-           {n:{ru:"Вкус приключений: Италия", en:"A Taste of Adventure: Italy"},
-            d:["Домашняя паста с соусом","Шоколадный брауни с мороженым"]},
-           {n:{ru:"Вкус приключений: Америка", en:"A Taste of Adventure: America"},
-            d:["Чизбургер с домашним майонезом и картофелем по-деревенски","Салат Коул слоу"]},
-           {n:{ru:"Вкус приключений: Европа", en:"A Taste of Adventure: Europe"},
-            d:["Фрикадельки в сливочном соусе с картофельным пюре и брусничным джемом","Салат овощной со сметаной или маслом"]}
-         ],
          menu:[
            {t:{ru:"Горячее", en:"Mains"}, items:["Чизбургер с домашним майонезом и картофелем по-деревенски","Пицца","Домашняя паста с соусом","Шримп ролл","Клаб-сэндвич с курицей","Фрикадельки в сливочном соусе с картофельным пюре и брусничным джемом"]},
            {t:{ru:"Салаты", en:"Salads"}, items:["Салат Цезарь с индейкой","Салат овощной со сметаной или маслом","Салат Коул слоу"]},
@@ -719,22 +745,12 @@ const DATA = {
               {ru:"Интерактивная игра на выбор — 1 час", en:"An interactive game of your choice — 1 hour"}
             ]}
          ],
-         chef:[
-           {n:{ru:"Кулинарные открытия: Америка", en:"Culinary Discoveries: America"},
-            d:["Цезарь с креветками","Биг Тейсти с двойной котлетой, запечённым картофелем и сырным соусом","Шоколадный фондан с солёной карамелью и мороженым"]},
-           {n:{ru:"Кулинарные открытия: Азия", en:"Culinary Discoveries: Asia"},
-            d:["Салат с баклажанами и томатами","Гречневая лапша с курицей","Панакота с манго и маракуйей"]},
-           {n:{ru:"Кулинарные открытия: Италия", en:"Culinary Discoveries: Italy"},
-            d:["Тартар из томатов с бурратой","Паста с креветками в сливочном соусе","Чизкейк с клубничным соусом"]}
-         ],
          menu:[
            {t:{ru:"Горячее", en:"Mains"}, items:["Куриные стрипсы с томатным соусом","Домашняя паста с соусом","Том ям","Гречневая лапша с курицей","Биг Тейсти с двойной котлетой, запечённым картофелем и сырным соусом"]},
            {t:{ru:"Салаты и закуски", en:"Salads & Starters"}, items:["Тартар из томатов с бурратой","Цезарь с креветками","Средиземноморский салат с тигровыми креветками в медово-горчичном соусе","Салат с баклажанами и томатами","Салат с говядиной"]},
            {t:{ru:"Десерты", en:"Desserts"}, items:["Яблочный тарт татен","Шоколадный фондан с солёной карамелью и мороженым","Панакота с манго и маракуйей","Тирамису","Мильфей с ягодами","Чизкейк с клубничным соусом"]}
          ]}
       ],
-      chefHead:{ru:"Шеф рекомендует", en:"Chef recommends"},
-      chefNote:{ru:"готовые сеты — ничего выбирать не нужно", en:"ready-made sets — nothing to choose"},
       menuHead:{ru:"Создай своё меню", en:"Build your own menu"},
       menuNote:{ru:"соберите блюда по числу, которое входит в ваш пакет", en:"pick as many dishes as your package includes"}
     },
@@ -1126,24 +1142,18 @@ function renderSection(s, i){
         ${p.tag?`<span class="pkg-tag">${p.tag[LANG]}</span>`:""}
       </div>`;
 
-    const chefCard = c => `
-      <div class="set">
-        <h3>${c.n[LANG]}</h3>
-        <ul>${c.d.map(dish=>`<li>${T(dish)}</li>`).join("")}</ul>
-      </div>`;
-
     const menuBlock = m => `
-      <div class="subhead">${m.t[LANG]}<span class="wt">· ${m.items.length}</span></div>
-      <div class="set-list">${m.items.map(x=>`<div>${T(x)}</div>`).join("")}</div>`;
+      <div class="menu-card">
+        <div class="menu-card-h"><b>${m.t[LANG]}</b><span>${m.items.length}</span></div>
+        <ul>${m.items.map(x=>`<li>${T(x)}</li>`).join("")}</ul>
+      </div>`;
 
     const panels = s.ages.map(a=>`
       <div class="mc-panel" data-mcfmt="${a.k}"${a.k===first?"":" hidden"}>
         <div class="mc-top"><p class="mc-panel-d">${a.d[LANG]}</p>${a.tl?mcTimeline(a.tl, a.tlNote):""}</div>
         <div class="pkg-cards${a.packages.length===1?" one":""}">${a.packages.map(pkgCard).join("")}</div>
-        ${(a.chef && a.chef.length) ? `<div class="sub-h">${s.chefHead[LANG]}<em>${s.chefNote[LANG]}</em></div>
-        <div class="grid sets">${a.chef.map(chefCard).join("")}</div>` : ""}
         <div class="sub-h">${s.menuHead[LANG]}<em>${s.menuNote[LANG]}</em></div>
-        <div class="rows">${a.menu.map(menuBlock).join("")}</div>
+        <div class="menu-grid">${a.menu.map(menuBlock).join("")}</div>
       </div>`).join("");
 
     body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + tabBar + panels;
