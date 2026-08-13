@@ -613,8 +613,8 @@ const DATA = {
       title:{ru:"Кулинарная программа", en:"Culinary Programme"},
       sub:{ru:"Три возрастные группы · своё меню и свой тайминг в каждой", en:"Three age groups · own menu and timing in each"},
       note:{ru:"Дети готовят в командах · 1 час готовки", en:"Children cook in teams · 1 hour of cooking"},
-      intro:{ru:"Сначала выберите возраст — от него зависят меню, набор пакетов и цена. Внутри каждого возраста можно взять сет «Шеф рекомендует» или собрать своё меню из списка блюд.",
-             en:"Start with the age group — it defines the menu, the packages and the price. Within each group you can take a «Chef recommends» set or build your own menu from the dish list."},
+      intro:{ru:"Сначала выберите возраст — от него зависят меню, набор пакетов и цена. Блюда собираются из списка; для 8–10 и 11–14 лет есть и готовые сеты «Шеф рекомендует».",
+             en:"Start with the age group — it defines the menu, the packages and the price. Dishes are picked from the list; ages 8–10 and 11–14 also have ready-made «Chef recommends» sets."},
       ages:[
         {k:"a47", ic:"🧸",
          n:{ru:"4–7 лет", en:"Ages 4–7"},
@@ -636,12 +636,6 @@ const DATA = {
               {ru:"Игра «Треш-бокс» — 30 минут", en:"«Trash-box» game — 30 minutes"},
               {ru:"Лимонад или молочный коктейль на выбор", en:"Lemonade or milkshake of your choice"}
             ]}
-         ],
-         chef:[
-           {n:{ru:"Юный шеф: Вкус Италии", en:"Young Chef: A Taste of Italy"},
-            d:["Пицца «Ассорти» / Домашняя паста","Конфетное мороженое"]},
-           {n:{ru:"Юный шеф: Вкус Америки", en:"Young Chef: A Taste of America"},
-            d:["Бургер с картофелем фри","Печенье кукис с шоколадками m&m"]}
          ],
          menu:[
            {t:{ru:"Горячее", en:"Mains"}, items:["Бургер с картофелем фри","Пицца «Ассорти»","Домашняя паста с соусом"]},
@@ -1153,8 +1147,8 @@ function renderSection(s, i){
       <div class="mc-panel" data-mcfmt="${a.k}"${a.k===first?"":" hidden"}>
         <div class="mc-top"><p class="mc-panel-d">${a.d[LANG]}</p>${a.tl?mcTimeline(a.tl, a.tlNote):""}</div>
         <div class="pkg-cards${a.packages.length===1?" one":""}">${a.packages.map(pkgCard).join("")}</div>
-        <div class="sub-h">${s.chefHead[LANG]}<em>${s.chefNote[LANG]}</em></div>
-        <div class="grid sets">${a.chef.map(chefCard).join("")}</div>
+        ${(a.chef && a.chef.length) ? `<div class="sub-h">${s.chefHead[LANG]}<em>${s.chefNote[LANG]}</em></div>
+        <div class="grid sets">${a.chef.map(chefCard).join("")}</div>` : ""}
         <div class="sub-h">${s.menuHead[LANG]}<em>${s.menuNote[LANG]}</em></div>
         <div class="rows">${a.menu.map(menuBlock).join("")}</div>
       </div>`).join("");
