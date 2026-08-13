@@ -705,56 +705,59 @@ const DATA = {
       note:{ru:"В стоимость не включён НДС 22%", en:"Prices exclude 22% VAT"},
       items:[
         {ic:"🍷", name:{ru:"Винное казино", en:"Wine Casino"},
-          desc:{ru:"Сомелье-крупье проводит слепую дегустацию вин — гости делают ставки фишками. 13 стран · 25 сортов · 54 аромата. Цена = сомелье 2 200 ₽/гость + вино выбранного уровня, 3 раунда. Пример стоимости — для 12 гостей.",
-                en:"A sommelier-croupier hosts a blind wine tasting — guests place chip bets. 13 countries · 25 varieties · 54 aromas. Price = sommelier 2 200 ₽/guest + wine at the chosen level, 3 rounds. Example cost shown for 12 guests."},
+          desc:{ru:"Сомелье-крупье проводит слепую дегустацию вин — гости делают ставки фишками. 13 стран · 25 сортов · 54 аромата. Цена = сомелье 19 900 ₽ за мероприятие + вино выбранного уровня, 3 раунда. Пример стоимости — для 12 гостей.",
+                en:"A sommelier-croupier hosts a blind wine tasting — guests place chip bets. 13 countries · 25 varieties · 54 aromas. Price = sommelier 19 900 ₽ per event + wine at the chosen level, 3 rounds. Example cost shown for 12 guests."},
           tiers:[
-            {l:{ru:"Классика", en:"Classic"},   p:"8 500 ₽/бут.",  n:"≈ 51 900 ₽"},
-            {l:{ru:"Авторский",en:"Signature"}, p:"11 500 ₽/бут.", n:"≈ 60 900 ₽"},
-            {l:{ru:"Эксклюзив",en:"Exclusive"}, p:"14 500 ₽/бут.", n:"≈ 69 900 ₽"}
+            {l:{ru:"Классика", en:"Classic"},   p:"8 500 ₽/бут.",  n:"≈ 45 400 ₽"},
+            {l:{ru:"Авторский",en:"Signature"}, p:"11 500 ₽/бут.", n:"≈ 54 400 ₽"},
+            {l:{ru:"Эксклюзив",en:"Exclusive"}, p:"14 500 ₽/бут.", n:"≈ 63 400 ₽"}
           ],
           note:{ru:"<b>Как считается вино:</b> 1 бутылка на раунд на каждые 15 гостей (0,75 л ≈ 15 порций по 50 мл). <b>До 15 гостей</b> — 1 бут./раунд; <b>с 16</b> — 2; <b>с 31</b> — 3. Цена ступенчато растёт на 16, 31, 46 гостях. Каждый доп. раунд открывает +1 бутылку на каждые 15 гостей.",
                 en:"<b>How the wine is counted:</b> 1 bottle per round per 15 guests (0.75 L ≈ 15 × 50 ml pours). Up to 15 — 1 bottle/round; from 16 — 2; from 31 — 3. Price steps up at 16, 31, 46 guests. Each extra round opens +1 bottle per 15 guests."},
-          price:{ru:"Сомелье 2 200 ₽/гость · 3 раунда", en:"Sommelier 2 200 ₽/guest · 3 rounds"}},
+          price:{ru:"Сомелье 19 900 ₽ · 3 раунда", en:"Sommelier 19 900 ₽ · 3 rounds"}},
         {ic:"🎰", name:{ru:"Дегустационные казино", en:"Tasting Casinos"},
-          desc:{ru:"Сомелье-крупье проводит слепую дегустацию со ставками фишками — гости угадывают напитки. Цена = сомелье 2 200 ₽/гость + ставка за гостя × число раундов (по умолчанию 3). Пример стоимости — для 12 гостей, 3 раунда.",
-                en:"A sommelier-croupier runs a blind tasting with chip bets — guests guess the drinks. Price = sommelier 2 200 ₽/guest + per-guest rate × number of rounds (3 by default). Example cost shown for 12 guests, 3 rounds."},
+          desc:{ru:"Сомелье-крупье проводит слепую дегустацию со ставками фишками — гости угадывают напитки. Цена = сомелье 19 900 ₽ за мероприятие + ставка за гостя × число раундов (по умолчанию 3). Пример стоимости — для 12 гостей, 3 раунда.",
+                en:"A sommelier-croupier runs a blind tasting with chip bets — guests guess the drinks. Price = sommelier 19 900 ₽ per event + per-guest rate × number of rounds (3 by default). Example cost shown for 12 guests, 3 rounds."},
           tiers:[
-            {l:{ru:"Коктейльное казино", en:"Cocktail Casino"}, p:"1 050 ₽/гость · раунд", n:"3 раунда ≈ 64 200 ₽"},
-            {l:{ru:"Пивное казино", en:"Beer Casino"},          p:"1 050 ₽/гость · раунд", n:"3 раунда ≈ 64 200 ₽"},
-            {l:{ru:"Виски-казино", en:"Whiskey Casino"},        p:"1 200 ₽/гость · раунд", n:"3 раунда ≈ 69 600 ₽"}
+            {l:{ru:"Коктейльное казино", en:"Cocktail Casino"}, p:"1 050 ₽/гость · раунд", n:"≈ 57 700 ₽"},
+            {l:{ru:"Пивное казино", en:"Beer Casino"},          p:"1 050 ₽/гость · раунд", n:"≈ 57 700 ₽"},
+            {l:{ru:"Виски-казино", en:"Whiskey Casino"},        p:"1 200 ₽/гость · раунд", n:"≈ 63 100 ₽"}
           ],
-          note:{ru:"<b>Ставка за гостя за каждый раунд</b> — плюс работа сомелье 2 200 ₽/гость. Каждый раунд — новая серия напитков вслепую. Стоимость = сомелье × число гостей + ставка × количество раундов × число гостей. Обычно 3 раунда; раунды можно добавить или убрать.",
-                en:"<b>Per-guest rate for each round</b> — plus the sommelier at 2 200 ₽/guest. Every round is a new blind flight. Total = sommelier × guests + rate × rounds × guests. Usually 3 rounds; add or drop rounds as you like."},
-          price:{ru:"Сомелье 2 200 ₽/гость · 3 раунда", en:"Sommelier 2 200 ₽/guest · 3 rounds"}},
+          note:{ru:"<b>Ставка за гостя за каждый раунд</b> — плюс работа сомелье 19 900 ₽ за мероприятие, вне зависимости от числа гостей. Каждый раунд — новая серия напитков вслепую. Стоимость = 19 900 ₽ + ставка × количество раундов × число гостей. Обычно 3 раунда; раунды можно добавить или убрать.",
+                en:"<b>Per-guest rate for each round</b> — plus the sommelier at a flat 19 900 ₽ per event, whatever the guest count. Every round is a new blind flight. Total = 19 900 ₽ + rate × rounds × guests. Usually 3 rounds; add or drop rounds as you like."},
+          price:{ru:"Сомелье 19 900 ₽ · 3 раунда", en:"Sommelier 19 900 ₽ · 3 rounds"}},
         {ic:"🍸", name:{ru:"Коктейльный мастер-класс", en:"Cocktail Masterclass"},
-          desc:{ru:"Профессиональный бармен знакомит с барным инвентарём и техниками — гости готовят коктейли сами. 15–20 мин на коктейль, ~3 в час. Цена — за коктейль на человека. Пример — для 12 гостей.",
-                en:"A professional bartender introduces bar tools and techniques — guests mix their own cocktails. 15–20 min per cocktail, ~3/hour. Price is per guest per cocktail. Example shown for 12 guests."},
+          desc:{ru:"Профессиональный бармен знакомит с барным инвентарём и техниками — гости готовят коктейли сами. 15–20 мин на коктейль, ~3 в час. Цена — за коктейль на человека плюс миксолог 10 900 ₽ за мероприятие. Пример — для 12 гостей.",
+                en:"A professional bartender introduces bar tools and techniques — guests mix their own cocktails. 15–20 min per cocktail, ~3/hour. Price is per guest per cocktail plus a mixologist at 10 900 ₽ per event. Example shown for 12 guests."},
           modal:"cocktails", modalLabel:{ru:"Смотреть меню коктейлей", en:"View cocktail menu"},
           cardImgs:["uploads/cocktails/pornstar-martini.webp","uploads/cocktails/clover-club.webp","uploads/cocktails/negroni.webp","uploads/cocktails/mojito.webp"], cardMore:26,
           tiers:[
-            {l:{ru:"1 коктейль", en:"1 cocktail"},  p:"2 200 ₽/гость", n:"≈ 26 400 ₽"},
-            {l:{ru:"2 коктейля", en:"2 cocktails"}, p:"4 400 ₽/гость", n:"≈ 52 800 ₽"},
-            {l:{ru:"3 коктейля", en:"3 cocktails"}, p:"6 600 ₽/гость", n:"≈ 79 200 ₽"}
+            {l:{ru:"1 коктейль", en:"1 cocktail"},  p:"2 200 ₽/гость", n:"≈ 37 300 ₽"},
+            {l:{ru:"2 коктейля", en:"2 cocktails"}, p:"4 400 ₽/гость", n:"≈ 63 700 ₽"},
+            {l:{ru:"3 коктейля", en:"3 cocktails"}, p:"6 600 ₽/гость", n:"≈ 90 100 ₽"}
           ],
-          note:{ru:"<b>2 200 ₽ за коктейль на гостя</b> (ингредиенты + работа бармена). Количество коктейлей — на выбор, обычно 2–3 за мероприятие. Мохито, Moscow Mule и Lynchburg Lemonade доступны без алкоголя.",
-                en:"<b>2 200 ₽ per cocktail per guest</b> (ingredients + bartender). Number of cocktails is your choice — usually 2–3 per event. Mojito, Moscow Mule and Lynchburg Lemonade available non-alcoholic."},
-          price:{ru:"2 200 ₽ / гость за коктейль", en:"2 200 ₽ / guest per cocktail"}},
+          note:{ru:"<b>2 200 ₽ за коктейль на гостя</b> (ингредиенты + работа бармена) <b>плюс миксолог 10 900 ₽ за мероприятие</b> — он входит в каждый пример выше. Количество коктейлей — на выбор, обычно 2–3 за мероприятие. Мохито, Moscow Mule и Lynchburg Lemonade доступны без алкоголя.",
+                en:"<b>2 200 ₽ per cocktail per guest</b> (ingredients + bartender) <b>plus a mixologist at 10 900 ₽ per event</b> — included in every example above. Number of cocktails is your choice — usually 2–3 per event. Mojito, Moscow Mule and Lynchburg Lemonade available non-alcoholic."},
+          price:{ru:"2 200 ₽ / гость за коктейль · миксолог 10&nbsp;900&nbsp;₽", en:"2 200 ₽ / guest per cocktail · mixologist 10&nbsp;900&nbsp;₽"}},
         {ic:"🎨", modal:"art", modalLabel:{ru:"Смотреть работы", en:"View works"},
           cardImgs:["uploads/art/painting/acrylic/provence/03.jpg","uploads/art/painting/acrylic/sea/01.jpg","uploads/art/painting/wine/02.jpg","uploads/art/candles/04.jpg"], cardMore:120,
           name:{ru:"Арт", en:"Art"},
           desc:{ru:"Творческие мастер-классы — рисование и свечеварение. До 8 человек в зале. В каталоге 114 авторских работ: акрил, вино, кофе.",
                 en:"Creative masterclasses — painting and candle making. Up to 8 guests per hall. 114 works in the catalogue: acrylic, wine, coffee."},
-          price:{ru:"Рисование 6 000 ₽ · свечеварение 5 500 ₽ / гость", en:"Painting 6 000 ₽ · candle making 5 500 ₽ / guest"}},
+          note:{ru:"<b>Художник — 12 000 ₽ за мероприятие, обязательно</b> — сверх цены за гостя, вне зависимости от числа гостей.",
+                en:"<b>The artist is a mandatory 12 000 ₽ per event</b> — on top of the per-guest price, whatever the guest count."},
+          price:{ru:"Рисование 6 000 ₽ · свечеварение 5 500 ₽ / гость · художник 12&nbsp;000&nbsp;₽", en:"Painting 6 000 ₽ · candle making 5 500 ₽ / guest · artist 12&nbsp;000&nbsp;₽"}},
         {ic:"🎲", name:{ru:"Интерактивные игры", en:"Interactive Games"},
-          desc:{ru:"Игры для гостей с профессиональным ведущим. Два варианта: час игры или два часа — игра плюс интерактив от ведущего. Игру выбираете из списка.",
-                en:"Guest games hosted by a professional MC. Two options: one hour of the game, or two hours — the game plus an interactive set from the host. Pick the game from the list."},
+          desc:{ru:"Игры для гостей с профессиональным ведущим. До 8 гостей — 18 000 ₽ за мероприятие; с 9 гостей — 2 200 ₽ с каждого. Игру выбираете из списка.",
+                en:"Guest games hosted by a professional MC. Up to 8 guests — 18 000 ₽ per event; from 9 guests — 2 200 ₽ each. Pick the game from the list."},
           tags:["Музыкальное бинго","Квиз","Угадай мелодию","Игра 100 к 1"],
           tiers:[
-            {l:{ru:"Игра", en:"The game"},                              p:"25 000 ₽", n:"1 час"},
-            {l:{ru:"Игра и интерактив от ведущего", en:"Game + host interactive"}, p:"40 000 ₽", n:"2 часа"}
+            {l:{ru:"3 гостя",   en:"3 guests"},  p:"18 000 ₽", n:"минимум"},
+            {l:{ru:"7 гостей",  en:"7 guests"},  p:"18 000 ₽", n:"минимум"},
+            {l:{ru:"10 гостей", en:"10 guests"}, p:"22 000 ₽", n:"2 200 ₽/гость"}
           ],
-          note:{ru:"<b>Цена за мероприятие, не за гостя</b> — не зависит от числа гостей.",
-                en:"<b>Priced per event, not per guest</b> — the guest count does not change it."}},
+          note:{ru:"<b>До 8 гостей — фиксированные 18 000 ₽</b> за мероприятие, сколько бы гостей ни было. <b>С 9 гостей</b> — 2 200 ₽ за каждого.",
+                en:"<b>Up to 8 guests — a flat 18 000 ₽</b> per event, however few guests come. <b>From 9 guests</b> — 2 200 ₽ each."}},
         {ic:"💐", modal:"floral", modalLabel:{ru:"Посмотреть примеры", en:"View examples"}, cardImgs:["uploads/floral/1.jpg","uploads/floral/8.jpg","uploads/floral/15.jpg","uploads/floral/22.jpg"], cardMore:22, name:{ru:"Флористическое оформление", en:"Floral Décor"},
           desc:{ru:"Оформление залов и столов под концепцию мероприятия: композиции, президиум, свечи и декор. Портфолио реализованных примеров доступно.",
                 en:"Décor for halls and tables tailored to your concept: arrangements, head table, candles and styling. Portfolio of past work available."},
@@ -1222,14 +1225,11 @@ const TR={
 "11 500 ₽/бут.":"11 500 ₽/bottle",
 "14 500 ₽/бут.":"14 500 ₽/bottle",
 "1 050 ₽/гость · раунд":"1 050 ₽/guest · round",
-"3 раунда ≈ 64 200 ₽":"3 rounds ≈ 64 200 ₽",
 "1 200 ₽/гость · раунд":"1 200 ₽/guest · round",
-"3 раунда ≈ 69 600 ₽":"3 rounds ≈ 69 600 ₽",
 "2 200 ₽/гость":"2 200 ₽/guest",
 "4 400 ₽/гость":"4 400 ₽/guest",
 "6 600 ₽/гость":"6 600 ₽/guest",
-"1 час":"1 hour",
-"2 часа":"2 hours",
+"минимум":"minimum",
 "Музыкальное бинго":"Music Bingo",
 "Квиз":"Quiz",
 "Угадай мелодию":"Name That Tune",
@@ -1760,7 +1760,7 @@ function cocktailModal(){
   return `<div class="hall-modal cake-modal" id="hm-cocktails" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Меню коктейлей":"Cocktail menu"}">
     <div class="hm-card">
       <div class="hm-head">
-        <div class="hm-title"><b>${LANG==="ru"?"Коктейльный мастер-класс":"Cocktail Masterclass"}</b><span class="hm-area">${LANG==="ru"?"2 200 ₽ / гость за коктейль":"2 200 ₽ / guest per cocktail"}</span></div>
+        <div class="hm-title"><b>${LANG==="ru"?"Коктейльный мастер-класс":"Cocktail Masterclass"}</b><span class="hm-area">${LANG==="ru"?"2 200 ₽ / гость за коктейль · миксолог 10 900 ₽":"2 200 ₽ / guest per cocktail · mixologist 10 900 ₽"}</span></div>
         <span class="hm-cap">${LANG==="ru"?`${n} коктейлей на выбор · гости готовят сами под руководством бармена · обычно 2–3 коктейля за мероприятие`:`${n} cocktails to choose from · guests mix them themselves with a bartender · usually 2–3 per event`}</span>
       </div>
       <div class="hm-tabs" role="tablist">${tabs}</div>
