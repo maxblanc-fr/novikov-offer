@@ -79,6 +79,11 @@
     font-family:var(--display); font-weight:400; text-transform:uppercase; color:#fff;
     font-size:clamp(38px,8vw,84px); line-height:.9; letter-spacing:.006em; margin:.2em 0 .16em; max-width:15ch;
   }
+  /* The display face carries no Cyrillic, so the Russian half of the headline renders in
+     a fallback with taller metrics. "Детские праздники" is two words where the adult page
+     has one, so it wraps — and at line-height .9 the fallback's ascenders collide with the
+     line below. Widened to keep it on one line, loosened so a wrap can never overlap. */
+  .hero h1{max-width:25ch; line-height:.97}
   .hero h1 span{color:var(--bone)}
   .hero p.lead{max-width:60ch; margin:14px 0 0; color:rgba(255,255,255,.9); font-size:clamp(15px,2.2vw,19px); font-weight:500}
   .hero .stats{display:flex; flex-wrap:wrap; gap:14px 30px; margin-top:clamp(24px,3.4vw,36px); position:relative; padding-top:24px}
@@ -1566,7 +1571,9 @@ function tlDur(m){
   if(LANG !== "ru") return m < 60 ? `${m} min` : (m % 60 ? `${Math.floor(m/60)} h ${m%60} min` : `${m/60} h`);
   if(m < 60) return `${m} мин`;
   const h = m / 60;
-  return `${h} ${h === 1 ? "час" : (h < 5 ? "часа" : "часов")}`;
+  // The kids timelines include a 90-minute step, so this can be fractional — Russian
+  // writes that with a comma, not the dot JS produces.
+  return `${String(h).replace(".", ",")} ${h === 1 ? "час" : (h < 5 ? "часа" : "часов")}`;
 }
 /* Bar widths are proportional to each step, so the shape of the day reads at a glance. */
 function mcTimeline(steps, note){
