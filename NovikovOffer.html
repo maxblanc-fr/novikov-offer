@@ -194,6 +194,43 @@
   .set-list div{padding:5px 0; break-inside:avoid; position:relative; padding-left:16px}
   .set-list div::before{content:"–"; position:absolute; left:0; color:var(--red)}
 
+  /* ---------- Menu showcase (photo carousel + numbered item list) ----------
+     Left: the dishes of one set, cross-fading on a timer. Right: the same
+     dishes as a numbered list — the row of the photo on screen lights up red,
+     and clicking a row jumps the photo to it. */
+  .mshow{display:grid; grid-template-columns:clamp(210px,30vw,380px) minmax(0,1fr); align-items:stretch; background:var(--card)}
+  .mshow-media{position:relative; aspect-ratio:1/1; background:var(--bone-2); overflow:hidden; cursor:zoom-in; outline:none}
+  .mshow-media:focus-visible{box-shadow:inset 0 0 0 2px var(--red)}
+  .mshow-slide{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity .55s ease}
+  .mshow-slide.on{opacity:1}
+  .mshow-nav{position:absolute; top:50%; transform:translateY(-50%); width:34px; height:34px; padding:0 0 2px; border:0; border-radius:0; background:rgba(255,255,255,.92); color:var(--red-deep); font-size:21px; line-height:1; display:grid; place-items:center; cursor:pointer; z-index:2; opacity:0; transition:opacity .16s ease, background .16s ease}
+  .mshow-nav:hover{background:#fff}
+  .mshow:hover .mshow-nav, .mshow-media:focus-visible .mshow-nav, .mshow-nav:focus-visible{opacity:1}
+  .mshow-nav.prev{left:8px} .mshow-nav.next{right:8px}
+  .mshow-count{position:absolute; top:9px; right:9px; z-index:2; background:rgba(28,4,8,.72); color:#fff; font-family:var(--head); font-weight:700; font-size:11px; letter-spacing:.05em; padding:3px 8px; font-variant-numeric:tabular-nums}
+  .mshow-cap{position:absolute; left:0; right:0; bottom:0; padding:30px 12px 10px; color:#fff; font-family:var(--head); font-weight:700; font-size:12.5px; line-height:1.3; background:linear-gradient(transparent,rgba(0,0,0,.78)); pointer-events:none}
+  .mshow-list{margin:0; padding:10px 20px 12px; list-style:none; display:flex; flex-direction:column; justify-content:center; min-height:100%}
+  .mshow-item{position:relative; display:flex; align-items:baseline; gap:12px; padding:9px 0 9px 14px; border-bottom:1px solid rgba(220,207,188,.6); font-size:14.5px; font-variant-numeric:tabular-nums}
+  .mshow-item:last-child{border-bottom:0}
+  .mshow-item[data-s]{cursor:pointer}
+  .mshow-item::before{content:""; position:absolute; left:0; top:50%; width:3px; height:66%; background:var(--red); transform:translateY(-50%) scaleY(0); transform-origin:center; transition:transform .22s ease}
+  .mshow-item.on::before{transform:translateY(-50%) scaleY(1)}
+  .mshow-num{font-family:var(--head); font-weight:900; font-size:11px; letter-spacing:.06em; color:var(--muted); min-width:20px; transition:color .18s ease}
+  .mshow-name{flex:1; color:var(--ink-soft); line-height:1.4; transition:color .18s ease}
+  .mshow-name em{display:block; font-style:normal; font-size:12.5px; color:var(--muted); margin-top:2px}
+  .mshow-name .badge{background:var(--red); color:#fff; font-family:var(--head); font-size:9.5px; font-weight:700; padding:2px 7px; letter-spacing:.09em; text-transform:uppercase; vertical-align:1px}
+  .mshow-wt{color:var(--muted); font-size:12.5px; white-space:nowrap}
+  .mshow-price{color:var(--red); font-family:var(--head); font-weight:900; white-space:nowrap; min-width:66px; text-align:right}
+  .mshow-item.on .mshow-name{color:var(--red); font-weight:700}
+  .mshow-item.on .mshow-num{color:var(--red)}
+  .mshow-item[data-s]:hover .mshow-name{color:var(--red-deep)}
+  @media(max-width:720px){
+    .mshow{grid-template-columns:1fr}
+    .mshow-media{aspect-ratio:4/3}
+    .mshow-nav{opacity:1}
+    .mshow-list{padding:8px 16px 12px}
+  }
+
   /* ---------- Formats ---------- */
   .fmt-row{display:flex; gap:16px; align-items:flex-start; padding:13px 20px; border-top:1px solid var(--line)}
   .fmt-row .fx{flex:1}
@@ -282,6 +319,8 @@
     header.top,nav.sections{position:static}
     nav.sections{display:none}
     .carousel .cbtn,.carousel .dots{display:none}
+    .mshow-nav,.mshow-count{display:none}
+    .mshow{break-inside:avoid}
     body{background:#fff}
   }
   section.summer-block{background:#F6E9E3; border:1px solid #E8D3C9; padding:clamp(22px,3.2vw,34px) clamp(18px,3vw,32px); margin-top:clamp(46px,6vw,72px);}
@@ -675,13 +714,13 @@ const DATA = {
                {ru:"Мини-пицца «Пепперони»", en:"Mini pizza Pepperoni", wt:"180 г", price:540}
              ] },
       platters:[
-        {ru:"Сырная тарелка с мёдом и орехами", en:"Cheese platter with honey & nuts", info:"козий сыр, пармезан, дор блю, камамбер", wt:"550 г", price:4050},
-        {ru:"Мясная тарелка", en:"Meat platter", badge:"NEW", info:"брезаола, ростбиф, сырокопчёная утиная грудка, коппа сыровяленая", wt:"295 г", price:4050},
-        {ru:"Рыбная тарелка", en:"Fish platter", info:"лосось слабосолёный, масляная х/к, тунец подкопчённый", wt:"300 г", price:4050},
-        {ru:"Овощная тарелка", en:"Vegetable platter", badge:"NEW", info:"томаты, огурцы, перец болгарский, зелень", wt:"530 г", price:2500},
-        {ru:"Фруктовая тарелка", en:"Fruit platter", info:"ананас, апельсин, виноград, груша", wt:"1 кг", price:3600},
-        {ru:"Ягоды", en:"Berries", info:"клубника, малина, голубика", wt:"120 г", price:1200},
-        {ru:"Хлебная корзина", en:"Bread basket", info:"", wt:"120 г", price:220}
+        {ru:"Сырная тарелка с мёдом и орехами", en:"Cheese platter with honey & nuts", info:"козий сыр, пармезан, дор блю, камамбер", wt:"550 г", price:4050, img:"uploads/buffet/plate-cheese.webp"},
+        {ru:"Мясная тарелка", en:"Meat platter", badge:"NEW", info:"брезаола, ростбиф, сырокопчёная утиная грудка, коппа сыровяленая", wt:"295 г", price:4050, img:"uploads/buffet/plate-meat.webp"},
+        {ru:"Рыбная тарелка", en:"Fish platter", info:"лосось слабосолёный, масляная х/к, тунец подкопчённый", wt:"300 г", price:4050, img:"uploads/buffet/plate-fish.webp"},
+        {ru:"Овощная тарелка", en:"Vegetable platter", badge:"NEW", info:"томаты, огурцы, перец болгарский, зелень", wt:"530 г", price:2500, img:"uploads/buffet/plate-veg.webp"},
+        {ru:"Фруктовая тарелка", en:"Fruit platter", info:"ананас, апельсин, виноград, груша", wt:"1 кг", price:3600, img:"uploads/buffet/plate-fruit.webp"},
+        {ru:"Ягоды", en:"Berries", info:"клубника, малина, голубика", wt:"120 г", price:1200, img:"uploads/buffet/plate-berries.webp"},
+        {ru:"Хлебная корзина", en:"Bread basket", info:"", wt:"120 г", price:220, img:"uploads/buffet/plate-bread.webp"}
       ],
       groups:[
         {ru:"Шашлычки · от 3 шт", en:"Skewers · from 3 pcs", rows:[
@@ -946,7 +985,80 @@ function render(){
   applyI18n();
   wireScrollSpy();
   wireCarousels();
+  wireShowcases();
   wireNavFade();
+}
+
+/* menu showcase: photos advance on a timer, the matching position lights up */
+const MSHOW_STEP = 3400;   // ms between photos
+const MSHOW_HOLD = 9000;   // ms of quiet after the guest touches the controls
+let MSHOW_TIMERS = [];
+function wireShowcases(){
+  MSHOW_TIMERS.forEach(clearInterval);
+  MSHOW_TIMERS = [];
+  document.querySelectorAll("[data-mshow]").forEach(wireOneShowcase);
+}
+function wireOneShowcase(w){
+  const media = w.querySelector(".mshow-media");
+  const slides = [...w.querySelectorAll(".mshow-slide")];
+  const items = [...w.querySelectorAll(".mshow-item")];
+  const counter = w.querySelector(".mshow-count b");
+  const cap = w.querySelector(".mshow-cap");
+  const n = slides.length;
+  if(!media || n < 1) return;
+
+  let idx = 0, hover = false, visible = true, until = 0;
+  const paint = ()=>{
+    slides.forEach((im,i)=>im.classList.toggle("on", i===idx));
+    items.forEach(li=>li.classList.toggle("on", li.dataset.s !== undefined && +li.dataset.s === idx));
+    if(counter) counter.textContent = idx+1;
+    if(cap) cap.textContent = slides[idx].getAttribute("alt") || "";
+  };
+  const go = i=>{ idx = ((i%n)+n)%n; paint(); };
+  const nudge = ()=>{ until = Date.now() + MSHOW_HOLD; };
+
+  if(n > 1){
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(!reduce){
+      MSHOW_TIMERS.push(setInterval(()=>{
+        if(hover || !visible || Date.now() < until) return;
+        go(idx+1);
+      }, MSHOW_STEP));
+    }
+    w.addEventListener("mouseenter", ()=>{ hover = true; });
+    w.addEventListener("mouseleave", ()=>{ hover = false; });
+    if(window.IntersectionObserver){
+      const io = new IntersectionObserver(es=>{ visible = es[0].isIntersecting; }, {threshold:.15});
+      io.observe(w);
+    }
+    w.querySelectorAll(".mshow-nav").forEach(b=>b.addEventListener("click", e=>{
+      e.stopPropagation(); nudge(); go(idx + (+b.dataset.d));
+    }));
+    let x0 = null;
+    media.addEventListener("touchstart", e=>{ x0 = e.touches[0].clientX; }, {passive:true});
+    media.addEventListener("touchend", e=>{
+      if(x0===null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if(Math.abs(dx) > 40){ nudge(); go(idx + (dx<0?1:-1)); }
+      x0 = null;
+    });
+  }
+
+  items.forEach(li=>{
+    if(li.dataset.s === undefined) return;
+    li.addEventListener("click", ()=>{ nudge(); go(+li.dataset.s); });
+  });
+
+  const urls = slides.map(im=>im.getAttribute("src"));
+  const caps = slides.map(im=>im.getAttribute("alt") || "");
+  const zoom = ()=> openLightbox(urls, idx, caps);
+  media.addEventListener("click", e=>{ if(!e.target.closest(".mshow-nav")) zoom(); });
+  media.addEventListener("keydown", e=>{
+    if(e.key === "ArrowLeft"){ e.preventDefault(); nudge(); go(idx-1); }
+    else if(e.key === "ArrowRight"){ e.preventDefault(); nudge(); go(idx+1); }
+    else if(e.key === "Enter" || e.key === " "){ e.preventDefault(); zoom(); }
+  });
+  paint();
 }
 
 /* carousel interaction (arrows, dots, keyboard, swipe) */
@@ -1313,6 +1425,57 @@ const TR={
 };
 function T(s){ return (LANG==="en" && TR[s]!==undefined) ? TR[s] : s; }
 
+/* Photo per canapé position, keyed by the RU name used in DATA.canape[].d.
+   The same position appears in several sets — one map keeps them in sync. */
+const BUFFET_IMG = {
+  "Брускетта с пастрами из говядины и соусом тонато":"uploads/buffet/pastrami.webp",
+  "Брускетта с лососем и авокадо":"uploads/buffet/salmon-avocado.webp",
+  "Креветка в панко со сладким чили":"uploads/buffet/shrimp-panko.webp",
+  "Камамбер на ананасовом конфитюре с грецким орехом":"uploads/buffet/camembert.webp",
+  "Тарталетка с пате из печени цыплёнка с мастардой из груши":"uploads/buffet/tartlet-pate.webp",
+  "Брускетта с гуакамоле и тартаром из тунца":"uploads/buffet/tuna-guacamole.webp",
+  "Рийет из форели с икрой палтуса":"uploads/buffet/trout-rillette.webp",
+  "Хумус с грибами":"uploads/buffet/hummus.webp",
+  "Гриссини с брезаолой и песто в шоте":"uploads/buffet/grissini.webp",
+  "Брускетта с запечённым баклажаном, перцем и фетой":"uploads/buffet/eggplant-feta.webp",
+  "Брускетта на бородинском хлебе с треской":"uploads/buffet/cod-borodinsky.webp",
+  "Мухаммара с креветкой и огурцом":"uploads/buffet/muhammara.webp",
+  "Груша с пармой и горгонзолой":"uploads/buffet/pear-parma.webp"
+};
+
+/* Showcase card: cross-fading photos on the left, the numbered positions on
+   the right, the row of the photo currently on screen highlighted in red.
+   items: [{name(html), plain, sub, wt, price, img}]. Returns "" when nothing
+   in the list has a photo, so callers can fall back to their plain markup. */
+function showcase(items){
+  const shots = [];
+  items.forEach((it,i)=>{ if(it.img) shots.push({it, i, s:shots.length}); });
+  if(!shots.length) return "";
+  const slideOf = i => { const m = shots.find(x=>x.i===i); return m ? m.s : -1; };
+  const slides = shots.map(x=>
+    `<img class="mshow-slide${x.s?"":" on"}" src="${x.it.img}" alt="${esc(x.it.plain)}" loading="lazy" decoding="async" draggable="false">`
+  ).join("");
+  const rows = items.map((it,i)=>{
+    const s = slideOf(i);
+    return `<li class="mshow-item${s===0?" on":""}"${s>=0?` data-s="${s}"`:""}>
+      <span class="mshow-num">${String(i+1).padStart(2,"0")}</span>
+      <span class="mshow-name">${it.name}${it.sub?`<em>${it.sub}</em>`:""}</span>
+      ${it.wt?`<span class="mshow-wt">${it.wt}</span>`:""}
+      ${it.price?`<span class="mshow-price">${it.price}</span>`:""}
+    </li>`;
+  }).join("");
+  return `<div class="mshow" data-mshow>
+    <div class="mshow-media" role="button" tabindex="0" aria-label="${LANG==="ru"?"Фото позиций — открыть крупно":"Position photos — open larger"}">
+      ${slides}
+      <button type="button" class="mshow-nav prev" data-d="-1" aria-label="${LANG==="ru"?"Назад":"Previous"}">‹</button>
+      <button type="button" class="mshow-nav next" data-d="1" aria-label="${LANG==="ru"?"Вперёд":"Next"}">›</button>
+      <div class="mshow-count"><b>1</b> / ${shots.length}</div>
+      <div class="mshow-cap">${esc(shots[0].it.plain)}</div>
+    </div>
+    <ol class="mshow-list">${rows}</ol>
+  </div>`;
+}
+
 function renderSection(s, i){
   let body="";
   if(s.type==="sets"){
@@ -1358,10 +1521,13 @@ function renderSection(s, i){
     `).join("")+`</div>`;
   }
   else if(s.type==="buffet"){
-    const setsHtml = s.canape.map(cp=>`
+    const setsHtml = s.canape.map(cp=>{
+      const items = cp.d.map(x=>({name:T(x), plain:T(x), img:BUFFET_IMG[x]||""}));
+      const list = showcase(items) || `<div class="set-list">${cp.d.map(x=>`<div>${T(x)}</div>`).join("")}</div>`;
+      return `
       <div class="subhead">${cp.name}${cp.badge?` <span class="badge">${cp.badge}</span>`:""}<span class="wt">· ${T(cp.wt)}</span><span class="price">${fmt(cp.price)} ₽</span></div>
-      <div class="set-list">${cp.d.map(x=>`<div>${T(x)}</div>`).join("")}</div>
-    `).join("");
+      ${list}`;
+    }).join("");
     const bRow = p=>`
       <div class="row">
         <span class="name">${p[LANG]}${p.badge?` <span class="badge">${p.badge}</span>`:""}${p.info?` <em>— ${T(p.info)}</em>`:""}</span>
@@ -1369,7 +1535,14 @@ function renderSection(s, i){
       </div>`;
     const kidsHtml = s.kids ? `<div class="subhead">${s.kids.title[LANG]}${s.kids.note?`<span class="wt">· ${s.kids.note[LANG]}</span>`:""}</div>`+s.kids.items.map(bRow).join("") : "";
     const platHead = LANG==="ru"?"Тарелки":"Platters";
-    const platHtml = s.platters.map(bRow).join("");
+    const platHtml = showcase(s.platters.map(p=>({
+      name: `${p[LANG]}${p.badge?` <span class="badge">${p.badge}</span>`:""}`,
+      plain: p[LANG],
+      sub: p.info ? T(p.info) : "",
+      wt: p.wt ? T(p.wt) : "",
+      price: `${fmt(p.price)} ₽`,
+      img: p.img || ""
+    }))) || s.platters.map(bRow).join("");
     const groupsHtml = s.groups ? s.groups.map(g=>`<div class="subhead">${g[LANG]||g.ru}</div>`+g.rows.map(r=>`<div class="row"><span class="name">${r[LANG]||T(r.ru)}</span><span class="wt">${T(r.wt)}</span><span class="price">${fmt(r.price)} ₽</span></div>`).join("")).join("") : "";
     body = `<div class="rows">${setsHtml}${kidsHtml}<div class="subhead">${platHead}</div>${platHtml}${groupsHtml}</div>`;
   }
