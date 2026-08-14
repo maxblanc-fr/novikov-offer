@@ -1,0 +1,41 @@
+/* ===== V4 · ТЁМНЫЙ ПРЕМИУМ — бордовый лист, кремовый текст =====
+   --bone намеренно НЕ переопределяется: базовая система использует её как
+   светлый цвет текста (лого, заголовок героя, подписи), и её затемнение
+   делало этот текст невидимым. Фон задаётся отдельной переменной. */
+:root{
+  --page:#25060A;
+  --bone-2:#3A0A12; --card:#360810; --line:#5A1A24;
+  --ink:#F6F2EE; --ink-soft:#DDD0C9; --muted:#AE9A97;
+  --red:#F02742; --red-deep:#B3162C; --red-lite:#FF8A99;
+  --card-shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 20px rgba(0,0,0,.3);
+}
+html, body{background:var(--page) !important; color:var(--ink)}
+header.top{background:linear-gradient(135deg,#5A1019,#25060A) !important; border-bottom:1px solid var(--line)}
+.hero{background:radial-gradient(120% 140% at 18% -10%,#7A1020 0%,#4A0E16 46%,#25060A 100%) !important}
+.sec-head h2{color:var(--ink)} .sec-head .ico{color:var(--red)}
+.sec-head .en, .sec-head .note{color:var(--muted)}
+.sec-intro, .fmt-foot, .grp-note{color:var(--ink-soft)}
+.subhead{background:var(--bone-2); color:var(--ink)}
+.rows{background:var(--card)}
+.row .name, .fmt-row b{color:var(--ink)}
+.menu-card{background:var(--card)} .menu-card-h{background:var(--bone-2)}
+.menu-card-h b{color:var(--red-lite)} .menu-card li{color:var(--ink)}
+.menu-card li + li{border-top-color:rgba(255,255,255,.10)}
+.pkg-card{background:var(--card)} .pkg-card .lvl-n{color:var(--red-lite)}
+.lvl-inc{color:var(--ink-soft)}
+.svc-card{background:var(--card)}
+.svc-h b{color:var(--ink)} .svc-d{color:var(--ink-soft)}
+.svc-tags span, .print-tags span{background:var(--bone-2); color:var(--ink-soft); border-color:var(--line)}
+.svc-note, .svc-tiers{color:var(--ink-soft)} .svc-note{background:var(--bone-2)}
+.svc-tiers b{color:var(--red-lite)}
+.mc-tl{background:var(--card)} .mc-tl-bar{background:var(--bone-2); border-color:var(--line)}
+.mc-tl-h b{color:var(--ink)} .mc-tl-t, .mc-tl-d{color:var(--ink-soft)}
+.ven-card{background:var(--card)} .ven-h b{color:var(--ink)} .ven-c{color:var(--ink-soft)}
+.ven-incl > div{background:var(--card)} .ven-incl b{color:var(--red-lite)} .ven-incl p{color:var(--ink-soft)}
+.ven-note, .ven-hint{color:var(--ink-soft)}
+.age-head{background:var(--red); color:#fff}
+.print-cat-g{color:var(--red-lite)} .print-cat-r{border-top-color:rgba(255,255,255,.12)}
+.print-cat-r > span{color:var(--ink)} .print-note{color:var(--muted)}
+.sec-foot, .age-note, .notecard{background:var(--card); color:var(--ink-soft)}
+.sec-foot b, .age-note b{color:var(--red-lite)}
+footer{background:#180205 !important}

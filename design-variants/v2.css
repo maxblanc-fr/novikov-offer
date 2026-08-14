@@ -1,0 +1,30 @@
+/* ===== V2 · СВЕТЛЫЙ МИНИМАЛИЗМ — белый лист, красный только как акцент ===== */
+:root{
+  --bone:#FFFFFF; --bone-2:#F6F4F1; --card:#FFFFFF; --line:#E4DFD7;
+  --card-shadow:none; --ink:#141414; --ink-soft:#4B4540; --muted:#8A817A;
+}
+header.top{background:#fff !important; color:var(--ink) !important; border-bottom:1px solid var(--line);}
+.brand{color:var(--ink)} .brand b{color:var(--red)}
+.brand small{color:var(--muted); opacity:1}
+.top .contact{color:var(--muted)} .top .contact .site{color:var(--red)}
+
+.hero{background:#fff !important; border-bottom:1px solid var(--line);}
+.hero .kicker{color:var(--red); opacity:1}
+.hero h1{color:var(--ink)} .hero h1 span{color:var(--red)}
+.hero p.lead{color:var(--ink-soft)}
+.hero .stats::before{background:var(--red)}
+.hero .stat b{color:var(--red)} .hero .stat small{color:var(--muted); opacity:1}
+
+.sec-head{border-bottom-width:1px}
+.sec-head .ico{color:var(--red)}
+.sec-price-badge{background:#fff; color:var(--red); border:1px solid var(--red)}
+.svc-price{background:#fff !important; color:var(--red) !important; border:1px solid var(--red)}
+.age-head{background:#fff; color:var(--ink); border-left:3px solid var(--red); border-bottom:1px solid var(--line)}
+.age-head b{color:var(--red)} .age-head em{color:var(--muted); opacity:1}
+.menu-card{border-top-width:1px} .menu-card-h{background:#fff}
+.pkg-card{border-top-width:1px}
+.pkg-tag{background:var(--ink)}
+.mc-tl{background:#fff} .mc-tl-bar{background:var(--bone-2)}
+footer{background:var(--ink) !important; color:#fff}
+/* Stat labels are <span>, not <small> — on a white hero they inherited white text */
+.hero .stat span{color:var(--ink-soft)}

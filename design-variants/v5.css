@@ -1,0 +1,20 @@
+/* ===== V5 · МЯГКИЙ ТЁПЛЫЙ — кремовый фон, скруглённые карточки ===== */
+:root{
+  --bone:#FDF6EF; --bone-2:#F6EADF; --card:#FFFFFF; --line:#EBDCCB;
+  --red:#E03A4E; --red-deep:#B01F33; --maroon:#6B1220; --red-lite:#FF9AA6;
+  --card-shadow:0 2px 4px rgba(107,18,32,.05), 0 10px 24px rgba(107,18,32,.07);
+  --ink:#2A211D; --ink-soft:#5B4C45; --muted:#948178;
+}
+.svc-card, .menu-card, .ven-card, .rows, .mc-tl, .pkg-card, .ven-incl > div,
+.sec-foot, .age-note, .notecard{border-radius:14px !important; overflow:hidden}
+.menu-card-h{background:var(--bone-2)}
+.svc-price, .sec-price-badge, .pkg-tag, .badge, .svc-tags span,
+.print-tags span, .age-head{border-radius:999px !important}
+.svc-price{padding:11px 18px}
+.age-head{padding:12px 22px}
+.sec-head{border-bottom:2px solid var(--red)}
+.sec-head .ico{color:var(--red)}
+.menu-card{border-top-width:4px}
+.pkg-card{border-top-width:4px}
+.subhead{background:var(--bone-2)}
+footer{background:linear-gradient(135deg,#8C1A2B,#4A0E18) !important}

@@ -1,0 +1,65 @@
+/* ===== Shared print scaffolding (identical in all five variants) ===== */
+@page { size: A4; margin: 11mm 9mm 13mm; }
+*, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+html, body { background: var(--bone) !important; }
+header.top { position: static !important; }
+.hero { padding-top: 30px !important; padding-bottom: 26px !important; }
+
+/* Keep atomic blocks whole across a page turn */
+.svc-card, .menu-card, .pkg-card, .ven-card, .rows, .mc-tl,
+.print-cat-r, .fmt-row, .row, .ven-incl > div, .sec-foot, .age-head { break-inside: avoid; }
+.sec-head, .sub-h, .age-head, .svc-gh, .subhead { break-after: avoid; }
+section.block { break-inside: auto; padding-top: 26px !important; }
+.print-age { break-before: page; }
+.print-age:first-of-type { break-before: auto; }
+
+/* Age heading that replaces the tab bar */
+.age-head {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  margin: 0 0 16px; padding: 11px 16px;
+  background: var(--red); color: #fff;
+}
+.age-head .age-ic { font-size: 20px; line-height: 1; }
+.age-head b {
+  font-family: var(--head); font-weight: 900; text-transform: uppercase;
+  letter-spacing: .05em; font-size: 17px;
+}
+.age-head em { font-style: normal; font-size: 13px; opacity: .9; }
+
+/* Catalogue blocks folded out of the modals */
+.print-cat { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.print-cat-h {
+  font-family: var(--head); font-weight: 900; text-transform: uppercase;
+  letter-spacing: .06em; font-size: 11px; color: var(--red); margin-bottom: 8px;
+}
+.print-cat-g {
+  font-family: var(--head); font-weight: 900; font-size: 11.5px; text-transform: uppercase;
+  letter-spacing: .04em; color: var(--maroon); margin: 10px 0 4px;
+}
+.print-cat-r {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 5px 0; border-top: 1px solid rgba(0,0,0,.07); font-size: 12px; line-height: 1.35;
+}
+.print-cat-r > span { flex: 1; }
+.print-cat-r em { font-style: normal; color: var(--muted); font-size: 11px; }
+.print-cat-r .u { color: var(--muted); font-weight: 500; font-size: 11px; white-space: nowrap; }
+.print-cat-r .p {
+  font-family: var(--head); font-weight: 900; color: var(--red);
+  white-space: nowrap; min-width: 62px; text-align: right;
+}
+.print-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.print-tags span {
+  font-size: 11px; padding: 3px 8px; background: var(--bone-2);
+  color: var(--ink-soft); border: 1px solid var(--line);
+}
+.print-note { margin-top: 8px; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+
+/* Services read better as two columns on A4 than as a three-up web grid */
+.svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.menu-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+.ven-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.pkg-cards { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+.pkg-cards.one { grid-template-columns: minmax(0, 420px) !important; }
+.cake-teaser { display: none !important; }
+.card-banner { display: none !important; }
