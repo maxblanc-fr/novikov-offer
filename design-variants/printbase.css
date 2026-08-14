@@ -63,3 +63,8 @@ section.block { break-inside: auto; padding-top: 26px !important; }
 .pkg-cards.one { grid-template-columns: minmax(0, 420px) !important; }
 .cake-teaser { display: none !important; }
 .card-banner { display: none !important; }
+
+/* A 30-minute step is a narrow column; long labels must break rather than
+   spill into the neighbouring step. */
+.mc-tl-t{overflow-wrap:anywhere; hyphens:auto}
+.mc-tl-track{gap:10px}

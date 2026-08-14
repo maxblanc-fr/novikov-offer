@@ -1,0 +1,58 @@
+/* ===== V7 · ТЕТРАДЬ ЮНОГО ШЕФА — тёплая бумага в линейку, чек-лист =====
+   Ориентир: Superr с refero — «warm schoolyard notebook». Тема продукта прямая:
+   ребёнок выбирает блюда, поэтому список блюд получает галочки, а возрасты
+   становятся пронумерованными главами. Пакеты — сравнительная таблица. */
+:root{
+  --bone:#FBF6EE; --bone-2:#F2E9DB; --card:#FFFFFF; --line:#E3D6C2;
+  --red:#D22A3C; --red-deep:#9E1526; --maroon:#5E1019; --red-lite:#FFA7B0;
+  --ink:#2B2521; --ink-soft:#574E46; --muted:#918477;
+  --card-shadow:0 1px 0 rgba(94,16,25,.05), 0 6px 16px rgba(94,16,25,.06);
+}
+/* Ruled paper was tried and dropped: the hairlines are only visible in the gaps
+   between cards, and the PDF rasteriser smears them into grey bands that read as
+   a printing defect. The notebook character carries on the tick boxes, the offset
+   outlines and the circled chapter numbers instead. */
+.sec-head, .age-head, .cmp, .menu-card, .svc-card, .rows, .mc-tl, .ven-card, .pkg-card{background-color:var(--card)}
+header.top{background:linear-gradient(135deg,#D22A3C,#9E1526) !important}
+.hero{background:linear-gradient(135deg,#D22A3C 0%,#9E1526 60%,#5E1019 100%) !important}
+.sec-head{border-bottom:2px dashed var(--red); background:transparent}
+.sec-head .ico{color:var(--red)}
+
+/* Chapters */
+.age-head{background:var(--card); color:var(--ink); border:2px solid var(--ink); border-radius:16px;
+  padding:13px 20px; align-items:center; box-shadow:4px 4px 0 var(--red)}
+.chapter-n{font-family:var(--display); font-size:26px; color:#fff; background:var(--red);
+  width:42px; height:42px; display:flex; align-items:center; justify-content:center; border-radius:50%; line-height:1}
+.age-head b{color:var(--ink)} .age-head em{color:var(--muted); opacity:1}
+
+/* Comparison table with a hand-drawn feel */
+table.cmp{width:100%; border-collapse:separate; border-spacing:0; margin:0 0 24px; font-size:13.5px;
+  background:var(--card); border:2px solid var(--ink); border-radius:16px; overflow:hidden}
+table.cmp th, table.cmp td{padding:10px 12px; text-align:center; vertical-align:top; border-bottom:1px solid var(--line)}
+table.cmp thead th{background:var(--bone-2); border-bottom:2px solid var(--ink)}
+table.cmp .cmp-f{text-align:left; width:32%; color:var(--muted); font-family:var(--head); font-weight:700; font-size:11.5px;
+  text-transform:uppercase; letter-spacing:.04em; background:rgba(242,233,219,.45)}
+.cmp-n{display:block; font-family:var(--head); font-weight:900; text-transform:uppercase; font-size:14px; color:var(--ink)}
+.cmp-tag{display:inline-block; margin-top:5px; font-family:var(--head); font-weight:700; font-size:9px; letter-spacing:.08em;
+  text-transform:uppercase; color:#fff; background:var(--red); padding:3px 9px; border-radius:999px}
+table.cmp td.ok{color:var(--red); font-size:16px} table.cmp td.no{color:var(--muted)}
+tr.cmp-price td{font-family:var(--display); font-size:22px; color:var(--red); border-bottom:0; background:var(--bone-2)}
+tr.cmp-price .cmp-f{font-family:var(--head); font-size:11.5px; color:var(--ink)}
+
+/* Dish picker with tick boxes — the child marks what they will cook */
+.menu-card{border:2px solid var(--ink) !important; border-radius:16px; box-shadow:4px 4px 0 rgba(210,42,60,.16)}
+.menu-card-h{background:var(--bone-2); border-bottom:2px solid var(--ink)}
+.menu-card-h b{color:var(--ink)}
+.menu-card-h span{border-radius:999px}
+.menu-card li.tick{padding-left:42px}
+.menu-card li.tick::before{
+  content:""; position:absolute; left:18px; top:11px; width:15px; height:15px;
+  border:2px solid var(--red); border-radius:4px; background:#fff;
+}
+.pkg-card, .svc-card, .ven-card, .mc-tl, .rows, .ven-incl > div, .sec-foot, .age-note{
+  border-radius:16px !important; overflow:hidden}
+.svc-price, .sec-price-badge, .pkg-tag, .badge, .svc-tags span, .print-tags span{border-radius:999px !important}
+.svc-card{border:2px solid var(--ink) !important}
+.svc-h{border-bottom:2px dashed var(--line)}
+.mc-tl-bar{border-radius:999px}
+footer{background:linear-gradient(135deg,#9E1526,#3A0A10) !important}
