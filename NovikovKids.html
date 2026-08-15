@@ -509,6 +509,74 @@
     font-family:var(--display); font-size:16px; line-height:1; color:var(--red);
   }
 
+  /* ===== «Тетрадь юного шефа» — принятая система оформления ===== */
+  :root{
+    --bone:#FBF6EE; --bone-2:#F2E9DB; --card:#FFFFFF; --line:#E3D6C2;
+    --red:#D22A3C; --red-deep:#9E1526; --maroon:#5E1019; --red-lite:#FFA7B0;
+    --ink:#2B2521; --ink-soft:#574E46; --muted:#918477;
+    --card-shadow:0 1px 0 rgba(94,16,25,.05), 0 6px 16px rgba(94,16,25,.06);
+  }
+  header.top{background:linear-gradient(135deg,#D22A3C,#9E1526)}
+  .hero{background:linear-gradient(135deg,#D22A3C 0%,#9E1526 60%,#5E1019 100%)}
+  .sec-head{border-bottom:2px dashed var(--red)}
+  footer{background:linear-gradient(135deg,#9E1526,#3A0A10)}
+
+  .svc-card, .ven-card, .rows, .mc-tl, .pkg-card, .ven-incl > div,
+  .sec-foot, .age-note, .notecard, .menu-card, .cmp-wrap, .mc-tab{border-radius:16px !important}
+  .svc-card, .ven-card, .rows, .mc-tl, .menu-card, .cmp-wrap{overflow:hidden}
+  .svc-price, .sec-price-badge, .pkg-tag, .badge, .svc-tags span,
+  .cmp-tag, .menu-card-h span, .mc-tl-bar{border-radius:999px !important}
+  .svc-card, .menu-card, .cmp-wrap{border:2px solid var(--ink) !important}
+  .menu-card{box-shadow:4px 4px 0 rgba(210,42,60,.16)}
+  .svc-h{border-bottom:2px dashed var(--line)}
+  .menu-card-h{background:var(--bone-2); border-bottom:2px solid var(--ink)}
+  .menu-card-h b{color:var(--ink)}
+
+  /* Numbered age tabs */
+  .mc-tab-ic{
+    font-family:var(--display); font-size:19px; line-height:1; color:#fff; background:var(--red);
+    width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    border-radius:50%; flex:none;
+  }
+  .mc-tab.active .mc-tab-ic{background:#fff; color:var(--red)}
+
+  /* Tick boxes — the guest is choosing dishes, so give them the box */
+  .menu-card li.tick{padding-left:44px}
+  .menu-card li.tick::before{
+    content:""; position:absolute; left:18px; top:12px; width:15px; height:15px;
+    border:2px solid var(--red); border-radius:4px; background:#fff;
+  }
+
+  /* Package comparison matrix (wide screens) */
+  .cmp-wrap{background:var(--card); box-shadow:var(--card-shadow); margin:0 0 22px}
+  table.cmp{width:100%; border-collapse:collapse; font-size:14px}
+  table.cmp th, table.cmp td{padding:11px 14px; text-align:center; vertical-align:middle; border-bottom:1px solid var(--line)}
+  table.cmp thead th{background:var(--bone-2); border-bottom:2px solid var(--ink)}
+  table.cmp .cmp-corner{background:var(--bone-2); border-bottom:2px solid var(--ink)}
+  table.cmp tbody th{
+    text-align:left; width:32%; background:rgba(242,233,219,.45); color:var(--muted);
+    font-family:var(--head); font-weight:700; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;
+  }
+  .cmp-n{display:block; font-family:var(--head); font-weight:900; text-transform:uppercase; font-size:14px; color:var(--ink)}
+  .cmp-tag{
+    display:inline-block; margin-top:5px; font-family:var(--head); font-weight:700; font-size:9px;
+    letter-spacing:.08em; text-transform:uppercase; color:#fff; background:var(--red); padding:3px 9px;
+  }
+  .cmp-ok{color:var(--red); font-size:17px}
+  .cmp-no{color:var(--muted)}
+  tr.cmp-price td{font-family:var(--display); font-size:23px; color:var(--red); background:var(--bone-2); border-bottom:0}
+  tr.cmp-price th{background:var(--bone-2); color:var(--ink); border-bottom:0}
+
+  /* One layout or the other, never both */
+  .pkg-cards{display:none}
+  @media(max-width:760px){
+    .cmp-wrap{display:none}
+    .pkg-cards{display:grid}
+  }
+  .pkg-card{border:2px solid var(--ink); border-top-width:2px}
+  .lvl-inc i{display:block; font-style:normal; font-family:var(--head); font-weight:700; font-size:10px;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:1px}
+
   /* Age panel intro */
   .age-note{
     margin:0 0 18px; padding:12px 16px; background:var(--card); border:1px solid var(--line);
@@ -664,11 +732,9 @@ const DATA = {
          ],
          packages:[
            {k:"p1", n:{ru:"Юный шеф", en:"Young Chef"}, price:"9 900 ₽", tag:{ru:"Единственный пакет", en:"The only package"},
-            inc:[
-              {ru:"Приветственный детский фуршет", en:"Welcome kids buffet"},
-              {ru:"Приготовление 2 блюд: горячее и десерт", en:"Cooking 2 dishes: a main and a dessert"},
-              {ru:"Игра «Треш-бокс» — 30 минут", en:"«Trash-box» game — 30 minutes"}
-            ]}
+            buffet:true, dishes:2,
+            what:{ru:"горячее и десерт", en:"a main and a dessert"},
+            game:{ru:"«Треш-бокс», 30 мин", en:"«Trash-box», 30 min"}}
          ],
          menu:[
            {t:{ru:"Горячее", en:"Mains"}, items:["Бургер с картофелем фри","Пицца «Ассорти»","Домашняя паста с соусом"]},
@@ -691,21 +757,12 @@ const DATA = {
                  en:"The hour of interactive games is part of package 3 only. In packages 1 and 2 that time stays free — 2 hours in total for mingling, photos and the cake."},
          packages:[
            {k:"p1", n:{ru:"Пакет 1", en:"Package 1"}, price:"9 900 ₽",
-            inc:[
-              {ru:"Приветственный детский фуршет", en:"Welcome kids buffet"},
-              {ru:"2 блюда: горячее и десерт", en:"2 dishes: a main and a dessert"}
-            ]},
+            buffet:true, dishes:2, what:{ru:"горячее и десерт", en:"a main and a dessert"}, game:null},
            {k:"p2", n:{ru:"Пакет 2", en:"Package 2"}, price:"10 900 ₽",
-            inc:[
-              {ru:"Приветственный детский фуршет", en:"Welcome kids buffet"},
-              {ru:"3 блюда: горячее, салат и десерт", en:"3 dishes: a main, a salad and a dessert"}
-            ]},
+            buffet:true, dishes:3, what:{ru:"горячее, салат и десерт", en:"a main, a salad and a dessert"}, game:null},
            {k:"p3", n:{ru:"Пакет 3", en:"Package 3"}, price:"11 900 ₽", tag:{ru:"С игрой", en:"With a game"},
-            inc:[
-              {ru:"Приветственный детский фуршет", en:"Welcome kids buffet"},
-              {ru:"3 блюда: горячее, салат и десерт", en:"3 dishes: a main, a salad and a dessert"},
-              {ru:"Интерактивная игра на выбор — 1 час", en:"An interactive game of your choice — 1 hour"}
-            ]}
+            buffet:true, dishes:3, what:{ru:"горячее, салат и десерт", en:"a main, a salad and a dessert"},
+            game:{ru:"На выбор, 1 час", en:"Of your choice, 1 hour"}}
          ],
          menu:[
            {t:{ru:"Горячее", en:"Mains"}, items:["Чизбургер с домашним майонезом и картофелем по-деревенски","Пицца","Домашняя паста с соусом","Шримп ролл","Клаб-сэндвич с курицей","Фрикадельки в сливочном соусе с картофельным пюре и брусничным джемом"]},
@@ -729,21 +786,12 @@ const DATA = {
                  en:"The hour of interactive games is part of package 3 only; in packages 1 and 2 that time stays free. The host-led programme and the TikTok dance (2 hours each) are booked separately — see «Additional Activities»."},
          packages:[
            {k:"p1", n:{ru:"Пакет 1", en:"Package 1"}, price:"10 900 ₽",
-            inc:[
-              {ru:"Приветственный детский фуршет", en:"Welcome kids buffet"},
-              {ru:"2 блюда: горячее и десерт", en:"2 dishes: a main and a dessert"}
-            ]},
+            buffet:true, dishes:2, what:{ru:"горячее и десерт", en:"a main and a dessert"}, game:null},
            {k:"p2", n:{ru:"Пакет 2", en:"Package 2"}, price:"11 900 ₽",
-            inc:[
-              {ru:"Приветственный детский фуршет", en:"Welcome kids buffet"},
-              {ru:"3 блюда: горячее, закуска и десерт", en:"3 dishes: a main, a starter and a dessert"}
-            ]},
+            buffet:true, dishes:3, what:{ru:"горячее, закуска и десерт", en:"a main, a starter and a dessert"}, game:null},
            {k:"p3", n:{ru:"Пакет 3", en:"Package 3"}, price:"12 900 ₽", tag:{ru:"С игрой", en:"With a game"},
-            inc:[
-              {ru:"Приветственный детский фуршет", en:"Welcome kids buffet"},
-              {ru:"3 блюда: горячее, закуска и десерт", en:"3 dishes: a main, a starter and a dessert"},
-              {ru:"Интерактивная игра на выбор — 1 час", en:"An interactive game of your choice — 1 hour"}
-            ]}
+            buffet:true, dishes:3, what:{ru:"горячее, закуска и десерт", en:"a main, a starter and a dessert"},
+            game:{ru:"На выбор, 1 час", en:"Of your choice, 1 hour"}}
          ],
          menu:[
            {t:{ru:"Горячее", en:"Mains"}, items:["Куриные стрипсы с томатным соусом","Домашняя паста с соусом","Том ям","Гречневая лапша с курицей","Биг Тейсти с двойной котлетой, запечённым картофелем и сырным соусом"]},
@@ -1128,29 +1176,55 @@ function renderSection(s, i){
   if(s.type==="kids"){
     const first = s.ages[0].k;
     const tabBar = `<div class="mc-tabs age-tabs" role="tablist" aria-label="${LANG==="ru"?"Возраст":"Age group"}">`
-      + s.ages.map(a=>`
+      + s.ages.map((a,i)=>`
         <button type="button" class="mc-tab${a.k===first?" active":""}" data-mcfmt="${a.k}" role="tab" aria-selected="${a.k===first}">
-          <span class="mc-tab-ic">${a.ic}</span>
+          <span class="mc-tab-ic">${String(i+1).padStart(2,"0")}</span>
           <span class="mc-tab-tx"><b>${a.n[LANG]}</b><em>${a.short[LANG]}</em></span>
         </button>`).join("") + `</div>`;
 
+    /* Packages are shown two ways from one set of fields: a comparison matrix on
+       wide screens, where the differences line up on one axis, and stacked cards
+       on a phone, where a four-column table would be unreadable. CSS picks one. */
+    const dash = `<span class="cmp-no">—</span>`;
+    const pkgFeat = [
+      {l:{ru:"Приветственный детский фуршет", en:"Welcome kids buffet"},
+       v:p => p.buffet ? `<span class="cmp-ok">✓</span>` : dash},
+      {l:{ru:"Блюд готовит каждый ребёнок", en:"Dishes each child cooks"},
+       v:p => p.dishes || dash},
+      {l:{ru:"Что именно", en:"Which courses"},
+       v:p => p.what ? p.what[LANG] : dash},
+      {l:{ru:"Игра", en:"Game"},
+       v:p => p.game ? p.game[LANG] : dash}
+    ];
+    const pkgTable = a => {
+      const ps = a.packages;
+      const rows = pkgFeat.filter(f => ps.some(p => f.v(p) !== dash)).map(f=>`
+        <tr><th scope="row">${f.l[LANG]}</th>${ps.map(p=>`<td>${f.v(p)}</td>`).join("")}</tr>`).join("");
+      return `<div class="cmp-wrap"><table class="cmp">
+        <thead><tr><td class="cmp-corner"></td>${ps.map(p=>`
+          <th scope="col"><span class="cmp-n">${p.n[LANG]}</span>${p.tag?`<span class="cmp-tag">${p.tag[LANG]}</span>`:""}</th>`).join("")}</tr></thead>
+        <tbody>${rows}
+          <tr class="cmp-price"><th scope="row">${LANG==="ru"?"Цена за ребёнка":"Price per child"}</th>${ps.map(p=>`<td>${p.price?T(p.price):dash}</td>`).join("")}</tr>
+        </tbody></table></div>`;
+    };
     const pkgCard = p => `
       <div class="pkg-card">
         <span class="lvl-n">${p.n[LANG]}</span>
         <span class="lvl-p">${p.price ? T(p.price) : `<span class="tbd">—</span>`}<small>${LANG==="ru"?"/ребёнок":"/child"}</small></span>
-        ${p.inc.map(x=>`<span class="lvl-inc">✓ ${x[LANG]}</span>`).join("")}
+        ${pkgFeat.filter(f=>f.v(p)!==dash).map(f=>`<span class="lvl-inc"><i>${f.l[LANG]}</i>${f.v(p)}</span>`).join("")}
         ${p.tag?`<span class="pkg-tag">${p.tag[LANG]}</span>`:""}
       </div>`;
 
     const menuBlock = m => `
       <div class="menu-card">
         <div class="menu-card-h"><b>${m.t[LANG]}</b><span>${m.items.length}</span></div>
-        <ul>${m.items.map(x=>`<li>${T(x)}</li>`).join("")}</ul>
+        <ul>${m.items.map(x=>`<li class="tick">${T(x)}</li>`).join("")}</ul>
       </div>`;
 
     const panels = s.ages.map(a=>`
       <div class="mc-panel" data-mcfmt="${a.k}"${a.k===first?"":" hidden"}>
         <div class="mc-top"><p class="mc-panel-d">${a.d[LANG]}</p>${a.tl?mcTimeline(a.tl, a.tlNote):""}</div>
+        ${pkgTable(a)}
         <div class="pkg-cards${a.packages.length===1?" one":""}">${a.packages.map(pkgCard).join("")}</div>
         <div class="sub-h">${s.menuHead[LANG]}<em>${s.menuNote[LANG]}</em></div>
         <div class="menu-grid">${a.menu.map(menuBlock).join("")}</div>

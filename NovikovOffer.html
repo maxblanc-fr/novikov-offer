@@ -1544,7 +1544,10 @@ function renderSection(s, i){
       img: p.img || ""
     }))) || s.platters.map(bRow).join("");
     const groupsHtml = s.groups ? s.groups.map(g=>`<div class="subhead">${g[LANG]||g.ru}</div>`+g.rows.map(r=>`<div class="row"><span class="name">${r[LANG]||T(r.ru)}</span><span class="wt">${T(r.wt)}</span><span class="price">${fmt(r.price)} ₽</span></div>`).join("")).join("") : "";
-    body = `<div class="rows">${setsHtml}${kidsHtml}<div class="subhead">${platHead}</div>${platHtml}${groupsHtml}</div>`;
+    /* Детский фуршет — последним в секции: взрослые наборы, тарелки и
+       закуски идут подряд, детское не разрывает их и стоит вплотную к
+       «Дополнительным услугам». */
+    body = `<div class="rows">${setsHtml}<div class="subhead">${platHead}</div>${platHtml}${groupsHtml}${kidsHtml}</div>`;
   }
   else if(s.type==="note"){
     body = `<div class="notecard">${s.html[LANG]}</div>`;
