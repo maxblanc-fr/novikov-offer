@@ -727,7 +727,7 @@ const DATA = {
         {ru:"Хлебная корзина", en:"Bread basket", info:"", wt:"120 г", price:220, img:"uploads/buffet/plate-bread.webp"}
       ],
       groups:[
-        {ru:"Блюда в стол · минимум 6 порций", en:"Shared plates · minimum 6 portions", rows:[
+        {ru:"Блюда в стол", en:"Shared plates", note:{ru:"минимум 6 порций", en:"minimum 6 portions"}, rows:[
           {ru:"Салат с креветками", en:"Prawn salad", price:1800},
           {ru:"Греческий салат", en:"Greek salad", price:1800},
           {ru:"Салат с пастрами", en:"Pastrami salad", price:1800},
@@ -1609,7 +1609,7 @@ function renderSection(s, i){
       price: `${fmt(p.price)} ₽`,
       img: p.img || ""
     }))) || s.platters.map(bRow).join("");
-    const groupsHtml = s.groups ? s.groups.map(g=>`<div class="subhead">${g[LANG]||g.ru}</div>`+g.rows.map(r=>`<div class="row"><span class="name">${r[LANG]||T(r.ru)}</span><span class="wt">${r.wt?T(r.wt):""}</span><span class="price">${fmt(r.price)} ₽</span></div>`).join("")).join("") : "";
+    const groupsHtml = s.groups ? s.groups.map(g=>`<div class="subhead">${g[LANG]||g.ru}${g.note?`<span class="wt">· ${g.note[LANG]}</span>`:""}</div>`+g.rows.map(r=>`<div class="row"><span class="name">${r[LANG]||T(r.ru)}</span><span class="wt">${r.wt?T(r.wt):""}</span><span class="price">${fmt(r.price)} ₽</span></div>`).join("")).join("") : "";
     /* Детский фуршет — последним в секции: взрослые наборы, тарелки и
        закуски идут подряд, детское не разрывает их и стоит вплотную к
        «Дополнительным услугам». */
