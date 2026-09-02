@@ -975,6 +975,42 @@ const DATA = {
           ["Clausthaler Original","безалкогольное · 0,33 л",650]
         ]}
       ]
+    },
+    {
+      id:"soft", icon:"🥤", type:"bar",
+      title:{ru:"Безалкогольные напитки", en:"Soft Drinks"},
+      sub:{ru:"Безлимитный бар, лимонады и напитки в бутылках", en:"Unlimited bar, lemonades & bottled drinks"},
+      price:{ru:"Вода, чай и кофе включены", en:"Water, tea & coffee included"},
+      note:{ru:"Цена за порцию / бутылку, ₽", en:"Price per serving / bottle, ₽"},
+      cats:[
+        {ru:"Безалкогольный безлимитный бар", en:"Unlimited soft bar", unit:"900 ₽ / гость", items:[
+          ["Яблочный сок"],
+          ["Вишнёвый сок"],
+          ["Томатный сок"],
+          ["Апельсиновый сок"],
+          ["Морс"]
+        ]},
+        {ru:"Лимонады", en:"Lemonades", unit:"750 ₽ / 0,4 л · 3 000 ₽ / 2 л", items:[
+          ["Манго-маракуйя"],
+          ["Клубника-манго-кокос"],
+          ["Мохито классический"],
+          ["Линчбургский лимонад"],
+          ["Berries Punch"],
+          ["Лаванда-смородина"],
+          ["Мята-лайм"],
+          ["Яблоко-лимон"],
+          ["Клубника-мята"]
+        ]},
+        {ru:"Прочие напитки", en:"Other Drinks", items:[
+          ["Shambala","без газа · 285 мл",500],
+          ["Shambala","с газом · 285 мл",500],
+          ["Shambala","без газа · 585 мл",800],
+          ["Shambala","с газом · 585 мл",800],
+          ["Coca-Cola Original","0,33 л",400],
+          ["Coca-Cola Zero","0,33 л",400],
+          ["Estecola Cherry","0,33 л",400]
+        ]}
+      ]
     }]
 };
 
@@ -1288,6 +1324,26 @@ const TR={
 "светлое · 0,33 л":"lager · 0.33 L",
 "тёмное · 0,33 л":"dark · 0.33 L",
 "безалкогольное · 0,33 л":"non-alcoholic · 0.33 L",
+"900 ₽ / гость":"900 ₽ / guest",
+"750 ₽ / 0,4 л · 3 000 ₽ / 2 л":"750 ₽ / 0.4 L · 3 000 ₽ / 2 L",
+"Яблочный сок":"Apple juice",
+"Вишнёвый сок":"Cherry juice",
+"Томатный сок":"Tomato juice",
+"Апельсиновый сок":"Orange juice",
+"Морс":"Mors · berry drink",
+"Манго-маракуйя":"Mango & passion fruit",
+"Клубника-манго-кокос":"Strawberry, mango & coconut",
+"Мохито классический":"Classic mojito",
+"Линчбургский лимонад":"Lynchburg lemonade",
+"Лаванда-смородина":"Lavender & blackcurrant",
+"Мята-лайм":"Mint & lime",
+"Яблоко-лимон":"Apple & lemon",
+"Клубника-мята":"Strawberry & mint",
+"без газа · 285 мл":"still · 285 ml",
+"с газом · 285 мл":"sparkling · 285 ml",
+"без газа · 585 мл":"still · 585 ml",
+"с газом · 585 мл":"sparkling · 585 ml",
+"0,33 л":"0.33 L",
 "Наполеон":"Napoleon",
 "Тирамису":"Tiramisu",
 "Медовик":"Medovik (honey cake)",
@@ -1615,7 +1671,7 @@ function renderSection(s, i){
     body = `<div class="bar-grid">`+ s.cats.map(cat=>`
       <div class="cat">
         <div class="ch"><b>${cat[LANG]}</b>${cat.unit?`<span class="unit">${T(cat.unit)}</span>`:""}</div>
-        ${cat.items.map(([n,desc,price])=>`<div class="bi"><span class="n"><b>${T(n)}</b>${desc?` <span>${T(desc)}</span>`:""}</span><span class="p">${fmt(price)} ₽</span></div>`).join("")}
+        ${cat.items.map(([n,desc,price])=>`<div class="bi"><span class="n"><b>${T(n)}</b>${desc?` <span>${T(desc)}</span>`:""}</span>${price!==undefined?`<span class="p">${fmt(price)} ₽</span>`:""}</div>`).join("")}
       </div>`).join("")+`</div>`;
   }
   else if(s.type==="freeflow"){
