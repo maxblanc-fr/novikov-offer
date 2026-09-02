@@ -98,7 +98,7 @@
   .sec-head .en{display:block; font-family:var(--head); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:11.5px; color:var(--muted); margin-top:6px}
   .sec-right{margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:8px}
   .sec-head .note{color:var(--muted); font-size:13px; max-width:340px; text-align:right; font-weight:500}
-  .sec-price-badge{background:var(--red); color:#fff; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:14px; padding:7px 15px; border-radius:0; white-space:nowrap}
+  .sec-price-badge{background:var(--red); color:#fff; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:14px; padding:7px 15px; border-radius:0; max-width:340px; text-align:right; text-wrap:balance}
   @media(max-width:640px){ .sec-right{align-items:flex-start; margin-left:0; margin-top:2px} .sec-head .note{text-align:left} }
 
   /* ---------- Set cards (themed menus) ---------- */
@@ -826,7 +826,7 @@ const DATA = {
       id:"freeflow", type:"freeflow",
       title:{ru:"Free-Flow · Безлимитный бар", en:"Free-Flow · Unlimited Bar"},
       sub:{ru:"Безлимитные напитки на человека — три пакета", en:"Unlimited drinks per guest — three packages"},
-      note:{ru:"Цена за гостя · доплата за каждый +1 час", en:"Price per guest · surcharge for each +1 hour"},
+      price:{ru:"Алкоголь с собой строго запрещён", en:"Bringing your own alcohol is strictly prohibited"},
       packages:[
         {code:"FF1", name:{ru:"Классика", en:"Classic"}, price:"5 400 ₽", ext:"1 650 ₽", cats:[
           {t:{ru:"Игристое",en:"Sparkling"}, w:[["Bruni Prosecco Brut","Венето, Италия"],["Santa Carolina Brut","Чили"]]},
@@ -855,7 +855,7 @@ const DATA = {
       id:"bar", icon:"🍷", type:"bar",
       title:{ru:"Барная карта", en:"Bar Card"},
       sub:{ru:"Вина, крепкий алкоголь, коктейли и пиво", en:"Wines, spirits, cocktails & beer"},
-      price:{ru:"от 650 ₽", en:"from 650 ₽"},
+      price:{ru:"Алкоголь с собой строго запрещён", en:"Bringing your own alcohol is strictly prohibited"},
       note:{ru:"Цена за бутылку / порцию, ₽", en:"Price per bottle / serving, ₽"},
       cats:[
         {ru:"Игристое", en:"Sparkling", items:[
