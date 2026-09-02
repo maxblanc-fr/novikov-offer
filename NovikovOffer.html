@@ -695,7 +695,7 @@ const DATA = {
     {
       id:"buffet", icon:"🥂", type:"buffet",
       title:{ru:"Фуршет и закуски", en:"Buffet & Bites"},
-      sub:{ru:"Наборы канапе, тарелки, горячие закуски и шашлычки", en:"Canapé sets, platters, hot bites & skewers"},
+      sub:{ru:"Наборы канапе, тарелки и блюда в стол", en:"Canapé sets, platters & shared plates"},
       price:{ru:"наборы от 1 350 ₽", en:"sets from 1 350 ₽"},
       note:{ru:"Цены за набор / тарелку / штуку, ₽", en:"Prices per set / platter / piece, ₽"},
       canape:[
@@ -704,7 +704,7 @@ const DATA = {
         {name:"Large Set", badge:"NEW", wt:"310 г", price:2150, d:["Брускетта с гуакамоле и тартаром из тунца","Брускетта с пастрами из говядины и соусом тонато","Брускетта с запечённым баклажаном, перцем и фетой","Брускетта на бородинском хлебе с треской","Тарталетка с пате из печени цыплёнка с мастардой из груши","Гриссини с брезаолой и песто в шоте","Мухаммара с креветкой и огурцом","Груша с пармой и горгонзолой","Камамбер на ананасовом конфитюре с грецким орехом"]}
       ],
       kids:{ title:{ru:"Детский фуршет", en:"Kids Buffet"},
-             note:{ru:"заказ от 3 штук", en:"minimum order — 3 pieces"},
+             note:{ru:"заказ от 6 штук", en:"minimum order — 6 pieces"},
              items:[
                {ru:"Овощные палочки с айоли", en:"Veggie sticks with aioli", wt:"90 г", price:375},
                {ru:"Картофель фри", en:"French fries", wt:"100 г", price:375},
@@ -727,18 +727,15 @@ const DATA = {
         {ru:"Хлебная корзина", en:"Bread basket", info:"", wt:"120 г", price:220, img:"uploads/buffet/plate-bread.webp"}
       ],
       groups:[
-        {ru:"Шашлычки · от 3 шт", en:"Skewers · from 3 pcs", rows:[
-          {ru:"Мини шампиньоны / цуккини", wt:"60 г", price:175},
-          {ru:"Креветка / петрушка / чеснок", wt:"50 г", price:240},
-          {ru:"Цыплёнок / соус хойсин", wt:"55 г", price:240},
-          {ru:"Курица / бекон / мёд", wt:"60 г", price:370},
-          {ru:"Форель / брокколи / терияки", wt:"60 г", price:540}
-        ]},
-        {ru:"Горячие закуски · от 3 шт", en:"Hot appetizers · from 3 pcs", rows:[
-          {ru:"Креветка саганаки", wt:"60 г", price:215},
-          {ru:"Жульен", wt:"55 г", price:215},
-          {ru:"Ростбиф / шпинат / демигласс", wt:"45 г", price:345},
-          {ru:"Куриный ролл / крем горошек", wt:"50 г", price:215}
+        {ru:"Блюда в стол · минимум 6 порций", en:"Shared plates · minimum 6 portions", rows:[
+          {ru:"Салат с креветками", en:"Prawn salad", price:1800},
+          {ru:"Греческий салат", en:"Greek salad", price:1800},
+          {ru:"Салат с пастрами", en:"Pastrami salad", price:1800},
+          {ru:"Овощи гриль", en:"Grilled vegetables", price:1800},
+          {ru:"Паста болоньезе", en:"Pasta bolognese", price:1800},
+          {ru:"Филе угольной рыбы в соусе унаги с микс-салатом", en:"Black cod fillet in unagi sauce with mixed salad", price:2500},
+          {ru:"Телячьи щёчки с овощным пюре", en:"Veal cheeks with vegetable purée", price:2500},
+          {ru:"Стейк из лосося с цукини и мятой", en:"Salmon steak with zucchini & mint", price:2500}
         ]}
       ]
     },
@@ -1612,7 +1609,7 @@ function renderSection(s, i){
       price: `${fmt(p.price)} ₽`,
       img: p.img || ""
     }))) || s.platters.map(bRow).join("");
-    const groupsHtml = s.groups ? s.groups.map(g=>`<div class="subhead">${g[LANG]||g.ru}</div>`+g.rows.map(r=>`<div class="row"><span class="name">${r[LANG]||T(r.ru)}</span><span class="wt">${T(r.wt)}</span><span class="price">${fmt(r.price)} ₽</span></div>`).join("")).join("") : "";
+    const groupsHtml = s.groups ? s.groups.map(g=>`<div class="subhead">${g[LANG]||g.ru}</div>`+g.rows.map(r=>`<div class="row"><span class="name">${r[LANG]||T(r.ru)}</span><span class="wt">${r.wt?T(r.wt):""}</span><span class="price">${fmt(r.price)} ₽</span></div>`).join("")).join("") : "";
     /* Детский фуршет — последним в секции: взрослые наборы, тарелки и
        закуски идут подряд, детское не разрывает их и стоит вплотную к
        «Дополнительным услугам». */
