@@ -792,8 +792,8 @@ const DATA = {
            {m:60, ru:"Интерактивная игра", en:"Interactive game", opt:true},
            {m:60, ru:"Свободное время: общение, фото, торт", en:"Free time: mingling, photos, the cake"}
          ],
-         tlNote:{ru:"Час интерактивной игры входит только в пакет 3. В пакетах 1 и 2 это время остаётся свободным. Программу от ведущего и TikTok-дэнс (по 2 часа) берут отдельно — см. раздел «Дополнительные активности».",
-                 en:"The hour of interactive games is part of package 3 only; in packages 1 and 2 that time stays free. The host-led programme and the TikTok dance (2 hours each) are booked separately — see «Additional Activities»."},
+         tlNote:{ru:"Час интерактивной игры входит только в пакет 3. В пакетах 1 и 2 это время остаётся свободным.",
+                 en:"The hour of interactive games is part of package 3 only; in packages 1 and 2 that time stays free."},
          packages:[
            {k:"p1", n:{ru:"Пакет 1", en:"Package 1"}, price:"11 500 ₽",
             buffet:true, dishes:2, what:{ru:"горячее и десерт", en:"a main and a dessert"}, game:null},
@@ -901,7 +901,7 @@ const DATA = {
     {
       id:"services", icon:"✨", type:"services",
       title:{ru:"Дополнительные активности", en:"Additional Activities"},
-      sub:{ru:"Шоу, аниматоры, декор и подарки — добираются к любому пакету", en:"Shows, hosts, décor and gifts — added to any package"},
+      sub:{ru:"Шоу, игры, декор и подарки — добираются к любому пакету", en:"Shows, games, décor and gifts — added to any package"},
       note:{ru:"В стоимость не включён НДС 22%", en:"Prices exclude 22% VAT"},
       items:[
         {gh:{ru:"Шоу и ведущие", en:"Shows & Hosts"}, ghNote:{ru:"цена за мероприятие, не за ребёнка", en:"priced per event, not per child"}},
@@ -924,43 +924,20 @@ const DATA = {
           price:{ru:"44 000 ₽ · 30–40 минут", en:"44 000 ₽ · 30–40 minutes"},
           note:{ru:"<b>Входит в пакет 4–7 лет.</b> Для 8–10 лет берётся отдельно.", en:"<b>Included in the 4–7 package.</b> For ages 8–10 it is booked separately."}},
 
-        {ic:"🎭", name:{ru:"Анимационная программа 4–7 лет", en:"Animation Programme · Ages 4–7"},
-          min:{ru:"весь праздник, 4 часа", en:"the whole party, 4 hours"},
-          desc:{ru:"Аниматоры ведут праздник от встречи гостей до торта: игры, конкурсы, сопровождение мастер-класса. Цена зависит от числа детей.",
-                en:"Hosts run the party from the guest welcome to the cake: games, contests and support during the masterclass. The price depends on the number of children."},
-          tiers:[
-            {l:{ru:"До 10 детей", en:"Up to 10 children"}, p:"45 000 ₽", n:"4 часа"},
-            {l:{ru:"От 11 до 20 детей", en:"11 to 20 children"}, p:"85 000 ₽", n:"4 часа"}
-          ]},
-
-        {ic:"🎤", name:{ru:"Программа от ведущего 11–14 лет", en:"Host Programme · Ages 11–14"},
-          min:{ru:"можно выбрать несколько программ", en:"several programmes can be combined"},
-          desc:{ru:"Ведущий работает с подростками два часа: интеллектуальный квиз по фильмам, играм и YouTube, настольные и интерактивные станции, музыкальные и импровизационные игры.",
-                en:"A host works with the teenagers for two hours: an intellectual quiz on films, games and YouTube, board games and interactive stations, music and improvisation games."},
-          tags:["Интеллектуальный квиз","Dixit · Имаджинариум","Крокодил · Элиас","Мафия · UNO","Угадай мелодию","Импровизация"],
-          price:{ru:"46 000 ₽ · 2 часа", en:"46 000 ₽ · 2 hours"}},
-
-        {ic:"💃", name:{ru:"TikTok-дэнс", en:"TikTok Dance"},
-          min:{ru:"два ведущих и диджей", en:"two hosts and a DJ"},
-          desc:{ru:"Мини-баттлы TikTok-танцев: ведущие показывают актуальные связки, все разучивают их вместе, дальше — соревнование командами или «1 на 1». По желанию — TikTok-зона, где можно записать совместные видео и танцы для сторис.",
-                en:"TikTok dance mini-battles: the hosts demonstrate the current routines, everyone learns them together, then compete in teams or one-on-one. Optionally a TikTok zone for filming joint videos and clips for stories."},
-          tags:["Разучивание связок","Мини-баттлы","TikTok-зона","Диджей и колонка"],
-          price:{ru:"78 000 ₽ · 2 часа", en:"78 000 ₽ · 2 hours"}},
-
         {ic:"🎩", name:{ru:"Фокусник", en:"Magician"},
           desc:{ru:"Иллюзионист показывает программу для детей — фокусы вблизи и на публику, с участием самих гостей.",
                 en:"An illusionist performs a children's programme — close-up and stage magic, with the guests taking part."},
-          price:{ru:"45 000 ₽ · 30 минут", en:"45 000 ₽ · 30 minutes"}},
+          price:{ru:"Цена по запросу", en:"Price on request"}},
 
         {ic:"🧪", name:{ru:"Химическое шоу", en:"Chemistry Show"},
           desc:{ru:"Эффектные безопасные опыты: дым, пена, цветные реакции. Дети участвуют в экспериментах вместе с ведущим.",
                 en:"Spectacular but safe experiments: smoke, foam and colour reactions. The children take part alongside the presenter."},
-          price:{ru:"32 000 ₽ · 30 минут", en:"32 000 ₽ · 30 minutes"}},
+          price:{ru:"Цена по запросу", en:"Price on request"}},
 
         {ic:"🐻", name:{ru:"Ростовая кукла", en:"Mascot Character"},
           desc:{ru:"Любимый персонаж встречает гостей, фотографируется и играет с детьми. Персонаж согласовывается заранее.",
                 en:"A favourite character greets the guests, poses for photos and plays with the children. The character is agreed in advance."},
-          price:{ru:"15 000 ₽ · 1 час", en:"15 000 ₽ · 1 hour"}},
+          price:{ru:"Цена по запросу", en:"Price on request"}},
 
         {ic:"🎨", name:{ru:"Творческий мастер-класс", en:"Creative Masterclass"},
           min:{ru:"от 10 человек · 14+", en:"from 10 guests · 14+"},
@@ -994,11 +971,7 @@ const DATA = {
           min:{ru:"минимум 2 часа", en:"minimum 2 hours"},
           desc:{ru:"Репортажная съёмка праздника с обработкой. Можно добавить съёмку на полароид — гости забирают снимки сразу.",
                 en:"Reportage coverage of the party, retouched. Polaroid shooting can be added — guests take the prints home right away."},
-          tiers:[
-            {l:{ru:"Фотограф", en:"Photographer"}, p:"12 000 ₽", n:"1 час"},
-            {l:{ru:"Фотограф + полароид", en:"Photographer + Polaroid"}, p:"14 000 ₽", n:"1 час"},
-            {l:{ru:"Кассета для полароида", en:"Polaroid film"}, p:"2 500 ₽", n:"10 шт"}
-          ]},
+          price:{ru:"Цена по запросу", en:"Price on request"}},
 
         {ic:"💐", modal:"floral", modalLabel:{ru:"Посмотреть примеры", en:"View examples"},
           cardImgs:["uploads/floral/1.jpg","uploads/floral/8.jpg","uploads/floral/15.jpg","uploads/floral/22.jpg"], cardMore:22,
@@ -1160,15 +1133,6 @@ const TR={
 "Квиз":"Quiz",
 "Угадай мелодию":"Guess the tune",
 "Игра 100 к 1":"Family Feud",
-"Интеллектуальный квиз":"Intellectual quiz",
-"Dixit · Имаджинариум":"Dixit · Imaginarium",
-"Крокодил · Элиас":"Charades · Alias",
-"Мафия · UNO":"Mafia · UNO",
-"Импровизация":"Improvisation",
-"Разучивание связок":"Learning the routines",
-"Мини-баттлы":"Mini battles",
-"TikTok-зона":"TikTok zone",
-"Диджей и колонка":"DJ and sound system",
 /* Units */
 "180 г":"180 g","240 г":"240 g","310 г":"310 g","550 г":"550 g","295 г":"295 g","300 г":"300 g",
 "530 г":"530 g","120 г":"120 g","90 г":"90 g","100 г":"100 g","155 г":"155 g","150 г":"150 g","180 г ":"180 g",
