@@ -818,7 +818,7 @@ const DATA = {
       sub:{ru:"Зал закрывается только для вашей компании — от камерных праздников до 45 гостей", en:"The hall is closed for your party only — from intimate celebrations to 45 guests"},
       note:{ru:"Москва, Большая Якиманка, 22", en:"Moscow, Bolshaya Yakimanka 22"},
       halls:[
-        {slug:"cafe", n:{ru:"Café", en:"Café"}, area:"150 м²", cap:{ru:"до 45 гостей · 25 рабочих мест", en:"up to 45 guests · 25 workstations"}},
+        {slug:"cafe", n:{ru:"Остров · Island", en:"Island"}, area:"150 м²", cap:{ru:"до 45 гостей · 25 рабочих мест", en:"up to 45 guests · 25 workstations"}},
         {slug:"prof", n:{ru:"Prof", en:"Prof"}, area:"50 м²", cap:{ru:"проф. кухня · до 18 детей (групповой МК)", en:"pro kitchen · up to 18 children (group MC)"}},
         {slug:"granat", n:{ru:"Гранат · Garnet", en:"Garnet"}, area:"104 м²", cap:{ru:"до 20 гостей · 18 мест на групповом МК", en:"up to 20 guests · 18 places at a group MC"}},
         {slug:"olive", n:{ru:"Олива · Olive", en:"Olive"}, area:"105 м²", cap:{ru:"до 20 гостей · 18 мест на групповом МК", en:"up to 20 guests · 18 places at a group MC"}},
@@ -826,8 +826,8 @@ const DATA = {
         {slug:"art", n:{ru:"ART · Флористика / Живопись / Керамика", en:"ART · Floristry / Painting / Ceramics"}, area:"161 м²", cap:{ru:"8–12 мест каждый · 24 места вместе", en:"8–12 seats each · 24 together"},
           tabs:[{k:"ceramics", l:{ru:"Керамика", en:"Ceramics"}},{k:"painting", l:{ru:"Живопись", en:"Painting"}},{k:"floristry", l:{ru:"Флористика", en:"Floristry"}}]}
       ],
-      combos:{ru:"Комбинации залов: Café + Prof — до 45 гостей; Café + Prof + Olive — тематический праздник до 60 гостей (2 больших стола, посадка в разных залах). Взрослых можно посадить отдельно от детей.",
-              en:"Hall combinations: Café + Prof — up to 45 guests; Café + Prof + Olive — a themed party for up to 60 guests (2 large tables, seating across halls). Adults can be seated separately from the children."},
+      combos:{ru:"Комбинации залов: Остров + Prof — до 45 гостей; Остров + Prof + Olive — тематический праздник до 60 гостей (2 больших стола, посадка в разных залах). Взрослых можно посадить отдельно от детей.",
+              en:"Hall combinations: Island + Prof — up to 45 guests; Island + Prof + Olive — a themed party for up to 60 guests (2 large tables, seating across halls). Adults can be seated separately from the children."},
       incl:{
         culinary:{ru:"Закрытие зала под вашу компанию · гардероб, ресепшн, уборка · посуда и оборудование · шеф-повар и ассистент · event-менеджер на площадке · время монтажа/демонтажа включено.",
                   en:"Private hall for your party · cloakroom, reception, cleaning · dishware & equipment · chef and assistant · on-site event manager · setup/teardown time included."},
@@ -844,8 +844,8 @@ const DATA = {
       note:{ru:"Цены за набор / тарелку / штуку, ₽", en:"Prices per set / platter / piece, ₽"},
       blocks:[
         {h:{ru:"Детский фуршет Kid Set", en:"Kids Buffet · Kid Set"}, badge:{ru:"Включён в пакет", en:"Included"},
-         list:["Фруктовый стаканчик (160 г)","Овощные палочки с айоли (90 г)","Лимонад на выбор: мята-лайм, манго-маракуйя (350 мл)"]},
-        {h:{ru:"Детские закуски", en:"Kids Bites"}, hnote:{ru:"минимальный заказ — 3 шт", en:"minimum order — 3 pieces"}, rows:[
+         list:["Фруктовый стаканчик (160 г)","Овощные палочки с айоли (90 г)"]},
+        {h:{ru:"Детские закуски", en:"Kids Bites"}, hnote:{ru:"минимум 6 порций", en:"minimum 6 portions"}, rows:[
           {ru:"Ягоды", en:"Berries", info:"клубника, малина, голубика", wt:"120 г", price:1200},
           {ru:"Овощные палочки с айоли", en:"Veggie sticks with aioli", wt:"90 г", price:375},
           {ru:"Картофель фри", en:"French fries", wt:"100 г", price:375},
@@ -859,12 +859,14 @@ const DATA = {
           {ru:"Мини-пицца «Пепперони»", en:"Mini pizza Pepperoni", wt:"180 г", price:540}
         ]},
         {h:{ru:"Детские напитки", en:"Kids Drinks"}, rows:[
-          {ru:"Лимонад: лаванда-смородина / мята-лайм / манго-маракуйя / клубника-мята / яблоко-лимон", en:"Lemonade: lavender-currant / mint-lime / mango-passion fruit / strawberry-mint / apple-lemon", wt:"1 л", price:1000},
+          {ru:"Безалкогольный безлимитный бар", en:"Unlimited soft bar", info:"соки и морс без ограничений", wt:"на гостя", price:900},
+          {ru:"Лимонад: лаванда-смородина / мята-лайм / манго-маракуйя / клубника-мята / яблоко-лимон", en:"Lemonade: lavender-currant / mint-lime / mango-passion fruit / strawberry-mint / apple-lemon", wt:"0,4 л", price:750},
+          {ru:"Лимонад в графине", en:"Lemonade carafe", info:"те же вкусы", wt:"2 л", price:3000},
           {ru:"Ягодный морс", en:"Berry mors", wt:"1 л", price:1000},
           {ru:"Соки в ассортименте", en:"Assorted juices", wt:"0,2 л", price:220},
-          {ru:"Coca-Cola Original / Zero, Estecola cherry", en:"Coca-Cola Original / Zero, Estecola cherry", wt:"0,33 л", price:350},
-          {ru:"Shambala без газа / с газом", en:"Shambala still / sparkling", wt:"285 мл", price:420},
-          {ru:"Shambala без газа / с газом", en:"Shambala still / sparkling", wt:"585 мл", price:690}
+          {ru:"Coca-Cola Original / Zero, Estecola cherry", en:"Coca-Cola Original / Zero, Estecola cherry", wt:"0,33 л", price:400},
+          {ru:"Shambala без газа / с газом", en:"Shambala still / sparkling", wt:"285 мл", price:500},
+          {ru:"Shambala без газа / с газом", en:"Shambala still / sparkling", wt:"585 мл", price:800}
         ]},
         {gh:{ru:"Взрослый стол", en:"The Adults Table"}, ghNote:{ru:"пока дети готовят — фуршет для родителей в том же или соседнем зале", en:"while the children cook — a buffet for the parents in the same or an adjacent hall"}},
         {h:"Small Set", badge:{ru:"NEW", en:"NEW"}, wt:"180 г", price:1350,
@@ -882,16 +884,15 @@ const DATA = {
           {ru:"Ягоды", en:"Berries", info:"клубника, малина, голубика", wt:"120 г", price:1200},
           {ru:"Хлебная корзина", en:"Bread basket", wt:"120 г", price:220}
         ]},
-        {h:{ru:"Салаты", en:"Salads"}, rows:[
-          {ru:"Капустный салат с огурцом и соусом кимчи", en:"Cabbage salad with cucumber and kimchi sauce", price:600},
-          {ru:"Салат с пастрами из говядины", en:"Salad with beef pastrami", price:850},
-          {ru:"Салат с креветками, томатами и авокадо", en:"Salad with shrimp, tomatoes and avocado", price:880}
-        ]},
-        {h:{ru:"Горячее", en:"Mains"}, rows:[
-          {ru:"Цыплёнок с зелёными овощами", en:"Chicken with green vegetables", price:1500},
-          {ru:"Судак с цуккини и томатами черри", en:"Pike-perch with zucchini and cherry tomatoes", price:1200},
-          {ru:"Форель с капонатой", en:"Trout with caponata", price:1500},
-          {ru:"Стейк-строганов с картофельным пюре", en:"Steak Stroganoff with mashed potatoes", price:1350}
+        {h:{ru:"Блюда в стол", en:"Shared plates"}, hnote:{ru:"минимум 6 порций", en:"minimum 6 portions"}, rows:[
+          {ru:"Салат с креветками", en:"Prawn salad", price:1800},
+          {ru:"Греческий салат", en:"Greek salad", price:1800},
+          {ru:"Салат с пастрами", en:"Pastrami salad", price:1800},
+          {ru:"Овощи гриль", en:"Grilled vegetables", price:1800},
+          {ru:"Паста болоньезе", en:"Pasta bolognese", price:1800},
+          {ru:"Филе угольной рыбы в соусе унаги с микс-салатом", en:"Black cod fillet in unagi sauce with mixed salad", price:2500},
+          {ru:"Телячьи щёчки с овощным пюре", en:"Veal cheeks with vegetable purée", price:2500},
+          {ru:"Стейк из лосося с цукини и мятой", en:"Salmon steak with zucchini & mint", price:2500}
         ]}
       ],
       foot:{ru:"<b>Алкоголь для взрослых.</b> На детском празднике доступна полная барная карта Novikov School — игристое, вина, крепкий алкоголь и коктейли. Сообщите менеджеру — он направит вам барную карту с ценами.",
@@ -1133,7 +1134,6 @@ const TR={
 /* Kid Set */
 "Фруктовый стаканчик (160 г)":"Fruit cup (160 g)",
 "Овощные палочки с айоли (90 г)":"Vegetable sticks with aioli (90 g)",
-"Лимонад на выбор: мята-лайм, манго-маракуйя (350 мл)":"Lemonade of your choice: mint-lime, mango-passion fruit (350 ml)",
 /* Adult buffet */
 "Брускетта с пастрами из говядины и соусом тонато":"Bruschetta with beef pastrami and tonnato sauce",
 "Брускетта с лососем и авокадо":"Bruschetta with salmon and avocado",
@@ -1172,7 +1172,8 @@ const TR={
 /* Units */
 "180 г":"180 g","240 г":"240 g","310 г":"310 g","550 г":"550 g","295 г":"295 g","300 г":"300 g",
 "530 г":"530 g","120 г":"120 g","90 г":"90 g","100 г":"100 g","155 г":"155 g","150 г":"150 g","180 г ":"180 g",
-"1 кг":"1 kg","1 л":"1 L","0,2 л":"0.2 L","0,33 л":"0.33 L","285 мл":"285 ml","585 мл":"585 ml",
+"1 кг":"1 kg","1 л":"1 L","0,4 л":"0.4 L","2 л":"2 L","0,2 л":"0.2 L","0,33 л":"0.33 L","285 мл":"285 ml","585 мл":"585 ml",
+"на гостя":"per guest","соки и морс без ограничений":"juices and mors, unlimited","те же вкусы":"same flavours",
 "150 м²":"150 m²","50 м²":"50 m²","104 м²":"104 m²","105 м²":"105 m²","82 м²":"82 m²","161 м²":"161 m²",
 "1 час":"1 hour","2 часа":"2 hours","4 часа":"4 hours","за шт":"per pc","10 шт":"10 pcs",
 "10 400 ₽":"10 400 ₽","11 500 ₽":"11 500 ₽","12 500 ₽":"12 500 ₽","13 600 ₽":"13 600 ₽"
