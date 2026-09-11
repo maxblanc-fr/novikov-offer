@@ -223,6 +223,86 @@ SERVICE_LABELS = [
 # флористика, звёздный шеф и все четыре позиции фартуков.
 
 
+# Казино — прайс заказчика от 11.09.2026. Замены привязаны к карточке: строка
+# «Сомелье 2 200 ₽/гость · 3 раунда» есть в обеих, а меняется в них по-разному.
+#
+# У дегустационных казино поменялась сама модель: работа сомелье теперь стоит
+# 60 000 ₽ за мероприятие вместо 2 200 ₽ с гостя, а ставка за раунд остаётся
+# стоимостью алкоголя. Поэтому правятся не только цифры, но и формула в тексте.
+SERVICE_CARDS = {
+    "Винное казино": [
+        ("сомелье 2 200 ₽/гость", "сомелье 2 700 ₽/гость"),
+        ("sommelier 2 200 ₽/guest", "sommelier 2 700 ₽/guest"),
+        ('p:"8 500 ₽/бут.",  n:"≈ 51 900 ₽"',  'p:"10 200 ₽/бут.", n:"≈ 63 000 ₽"'),
+        ('p:"11 500 ₽/бут.", n:"≈ 60 900 ₽"',  'p:"13 800 ₽/бут.", n:"≈ 73 800 ₽"'),
+        ('p:"14 500 ₽/бут.", n:"≈ 69 900 ₽"',  'p:"17 400 ₽/бут.", n:"≈ 84 600 ₽"'),
+        ('price:{ru:"Сомелье 2 200 ₽/гость · 3 раунда", en:"Sommelier 2 200 ₽/guest · 3 rounds"}',
+         'price:{ru:"Сомелье 2 700 ₽/гость · 3 раунда", en:"Sommelier 2 700 ₽/guest · 3 rounds"}'),
+    ],
+    "Дегустационные казино": [
+        ("Цена = сомелье 2 200 ₽/гость + ставка за гостя × число раундов (по умолчанию 3).",
+         "Цена = работа сомелье 60 000 ₽ за мероприятие + ставка за гостя × число раундов (по умолчанию 3)."),
+        ("Price = sommelier 2 200 ₽/guest + per-guest rate × number of rounds (3 by default).",
+         "Price = the sommelier at 60 000 ₽ per event + per-guest rate × number of rounds (3 by default)."),
+        ('p:"1 050 ₽/гость · раунд", n:"3 раунда ≈ 64 200 ₽"',
+         'p:"1 300 ₽/гость · раунд", n:"3 раунда ≈ 106 800 ₽"'),
+        ('p:"1 200 ₽/гость · раунд", n:"3 раунда ≈ 69 600 ₽"',
+         'p:"1 500 ₽/гость · раунд", n:"3 раунда ≈ 114 000 ₽"'),
+        ("— плюс работа сомелье 2 200 ₽/гость.",
+         "— плюс работа сомелье 60 000 ₽ за мероприятие, независимо от числа гостей."),
+        ("Стоимость = сомелье × число гостей + ставка × количество раундов × число гостей.",
+         "Стоимость = 60 000 ₽ + ставка × количество раундов × число гостей."),
+        ("— plus the sommelier at 2 200 ₽/guest.",
+         "— plus the sommelier at 60 000 ₽ per event, whatever the guest count."),
+        ("Total = sommelier × guests + rate × rounds × guests.",
+         "Total = 60 000 ₽ + rate × rounds × guests."),
+        ('price:{ru:"Сомелье 2 200 ₽/гость · 3 раунда", en:"Sommelier 2 200 ₽/guest · 3 rounds"}',
+         'price:{ru:"Сомелье 60 000 ₽ за мероприятие · 3 раунда", en:"Sommelier 60 000 ₽ per event · 3 rounds"}'),
+    ],
+}
+
+# Те же строки цен служат ключами в RU->EN словаре и живут вне раздела услуг.
+SERVICE_TMAP = {
+    '"8 500 ₽/бут.":"8 500 ₽/bottle"':   '"10 200 ₽/бут.":"10 200 ₽/bottle"',
+    '"11 500 ₽/бут.":"11 500 ₽/bottle"': '"13 800 ₽/бут.":"13 800 ₽/bottle"',
+    '"14 500 ₽/бут.":"14 500 ₽/bottle"': '"17 400 ₽/бут.":"17 400 ₽/bottle"',
+    '"1 050 ₽/гость · раунд":"1 050 ₽/guest · round"': '"1 300 ₽/гость · раунд":"1 300 ₽/guest · round"',
+    '"3 раунда ≈ 64 200 ₽":"3 rounds ≈ 64 200 ₽"':     '"3 раунда ≈ 106 800 ₽":"3 rounds ≈ 106 800 ₽"',
+    '"3 раунда ≈ 69 600 ₽":"3 rounds ≈ 69 600 ₽"':     '"3 раунда ≈ 114 000 ₽":"3 rounds ≈ 114 000 ₽"',
+}
+
+
+def card_bounds(lines, start, end, card):
+    """Границы одной карточки услуги: от её name до начала следующей."""
+    a = next(i for i in range(start, end) if f'name:{{ru:"{card}"' in lines[i])
+    while a > start and not lines[a].lstrip().startswith("{ic:"):
+        a -= 1
+    b = next((i for i in range(a + 1, end) if lines[i].lstrip().startswith("{ic:")), end)
+    return a, b
+
+
+def apply_service_cards(lines):
+    s, e = section_bounds(lines, "services")
+    for card, subs in SERVICE_CARDS.items():
+        a, b = card_bounds(lines, s, e, card)
+        for old, new in subs:
+            if not any(old in lines[i] for i in range(a, b)):
+                sys.exit(f"«{card}»: не найдено — {old[:70]}")
+            for i in range(a, b):
+                lines[i] = lines[i].replace(old, new)
+        print(f"  {card}: {len(subs)} правок")
+    tmap = next(i for i, l in enumerate(lines) if l.startswith("const fmt"))
+    for old, new in SERVICE_TMAP.items():
+        hit = False
+        for i in range(tmap, len(lines)):
+            if old in lines[i]:
+                lines[i] = lines[i].replace(old, new)
+                hit = True
+        if not hit:
+            sys.exit(f"словарь переводов: не найдено — {old[:60]}")
+    print(f"  словарь переводов: {len(SERVICE_TMAP)} записей")
+
+
 def apply_services(lines):
     s, e = section_bounds(lines, "services")
     done = []
@@ -304,6 +384,7 @@ def main():
     # "13 600 ₽" не существует: демо-ужин не уровень мастер-класса
     miss = [m for m in miss if m != "13 600 \\u20bd"]
     apply_services(lines)
+    apply_service_cards(lines)
     if miss:
         sys.exit("цены во взрослой странице изменились, эти шаблоны не найдены:\n  "
                  + "\n  ".join(repr(m) for m in miss))
