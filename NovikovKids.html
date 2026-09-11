@@ -199,12 +199,13 @@
      Left: the dishes of one set, cross-fading on a timer. Right: the same
      dishes as a numbered list — the row of the photo on screen lights up red,
      and clicking a row jumps the photo to it. */
-  .mshow{display:grid; grid-template-columns:clamp(210px,30vw,380px) minmax(0,1fr); align-items:start; background:var(--card)}
-  /* Кадр строго квадратный и строго по ширине колонки во всех четырёх
-     блоках. width + align-self обязательны: при stretch высоту задаёт
-     список (у тарелок он выше), а aspect-ratio раздувает по ней ширину —
-     фото вылезает из колонки и наезжает на текст. */
-  .mshow-media{position:relative; width:100%; aspect-ratio:1/1; align-self:start; background:var(--bone-2); overflow:hidden; cursor:zoom-in; outline:none}
+  .mshow{display:grid; grid-template-columns:clamp(210px,30vw,380px) minmax(0,1fr); align-items:stretch; background:var(--card)}
+  /* Кадр тянется на всю высоту списка, чтобы фото и текст были одного
+     роста. Если список короче, кадр остаётся квадратом: min-height совпадает
+     с шириной колонки. aspect-ratio здесь нельзя: при stretch он раздувает
+     ширину под высоту списка, и фото наезжает на текст. Лишнее срезает
+     object-fit:cover у слайдов. */
+  .mshow-media{position:relative; width:100%; min-height:clamp(210px,30vw,380px); align-self:stretch; background:var(--bone-2); overflow:hidden; cursor:zoom-in; outline:none}
   .mshow-media:focus-visible{box-shadow:inset 0 0 0 2px var(--red)}
   .mshow-slide{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity .55s ease}
   .mshow-slide.on{opacity:1}
@@ -229,13 +230,26 @@
   .mshow-item.on .mshow-name{color:var(--red); font-weight:700}
   .mshow-item.on .mshow-num{color:var(--red)}
   .mshow-item[data-s]:hover .mshow-name{color:var(--red-deep)}
+  /* Тарелки: у каждой строки есть состав, поэтому список плотнее, чем у
+     наборов. Иначе блок вытягивается, а вместе с ним и кадр: квадратные
+     фото заметно увеличиваются и теряют чёткость. */
+  .mshow--plates .mshow-list{padding:8px 20px}
+  .mshow--plates .mshow-item{padding:6px 0 6px 14px; font-size:14px}
+  .mshow--plates .mshow-name{line-height:1.3}
+  .mshow--plates .mshow-name em{font-size:12px; line-height:1.3; margin-top:1px}
+  /* Уже 1100px колонка фото сужается, а список тарелок растёт. Растянутый
+     кадр превращается в полосу (на 1024 он почти вдвое выше своей ширины,
+     на 800 — втрое), поэтому здесь фото встаёт над списком. */
+  @media(max-width:1099px){
+    .mshow{grid-template-columns:1fr}
+    .mshow-media{aspect-ratio:16/9; min-height:0; align-self:start}
+  }
   @media(max-width:720px){
     .mshow{grid-template-columns:1fr}
-    .mshow-media{aspect-ratio:4/3}
+    .mshow-media{aspect-ratio:4/3; min-height:0; align-self:start}
     .mshow-nav{opacity:1}
     .mshow-list{padding:8px 16px 12px}
   }
-
   .set-list{padding:8px 20px 14px; color:var(--ink-soft); font-size:14px; columns:2; column-gap:26px}
   @media(max-width:560px){.set-list{columns:1}}
   .set-list div{padding:5px 0; break-inside:avoid; position:relative; padding-left:16px}
@@ -913,30 +927,31 @@ const DATA = {
           {ru:"Shambala без газа / с газом", en:"Shambala still / sparkling", wt:"585 мл", price:800}
         ]},
         {gh:{ru:"Взрослый стол", en:"The Adults Table"}, ghNote:{ru:"пока дети готовят — фуршет для родителей в том же или соседнем зале", en:"while the children cook — a buffet for the parents in the same or an adjacent hall"}},
-        {h:"Small Set", badge:{ru:"NEW", en:"NEW"}, wt:"180 г", price:1350,
-         list:["Брускетта с пастрами из говядины и соусом тонато","Брускетта с лососем и авокадо","Креветка в панко со сладким чили","Камамбер на ананасовом конфитюре с грецким орехом","Тарталетка с пате из печени цыплёнка с мастардой из груши"]},
-        {h:"Medium Set", badge:{ru:"NEW", en:"NEW"}, wt:"240 г", price:1700,
-         list:["Брускетта с гуакамоле и тартаром из тунца","Рийет из форели с икрой палтуса","Тарталетка с пате из печени цыплёнка с мастардой из груши","Креветка в панко со сладким чили","Хумус с грибами","Гриссини с брезаолой и песто в шоте","Камамбер на ананасовом конфитюре с грецким орехом"]},
-        {h:"Large Set", badge:{ru:"NEW", en:"NEW"}, wt:"310 г", price:2150,
-         list:["Брускетта с гуакамоле и тартаром из тунца","Брускетта с пастрами из говядины и соусом тонато","Брускетта с запечённым баклажаном, перцем и фетой","Брускетта на бородинском хлебе с треской","Тарталетка с пате из печени цыплёнка с мастардой из груши","Гриссини с брезаолой и песто в шоте","Мухаммара с креветкой и огурцом","Груша с пармой и горгонзолой","Камамбер на ананасовом конфитюре с грецким орехом"]},
-        {h:{ru:"Тарелки", en:"Platters"}, rows:[
-          {ru:"Сырная тарелка с мёдом и орехами", en:"Cheese platter with honey & nuts", info:"козий сыр, пармезан, дор блю, камамбер", wt:"550 г", price:4050, img:"uploads/buffet/plate-cheese.webp"},
-          {ru:"Мясная тарелка", en:"Meat platter", badge:"NEW", info:"брезаола, ростбиф, сырокопчёная утиная грудка, коппа сыровяленая", wt:"295 г", price:4050, img:"uploads/buffet/plate-meat.webp"},
-          {ru:"Рыбная тарелка", en:"Fish platter", info:"лосось слабосолёный, масляная х/к, тунец подкопчённый", wt:"300 г", price:4050, img:"uploads/buffet/plate-fish.webp"},
-          {ru:"Овощная тарелка", en:"Vegetable platter", badge:"NEW", info:"томаты, огурцы, перец болгарский, зелень", wt:"530 г", price:2500, img:"uploads/buffet/plate-veg.webp"},
-          {ru:"Фруктовая тарелка", en:"Fruit platter", info:"ананас, апельсин, виноград, груша", wt:"1 кг", price:3600, img:"uploads/buffet/plate-fruit.webp"},
-          {ru:"Ягоды", en:"Berries", info:"клубника, малина, голубика", wt:"120 г", price:1200, img:"uploads/buffet/plate-berries.webp"},
-          {ru:"Хлебная корзина", en:"Bread basket", wt:"120 г", price:220, img:"uploads/buffet/plate-bread.webp"}
+        {h:{ru:"Small Set: 7 позиций", en:"Small Set: 7 items"}, wt:"138 г", price:1350,
+         list:["Блинный ролл с лососем и шпинатом","Сырное канапе с индейкой","Индейка тандури в кляре с соусом свит чили","Спайси-крекер с лососем","Мини-эклер с томатным муссом","Пряная свёкла и артишок","Ростбиф с соусом блю чиз"]},
+        {h:{ru:"Medium Set: 9 позиций", en:"Medium Set: 9 items"}, wt:"172 г", price:1700,
+         list:["Блинный ролл с лососем и шпинатом","Сырное канапе с индейкой","Индейка тандури в кляре с соусом свит чили","Спайси-крекер с лососем","Мини-эклер с томатным муссом","Пряная свёкла и артишок","Ростбиф с соусом блю чиз","Тигровые креветки с соусом карри","Тунец том ям"]},
+        {h:{ru:"Large Set: 11 позиций", en:"Large Set: 11 items"}, wt:"211 г", price:2150,
+         list:["Блинный ролл с лососем и шпинатом","Сырное канапе с индейкой","Индейка тандури в кляре с соусом свит чили","Спайси-крекер с лососем","Мини-эклер с томатным муссом","Пряная свёкла и артишок","Ростбиф с соусом блю чиз","Тигровые креветки с соусом карри","Тунец том ям","Профитроли с ростбифом","Брускетта с угрём и соусом унаги"]},
+        {h:{ru:"Тарелки", en:"Platters"}, hnote:{ru:"ассорти на 6 человек", en:"serves 6"}, rows:[
+          {ru:"Мясная тарелка", en:"Meat platter", info:"ветчина пармская и варёная, брезаола, салями милано, томаты черри, каперсы, розмарин", wt:"480 г", price:5100, img:"uploads/buffet/platter-meat.webp?v=2"},
+          {ru:"Сырная тарелка", en:"Cheese platter", info:"раклет, горгонзола, пармезан, пекорино, курага, чернослив, мёд, цукаты апельсиновые, изюм, грецкий орех", wt:"693 г", price:6400, img:"uploads/buffet/platter-cheese.webp?v=2"},
+          {ru:"Рыбная тарелка", en:"Fish platter", info:"лосось слабосолёный, масляная рыба, угорь копчёный", wt:"304 г", price:5600, img:"uploads/buffet/platter-fish.webp?v=2"},
+          {ru:"Ассорти сыров и колбас с артишоками и томатами", en:"Cheese & charcuterie board with artichokes and tomatoes", info:"салями, ветчина варёная и пармская, пармезан, скаморца, артишоки, томаты черри, каперсы, оливки, грецкий орех, цукаты апельсиновые, мёд, мята", wt:"702 г", price:6800, img:"uploads/buffet/platter-antipasti.webp?v=2"},
+          {ru:"Ассорти из фруктов и ягод", en:"Fruit & berry platter", info:"черешня, дыня, виноград, арбуз, абрикосы, мята", wt:"1 613 г", price:3000, img:"uploads/buffet/platter-fruit.webp?v=2"},
+          {ru:"Ассорти из овощей и зелени", en:"Vegetable & herb platter", info:"томаты розовые и черри, огурцы, перец болгарский и чили, редис, базилик, петрушка", wt:"1 020 г", price:2600, img:"uploads/buffet/platter-veg.webp?v=2"},
+          {ru:"Ассорти солений", en:"Pickles platter", info:"огурцы солёные, томаты зелёные солёные, патиссоны, чеснок маринованный, перец острый, маринованные черри", wt:"700 г", price:2000, img:"uploads/buffet/platter-pickles.webp?v=2"},
+          {ru:"Хлебная корзина", en:"Bread basket", info:"багет французский и ржаной, сливочное масло с травами", wt:"640 г", price:1200, img:"uploads/buffet/platter-bread.webp?v=2"}
         ]},
         {h:{ru:"Блюда в стол", en:"Shared plates"}, hnote:{ru:"минимум 6 порций", en:"minimum 6 portions"}, rows:[
-          {ru:"Салат с креветками", en:"Prawn salad", price:1800},
-          {ru:"Греческий салат", en:"Greek salad", price:1800},
-          {ru:"Салат с пастрами", en:"Pastrami salad", price:1800},
-          {ru:"Овощи гриль", en:"Grilled vegetables", price:1800},
-          {ru:"Паста болоньезе", en:"Pasta bolognese", price:1800},
-          {ru:"Филе угольной рыбы в соусе унаги с микс-салатом", en:"Black cod fillet in unagi sauce with mixed salad", price:2500},
-          {ru:"Телячьи щёчки с овощным пюре", en:"Veal cheeks with vegetable purée", price:2500},
-          {ru:"Стейк из лосося с цукини и мятой", en:"Salmon steak with zucchini & mint", price:2500}
+          {ru:"Салат с креветками", en:"Prawn salad", price:1500},
+          {ru:"Греческий салат", en:"Greek salad", price:1500},
+          {ru:"Салат с пастрами", en:"Pastrami salad", price:1500},
+          {ru:"Овощи гриль", en:"Grilled vegetables", price:1500},
+          {ru:"Паста болоньезе", en:"Pasta bolognese", price:1500},
+          {ru:"Филе угольной рыбы в соусе унаги с микс-салатом", en:"Black cod fillet in unagi sauce with mixed salad", price:2300},
+          {ru:"Телячьи щёчки с овощным пюре", en:"Veal cheeks with vegetable purée", price:2300},
+          {ru:"Стейк из лосося с цукини и мятой", en:"Salmon steak with zucchini & mint", price:2300}
         ]}
       ],
       foot:{ru:"<b>Алкоголь для взрослых.</b> На детском празднике доступна полная барная карта Novikov School — игристое, вина, крепкий алкоголь и коктейли. Сообщите менеджеру — он направит вам барную карту с ценами. Алкоголь с собой строго запрещён.",
@@ -951,12 +966,13 @@ const DATA = {
         {gh:{ru:"Шоу и ведущие", en:"Shows & Hosts"}, ghNote:{ru:"цена за мероприятие, не за ребёнка", en:"priced per event, not per child"}},
 
         {ic:"🎲", name:{ru:"Интерактивные игры", en:"Interactive Games"},
-          desc:{ru:"Игры с профессиональным ведущим — тот же формат, что и на взрослых мероприятиях, адаптированный по возрасту. Час игры входит в пакет 3; можно взять отдельно или расширить до двух часов с интерактивом от ведущего.",
-                en:"Games with a professional host — the same format as at adult events, adapted to the age group. One hour is included in package 3; it can be booked separately or extended to two hours with a host-led interactive set."},
+          desc:{ru:"Игры с профессиональным ведущим — тот же формат, что и на взрослых мероприятиях, адаптированный по возрасту: час игры или ивент-менеджер на 4 часа, игру выбираете из списка. Отдельно можно заказать караоке на 2 часа.",
+                en:"Games with a professional host — the same format as at adult events, adapted to the age group: one hour of the game or an event manager for 4 hours; pick the game from the list. Karaoke for 2 hours can be booked separately."},
           tags:["Музыкальное бинго","Квиз","Угадай мелодию","Игра 100 к 1"],
           tiers:[
             {l:{ru:"Игра", en:"The game"}, p:"20 000 ₽", n:"1 час"},
-            {l:{ru:"Игра и интерактив от ведущего", en:"Game + host interactive"}, p:"35 000 ₽", n:"2 часа"}
+            {l:{ru:"Ивент-менеджер", en:"Event manager"}, p:"35 000 ₽", n:"4 часа"},
+            {l:{ru:"Караоке", en:"Karaoke"}, p:"45 000 ₽", n:"2 часа"}
           ],
           note:{ru:"<b>Входит в пакет 3</b> для 8–10 и 11–14 лет. Цена указана для случая, когда игру берут отдельно к пакету 1 или 2.",
                 en:"<b>Included in package 3</b> for ages 8–10 and 11–14. The price shown applies when the game is added to package 1 or 2."}},
@@ -983,11 +999,11 @@ const DATA = {
                 en:"A favourite character greets the guests, poses for photos and plays with the children. The character is agreed in advance."},
           price:{ru:"Цена по запросу", en:"Price on request"}},
 
-        {ic:"🎨", name:{ru:"Творческий мастер-класс", en:"Creative Masterclass"},
-          min:{ru:"от 10 человек · 14+", en:"from 10 guests · 14+"},
-          desc:{ru:"Картина-аффирмация: каждый участник пишет свою картину под руководством художника. Работу забирают с собой.",
-                en:"An affirmation painting: each guest paints their own canvas guided by an artist and takes the work home."},
-          price:{ru:"5 350 ₽ / гость · до 1,5 часов", en:"5 350 ₽ / guest · up to 1.5 hours"}},
+        {ic:"🌷", name:{ru:"Мастер-класс по букетам", en:"Bouquet Masterclass"},
+          min:{ru:"от 6 гостей", en:"from 6 guests"},
+          desc:{ru:"Флорист показывает, как собрать букет: подбор цветов, композиция, упаковка. Каждый участник собирает свой букет и забирает его с собой.",
+                en:"A florist shows how to build a bouquet: choosing the flowers, the composition, the wrapping. Each guest assembles their own bouquet and takes it home."},
+          price:{ru:"от 9 500 ₽ / гость", en:"from 9 500 ₽ / guest"}},
 
         {gh:{ru:"Декор и съёмка", en:"Décor & Photography"}},
 
@@ -1011,11 +1027,18 @@ const DATA = {
             {l:{ru:"Неоновая надпись под заказ", en:"Custom neon sign"}, p:"от 30 000 ₽", n:"ваш текст"}
           ]},
 
-        {ic:"📷", name:{ru:"Профессиональный фотограф", en:"Professional Photographer"},
-          min:{ru:"минимум 2 часа", en:"minimum 2 hours"},
-          desc:{ru:"Репортажная съёмка праздника с обработкой. Можно добавить съёмку на полароид — гости забирают снимки сразу.",
-                en:"Reportage coverage of the party, retouched. Polaroid shooting can be added — guests take the prints home right away."},
-          price:{ru:"Цена по запросу", en:"Price on request"}},
+        {ic:"👥", name:{ru:"Дополнительный персонал", en:"Additional Staff"},
+          desc:{ru:"Ведущий, шеф, официант, диджей и фотограф на ваше мероприятие.",
+                en:"A host, chef, waiter, DJ and photographer for your event."},
+          tiers:[
+            {l:{ru:"Ведущий", en:"Host"},                                          p:"от 60 000 ₽", n:""},
+            {l:{ru:"Звёздный шеф", en:"Star chef"},                                p:"от 80 000 ₽", n:""},
+            {l:{ru:"Официант", en:"Waiter"},                                       p:"12 000 ₽",    n:"4 часа"},
+            {l:{ru:"Диджей и звуковое оборудование", en:"DJ and sound equipment"}, p:"54 000 ₽",    n:"4 часа"},
+            {l:{ru:"Продление диджея", en:"DJ extension"},                         p:"13 500 ₽",    n:"1 час"},
+            {l:{ru:"Профессиональный фотограф", en:"Professional photographer"},   p:"44 000 ₽",    n:"4 часа"},
+            {l:{ru:"Продление фотографа", en:"Photographer extension"},            p:"11 000 ₽",    n:"1 час"}
+          ]},
 
         {ic:"💐", modal:"floral", modalLabel:{ru:"Посмотреть примеры", en:"View examples"},
           cardImgs:["uploads/floral/1.jpg","uploads/floral/8.jpg","uploads/floral/15.jpg","uploads/floral/22.jpg"], cardMore:22,
@@ -1031,18 +1054,14 @@ const DATA = {
                 en:"Custom author cakes — 13 fillings and a design catalogue. Any colour and texture; figurines and décor are priced and weighed separately."},
           price:{ru:"4 900 ₽/кг · праздничный с декором от 6 350 ₽/кг · минимум 2 кг", en:"4 900 ₽/kg · festive with décor from 6 350 ₽/kg · min 2 kg"}},
 
-        {ic:"👕", cardImg:"uploads/aprons/birthday.jpg", name:{ru:"Именной фартук для именинника", en:"Personalised Apron for the Birthday Child"},
-          desc:{ru:"Персональный фартук с именем — ребёнок готовит в нём на мастер-классе и забирает с собой. Приятный подарок и памятная деталь праздника.",
-                en:"A personalised apron with the child's name — they cook in it at the masterclass and keep it. A lovely gift and a memorable detail of the party."},
-          price:{ru:"8 600 ₽ / шт", en:"8 600 ₽ / piece"}},
-
-        {ic:"🧑‍🍳", cardImg:"uploads/aprons/branded.jpg", name:{ru:"Фартуки для всех гостей", en:"Aprons for All the Guests"},
-          desc:{ru:"Фартуки для всей компании — дети готовят в них и забирают с собой. Можно с вашим принтом или в фирменном варианте Novikov School.",
-                en:"Aprons for the whole group — the children cook in them and take them home. Available with your own print or in the Novikov School design."},
+        {ic:"👕", cardImg:"uploads/aprons/birthday.jpg", name:{ru:"Фартуки", en:"Aprons"},
+          desc:{ru:"Брендированные — с вашим логотипом: гости готовят в них на мастер-классе и забирают с собой. Для именинников — персональный фартук с именем. Профессиональные — фирменные фартуки Novikov School.",
+                en:"Branded — with your logo: guests cook in them at the masterclass and keep them. For the birthday guest — a personalised apron with their name. Professional — Novikov School aprons."},
           tiers:[
-            {l:{ru:"Брендированный, от 11 шт", en:"Branded, from 11 pcs"}, p:"3 700 ₽", n:"за шт"},
-            {l:{ru:"Брендированный, 2–10 шт", en:"Branded, 2–10 pcs"}, p:"4 500 ₽", n:"за шт"},
-            {l:{ru:"Novikov School", en:"Novikov School"}, p:"3 100 ₽", n:"за шт"}
+            {l:{ru:"Брендированные, от 2 до 10 шт", en:"Branded, 2 to 10 pcs"},        p:"4 800 ₽", n:"за шт."},
+            {l:{ru:"Брендированные, от 11 шт", en:"Branded, 11+ pcs"},                 p:"4 500 ₽", n:"за шт."},
+            {l:{ru:"Для именинников", en:"For the birthday guest"},                    p:"8 000 ₽", n:"за шт."},
+            {l:{ru:"Профессиональные Novikov School", en:"Professional Novikov School"}, p:"7 000 ₽", n:"за шт."}
           ]}
       ]
     }
@@ -1232,24 +1251,53 @@ const TR={
 "Фруктовое канапе":"Fruit canapé",
 "Клубника в меренге":"Strawberry in meringue",
 /* Adult buffet */
-"Брускетта с пастрами из говядины и соусом тонато":"Bruschetta with beef pastrami and tonnato sauce",
-"Брускетта с лососем и авокадо":"Bruschetta with salmon and avocado",
-"Креветка в панко со сладким чили":"Panko shrimp with sweet chili",
-"Камамбер на ананасовом конфитюре с грецким орехом":"Camembert on pineapple confit with walnut",
-"Тарталетка с пате из печени цыплёнка с мастардой из груши":"Tartlet with chicken liver pâté and pear mostarda",
-"Брускетта с гуакамоле и тартаром из тунца":"Bruschetta with guacamole and tuna tartare",
-"Рийет из форели с икрой палтуса":"Trout rillettes with halibut roe",
-"Хумус с грибами":"Hummus with mushrooms",
-"Гриссини с брезаолой и песто в шоте":"Grissini with bresaola and pesto in a shot",
-"Брускетта с запечённым баклажаном, перцем и фетой":"Bruschetta with roasted eggplant, pepper and feta",
-"Брускетта на бородинском хлебе с треской":"Bruschetta on Borodino bread with cod",
-"Мухаммара с креветкой и огурцом":"Muhammara with shrimp and cucumber",
-"Груша с пармой и горгонзолой":"Pear with Parma ham and Gorgonzola",
-"козий сыр, пармезан, дор блю, камамбер":"goat cheese, parmesan, blue cheese, camembert",
-"брезаола, ростбиф, сырокопчёная утиная грудка, коппа сыровяленая":"bresaola, roast beef, smoked duck breast, cured coppa",
-"лосось слабосолёный, масляная х/к, тунец подкопчённый":"lightly salted salmon, cold-smoked butterfish, smoked tuna",
-"томаты, огурцы, перец болгарский, зелень":"tomatoes, cucumbers, bell pepper, herbs",
-"ананас, апельсин, виноград, груша":"pineapple, orange, grapes, pear",
+"1 020 г":"1 020 g",
+"1 613 г":"1 613 g",
+"138 г":"138 g",
+"172 г":"172 g",
+"211 г":"211 g",
+"304 г":"304 g",
+"480 г":"480 g",
+"640 г":"640 g",
+"693 г":"693 g",
+"700 г":"700 g",
+"702 г":"702 g",
+"Блинный ролл с лососем и шпинатом":"Crêpe roll with salmon and spinach",
+"Брускетта с угрём и соусом унаги":"Bruschetta with eel and unagi sauce",
+"Индейка тандури в кляре с соусом свит чили":"Tandoori turkey in batter with sweet chili sauce",
+"Мини-эклер с томатным муссом":"Mini éclair with tomato mousse",
+"Профитроли с ростбифом":"Profiteroles with roast beef",
+"Пряная свёкла и артишок":"Spiced beetroot and artichoke",
+"Ростбиф с соусом блю чиз":"Roast beef with blue cheese sauce",
+"Спайси-крекер с лососем":"Spicy cracker with salmon",
+"Сырное канапе с индейкой":"Cheese canapé with turkey",
+"Тигровые креветки с соусом карри":"Tiger prawns with curry sauce",
+"Тунец том ям":"Tom yum tuna",
+"багет французский и ржаной, сливочное масло с травами":"French and rye baguette, butter with herbs",
+"ветчина пармская и варёная, брезаола, салями милано, томаты черри, каперсы, розмарин":"Parma ham, cooked ham, bresaola, Milano salami, cherry tomatoes, capers, rosemary",
+"лосось слабосолёный, масляная рыба, угорь копчёный":"lightly salted salmon, butterfish, smoked eel",
+"огурцы солёные, томаты зелёные солёные, патиссоны, чеснок маринованный, перец острый, маринованные черри":"pickled cucumbers, salted green tomatoes, pattypan squash, pickled garlic, hot peppers, marinated cherry tomatoes",
+"раклет, горгонзола, пармезан, пекорино, курага, чернослив, мёд, цукаты апельсиновые, изюм, грецкий орех":"Raclette, Gorgonzola, Parmesan, Pecorino, dried apricots, prunes, honey, candied orange, raisins, walnuts",
+"салями, ветчина варёная и пармская, пармезан, скаморца, артишоки, томаты черри, каперсы, оливки, грецкий орех, цукаты апельсиновые, мёд, мята":"salami, cooked ham, Parma ham, Parmesan, Scamorza, artichokes, cherry tomatoes, capers, olives, walnuts, candied orange, honey, mint",
+"томаты розовые и черри, огурцы, перец болгарский и чили, редис, базилик, петрушка":"pink and cherry tomatoes, cucumbers, bell and chili peppers, radish, basil, parsley",
+"черешня, дыня, виноград, арбуз, абрикосы, мята":"sweet cherries, melon, grapes, watermelon, apricots, mint",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "клубника, малина, голубика":"strawberry, raspberry, blueberry",
 "режем на 4 части":"cut into 4 pieces",
 /* Games & activities */
@@ -1258,11 +1306,12 @@ const TR={
 "Угадай мелодию":"Guess the tune",
 "Игра 100 к 1":"Family Feud",
 /* Units */
-"180 г":"180 g","240 г":"240 g","310 г":"310 g","550 г":"550 g","295 г":"295 g","300 г":"300 g",
-"530 г":"530 g","120 г":"120 g","90 г":"90 g","100 г":"100 g","155 г":"155 g","150 г":"150 g","180 г ":"180 g",
-"1 кг":"1 kg","1 л":"1 L","0,4 л":"0.4 L","2 л":"2 L","0,2 л":"0.2 L","0,33 л":"0.33 L","285 мл":"285 ml","585 мл":"585 ml",
+"180 г":"180 g",
+"120 г":"120 g","90 г":"90 g","100 г":"100 g","155 г":"155 g","150 г":"150 g","180 г ":"180 g",
+"1 л":"1 L","0,4 л":"0.4 L","2 л":"2 L","0,2 л":"0.2 L","0,33 л":"0.33 L","285 мл":"285 ml","585 мл":"585 ml",
 "на гостя":"per guest","соки и морс без ограничений":"juices and mors, unlimited","те же вкусы":"same flavours",
 "150 м²":"150 m²","50 м²":"50 m²","104 м²":"104 m²","105 м²":"105 m²","82 м²":"82 m²","161 м²":"161 m²",
+"за шт.":"per piece","от 60 000 ₽":"from 60 000 ₽","от 80 000 ₽":"from 80 000 ₽",
 "1 час":"1 hour","2 часа":"2 hours","4 часа":"4 hours","за шт":"per pc","10 шт":"10 pcs",
 "10 400 ₽":"10 400 ₽","11 500 ₽":"11 500 ₽","12 500 ₽":"12 500 ₽","13 600 ₽":"13 600 ₽"
 };
@@ -1274,26 +1323,24 @@ const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 /* Photo per canapé position, keyed by the RU name used in DATA.canape[].d.
    The same position appears in several sets — one map keeps them in sync. */
 const BUFFET_IMG = {
-  "Брускетта с пастрами из говядины и соусом тонато":"uploads/buffet/pastrami.webp",
-  "Брускетта с лососем и авокадо":"uploads/buffet/salmon-avocado.webp",
-  "Креветка в панко со сладким чили":"uploads/buffet/shrimp-panko.webp",
-  "Камамбер на ананасовом конфитюре с грецким орехом":"uploads/buffet/camembert.webp",
-  "Тарталетка с пате из печени цыплёнка с мастардой из груши":"uploads/buffet/tartlet-pate.webp",
-  "Брускетта с гуакамоле и тартаром из тунца":"uploads/buffet/tuna-guacamole.webp",
-  "Рийет из форели с икрой палтуса":"uploads/buffet/trout-rillette.webp",
-  "Хумус с грибами":"uploads/buffet/hummus.webp",
-  "Гриссини с брезаолой и песто в шоте":"uploads/buffet/grissini.webp",
-  "Брускетта с запечённым баклажаном, перцем и фетой":"uploads/buffet/eggplant-feta.webp",
-  "Брускетта на бородинском хлебе с треской":"uploads/buffet/cod-borodinsky.webp",
-  "Мухаммара с креветкой и огурцом":"uploads/buffet/muhammara.webp",
-  "Груша с пармой и горгонзолой":"uploads/buffet/pear-parma.webp"
+  "Блинный ролл с лососем и шпинатом":"uploads/buffet/blini-salmon.webp",
+  "Сырное канапе с индейкой":"uploads/buffet/canape-turkey.webp",
+  "Индейка тандури в кляре с соусом свит чили":"uploads/buffet/turkey-tandoori.webp",
+  "Спайси-крекер с лососем":"uploads/buffet/spicy-cracker.webp",
+  "Мини-эклер с томатным муссом":"uploads/buffet/mini-eclair.webp",
+  "Пряная свёкла и артишок":"uploads/buffet/beet-artichoke.webp",
+  "Ростбиф с соусом блю чиз":"uploads/buffet/roastbeef-bluecheese.webp",
+  "Тигровые креветки с соусом карри":"uploads/buffet/tiger-prawn-curry.webp",
+  "Тунец том ям":"uploads/buffet/tuna-tomyam.webp",
+  "Профитроли с ростбифом":"uploads/buffet/profiterole-roastbeef.webp",
+  "Брускетта с угрём и соусом унаги":"uploads/buffet/bruschetta-eel.webp"
 };
 
 /* Showcase card: cross-fading photos on the left, the numbered positions on
    the right, the row of the photo currently on screen highlighted in red.
    items: [{name(html), plain, sub, wt, price, img}]. Returns "" when nothing
    in the list has a photo, so callers can fall back to their plain markup. */
-function showcase(items){
+function showcase(items, cls){
   const shots = [];
   items.forEach((it,i)=>{ if(it.img) shots.push({it, i, s:shots.length}); });
   if(!shots.length) return "";
@@ -1310,7 +1357,7 @@ function showcase(items){
       ${it.price?`<span class="mshow-price">${it.price}</span>`:""}
     </li>`;
   }).join("");
-  return `<div class="mshow" data-mshow>
+  return `<div class="mshow${cls?" "+cls:""}" data-mshow>
     <div class="mshow-media" role="button" tabindex="0" aria-label="${LANG==="ru"?"Фото позиций — открыть крупно":"Position photos — open larger"}">
       ${slides}
       <button type="button" class="mshow-nav prev" data-d="-1" aria-label="${LANG==="ru"?"Назад":"Previous"}">‹</button>
@@ -1423,7 +1470,7 @@ function renderSection(s, i){
         wt: p.wt ? T(p.wt) : "",
         price: `${fmt(p.price)} ₽`,
         img: p.img || ""
-      })));
+      })), b.h && b.h.ru==="Тарелки" ? "mshow--plates" : "");
       return head + (rich || b.rows.map(bRow).join(""));
     };
     body = `<div class="rows">${s.blocks.map(block).join("")}</div>`
