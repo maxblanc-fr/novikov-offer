@@ -281,6 +281,31 @@ def card_bounds(lines, start, end, card):
     return a, b
 
 
+# «Блюда в стол» — прайс заказчика от 11.09.2026: закуски 1 800, горячее 2 500.
+# Остальной фуршет (канапе-сеты, тарелки, детский) остаётся по ценам взрослой.
+SHARED_PLATES = {1500: 1800, 2300: 2500}
+
+
+def apply_shared_plates(lines):
+    s, e = section_bounds(lines, "buffet")
+    a = next((i for i in range(s, e) if 'ru:"Блюда в стол"' in lines[i]), None)
+    if a is None:
+        sys.exit("не найдена группа «Блюда в стол» в разделе фуршета")
+    b = next((i for i in range(a, e) if lines[i].strip() == "]}"), e)
+    seen = {}
+    for i in range(a, b + 1):
+        for old, new in SHARED_PLATES.items():
+            if f"price:{old}}}" in lines[i]:
+                lines[i] = lines[i].replace(f"price:{old}}}", f"price:{new}}}")
+                seen[old] = seen.get(old, 0) + 1
+    missing = [o for o in SHARED_PLATES if o not in seen]
+    if missing:
+        sys.exit("во взрослой странице нет позиций по цене " +
+                 ", ".join(str(m) for m in missing) + " — прайс уехал, проверьте раздел")
+    print("  блюда в стол: " + " · ".join(
+        f"{o} -> {SHARED_PLATES[o]} ({n} поз.)" for o, n in sorted(seen.items())))
+
+
 def apply_service_cards(lines):
     s, e = section_bounds(lines, "services")
     for card, subs in SERVICE_CARDS.items():
@@ -385,6 +410,7 @@ def main():
     miss = [m for m in miss if m != "13 600 \\u20bd"]
     apply_services(lines)
     apply_service_cards(lines)
+    apply_shared_plates(lines)
     if miss:
         sys.exit("цены во взрослой странице изменились, эти шаблоны не найдены:\n  "
                  + "\n  ".join(repr(m) for m in miss))
