@@ -918,10 +918,8 @@ const DATA = {
         ]},
         {h:{ru:"Детские напитки", en:"Kids Drinks"}, rows:[
           {ru:"Безалкогольный безлимитный бар", en:"Unlimited soft bar", info:"соки и морс без ограничений", wt:"на гостя", price:900},
-          {ru:"Лимонад: лаванда-смородина / мята-лайм / манго-маракуйя / клубника-мята / яблоко-лимон", en:"Lemonade: lavender-currant / mint-lime / mango-passion fruit / strawberry-mint / apple-lemon", wt:"0,4 л", price:750},
+          {ru:"Лимонад: манго-маракуйя / клубника-манго-кокос / мохито классический / линчбургский / Berries Punch / лаванда-смородина / мята-лайм / яблоко-лимон / клубника-мята", en:"Lemonade: mango & passion fruit / strawberry, mango & coconut / classic mojito / Lynchburg / Berries Punch / lavender & blackcurrant / mint & lime / apple & lemon / strawberry & mint", wt:"0,4 л", price:750},
           {ru:"Лимонад в графине", en:"Lemonade carafe", info:"те же вкусы", wt:"2 л", price:3000},
-          {ru:"Ягодный морс", en:"Berry mors", wt:"1 л", price:1000},
-          {ru:"Соки в ассортименте", en:"Assorted juices", wt:"0,2 л", price:220},
           {ru:"Coca-Cola Original / Zero, Estecola cherry", en:"Coca-Cola Original / Zero, Estecola cherry", wt:"0,33 л", price:400},
           {ru:"Shambala без газа / с газом", en:"Shambala still / sparkling", wt:"285 мл", price:500},
           {ru:"Shambala без газа / с газом", en:"Shambala still / sparkling", wt:"585 мл", price:800}
@@ -1046,7 +1044,7 @@ const DATA = {
         {ic:"🎂", modal:"cakes", name:{ru:"Торты", en:"Cakes"},
           desc:{ru:"Авторские торты на заказ — 13 начинок и каталог дизайнов. Любой цвет и текстура; фигурки и декор оплачиваются и весят дополнительно.",
                 en:"Custom author cakes — 13 fillings and a design catalogue. Any colour and texture; figurines and décor are priced and weighed separately."},
-          price:{ru:"4 900 ₽/кг · праздничный с декором от 6 350 ₽/кг · минимум 2 кг", en:"4 900 ₽/kg · festive with décor from 6 350 ₽/kg · min 2 kg"}},
+          price:{ru:"от 6 000 ₽/кг · минимум 2 кг", en:"from 6 000 ₽/kg · min 2 kg"}},
 
         {ic:"👕", cardImg:"uploads/aprons/birthday.jpg", name:{ru:"Фартуки", en:"Aprons"},
           desc:{ru:"Брендированные — с вашим логотипом: гости готовят в них на мастер-классе и забирают с собой. Для именинников — персональный фартук с именем. Профессиональные — фирменные фартуки Novikov School.",
@@ -1302,7 +1300,7 @@ const TR={
 /* Units */
 "180 г":"180 g",
 "120 г":"120 g","90 г":"90 g","100 г":"100 g","155 г":"155 g","150 г":"150 g","180 г ":"180 g",
-"1 л":"1 L","0,4 л":"0.4 L","2 л":"2 L","0,2 л":"0.2 L","0,33 л":"0.33 L","285 мл":"285 ml","585 мл":"585 ml",
+"0,4 л":"0.4 L","2 л":"2 L","0,33 л":"0.33 L","285 мл":"285 ml","585 мл":"585 ml",
 "на гостя":"per guest","соки и морс без ограничений":"juices and mors, unlimited","те же вкусы":"same flavours",
 "150 м²":"150 m²","50 м²":"50 m²","104 м²":"104 m²","105 м²":"105 m²","82 м²":"82 m²","161 м²":"161 m²",
 "за шт.":"per piece","от 60 000 ₽":"from 60 000 ₽","от 80 000 ₽":"from 80 000 ₽",
@@ -1662,7 +1660,7 @@ function cakeModal(){
   return `<div class="hall-modal cake-modal" id="hm-cakes" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Торты":"Cakes"}">
     <div class="hm-card">
       <div class="hm-head">
-        <div class="hm-title"><b>${LANG==="ru"?"Торты":"Cakes"}</b><span class="hm-area">${LANG==="ru"?"4 900 ₽/кг · минимум 2 кг":"4 900 ₽/kg · min 2 kg"}</span></div>
+        <div class="hm-title"><b>${LANG==="ru"?"Торты":"Cakes"}</b><span class="hm-area">${LANG==="ru"?"от 6 000 ₽/кг · минимум 2 кг":"from 6 000 ₽/kg · min 2 kg"}</span></div>
         <span class="hm-cap">${LANG==="ru"?"Начинка по выбору · оформление и фигурки как на фото · декор оплачивается и весит дополнительно":"Filling of choice · decoration and figurines as shown · décor is priced and weighed separately"}</span>
       </div>
       <div class="hm-tabs" role="tablist">${tabs}</div>
