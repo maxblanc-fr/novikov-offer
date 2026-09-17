@@ -120,7 +120,7 @@
     background:var(--card); border:1px solid var(--line); border-radius:0;
     padding:18px 20px;
   }
-  .set,.svc-card,.ven-card,.rows,.ff-card,.cat,.notecard,.ven-incl > div{box-shadow:var(--card-shadow)}
+  .set,.svc-card,.ven-card,.rows,.ff-card,.cat,.notecard{box-shadow:var(--card-shadow)}
   .set h3{margin:0 0 10px; font-family:var(--head); font-weight:900; font-size:15px; color:var(--ink); letter-spacing:.01em; text-transform:uppercase}
   .set .h-en{font-family:var(--head); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:12px}
   .set ul{list-style:none; margin:0; padding:0}
@@ -270,11 +270,6 @@
   .ven-h b{color:var(--ink); font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:14px; line-height:1.2}
   .ven-a{color:var(--red); font-family:var(--head); font-weight:900; font-size:12.5px; white-space:nowrap}
   .ven-c{display:block; margin-top:7px; font-size:13px; color:var(--ink-soft)}
-  .ven-note{margin-top:16px; background:var(--bone-2); border:1px solid var(--line); border-radius:0; padding:13px 16px; font-size:14px; color:var(--red-deep); font-weight:600}
-  .ven-incl{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); margin-top:14px}
-  .ven-incl > div{background:var(--card); border:1px solid var(--line); border-radius:0; padding:15px 17px}
-  .ven-incl b{color:var(--ink); font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.03em; font-size:12.5px}
-  .ven-incl p{margin:8px 0 0; font-size:13.5px; color:var(--ink-soft); line-height:1.55}
 
   /* ---------- Bar card ---------- */
   .bar-grid{columns:2; column-gap:26px}
@@ -579,7 +574,7 @@
   .sec-head{border-bottom:2px dashed var(--red)}
   footer{background:linear-gradient(135deg,#9E1526,#3A0A10)}
 
-  .svc-card, .ven-card, .rows, .mc-tl, .pkg-card, .ven-incl > div,
+  .svc-card, .ven-card, .rows, .mc-tl, .pkg-card,
   .sec-foot, .age-note, .notecard, .menu-card, .cmp-wrap, .mc-tab{border-radius:16px !important}
   .svc-card, .ven-card, .rows, .mc-tl, .menu-card, .cmp-wrap{overflow:hidden}
   .svc-price, .sec-price-badge, .pkg-tag, .badge, .svc-tags span,
@@ -884,15 +879,6 @@ const DATA = {
         {slug:"art", n:{ru:"ART · Флористика / Живопись / Керамика", en:"ART · Floristry / Painting / Ceramics"}, area:"161 м²", cap:{ru:"8–12 мест каждый · 24 места вместе", en:"8–12 seats each · 24 together"},
           tabs:[{k:"ceramics", l:{ru:"Керамика", en:"Ceramics"}},{k:"painting", l:{ru:"Живопись", en:"Painting"}},{k:"floristry", l:{ru:"Флористика", en:"Floristry"}}]}
       ],
-      combos:{ru:"Комбинации залов: Остров + Prof — до 45 гостей; Остров + Prof + Оливковый — тематический праздник до 60 гостей (2 больших стола, посадка в разных залах). Взрослых можно посадить отдельно от детей.",
-              en:"Hall combinations: Island + Prof — up to 45 guests; Island + Prof + Olive — a themed party for up to 60 guests (2 large tables, seating across halls). Adults can be seated separately from the children."},
-      incl:{
-        culinary:{ru:"Закрытие зала под вашу компанию · гардероб, ресепшн, уборка · посуда и оборудование · шеф-повар и ассистент · event-менеджер на площадке · время монтажа/демонтажа включено.",
-                  en:"Private hall for your party · cloakroom, reception, cleaning · dishware & equipment · chef and assistant · on-site event manager · setup/teardown time included."},
-        business:{ru:"Продление мероприятия — 40 000 ₽ за час на зал. Аренда плазменной панели (55\", Full HD) — 12 000 ₽: удобно для показа фото, мультфильмов или поздравительного видео.",
-                  en:"Extending the event — 40 000 ₽ per hour per hall. Plasma screen rental (55\", Full HD) — 12 000 ₽: handy for photos, cartoons or a birthday video."}
-      },
-      inclLabels:{culinary:{ru:"Что входит в аренду зала", en:"Included with the hall"}, business:{ru:"Дополнительно по залу", en:"Hall add-ons"}}
     },
     {
       id:"buffet", icon:"🥪", type:"menu",
@@ -1478,11 +1464,7 @@ function renderSection(s, i){
       </div>
     `).join("")+`</div>
     <div class="ven-hint"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 3c4.97 0 9 3.36 9 7.5 0 4.14-4.03 7.5-9 7.5-1.02 0-2-.14-2.92-.4L5 19.5l.9-3.3C4.1 14.9 3 12.8 3 10.5 3 6.36 7.03 3 12 3z"/></svg>${LANG==="ru"?"Ваш менеджер подскажет, какой зал свободен и подойдёт для выбранного возраста и числа детей.":"Your manager will advise which hall is available and best suits the age group and number of children."}</div>
-    <div class="ven-note">${s.combos[LANG]}</div>
-    <div class="ven-incl">
-      <div><b>${s.inclLabels.culinary[LANG]}</b><p>${s.incl.culinary[LANG]}</p></div>
-      <div><b>${s.inclLabels.business[LANG]}</b><p>${s.incl.business[LANG]}</p></div>
-    </div>`
+    `
     + s.halls.map(hallModal).join("");
   }
 
