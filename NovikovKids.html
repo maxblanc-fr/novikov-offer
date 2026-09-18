@@ -287,7 +287,10 @@
   .bi .p{color:var(--red); font-family:var(--head); font-weight:900; white-space:nowrap}
 
   /* ---------- Additional services ---------- */
-  .svc-grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  /* align-items:start обязателен: по умолчанию грид растягивает карточки под
+     самую высокую в ряду, и у коротких («Фокусник», «Ростовая кукла») между
+     текстом и ценой открывалась дыра в полторы сотни пикселей. */
+  .svc-grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); align-items:start}
   .svc-card{background:var(--card); border:1px solid var(--line); border-radius:0; padding:18px 20px; display:flex; flex-direction:column}
   .svc-h{display:flex; gap:12px; align-items:baseline; margin-bottom:10px; border-bottom:1px solid var(--line); padding-bottom:10px}
   .svc-ic{display:none}
@@ -296,13 +299,18 @@
   .svc-d{margin:0 0 12px; font-size:14px; color:var(--ink-soft); line-height:1.55}
   .svc-min{display:inline-block; align-self:flex-start; margin-bottom:12px; background:transparent; border:1px solid var(--red); color:var(--red-deep); padding:3px 10px; font-family:var(--head); font-weight:700; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em}
   .svc-tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px}
+  .svc-tags .more{background:none; border-style:dashed; color:var(--muted)}
   .svc-tags span{background:var(--bone-2); border:1px solid var(--line); border-radius:0; padding:4px 11px; font-family:var(--head); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--red-deep)}
-  .svc-tiers{margin-bottom:12px; border-top:1px solid var(--line)}
+  .svc-tiers{margin-bottom:0; border-top:1px solid var(--line)}
   .svc-tiers div{display:flex; gap:10px; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--line); font-size:13.5px; font-variant-numeric:tabular-nums}
   .svc-tiers div span{flex:1}
   .svc-tiers div b{color:var(--red); font-family:var(--head); font-weight:900}
   .svc-tiers div em{color:var(--muted); font-style:normal; font-size:12px; min-width:44px; text-align:right}
-  .svc-price{margin-top:auto; background:linear-gradient(135deg,var(--red),var(--red-deep)); color:#fff; border-radius:0; padding:10px 14px; font-family:var(--head); font-weight:700; font-size:13px; line-height:1.45; text-align:center; letter-spacing:.02em}
+  /* Цена — спокойная строка внизу карточки: та же линейка, что делит тарифы,
+     и красным только сама цифра. Заливка во всю ширину читалась как кнопка,
+     а три «Цены по запросу» подряд превращались в три красных пятна. */
+  .svc-price{margin-top:auto; background:none; color:var(--red); border-radius:0; border-top:1px solid var(--line); padding:10px 0 0; font-family:var(--head); font-weight:700; font-size:13.5px; line-height:1.45; text-align:right; letter-spacing:.02em}
+  .svc-tiers + .svc-price{margin-top:12px}
 
   /* ---------- Notecard ---------- */
   .notecard{background:var(--card); border:1px solid var(--line); border-radius:0; padding:20px 24px; font-size:15px}
@@ -659,7 +667,7 @@
   .svc-gh::before{content:""; width:22px; height:3px; background:var(--red); flex:none; align-self:center}
 
   /* Price still to be confirmed */
-  .svc-price.tbd{background:var(--bone-2); color:var(--muted); border:1px dashed var(--line)}
+  .svc-price.tbd{background:none; color:var(--muted); border:0; border-top:1px solid var(--line)}
 
   /* Notecard footer under a section */
   .sec-foot{
@@ -998,6 +1006,19 @@ const DATA = {
                 en:"A florist shows how to build a bouquet: choosing the flowers, the composition, the wrapping. Each guest assembles their own bouquet and takes it home."},
           price:{ru:"от 9 500 ₽ / гость", en:"from 9 500 ₽ / guest"}},
 
+        {ic:"👥", name:{ru:"Дополнительный персонал", en:"Additional Staff"},
+          desc:{ru:"Ведущий, шеф, официант, диджей и фотограф на ваше мероприятие.",
+                en:"A host, chef, waiter, DJ and photographer for your event."},
+          tiers:[
+            {l:{ru:"Ведущий", en:"Host"},                                          p:"от 60 000 ₽", n:""},
+            {l:{ru:"Звёздный шеф", en:"Star chef"},                                p:"от 80 000 ₽", n:""},
+            {l:{ru:"Официант", en:"Waiter"},                                       p:"12 000 ₽",    n:"4 часа"},
+            {l:{ru:"Диджей и звуковое оборудование", en:"DJ and sound equipment"}, p:"54 000 ₽",    n:"4 часа"},
+            {l:{ru:"Продление диджея", en:"DJ extension"},                         p:"13 500 ₽",    n:"1 час"},
+            {l:{ru:"Профессиональный фотограф", en:"Professional photographer"},   p:"44 000 ₽",    n:"4 часа"},
+            {l:{ru:"Продление фотографа", en:"Photographer extension"},            p:"11 000 ₽",    n:"1 час"}
+          ]},
+
         {ic:"🎈", modal:"balloons", modalLabel:{ru:"Смотреть каталог и цены", en:"View catalogue & prices"},
           cardImgs:["uploads/balloons/01.jpg","uploads/balloons/02.jpg","uploads/balloons/12.jpg","uploads/balloons/06.jpg"], cardMore:11,
           name:{ru:"Украшение воздушными шарами", en:"Balloon Décor"},
@@ -1016,19 +1037,6 @@ const DATA = {
           tiers:[
             {l:{ru:"Фон с пайетками и неоновая надпись", en:"Sequin backdrop with neon sign"}, p:"40 000 ₽", n:"аренда"},
             {l:{ru:"Неоновая надпись под заказ", en:"Custom neon sign"}, p:"от 30 000 ₽", n:"ваш текст"}
-          ]},
-
-        {ic:"👥", name:{ru:"Дополнительный персонал", en:"Additional Staff"},
-          desc:{ru:"Ведущий, шеф, официант, диджей и фотограф на ваше мероприятие.",
-                en:"A host, chef, waiter, DJ and photographer for your event."},
-          tiers:[
-            {l:{ru:"Ведущий", en:"Host"},                                          p:"от 60 000 ₽", n:""},
-            {l:{ru:"Звёздный шеф", en:"Star chef"},                                p:"от 80 000 ₽", n:""},
-            {l:{ru:"Официант", en:"Waiter"},                                       p:"12 000 ₽",    n:"4 часа"},
-            {l:{ru:"Диджей и звуковое оборудование", en:"DJ and sound equipment"}, p:"54 000 ₽",    n:"4 часа"},
-            {l:{ru:"Продление диджея", en:"DJ extension"},                         p:"13 500 ₽",    n:"1 час"},
-            {l:{ru:"Профессиональный фотограф", en:"Professional photographer"},   p:"44 000 ₽",    n:"4 часа"},
-            {l:{ru:"Продление фотографа", en:"Photographer extension"},            p:"11 000 ₽",    n:"1 час"}
           ]},
 
         {ic:"💐", modal:"floral", modalLabel:{ru:"Посмотреть примеры", en:"View examples"},
@@ -1483,6 +1491,8 @@ function renderSection(s, i){
   }
 
   else if(s.type==="services"){
+    /* Больше шести тегов вытягивают карточку на лишние ряды — остальные прячем за счётчик. */
+    const TAGS_SHOWN = 6;
     body = `<div class="svc-grid">`+ s.items.map(it=>{
       if(it.gh) return `<div class="svc-gh">${it.gh[LANG]}${it.ghNote?`<em>${it.ghNote[LANG]}</em>`:""}</div>`;
       const isCakes = it.modal==="cakes";
@@ -1490,7 +1500,7 @@ function renderSection(s, i){
       const visual = isCakes ? teaser
         : it.cardImgs ? `<div class="cake-teaser" aria-hidden="true">${it.cardImgs.map(u=>`<img loading="lazy" src="${u}" alt="">`).join("")}${it.cardMore?`<span class="cake-teaser-more">+${it.cardMore}<small>${LANG==="ru"?"ещё":"more"}</small></span>`:""}</div>`
         : it.cardImg ? `<div class="card-banner"><img loading="lazy" src="${it.cardImg}" alt=""></div>`
-        : it.tags ? `<div class="svc-tags">${it.tags.map(t=>`<span>${T(t)}</span>`).join("")}</div>` : "";
+        : it.tags ? `<div class="svc-tags">${it.tags.slice(0,TAGS_SHOWN).map(t=>`<span>${T(t)}</span>`).join("")}${it.tags.length>TAGS_SHOWN?`<span class="more">+${it.tags.length-TAGS_SHOWN}</span>`:""}</div>` : "";
       const venMore = it.modal ? `<span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${isCakes?(LANG==="ru"?`Смотреть ${CAKE.designs} дизайнов и начинки`:`View ${CAKE.designs} designs & fillings`):(it.modalLabel?it.modalLabel[LANG]:(LANG==="ru"?"Смотреть фото":"View photos"))}</span>` : "";
       const grouped = !!(it.modal && it.price && it.price[LANG]);
       const hasPrice = it.price && it.price[LANG];
