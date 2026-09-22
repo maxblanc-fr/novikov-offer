@@ -106,6 +106,92 @@
     nav.sections{display:none}
     body{background:#fff}
   }
+  /* ---------- Cocktail masterclass card (as in the offer's «Доп. услуги») ---------- */
+  .svc-card{background:var(--card); border:1px solid var(--line); padding:18px 20px; display:flex; flex-direction:column; box-shadow:var(--card-shadow)}
+  .svc-h{display:flex; gap:12px; align-items:baseline; margin-bottom:10px; border-bottom:1px solid var(--line); padding-bottom:10px}
+  .svc-h b{display:block; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:15px; color:var(--ink); line-height:1.15}
+  .svc-d{margin:0 0 12px; font-size:14px; color:var(--ink-soft); line-height:1.55}
+  .svc-min{display:inline-block; align-self:flex-start; margin-bottom:12px; border:1px solid var(--red); color:var(--red-deep); padding:3px 10px; font-family:var(--head); font-weight:700; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em}
+  .svc-tiers{margin-bottom:12px; border-top:1px solid var(--line)}
+  .svc-tiers div{display:flex; gap:10px; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--line); font-size:13.5px; font-variant-numeric:tabular-nums}
+  .svc-tiers div span{flex:1}
+  .svc-tiers div b{color:var(--red); font-family:var(--head); font-weight:900}
+  .svc-tiers div em{color:var(--muted); font-style:normal; font-size:12px; min-width:44px; text-align:right}
+  .svc-note{font-size:11.5px; color:var(--muted); line-height:1.55; margin:0 0 12px}
+  .svc-note b{font-family:var(--head); font-weight:700; color:var(--ink)}
+  .svc-price{background:linear-gradient(135deg,var(--red),var(--red-deep)); color:#fff; padding:10px 14px; font-family:var(--head); font-weight:700; font-size:13px; line-height:1.45; text-align:center; letter-spacing:.02em}
+  .svc-foot{margin-top:auto; display:flex; flex-direction:column; gap:12px}
+  .svc-clickable{cursor:pointer; transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease; outline:none}
+  .svc-clickable:hover{border-color:var(--red); transform:translateY(-2px); box-shadow:0 7px 22px rgba(74,14,20,.15)}
+  .svc-clickable:focus-visible{border-color:var(--red); box-shadow:0 0 0 2px var(--red)}
+  .ven-more{
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    padding:9px 14px; border:1.5px solid var(--red); background:transparent;
+    color:var(--red); font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:11px;
+    transition:background .15s ease, color .15s ease;
+  }
+  .ven-more::after{content:"→"; font-family:var(--body); font-weight:800; font-size:13px; line-height:1; transition:transform .15s ease}
+  .ven-more svg{opacity:.92}
+  .svc-clickable:hover .ven-more{background:var(--red); color:#fff}
+  .svc-clickable:hover .ven-more::after{transform:translateX(3px)}
+  .cake-teaser{display:flex; gap:8px}
+  .cake-teaser img{flex:1 1 0; width:0; min-width:0; aspect-ratio:1/1; object-fit:cover; border:1px solid var(--line); display:block}
+  .cake-teaser-more{flex:1 1 0; aspect-ratio:1/1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; background:var(--bone-2); border:1px solid var(--line); color:var(--red-deep); font-family:var(--head); font-weight:900; font-size:16px; line-height:1}
+  .cake-teaser-more small{font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+  /* The offer shows this card in a 3-up grid; here it is alone, so on wide
+     screens it splits into text on the left and photos + buttons on the right.
+     The photos become a 3×2 grid that stretches to the height of the text, so
+     the right column has no hole between the photos and the buttons. */
+  @media(min-width:821px){
+    .svc-card.wide{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); column-gap:30px}
+    .svc-card.wide .svc-foot{margin-top:0}
+    /* contain:size keeps the photos out of the card's height: the text column
+       sets it, and the grid only fills what is left (at least 230px) */
+    .svc-card.wide .cake-teaser{flex:1 1 auto; min-height:230px; contain:size; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); grid-auto-rows:minmax(0,1fr)}
+    .svc-card.wide .cake-teaser img{width:100%; height:100%; min-height:0; aspect-ratio:auto}
+    .svc-card.wide .cake-teaser-more{grid-column:span 2; aspect-ratio:auto; font-size:22px}
+    .svc-card.wide .cake-teaser-more small{font-size:10px}
+  }
+  /* ---------- Cocktail menu modal ---------- */
+  body.modal-open{overflow:hidden}
+  .hall-modal{position:fixed; inset:0; z-index:1200; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(28,4,8,.66); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); opacity:0; pointer-events:none; transition:opacity .2s ease}
+  .hall-modal.open{opacity:1; pointer-events:auto}
+  .hall-modal[hidden]{display:none}
+  .hm-card{position:relative; display:flex; flex-direction:column; width:min(960px,100%); max-height:88vh; background:var(--card); border:1px solid var(--line); box-shadow:0 24px 70px rgba(20,3,6,.5); transform:translateY(12px) scale(.99); transition:transform .2s ease}
+  .hall-modal.open .hm-card{transform:none}
+  .hm-head{flex:none; padding:18px 22px 14px; background:linear-gradient(135deg,var(--maroon),var(--maroon-dark)); color:var(--bone)}
+  .hm-title{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+  .hm-title b{font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:18px; color:#fff; line-height:1.15}
+  .hm-area{color:var(--red-lite); font-family:var(--head); font-weight:900; font-size:13px; white-space:nowrap}
+  .hm-cap{display:block; margin-top:5px; font-size:13px; color:rgba(244,241,236,.82)}
+  .hm-tabs{flex:none; display:flex; border-bottom:1px solid var(--line); background:var(--bone)}
+  .hm-tab{flex:1; padding:13px 10px; border:0; border-right:1px solid var(--line); background:transparent; cursor:pointer; font-family:var(--head); font-weight:700; text-transform:uppercase; letter-spacing:.03em; font-size:12px; color:var(--muted); transition:color .15s ease, background .15s ease}
+  .hm-tab:last-child{border-right:0}
+  .hm-tab:hover{color:var(--ink)}
+  .hm-tab.active{color:#fff; background:var(--red)}
+  .hm-gallery{flex:1 1 auto; min-height:0; overflow-y:auto; padding:16px}
+  .fill-list{display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .fill-item{display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--line); padding:12px 14px}
+  .fill-img{width:104px; height:78px; flex:none; object-fit:cover; border:1px solid var(--line)}
+  .fill-txt b{display:block; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.02em; font-size:13.5px; color:var(--red-deep); margin-bottom:5px; line-height:1.2}
+  .fill-txt p{margin:0; font-size:12.5px; color:var(--ink-soft); line-height:1.5}
+  .hm-foot{flex:none; display:flex; justify-content:flex-end; padding:12px 16px; border-top:1px solid var(--line); background:var(--bone)}
+  .hm-close{display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border:0; cursor:pointer; background:var(--red); color:#fff; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.05em; font-size:12px; transition:background .15s ease}
+  .hm-close:hover{background:var(--red-deep)}
+  @media(max-width:640px){
+    /* five tabs do not fit a phone: let the strip scroll instead of squeezing */
+    .hm-tabs{overflow-x:auto; scrollbar-width:none}
+    .hm-tabs::-webkit-scrollbar{display:none}
+    .hm-tab{flex:none; padding:12px 14px; white-space:nowrap}
+    .hall-modal{padding:10px}
+    .hm-card{max-height:92vh}
+    .hm-title b{font-size:16px}
+    .hm-head{padding:15px 16px 12px}
+    .hm-gallery{padding:12px}
+    .fill-list{grid-template-columns:1fr}
+  }
+  @media(max-width:420px){ .fill-img{width:84px; height:68px} }
+  @media print{ .hall-modal{display:none!important} .cake-teaser,.ven-more{display:none} }
   /* Draft marker — the draft and the client page are the same document, so the
      only way to tell them apart is the URL. Shown on -draft, never on the client link. */
   #draftbar{
@@ -133,13 +219,15 @@
 <main>
   <section class="block" id="bar">
     <div class="sec-head">
-      <div><h2 data-i18n="title">Барная карта</h2><span class="en" data-i18n="sub">Вино, крепкие напитки и пиво</span></div>
+      <div><h2 data-i18n="title">Барная карта</h2><span class="en" data-i18n="sub">Вино, крепкие напитки, пиво и коктейльный мастер-класс</span></div>
       <div class="sec-right"><div class="sec-price-badge" data-i18n="rule">Алкоголь с собой строго запрещён</div><div class="note" data-i18n="note">Цена за бокал, порцию 50 мл или бутылку, ₽</div></div>
     </div>
     <p class="sec-intro" data-i18n="intro"></p>
     <div id="groups"></div>
   </section>
 </main>
+
+<div id="modals"></div>
 
 <div id="draftbar" hidden><b>Черновик</b> · клиенту отправляют ссылку без «-draft»</div>
 
@@ -149,7 +237,7 @@
 const I18N = {
   brandsub:{ru:"БАРНАЯ КАРТА · 2026", en:"BAR MENU · 2026"},
   title:{ru:"Барная карта", en:"Bar Menu"},
-  sub:{ru:"Вино, крепкие напитки и пиво", en:"Wine, spirits & beer"},
+  sub:{ru:"Вино, крепкие напитки, пиво и коктейльный мастер-класс", en:"Wine, spirits, beer & cocktail masterclass"},
   rule:{ru:"Алкоголь с собой строго запрещён", en:"Bringing your own alcohol is strictly prohibited"},
   note:{ru:"Цена за бокал, порцию 50 мл или бутылку, ₽", en:"Price per glass, 50 ml serving or bottle, ₽"},
   intro:{ru:'Бокал игристого — 125 мл, тихого вина — 150 мл. Позиции с отметкой <span class="po">предзаказ</span> заказываются заранее, до мероприятия.',
@@ -196,7 +284,132 @@ const TR = {
   "Усадьба Дивноморское, Grand Rose Extra Brut":"Usadba Divnomorskoe, Grand Rose Extra Brut",
   "Поместье Голубицкое, Резерв Шардоне":"Golubitskoe Estate, Reserve Chardonnay",
   "Поместье Голубицкое, Каберне Совиньон":"Golubitskoe Estate, Cabernet Sauvignon",
-  "Cosaque Красная Горка, Галицкий и Галицкий":"Cosaque Krasnaya Gorka, Galitsky & Galitsky"
+  "Cosaque Красная Горка, Галицкий и Галицкий":"Cosaque Krasnaya Gorka, Galitsky & Galitsky",
+  "2 200 ₽/гость":"2 200 ₽/guest", "4 400 ₽/гость":"4 400 ₽/guest", "6 600 ₽/гость":"6 600 ₽/guest"
+};
+
+/* ---------- Cocktail masterclass ----------
+   The card and the menu are taken verbatim from NovikovOffer.html at build
+   time, so prices, texts and photos match the offer page. Photos live in the
+   shared uploads/cocktails/. */
+const CK_CARD = {ic:"🍸", name:{ru:"Коктейльный мастер-класс", en:"Cocktail Masterclass"},
+          min:{ru:"от 6 человек", en:"from 6 guests"},
+          desc:{ru:"Профессиональный бармен знакомит с барным инвентарём и техниками — гости готовят коктейли сами. 15–20 мин на коктейль, ~3 в час. Цена — за коктейль на человека. Пример — для 12 гостей.",
+                en:"A professional bartender introduces bar tools and techniques — guests mix their own cocktails. 15–20 min per cocktail, ~3/hour. Price is per guest per cocktail. Example shown for 12 guests."},
+          modal:"cocktails", modalLabel:{ru:"Смотреть меню коктейлей", en:"View cocktail menu"},
+          cardImgs:["uploads/cocktails/pornstar-martini.webp","uploads/cocktails/clover-club.webp","uploads/cocktails/negroni.webp","uploads/cocktails/mojito.webp"], cardMore:26,
+          tiers:[
+            {l:{ru:"1 коктейль", en:"1 cocktail"},  p:"2 200 ₽/гость", n:"≈ 26 400 ₽"},
+            {l:{ru:"2 коктейля", en:"2 cocktails"}, p:"4 400 ₽/гость", n:"≈ 52 800 ₽"},
+            {l:{ru:"3 коктейля", en:"3 cocktails"}, p:"6 600 ₽/гость", n:"≈ 79 200 ₽"}
+          ],
+          note:{ru:"<b>2 200 ₽ за коктейль на гостя</b> (ингредиенты + работа бармена). Количество коктейлей — на выбор, обычно 2–3 за мероприятие. Мохито, Moscow Mule и Lynchburg Lemonade доступны без алкоголя.",
+                en:"<b>2 200 ₽ per cocktail per guest</b> (ingredients + bartender). Number of cocktails is your choice — usually 2–3 per event. Mojito, Moscow Mule and Lynchburg Lemonade available non-alcoholic."},
+          price:{ru:"2 200 ₽ / гость за коктейль", en:"2 200 ₽ / guest per cocktail"}};
+const COCKTAILS = {
+  cats:[
+    {k:"hits",    n:{ru:"Хиты", en:"Hits"}},
+    {k:"classic", n:{ru:"Вечная классика", en:"Timeless Classics"}},
+    {k:"whisky",  n:{ru:"Виски-сет", en:"Whisky Set"}},
+    {k:"fresh",   n:{ru:"Fresh & Fruits", en:"Fresh & Fruits"}},
+    {k:"carib",   n:{ru:"Carribean", en:"Caribbean"}}
+  ],
+  items:[
+    {c:"hits", img:"pornstar-martini", n:"Pornstar Martini",
+      d:{ru:"Кисло-сладкий, фруктовый и такой освежающий — признан настоящей современной классикой и одним из самых популярных коктейлей в мире.",
+         en:"Sweet-and-sour, fruity and wonderfully refreshing — a modern classic and one of the most popular cocktails in the world."}},
+    {c:"hits", img:"lemon-pie", n:"Lemon Pie",
+      d:{ru:"Идеальный женский коктейль с яичным ликёром Адвокат, медовым сиропом и лимончелло. Сладкий, нежный, лёгкий.",
+         en:"An elegant, delicate cocktail with Advocaat egg liqueur, honey syrup and limoncello. Sweet, gentle and light."}},
+    {c:"hits", img:"russian-rye", n:"Russian Rye",
+      d:{ru:"Удивительное сочетание вкусов, подобранное согласно принципам русской кухни.",
+         en:"A surprising combination of flavours built on the principles of Russian cuisine."}},
+    {c:"hits", img:"from-italy-with-love", n:"From Italy with love",
+      d:{ru:"Яркий и насыщенный коктейль на основе традиционных итальянских напитков.",
+         en:"A bright, full-bodied cocktail built on traditional Italian spirits."}},
+    {c:"hits", img:"limoncello-basilic-sour", n:"Limoncello basil sour",
+      d:{ru:"Яркий цитрусовый вкус ликёра Лимончелло в дуэте с базиликом — ощущение средиземноморской кухни.",
+         en:"The bright citrus of limoncello paired with basil — a taste of the Mediterranean."}},
+    {c:"hits", img:"clover-club", n:"Clover Club",
+      d:{ru:"Красивый нежно-розовый цвет, насыщенный яркий вкус и бархатистая текстура — этот коктейль вы запомните надолго.",
+         en:"A soft pink colour, a rich vivid taste and a velvety texture — a cocktail you will remember for a long time."}},
+
+    {c:"classic", img:"negroni", n:"Negroni",
+      d:{ru:"Универсальный напиток, простой в приготовлении, в меру крепкий, стильный и неизменно вкусный.",
+         en:"A versatile drink — simple to make, moderately strong, stylish and reliably delicious."}},
+    {c:"classic", img:"espresso-martini", n:"Espresso Martini",
+      d:{ru:"Ароматный, насыщенный, по-кофейному «крепкий» и по-алкогольному «мягкий» коктейль.",
+         en:"Aromatic and rich — strong the way coffee is, smooth the way a good spirit is."}},
+    {c:"classic", img:"french-75", n:"French 75",
+      d:{ru:"Тонкий и изящный коктейль с ярким цитрусовым ароматом. Нестареющая классика на джине.",
+         en:"Fine and elegant, with a bright citrus aroma. A timeless gin classic."}},
+    {c:"classic", img:"bramble", n:"Bramble",
+      d:{ru:"Запоминается сбалансированным ярким ягодным вкусом — один из любимых миксов в Великобритании.",
+         en:"Memorable for its balanced, vivid berry flavour — one of Britain's favourite mixes."}},
+    {c:"classic", img:"kuznechik", n:"Grasshopper",
+      d:{ru:"Любите простые десертные коктейли? Сливочно-мятный коктейль на основе ликёров.",
+         en:"Fond of simple dessert cocktails? A creamy mint mix built on liqueurs."}},
+    {c:"classic", img:"bloody-mary", n:"Bloody Mary",
+      d:{ru:"Самый известный в мире коктейль с водкой и томатным соком. Специи, соль, перец, табаско и Вустершир делают вкус незабываемым.",
+         en:"The world's best-known vodka and tomato juice cocktail. Spices, salt, pepper, Tabasco and Worcestershire make the taste unforgettable."}},
+    {c:"classic", img:"cosmopolitan", n:"Cosmopolitan",
+      d:{ru:"Изысканный и элегантный, словно фламинго на тонкой стеклянной ножке. Легендарный кисло-сладкий коктейль.",
+         en:"Refined and elegant, like a flamingo on a slender glass stem. The legendary sweet-and-sour cocktail."}},
+
+    {c:"whisky", img:"marakuya-mandarin-sour", n:"Mandarin & Passion Fruit Sour",
+      d:{ru:"Сочный ароматный коктейль на основе бурбона в стиле Sour — с белком, но поражает лёгкостью.",
+         en:"A juicy, aromatic bourbon sour — made with egg white, yet strikingly light."}},
+    {c:"whisky", img:"perdo-manhatten", n:"Pedro Manhattan",
+      d:{ru:"Твист на основе бурбона: крепкий, янтарно-коньячный и чуть горьковатый микс.",
+         en:"A bourbon twist: strong, amber-cognac in character and pleasantly bitter."}},
+    {c:"whisky", img:"old-fashioned", n:"Old fashioned",
+      d:{ru:"Легендарный коктейль, популярный даже спустя 130 лет после появления.",
+         en:"A legendary cocktail, still popular 130 years after it first appeared."}},
+    {c:"whisky", img:"lynchburg-lemonade", n:"Lynchburg lemonade",
+      d:{ru:"Многогранный вкус — кислые, сладкие, горькие и слегка пряные ноты. Основа — виски Jack Daniel’s.",
+         en:"A many-sided taste — sour, sweet, bitter and lightly spiced notes, on a base of Jack Daniel’s."}},
+    {c:"whisky", img:"new-york-sour", n:"New York Sour",
+      d:{ru:"Крепкий кислый коктейль на бурбоне с добавлением яичного белка и лимонного сока.",
+         en:"A strong sour on bourbon with egg white and lemon juice."}},
+
+    {c:"fresh", img:"breath-of-bali", n:"Breath of Bali",
+      d:{ru:"Напоминает о солнечных пляжах Бали. Ягодный коктейль на основе водки и малинового пюре.",
+         en:"A reminder of Bali’s sunny beaches — a berry cocktail on vodka and raspberry purée."}},
+    {c:"fresh", img:"mojito", n:"Mojito",
+      d:{ru:"Лёгкий коктейль с Острова свободы: ром, сок лайма, сахарный сироп и свежая мята.",
+         en:"A light cocktail from the Island of Freedom: rum, lime juice, sugar syrup and fresh mint."}},
+    {c:"fresh", img:"malina-marakuya", n:"Raspberry & Passion Fruit",
+      d:{ru:"Приятное сочетание сочной маракуйи со сладкой малиной на основе водки.",
+         en:"A pleasing pairing of juicy passion fruit and sweet raspberry on a vodka base."}},
+    {c:"fresh", img:"moscow-mule", n:"Moscow Mule",
+      d:{ru:"Имбирно-огуречный коктейль на основе водки и джинджер-эля. Утоляет жажду эмоций.",
+         en:"A ginger-and-cucumber cocktail on vodka and ginger ale. Quenches a thirst for excitement."}},
+    {c:"fresh", img:"soul-hapipiness", n:"Soul happiness",
+      d:{ru:"Освежающий коктейль на основе арбуза и текилы — характерный вкус позднего лета.",
+         en:"A refreshing watermelon and tequila cocktail — the signature taste of late summer."}},
+    {c:"fresh", img:"nordic-cranberry", n:"Nordic Cranberry",
+      d:{ru:"Вкус северной природы: сбалансированное сочетание джина, клюквы и лёгкой нотки розмарина.",
+         en:"The taste of the northern wild: a balanced mix of gin, cranberry and a light note of rosemary."}},
+
+    {c:"carib", img:"hemenguei-daiquiri", n:"Hemingway daiquiri",
+      d:{ru:"Кубинский Дайкири — любимый напиток Хемингуэя, спасавшегося им от карибского зноя.",
+         en:"The Cuban daiquiri — Hemingway’s own remedy for the Caribbean heat."}},
+    {c:"carib", img:"berries-punch", n:"Berries punch",
+      d:{ru:"Кислинка цитрусовых, сладость клубники и малины, белый ром — настоящий витаминный заряд.",
+         en:"Citrus tang, sweet strawberry and raspberry, white rum — a real vitamin charge."}},
+    {c:"carib", img:"la-pina-de-plata", n:"La pina de plata",
+      d:{ru:"На основе бразильского рома кашаса — сочный тропический ананас прекрасно его дополняет.",
+         en:"Built on Brazilian cachaça — juicy tropical pineapple completes it perfectly."}},
+    {c:"carib", img:"cocojambo", n:"Coco Jambo",
+      d:{ru:"Тропический сауэр на кубинском роме, ликёре куантро и яичном белке, с нотками базилика. Один из самых популярных наших коктейлей!",
+         en:"A tropical sour on Cuban rum, Cointreau and egg white, with notes of basil. One of our most popular cocktails!"}},
+    {c:"carib", img:"caipirinha", n:"Caipirinha",
+      d:{ru:"Бразильский кисло-сладкий коктейль из кашасы, лайма и сахарного сиропа — визитная карточка Бразилии.",
+         en:"A Brazilian sweet-and-sour of cachaça, lime and sugar syrup — the country’s calling card."}},
+    {c:"carib", img:"klubnika-mango-kokos", n:"Strawberry, Mango & Coconut",
+      d:{ru:"Прекрасное сочетание сладкой клубники, кокоса и пюре манго на основе рома.",
+         en:"A lovely combination of sweet strawberry, coconut and mango purée on a rum base."}}
+  ]
 };
 function tr1(s){
   if(TR[s]!==undefined) return TR[s];
@@ -216,7 +429,7 @@ function catCard(c){
   const rows = c.items.map(([n,d,p1,p2,po])=>`
       <div class="bi"><span class="n"><b>${T(n)}</b> <span>${T(d)}</span>${po?`<em class="po">${PO[LANG]}</em>`:""}</span>${one?"":(p1?`<span class="p">${fmt(p1)}</span>`:`<span class="p none" title="${LANG==="ru"?"только бутылкой":"bottle only"}">—</span>`)}<span class="p">${fmt(p2)}</span></div>`).join("");
   return `
-    <div class="cat${one?" one":""}" id="${c.id}">
+    <div class="cat${one?" one":""}" id="${c.id}" data-spy>
       <div class="ch"><b>${c[LANG]}</b>${one?"":`<span class="col">${c1}</span>`}<span class="col">${c2}</span></div>${rows}
     </div>`;
 }
@@ -226,11 +439,90 @@ function renderGroup(g){
     <div class="bar-grid">${g.cats.map(catCard).join("")}</div>`;
 }
 
+const MK = {ru:"Мастер-класс", en:"Masterclass"};
+const PHOTO_IC = `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>`;
+
+function ckGroup(){
+  const it = CK_CARD;
+  const more = COCKTAILS.items.length - it.cardImgs.length;
+  const teaser = `<div class="cake-teaser" aria-hidden="true">${it.cardImgs.map(u=>`<img loading="lazy" src="${u}" alt="">`).join("")}<span class="cake-teaser-more">+${more}<small>${LANG==="ru"?"ещё":"more"}</small></span></div>`;
+  return `<div class="set-group" id="masterclass" data-spy><span class="set-group-t">${MK[LANG]}</span></div>
+    <div class="svc-card svc-clickable wide" data-modal="cocktails" role="button" tabindex="0">
+      <div class="svc-main">
+        <div class="svc-h"><div><b>${it.name[LANG]}</b></div></div>
+        <div class="svc-min">${it.min[LANG]}</div>
+        <p class="svc-d">${it.desc[LANG]}</p>
+        <div class="svc-tiers">${it.tiers.map(t=>`<div><span>${t.l[LANG]}</span><b>${T(t.p)}</b><em>${T(t.n)}</em></div>`).join("")}</div>
+        <div class="svc-note">${it.note[LANG]}</div>
+      </div>
+      <div class="svc-foot">${teaser}<span class="ven-more">${PHOTO_IC}${it.modalLabel[LANG]}</span><div class="svc-price">${it.price[LANG]}</div></div>
+    </div>`;
+}
+
+function cocktailModal(){
+  const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
+  const cnt = k => COCKTAILS.items.filter(x=>x.c===k).length;
+  const tabs = COCKTAILS.cats.map((c,i)=>`<button type="button" class="hm-tab${i===0?" active":""}" data-ck-cat="${c.k}" role="tab" aria-selected="${i===0}">${c.n[LANG]} (${cnt(c.k)})</button>`).join("");
+  const n = COCKTAILS.items.length;
+  return `<div class="hall-modal" id="hm-cocktails" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Меню коктейлей":"Cocktail menu"}">
+    <div class="hm-card">
+      <div class="hm-head">
+        <div class="hm-title"><b>${CK_CARD.name[LANG]}</b><span class="hm-area">${CK_CARD.price[LANG]}</span></div>
+        <span class="hm-cap">${LANG==="ru"?`${n} коктейлей на выбор · гости готовят сами под руководством бармена · обычно 2–3 коктейля за мероприятие`:`${n} cocktails to choose from · guests mix them themselves with a bartender · usually 2–3 per event`}</span>
+      </div>
+      <div class="hm-tabs" role="tablist">${tabs}</div>
+      <div class="hm-gallery"></div>
+      <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
+    </div>
+  </div>`;
+}
+function loadCocktailCat(m, k){
+  const g = m.querySelector(".hm-gallery"); if(!g) return;
+  g.innerHTML = `<div class="fill-list">${COCKTAILS.items.filter(x=>x.c===k).map(x=>
+    `<div class="fill-item"><img class="fill-img" loading="lazy" src="uploads/cocktails/${x.img}.webp" alt=""><div class="fill-txt"><b>${x.n}</b><p>${x.d[LANG]}</p></div></div>`
+  ).join("")}</div>`;
+  g.scrollTop = 0;
+}
+function openCocktailModal(){
+  const m = document.getElementById("hm-cocktails"); if(!m) return;
+  m.querySelectorAll(".hm-tab").forEach((t,i)=>{ t.classList.toggle("active", i===0); t.setAttribute("aria-selected", i===0); });
+  loadCocktailCat(m, COCKTAILS.cats[0].k);
+  m.hidden = false;
+  requestAnimationFrame(()=> m.classList.add("open"));
+  document.body.classList.add("modal-open");
+  m.querySelector(".hm-close").focus({preventScroll:true});
+}
+function switchCocktailCat(tab){
+  const m = tab.closest(".hall-modal"); if(!m) return;
+  m.querySelectorAll(".hm-tabs .hm-tab").forEach(t=>{ const on = t===tab; t.classList.toggle("active", on); t.setAttribute("aria-selected", on); });
+  loadCocktailCat(m, tab.dataset.ckCat);
+}
+function closeHallModal(m){
+  if(!m) return;
+  m.classList.remove("open");
+  document.body.classList.remove("modal-open");
+  setTimeout(()=>{ if(!m.classList.contains("open")) m.hidden = true; }, 220);
+  const card = document.querySelector('[data-modal="cocktails"]'); if(card) card.focus({preventScroll:true});
+}
+document.addEventListener("click", e=>{
+  const tab = e.target.closest(".hm-tab[data-ck-cat]");
+  if(tab){ switchCocktailCat(tab); return; }
+  if(e.target.closest(".hm-close")){ closeHallModal(e.target.closest(".hall-modal")); return; }
+  if(e.target.classList.contains("hall-modal")){ closeHallModal(e.target); return; }
+  if(e.target.closest('[data-modal="cocktails"]')) openCocktailModal();
+});
+document.addEventListener("keydown", e=>{
+  if(e.key === "Escape"){ const open = document.querySelector(".hall-modal.open"); if(open) closeHallModal(open); return; }
+  if((e.key === "Enter" || e.key === " ") && e.target.dataset && e.target.dataset.modal === "cocktails"){ e.preventDefault(); openCocktailModal(); }
+});
+
 function render(){
   document.getElementById("nav").innerHTML = DATA.groups
     .map(s=>s.cats.map(c=>`<a href="#${c.id}" data-nav="${c.id}">${c.nav[LANG]}</a>`).join(""))
-    .join(`<span class="sep" aria-hidden="true"></span>`);
-  document.getElementById("groups").innerHTML = DATA.groups.map(renderGroup).join("");
+    .join(`<span class="sep" aria-hidden="true"></span>`)
+    + `<span class="sep" aria-hidden="true"></span><a href="#masterclass" data-nav="masterclass">${MK[LANG]}</a>`;
+  document.getElementById("groups").innerHTML = DATA.groups.map(renderGroup).join("") + ckGroup();
+  document.getElementById("modals").innerHTML = cocktailModal();
   document.querySelectorAll("[data-i18n]").forEach(el=>{
     const k = el.getAttribute("data-i18n");
     if(I18N[k]) el.innerHTML = I18N[k][LANG];
@@ -253,11 +545,14 @@ let spyActive = null, spyQueued = false;
 function spy(){
   spyQueued = false;
   const line = window.innerHeight * .35;
+  const spied = [...document.querySelectorAll("[data-spy]")];
   let best = null, bestTop = -Infinity;
-  document.querySelectorAll(".cat").forEach(el=>{
+  spied.forEach(el=>{
     const t = el.getBoundingClientRect().top;
     if(t <= line && t > bestTop){ best = el; bestTop = t; }
   });
+  // the last block can never reach the line: at the very bottom, it wins
+  if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) best = spied[spied.length-1];
   const id = best ? best.id : null;
   if(id === spyActive) return;
   spyActive = id;
