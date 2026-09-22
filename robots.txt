@@ -1,2 +1,5 @@
+# Обход разрешён намеренно. Страницы закрыты от поиска через noindex:
+# <meta name="robots"> в каждой странице и заголовок X-Robots-Tag от server.js.
+# Disallow здесь ставить нельзя: робот не зайдёт на страницу и не увидит noindex.
 User-agent: *
-Disallow: /
+Allow: /
