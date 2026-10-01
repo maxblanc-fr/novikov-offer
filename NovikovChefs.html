@@ -133,10 +133,8 @@
   .chef-f{margin-top:auto; border-top:1px solid var(--line)}
   .chef-f div{display:flex; gap:8px; padding:8px 0; border-bottom:1px solid var(--line); font-size:13px; line-height:1.45}
   .chef-f div:last-child{border-bottom:0}
-  .chef-f em{
-    flex:none; font-style:normal; font-family:var(--head); font-weight:900; font-size:10.5px;
-    letter-spacing:.06em; color:var(--red); padding-top:2px; min-width:26px;
-  }
+  /* красная черта вместо прежней плашки у строки формата */
+  .chef-f div::before{content:""; flex:none; width:11px; height:2px; background:var(--red); margin-top:9px}
   .chef-f span{color:var(--ink-soft)}
   .chef-price{
     margin-top:12px; background:linear-gradient(135deg,var(--red),var(--red-deep)); color:#fff;
@@ -301,77 +299,78 @@ const I18N = {
 /* ---------- Витрина: семь шефов под событие ----------
    Регалии выверены по карточкам шефов на novikovspace.com; факты, которых там
    нет (MICHELIN у «Аиста», Универсиада у Дзюбло), подтверждены отдельно.
-   Форматы B2B / B2C — из набросанного PDF «Шефы Novikov School».          */
+   Две строки форматов (corp — корпоративный, priv — частный) взяты из
+   набросанного PDF «Шефы Novikov School».                                 */
 const FEATURED = [
   {slug:"pavel-shitikov", name:{ru:"Павел Шитиков", en:"Pavel Shitikov"},
    rank:{ru:"Бренд-шеф", en:"Brand chef"},
    reg:{ru:"Бренд-шеф компании, автор более тысячи блюд ресторанов России. Сочетает академические знания кухонь всей планеты с утончённым и харизматичным стилем работы.",
         en:"Brand chef of the company and the author of over a thousand dishes for Russian restaurants. Combines an academic command of world cuisines with a refined, charismatic style."},
-   b2b:{ru:"Клиентское событие с авторским меню бренд-шефа", en:"A client event with the brand chef’s own menu"},
-   b2c:{ru:"Кухни мира и авторские сочетания для компании", en:"World cuisines and signature pairings for a group"}},
+   corp:{ru:"Клиентское событие с авторским меню бренд-шефа", en:"A client event with the brand chef’s own menu"},
+   priv:{ru:"Кухни мира и авторские сочетания для компании", en:"World cuisines and signature pairings for a group"}},
 
   {slug:"denis-demyanov", name:{ru:"Денис Демьянов", en:"Denis Demyanov"},
    rank:{ru:"Бренд-шеф «Цирка»", en:"Brand chef at Tsirk"},
    reg:{ru:"Двукратный призёр Bocuse d’Or Russia (бронза 2017, серебро 2019), бренд-шеф гастробистро «Цирк» и бара «13°».",
         en:"Twice a Bocuse d’Or Russia medallist (bronze 2017, silver 2019), brand chef of the Tsirk gastro-bistro and the 13° bar."},
-   b2b:{ru:"Командный кулинарный батл на тимбилдинг", en:"A team cooking battle for a team day"},
-   b2c:{ru:"Мясо и Испания для компании друзей", en:"Meat and Spain for a group of friends"}},
+   corp:{ru:"Командный кулинарный батл на тимбилдинг", en:"A team cooking battle for a team day"},
+   priv:{ru:"Мясо и Испания для компании друзей", en:"Meat and Spain for a group of friends"}},
 
   {slug:"dinar-saitov", name:{ru:"Динар Саитов", en:"Dinar Saitov"},
    rank:{ru:"Чемпион России", en:"Russian champion"},
    reg:{ru:"Шеф «Страны, которой нет», стажировался в Le Cordon Bleu, двукратный чемпион России по кулинарии, Гран-при конкурса в Китае.",
         en:"Chef at Strana, Kotoroy Net, trained at Le Cordon Bleu, twice Russian culinary champion, Grand Prix winner in China."},
-   b2b:{ru:"Премиальный ужин для партнёров и топ-менеджмента", en:"A premium dinner for partners and senior management"},
-   b2c:{ru:"Мясо и морепродукты, камерный формат", en:"Meat and seafood in an intimate format"}},
+   corp:{ru:"Премиальный ужин для партнёров и топ-менеджмента", en:"A premium dinner for partners and senior management"},
+   priv:{ru:"Мясо и морепродукты, камерный формат", en:"Meat and seafood in an intimate format"}},
 
   {slug:"pavel-dzyublo", name:{ru:"Павел Дзюбло", en:"Pavel Dzyublo"},
    rank:{ru:"Шеф Универсиады-2019", en:"Chef of Universiade 2019"},
    reg:{ru:"Проекты Nobu Moscow и «Недальний Восток», ученик Нобу Мацухисы и Глена Баллиса, шеф-повар Универсиады-2019.",
         en:"Nobu Moscow and Nedalny Vostok, trained under Nobu Matsuhisa and Glen Ballis, head chef of the 2019 Winter Universiade."},
-   b2b:{ru:"Азия и суши, программы для HoReCa", en:"Asia and sushi, programmes for HoReCa"},
-   b2c:{ru:"Япония и паназия для компании", en:"Japan and pan-Asia for a group"}},
+   corp:{ru:"Азия и суши, программы для HoReCa", en:"Asia and sushi, programmes for HoReCa"},
+   priv:{ru:"Япония и паназия для компании", en:"Japan and pan-Asia for a group"}},
 
   {slug:"vladislav-grishin", name:{ru:"Владислав Гришин", en:"Vladislav Grishin"},
    rank:{ru:"Гильдия шеф-поваров", en:"Chefs’ Guild"},
    reg:{ru:"Действующий член Национальной Гильдии шеф-поваров России, в прошлом су-шеф Mon Café и Tutto Bene. Любит работать с детьми и подростками.",
         en:"An active member of the National Guild of Chefs of Russia, formerly sous-chef at Mon Café and Tutto Bene. Loves working with children and teenagers."},
-   b2b:{ru:"Динамичный тимбилдинг: мясо, кухни мира", en:"A high-energy team day: meat and world cuisines"},
-   b2c:{ru:"Детские и семейные праздники", en:"Children’s and family celebrations"}},
+   corp:{ru:"Динамичный тимбилдинг: мясо, кухни мира", en:"A high-energy team day: meat and world cuisines"},
+   priv:{ru:"Детские и семейные праздники", en:"Children’s and family celebrations"}},
 
   {slug:"aleksey-chigak", name:{ru:"Алексей Чигак", en:"Aleksey Chigak"},
    rank:{ru:"Шеф «Кафе Чайковский»", en:"Chef at Cafe Tchaikovsky"},
    reg:{ru:"Шеф-повар «Кафе Чайковский», специалист по русской кухне. Опыт наработал рядом с Аленом Дюкассом, на стажировках в Сирии и в ресторанах Аркадия Новикова.",
         en:"Chef at Cafe Tchaikovsky and a specialist in Russian cuisine. Trained alongside Alain Ducasse, on placements in Syria and in Arkady Novikov’s restaurants."},
-   b2b:{ru:"Русская кухня для иностранных гостей", en:"Russian cuisine for international guests"},
-   b2c:{ru:"Семейные и подростковые классы", en:"Family and teenage classes"}},
+   corp:{ru:"Русская кухня для иностранных гостей", en:"Russian cuisine for international guests"},
+   priv:{ru:"Семейные и подростковые классы", en:"Family and teenage classes"}},
 
   {slug:"dmitriy-kanevskiy", name:{ru:"Дмитрий Каневский", en:"Dmitry Kanevsky"},
    rank:{ru:"50 лет у плиты", en:"50 years at the stove"},
    reg:{ru:"Полвека в профессии: повар посольств в Бирме и Испании, с 1998 по 2017 год — шеф «Царской охоты». Автор книги «Кухня открытого огня».",
         en:"Half a century in the trade: embassy chef in Burma and Spain, head chef of Tsarskaya Okhota from 1998 to 2017. Author of a book on open-fire cooking."},
-   b2b:{ru:"Выездной гриль и открытый огонь", en:"Off-site grill and open fire"},
-   b2c:{ru:"Загородный праздник или юбилей", en:"A country celebration or an anniversary"}},
+   corp:{ru:"Выездной гриль и открытый огонь", en:"Off-site grill and open fire"},
+   priv:{ru:"Загородный праздник или юбилей", en:"A country celebration or an anniversary"}},
 
   {slug:"giovanni-filippone", name:{ru:"Джованни Филиппоне", en:"Giovanni Filippone"},
    rank:{ru:"Шеф с Сицилии", en:"Chef from Sicily"},
    reg:{ru:"Шеф-повар из солнечной Сицилии, профессионал и ведущий кулинарных мастер-классов.",
         en:"A chef from sunny Sicily, a seasoned professional and a masterclass host."},
-   b2b:{ru:"Итальянский корпоратив с настоящим сицилийцем", en:"An Italian team event with a real Sicilian"},
-   b2c:{ru:"Паста и сицилийская кухня для компании", en:"Pasta and Sicilian cooking for a group"}},
+   corp:{ru:"Итальянский корпоратив с настоящим сицилийцем", en:"An Italian team event with a real Sicilian"},
+   priv:{ru:"Паста и сицилийская кухня для компании", en:"Pasta and Sicilian cooking for a group"}},
 
   {slug:"marko-prazzoli", name:{ru:"Марко Праццоли", en:"Marco Prazzoli"},
    rank:{ru:"Шеф из Милана", en:"Chef from Milan"},
    reg:{ru:"Харизматичный шеф-повар из Милана: погружает гостей в настоящую атмосферу итальянского праздника.",
         en:"A charismatic chef from Milan who drops guests straight into the mood of an Italian celebration."},
-   b2b:{ru:"Яркий корпоратив в итальянском духе", en:"A high-spirited corporate event, Italian style"},
-   b2c:{ru:"Шумный семейный ужин по-итальянски", en:"A loud Italian family dinner"}},
+   corp:{ru:"Яркий корпоратив в итальянском духе", en:"A high-spirited corporate event, Italian style"},
+   priv:{ru:"Шумный семейный ужин по-итальянски", en:"A loud Italian family dinner"}},
 
   {slug:"albert-reingold", name:{ru:"Альберт Рейнгольд", en:"Albert Reingold"},
    rank:{ru:"30 лет на кухне", en:"30 years in the kitchen"},
    reg:{ru:"30 лет на профессиональной кухне, работал в Испании, Японии и США. Утончённый профессионал с интеллектуальной манерой ведения мероприятия.",
         en:"Thirty years in professional kitchens, with stints in Spain, Japan and the USA. A refined professional with an intellectual way of hosting."},
-   b2b:{ru:"Спокойный гастроужин для узкого круга", en:"An unhurried gastronomic dinner for a small circle"},
-   b2c:{ru:"Кухни Испании, Японии и Америки", en:"The cuisines of Spain, Japan and America"}}
+   corp:{ru:"Спокойный гастроужин для узкого круга", en:"An unhurried gastronomic dinner for a small circle"},
+   priv:{ru:"Кухни Испании, Японии и Америки", en:"The cuisines of Spain, Japan and America"}}
 ];
 
 const CTA = {
@@ -415,7 +414,7 @@ function heroStats(){
   const s = [
     [FEATURED.length,   {ru:"шефов под ваше событие", en:"chefs for your event"}],
     [SOMMELIERS.length, {ru:"сомелье и винных гида", en:"sommeliers and wine guides"}],
-    [2,                 {ru:"формата: B2B и B2C", en:"formats: B2B and B2C"}]
+    [2,                 {ru:"формата: корпоратив и частное событие", en:"formats: corporate and private"}]
   ];
   return s.map(([n,l]) => `<div class="stat"><b>${n}</b><small>${l[LANG]}</small></div>`).join("");
 }
@@ -431,8 +430,8 @@ function featCard(c){
         <h3>${c.name[LANG]}</h3>
         <p class="chef-reg">${c.reg[LANG]}</p>
         <div class="chef-f">
-          <div><em>B2B</em><span>${c.b2b[LANG]}</span></div>
-          <div><em>B2C</em><span>${c.b2c[LANG]}</span></div>
+          <div><span>${c.corp[LANG]}</span></div>
+          <div><span>${c.priv[LANG]}</span></div>
         </div>
       </div>
       <div class="chef-price">${I18N.f_badge[LANG]}</div>
