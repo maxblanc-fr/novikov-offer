@@ -12,7 +12,8 @@
 | `NovikovNewYear.html` | https://novikov-school.ru/newyear-draft | **черновик** новогодней |
 | `NovikovBar.html` | https://bar.novikov-school.ru | барная карта |
 | `NovikovBar.html` | https://novikov-school.ru/bar-draft | **черновик** барной карты |
-| `NovikovChefs.html` | ещё не задеплоена | портфолио шефов |
+| `NovikovChefs.html` | https://novikov-school.ru/chefs | портфолио шефов |
+| `NovikovChefs.html` | https://novikov-school.ru/chefs-draft | **черновик** портфолио |
 
 ## Черновик и клиентская ссылка
 
@@ -23,18 +24,20 @@
 - **`/deti`** — то, что видит клиент. Это **снимок**, он не меняется при
   обычном деплое. Двигается только вручную.
 
-Новогодняя и барная карта устроены так же: **`/newyear-draft`** и
-**`/bar-draft`** следуют за `main`, а **`newyear.novikov-school.ru`** и
-**`bar.novikov-school.ru`** — снимки для клиента.
+Новогодняя, барная карта и портфолио шефов устроены так же: **`/newyear-draft`**,
+**`/bar-draft`** и **`/chefs-draft`** следуют за `main`, а
+**`newyear.novikov-school.ru`**, **`bar.novikov-school.ru`** и **`/chefs`** —
+снимки для клиента.
 
 ```bash
 ssh -p 2222 max@193.124.131.161
 
-~/workspace/novikov/deploy.sh            # взрослая + ЧЕРНОВИКИ детской, новогодней и бара
+~/workspace/novikov/deploy.sh            # взрослая + ЧЕРНОВИКИ детской, новогодней, бара и шефов
 ~/workspace/novikov/publish.sh           # черновик детской  -> клиентская /deti
 ~/workspace/novikov/publish.sh newyear   # черновик новогодней -> клиентский поддомен
 ~/workspace/novikov/publish.sh bar       # черновик бара -> bar.novikov-school.ru
-~/workspace/novikov/publish.sh all       # все три сразу
+~/workspace/novikov/publish.sh chefs     # черновик шефов -> /chefs
+~/workspace/novikov/publish.sh all       # все четыре сразу
 ```
 
 `publish.sh` кладёт копию в `~/workspace/novikov/published/<страница>.html` и
@@ -118,13 +121,10 @@ ssh -p 2222 max@193.124.131.161
 обычных шефов по словам «винный», «коктейль», «кофе» в описании их ресторана и
 собирал ложные срабатывания.
 
-Страницы ещё нет в `deploy.sh` на сервере — чтобы она открывалась, файл нужно
-добавить в список копируемых HTML.
-
 ## Прочее
 
 - `design-variants/` — семь вариантов оформления детской в PDF и их исходники.
-  На сайт не попадает: `deploy.sh` копирует только четыре HTML, `images/`,
+  На сайт не попадает: `deploy.sh` копирует только пять HTML, `images/`,
   `uploads/` и `robots.txt`.
 - **Все страницы закрыты от поиска** — это ссылки, которые отправляют клиенту
   напрямую, а не ищут в поиске. Закрыты через `noindex`: `<meta name="robots"
