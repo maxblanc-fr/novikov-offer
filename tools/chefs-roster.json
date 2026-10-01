@@ -1,0 +1,1413 @@
+{
+ "_note": "Реестр шефов Novikov School, собранный с novikovspace.com/school/chefs 2026-10-01. Лежал в NovikovChefs.html как const ROSTER, пока на странице был раздел «Все шефы школы». Поля: slug, имя, имя латиницей, регалии, теги, роль по-английски. Фото — uploads/chefs/<slug>.webp.",
+ "rows": [
+  [
+   "giovanni-filippone",
+   "Джованни Филиппоне",
+   "Giovanni Filippone",
+   "Шеф-повар из солнечной Сицилии, профессионал и ведущий кулинарных мастер-классов",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "adzhay-singh",
+   "Аджай Сингх",
+   "Ajay Singh",
+   "Лектор Novikov School. Ресторатор с 15-летним стажем, рестораны: Осака, «Ош Пош», ресторан паназитской кухни «Макао», «Самовар» - проект русской и кавказской кухни, ресторан «Ялла» - мульти кухня, винный бар «Joy.Time to wine». В прошлом году открыл ресторан итальянской кухни La Fabbrica, в партнерстве с Аркадием Новиковым и знаменитым поваром Мирко Дзаго",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "aleksandr-volkov-medvedev",
+   "Александр Волков-Медведев",
+   "Alexander Volkov-Medvedev",
+   "Шеф-преподаватель профессионального направления. Шеф-повар ресторана Ruski",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "aleksandr-galuza",
+   "Александр Галуза",
+   "Alexander Galuza",
+   "Шеф-повар ресторана «Интеллигенция 2.0», шеф-преподаватель Novikov School",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "aleksandr-dovletov",
+   "Александр Довлетов",
+   "Alexander Dovletov",
+   "Шеф-преподаватель онлайн направления Novikov School. Шеф-кондитер ресторанов Maroon и Meraki",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "aleksandr-ermakov",
+   "Александр Ермаков",
+   "Alexander Ermakov",
+   "Шеф-преподаватель профессионального направления Novikov Space. Бренд-шеф группы компаний Fitz",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "aleksandr-kucherov",
+   "Александр Кучеров",
+   "Alexander Kucherov",
+   "Шеф-повар 0.75 please – лучшего ресторана Сибири по версии федеральной премии Where to eat-2021",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "aleksandr-lebedev",
+   "Александр Лебедев",
+   "Alexander Lebedev",
+   "Шеф-преподаватель профессионального и любительского направлений Novikov School",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "aleksandr-nazarov",
+   "Александр Назаров",
+   "Alexander Nazarov",
+   "Бренд-шеф ресторанов «Сыроварня»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "aleksandr-shuba",
+   "Александр Шуба",
+   "Alexander Shuba",
+   "Шеф-преподаватель профессионального и любительского направлений Novikov School. Шеф-повар ресторана TILDA",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "aleksandra-moiseeva",
+   "Александра Моисеева",
+   "Alexandra Moiseeva",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Бренд-шеф пекарь ЗОЕ",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "aleksey-volkov",
+   "Алексей Волков",
+   "Alexey Volkov",
+   "Шеф-преподаватель профессионального кулинарного направлений Novikov School",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "aleksey-kanevskiy",
+   "Алексей Каневский",
+   "Alexey Kanevsky",
+   "Шеф-преподаватель профессионального направления Novikov School. Бренд-шеф группы DREAMTEAM (рестораны Smoke BBQ, «Траппист» и др)",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "aleksey-kovalskiy",
+   "Алексей Ковальский",
+   "Alexey Kovalsky",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "aleksey-kogay",
+   "Алексей Когай",
+   "Alexey Kogay",
+   "1*Michelin, Бренд-шеф и партнер проекта OSHI IZAKAYA",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "aleksey-kushnir",
+   "Алексей Кушнир",
+   "Alexey Kushnir",
+   "Преподаватель профессионального направления Novikov School. Шеф-пекарь Fitz Gastro Project",
+   "pro pastry",
+   "Pastry chef-instructor · professional programme"
+  ],
+  [
+   "aleksey-lavin",
+   "Алексей Лавин",
+   "Alexey Lavin",
+   "Шеф-преподаватель любительского кулинарного направления Novikov Space",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "aleksey-medvedev",
+   "Алексей Медведев",
+   "Alexey Medvedev",
+   "Шеф-преподаватель профессионального и любительского кулинарных направлений Novikov School. Ex. бренд-шеф сети ресторанов «Сыроварня»",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "aleksey-savvin",
+   "Алексей Саввин",
+   "Alexey Savvin",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School, шеф-повар River Club Moscow",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "aleksey-chigak",
+   "Алексей Чигак",
+   "Alexey Chigak",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Шеф-повар ресторана «Кафе Чайковский»",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "alena-gera",
+   "Алена Гера",
+   "Alena Gera",
+   "Концепт-шеф кафе деликатной еды «Без рецепта», кафе и бакалеи с особым ассортиментом Carrots and Beans. Автор кулинарных книг «Книга кулинарного вдохновения», «Гастрономический роман»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "alena-eremina",
+   "Алена Еремина",
+   "Alena Eremina",
+   "Автор видеоуроков на сайте Novikov School. Независимый шеф-повар, основатель кулинарного проекта Sunkitchen, создатель собственной линии саше для варки бульонов из фермерских трав и специй",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "alena-oficerova",
+   "Алена Офицерова",
+   "Alena Ofitserova",
+   "Бренд шеф-кондитер FRESAS GROUP. Долгое время Алёна работала шеф-кондитером в ресторанах Владимира Чистякова и Антона Пинского: Rocky2, Blondie, The Greeks и Veter",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "alessandro-rapisarda",
+   "Алессандро Раписарда",
+   "Alessandro Rapisarda",
+   "Автор серии профессиональных мастер-классов Шеф-повар Casa Rapisarda, победитель национального отбора S.Pellegrino Young Chef-2016 и Acqua Panna Contemporary & Tradition Award",
+   "pro star",
+   "Chef-instructor · professional programme · award winner"
+  ],
+  [
+   "aliya-perminova",
+   "Алия Перминова",
+   "Aliya Perminova",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "andrey-zelenkov",
+   "Андрей Зеленков",
+   "Andrey Zelenkov",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Ex бренд-шеф Mandy's Group: Caffe Mandy's, Mandy's Apothecary, Osteria by Mandy's, Bistro Trompette и Wontoneria (Абу-Даби)",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "andrey-kanakin",
+   "Андрей Канакин",
+   "Andrey Kanakin",
+   "Автор видеоуроков на сайте Novikov School. Шеф-кондитер, шоколатье. Золотой призер Российского конкурса WORLD CHOCOLATE MASTERS 2015",
+   "pastry star",
+   "Pastry chef · award winner"
+  ],
+  [
+   "andrey-kaplunov",
+   "Андрей Каплунов",
+   "Andrey Kaplunov",
+   "Преподаватель профессионального направления Novikov Space. Шеф-повар ресторана Simach в Недальнем",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "andrey-kolodyazhnyy",
+   "Андрей Колодяжный",
+   "Andrey Kolodyazhnyy",
+   "ex. Шеф-повар ресторана ЛЕС, основатель гастроботаники в России",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "andrey-fedoseev",
+   "Андрей Федосеев",
+   "Andrey Fedoseev",
+   "Бренд-шеф ресторана северной кухни BJÖRN",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "andrey-chetvertnov",
+   "Андрей Четвертнов",
+   "Andrey Chetvertnov",
+   "Шеф-преподаватель профессионального направления Novikov School, автор online - видеоуроков на сайте Novikov School",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "andrey-shmakov",
+   "Андрей Шмаков",
+   "Andrey Shmakov",
+   "Шеф-преподаватель профессионального направления Бренд-шеф ресторана Savva. Ве­ду­щий те­ле­шоу «Ма­стер­Шеф. Дети», вице-президент Bocuse d’Or Russia",
+   "pro star",
+   "Chef-instructor · professional programme · award winner"
+  ],
+  [
+   "andrianova-polina",
+   "Андрианова Полина",
+   "Polina Andrianova",
+   "Шеф-преподаватель любительского направления, шеф-пекарь сети «Печорин»",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "anna-malikova",
+   "Анна Маликова",
+   "Anna Malikova",
+   "Преподаватель любительского и профессионального направлений. Шеф-пекарь ресторанов Remy Kitchen Bakery, Pino, Cafe Gentle, Muse, Amy",
+   "pro amateur pastry",
+   "Pastry chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "anna-rogozina",
+   "Анна Рогозина",
+   "Anna Rogozina",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "anna-rodionova",
+   "Анна Родионова",
+   "Anna Rodionova",
+   "Шеф Novikov School Cafe и шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "anton-abrezov",
+   "Антон Абрезов",
+   "Anton Abrezov",
+   "Ведущий телеканала «Еда», экс-шеф GRÄSxMADBAREN",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "anton-afanasev",
+   "Антон Афанасьев",
+   "Anton Afanasev",
+   "Шеф-преподаватель профессионального направления",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "anton-bulygin",
+   "Антон Булыгин",
+   "Anton Bulygin",
+   "Автор видеоуроков на сайте Novikov School. Ранее шеф-повар ресторанов «ХлебСоль», «Аист»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "anton-kochura",
+   "Антон Кочура",
+   "Anton Kochura",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "anton-romanov",
+   "Антон Романов",
+   "Anton Romanov",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "antonio-freza",
+   "Антонио Фреза",
+   "Antonio Fresa",
+   "Автор мастер-класса профессионального поварского направления \"Pasta Mia: итальянская кухня с Антонио Фреза\" Шеф-повар и владелец ресторана Jerome, владелец бистро SAVIV и NEO Kitchen",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "antoniya-klyugmann",
+   "Антония Клюгманн",
+   "Antonia Klugmann",
+   "Первая женщина — членом жюри Masterchef Italia 2018. Автор книги «Сердечно и мужественно»",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "arina-zhuravleva",
+   "Арина Журавлева",
+   "Arina Zhuravleva",
+   "Бренд-шеф команды Urban Winery, кейтеринга Bite me, please! Арина адепт кухни в стиле comfort-food с французским и итальянским уклоном. Большое внимание уделяет десертам, кондитерским изделиям и работе с шоколадом",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "arkadiy-novikov",
+   "Аркадий Новиков",
+   "Arkady Novikov",
+   "Первый российский ресторатор, известный предприниматель. Основатель и владелец Novikov Group. На сегодняшний день в Novikov Group более 265 действующих ресторанов",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "artur-minnegaliev",
+   "Артур Миннегалиев",
+   "Artur Minnegaliev",
+   "Тренд шеф Гурмикс и ведущий мастер-классов. Приглашенный эксперт на телеканале ТВЦ и участник телепроекта на ТНТ. Осуществил запуск ресторана и гастропаба с нуля",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "artur-ovchinnikov",
+   "Артур Овчинников",
+   "Artur Ovchinnikov",
+   "Обладатель золотой медали Bocuse d'Or Russia 2015 года",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "artur-holikov",
+   "Артур Холиков",
+   "Artur Kholikov",
+   "Шеф - преподаватель профессионального направления Novikov School. Ex шеф-повар ресторана Meraki. С 2024 года Артур и ведет профессиональную деятельность в Дубае",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "artem-grebenshchikov",
+   "Артём Гребенщиков",
+   "Artem Grebenshchikov",
+   "Шеф-повар и владелец ресторана Bourgeois Bohemians (Санкт-Петербург)",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "artem-martirosov",
+   "Артём Мартиросов",
+   "Artem Martirosov",
+   "Шеф-повар ресторана «КрабыКутабы»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "artem-minenkov",
+   "Артём Миненков",
+   "Artem Minenkov",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "artem-hizhnyakov",
+   "Артём Хижняков",
+   "Artem Khizhnyakov",
+   "Шеф-повар ресторана Soma Ех. Шеф-повар BARBOSCO (ресторан с коктейльным баром на Красной площади). Шеф-преподаватель профессионального направления Novikov Space",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "bahtiyar-aliev",
+   "Бахтияр Алиев",
+   "Bakhtiyar Aliev",
+   "Автор видеоуроков на сайте Novikov School. Действующий бренд-шеф ресторанов Аркадия Новикова «Бараshka»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "bobbi-broyer",
+   "Бобби Бройер",
+   "Bobby Bräuer",
+   "Шеф-повар ресторана EssZimmer. Обладатель двух звезд Michelin",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "brayan-diab",
+   "Брайан Диаб",
+   "Brian Diab",
+   "Преподаватель любительского и профессионального направления. Бренд-шеф ресторана Adam, специализирующийся на арабской и ближневосточной кухнях. Выпускник кулинарной школы ICCA Dubai",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "bunin-dmitriy",
+   "Бунин Дмитрий",
+   "Dmitry Bunin",
+   "Шеф любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "valeriya-sidorova",
+   "Валерия Сидорова",
+   "Valeria Sidorova",
+   "Шеф-кондитер ресторана Lumicino, ранее возглавляла кондитерский цех ресторана White Rabbit",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "vera-ruzaeva",
+   "Вера Рузаева",
+   "Vera Ruzaeva",
+   "Шеф-кондитер любительского кулинарного направления Novikov School",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "vikesh-kelancherri",
+   "Викеш Келанчерри",
+   "Vikesh Kelancherry",
+   "Повар индийского кафе «Уттупура» в Москве",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "viktor-shaydeckiy",
+   "Виктор Шайдецкий",
+   "Viktor Shaydetsky",
+   "Шеф-повар ресторана Manul, шеф-преподаватель Novikov School",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "vitaliy-istomin",
+   "Виталий Истомин",
+   "Vitaly Istomin",
+   "Шеф-повар ресторана AVA (Москва)",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "vitaliy-tihonov",
+   "Виталий Тихонов",
+   "Vitaly Tikhonov",
+   "Шеф-преподаватель профессионального направления. Концепт-шеф гастробара \"Алхимиус\" и ресторана \"Посейдон\"",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "vlada-lesnichenko",
+   "Влада Лесниченко",
+   "Vlada Lesnichenko",
+   "Главный винный энтузиаст страны, сомелье и лектор Novikov School",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "vladimir-kovalenko",
+   "Владимир Коваленко",
+   "Vladimir Kovalenko",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "vladimir-muhin",
+   "Владимир Мухин",
+   "Vladimir Mukhin",
+   "Шеф-преподаватель курса All Stars. Шеф-повар ресторана White Rabbit",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "vladimir-perelman",
+   "Владимир Перельман",
+   "Vladimir Perelman",
+   "Спикер курса All Stars Business Novikov School. Ресторатор. Основатель и владелец ресторанного холдинга PerelmanPeople",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "vladislav-grishin",
+   "Владислав Гришин",
+   "Vladislav Grishin",
+   "Шеф-преподаватель любительского и профессионального кулинарных направлений Novikov School. Действующий член Национальной Гильдии шеф-поваров России",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "vladislav-korpusov",
+   "Владислав Корпусов",
+   "Vladislav Korpusov",
+   "Ex-шеф ресторана Stories (Москва). Су-шеф проекта «Адская кухня» 4 сезона. Лучший шеф Эстонии 2011 года",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "galina-ragozina",
+   "Галина Рагозина",
+   "Galina Ragozina",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Выпускница парижской Кондитерской школы Bellouet Conseil",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "gennadiy-suharev",
+   "Геннадий Сухарев",
+   "Gennady Sukharev",
+   "Шеф-преподаватель любительского и профессионального кулинарных направлений Novikov School",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "georgiy-troyan",
+   "Георгий Троян",
+   "Georgy Troyan",
+   "Шеф-преподаватель курса All Stars Шеф-повар ресторана «Северяне» и «Жирок»",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "gleb-levickiy",
+   "Глеб Левицкий",
+   "Gleb Levitsky",
+   "Шеф-повар ресторана «Парк-культуры». Бренд-шеф ресторанов «Печерка», «Park-bistro», «Темп»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "glen-ballis",
+   "Глен Баллис",
+   "Glen Ballis",
+   "Шеф-повар и ресторатор (Avocado Queen, Lucky Izakaya Bar, Glenuill, Zupperia, Cutfish, Margarita, Bread & Meat и др)",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "grigoriy-chunihin",
+   "Григорий Чунихин",
+   "Grigory Chunikhin",
+   "Шеф-повар LINO BISTRO",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "guzel-magdieva",
+   "Гузель Магдиева",
+   "Guzel Magdieva",
+   "Автор видеоуроков на сайте Novikov School. Ранее шеф-кондитер ресторана Stories",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "gulya-haydarova",
+   "Гуля Хайдарова",
+   "Gulya Khaydarova",
+   "Шеф-повар",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "darya-vinovec",
+   "Дарья Виновец",
+   "Daria Vinovets",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "darya-shmarova",
+   "Дарья Шмарова",
+   "Daria Shmarova",
+   "Шеф-кондитер Londri, Alaska и Margarita",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "denis-demyanov",
+   "Денис Демьянов",
+   "Denis Demyanov",
+   "Шеф-преподаватель профессионального и любительского кулинарных направлений Novikov School. Бренд-шеф гастробистро \"Цирк\", бара \"13°\". Двукратный призер Bocuse d'Or Russia (в команде с Артуром Овчинниковым)",
+   "pro amateur star",
+   "Chef-instructor · professional & amateur programmes · award winner"
+  ],
+  [
+   "denis-komlyakov",
+   "Денис Комляков",
+   "Denis Komlyakov",
+   "Ex Шеф-кондитер ресторана «Бибирево» сети «Рестораны Раппопорта». Преподаватель профессионального направления Novikov Space",
+   "pro pastry",
+   "Pastry chef-instructor · professional programme"
+  ],
+  [
+   "denis-krupenya",
+   "Денис Крупеня",
+   "Denis Krupenya",
+   "Шеф-преподователь Novikov School. Руководил поварской школой Ragout. Так же работал в разных проектах от Москвы до Сочи",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "dzhoan-kolome",
+   "Джоан Коломе",
+   "Joan Colome",
+   "Шеф-преподаватель профессионального направления Novikov Space",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "dzhuzeppe-davi",
+   "Джузеппе Дави",
+   "Giuseppe Davi",
+   "Бренд-шеф ресторана Butler",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "diego-prado",
+   "Диего Прадо",
+   "Diego Prado",
+   "Автор серии профессиональных мастер-классов Профессор по ферментации и координатор в кулинарной лаборатории BCulinaryLAB на базе отдела исследований и разработок The Basque Culinary Center, Сан-Себастьян, Испания",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "dinar-saitov",
+   "Динар Саитов",
+   "Dinar Saitov",
+   "Шеф-преподаватель профессионального и любительского кулинарных направлений Novikov School",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "dmitriy-bogachev-i-eldar-muradov",
+   "Дмитрий Богачёв и Эльдар Мурадов",
+   "Dmitry Bogachev & Eldar Muradov",
+   "Шефы и совладельцы ресторана Mr. Bo и гастробара Mama Fugu (Санкт-Петербург)",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "dmitriy-golenin",
+   "Дмитрий Голенин",
+   "Dmitry Golenin",
+   "Шеф профессионального направления Novikov School. Шеф-повар Sage",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "dmitriy-kanevskiy",
+   "Дмитрий Каневский",
+   "Dmitry Kanevsky",
+   "Шеф-преподаватель любительского и профессионального направлений Novikov School",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "dmitriy-romanovskiy",
+   "Дмитрий Романовский",
+   "Dmitry Romanovsky",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "dmitriy-halyukov",
+   "Дмитрий Халюков",
+   "Dmitry Khalyukov",
+   "Шеф-преподователь авторского курса профессионального поварского направления Совладелец и шеф-повар ресторана Cru (Таллин), который входит в топ-50 эстонских ресторанов и отмечен гидом White Guide Nordic",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "dmitriy-hamov",
+   "Дмитрий Хамов",
+   "Dmitry Khamov",
+   "Автор видеоуроков на сайте Novikov School. Су-шеф ресторана White Rabbit",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "evgeniy-bykov",
+   "Евгений Быков",
+   "Evgeny Bykov",
+   "Шеф любительского кулинарного направления Novikov School. Бренд-шеф компании REDGASTRO",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "evgeniya-porhacheva",
+   "Евгения Порхачева",
+   "Evgenia Porkhacheva",
+   "Шеф-кондитер сети пекарен La Poste. 12 лет работает в кондитерской сфере и специализируется на витринных десертах",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "evgeniya-terenteva",
+   "Евгения Терентьева",
+   "Evgenia Terenteva",
+   "Шеф любительского направления. Кондитер сериала «ИП Пирогова», соавтор и ведущая кулинарного шоу «Женька Печенька», блогер",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "egor-kalinin",
+   "Егор Калинин",
+   "Egor Kalinin",
+   "Ex. шеф-повар прогрессивного Tokyo Sushi",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "egor-panin",
+   "Егор Панин",
+   "Egor Panin",
+   "Ex бренд-шеф BORK Бренд-шеф по закускам и инновациям в Додо Пицца Шеф-преподаватель любительского направления Novikov Space",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "ivan-golubev",
+   "Иван Голубев",
+   "Ivan Golubev",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Су-шеф ресторана Sage. Финалист национального гастрономического конкурса ЛАВРЫ AWARDS",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "igor-grishechkin",
+   "Игорь Гришечкин",
+   "Igor Grishechkin",
+   "Спикер и шеф-преподователь профессионального направления Novikov School. Шеф-повар ресторана \"Машенька\", ex. шеф-повар COCOCO bistro и Cococouture (г. Санкт-Петербург). Член альянса поваров международного фонда Slow Food",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "ilya-burnasov",
+   "Илья Бурнасов",
+   "Ilya Burnasov",
+   "Шеф-преподаватель профессионального и любительского направлений Novikov School",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "ilya-elefteriadi",
+   "Илья Елефтериади",
+   "Ilya Eleftheriadi",
+   "Шеф-повар ресторана Наштиле в Сочи. Шеф-преподаватель любительского направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "ilya-cherkashin",
+   "Илья Черкашин",
+   "Ilya Cherkashin",
+   "Шеф-повар Saviv, шеф профессионального направления Novikov School",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "ilyana-chernysheva",
+   "Иляна Чернышева",
+   "Ilyana Chernysheva",
+   "Шеф-кондитер Miss you",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "irina-leochko",
+   "Ирина Леочко",
+   "Irina Leochko",
+   "Шеф-кондитер Flor, ReFlor и Blau",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "irina-lylova",
+   "Ирина Лылова",
+   "Irina Lylova",
+   "ex. Шеф-кондитер COCOCO Bistro",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "irina-hohlova",
+   "Ирина Хохлова",
+   "Irina Khokhlova",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Кулинар и путешественница",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "yonatan-mishiev",
+   "Йонатан Мишиев",
+   "Yonatan Mishiev",
+   "Шеф-повар кошерного ресторана Misha Fisher in Jaffa (Москва)",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "kadzuhiko-kidzima",
+   "Кадзухико Кидзима",
+   "Kazuhiko Kijima",
+   "Преподаватель профессионального направления Novikov Space. Официальный амбассадор японской кухни в России, вице-президент японского бизнес-сообщества в Санкт-Петербурге. Владелец и бренд-шеф Takadaya the Japanese bar, владелец и концептолог первого в России производства лапши и соусов для рамена Fukuoni",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "katerina-moiseeva",
+   "Катерина Моисеева",
+   "Katerina Moiseeva",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Выпускница поварского и кондитерского курсов школы Le Cordon Bleu",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "katerina-sandina",
+   "Катерина Сандина",
+   "Katerina Sandina",
+   "Шеф-преподаватель любительского и профессионального кулинарных направлений Novikov School",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "klaudio-pirovano",
+   "Клаудио Пировано",
+   "Claudio Pirovano",
+   "Автор видеоуроков на сайте Novikov School. Шеф-повар La Bottega Siciliana",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "konstantin-necvetaev",
+   "Константин Нецветаев",
+   "Konstantin Netsvetaev",
+   "Шеф-повар ресторана Quadrum при отеле Four Seasons Москва. Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "kristina-bauerman",
+   "Кристина Бауэрман",
+   "Cristina Bowerman",
+   "Автор серии профессиональных мастер-классов Обладательница звезды Michelin и нескольких национальных гастрономических наград, спикер TEDx и Ambassador of the Mediterranean Diet",
+   "pro star",
+   "Chef-instructor · professional programme · award winner"
+  ],
+  [
+   "kristina-chernyahovskaya",
+   "Кристина Черняховская",
+   "Kristina Chernyakhovskaya",
+   "Автор видеоуроков на сайте Novikov School. Шеф-повар кафе «Искра»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "leonardo-taddey",
+   "Леонардо Таддей",
+   "Leonardo Taddei",
+   "Выступает на курсах профессионального обучения Ассоциации сомелье Италии. Благодаря своей глубокой компетенции и страсти к вину он – один из ведущих специалистов в итальянской винной индустрии, играющий ключевую роль в популяризации тосканских вин на национальном и международном уровнях",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "leonid-skripnikov",
+   "Леонид Скрипников",
+   "Leonid Skripnikov",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "lidiya-lazutkina",
+   "Лидия Лазуткина",
+   "Lidia Lazutkina",
+   "Шеф-пекарь любительского направления Novikov School. Владелец семейной ремесленной пекарни \"Хлеб да багет\"",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "liza-batt",
+   "Лиза Батт",
+   "Liza Batt",
+   "Бренд-шеф и сооснователь кафе NIQA pâtisserie & café. Преподаватель любительского направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "luidzhi-mani",
+   "Луиджи Маньи",
+   "Luigi Magni",
+   "Автор серии мастер-классов любительского направления. Шеф-повар ресторана Pinch и концепт-шеф «Уголька», Sempre и Uilliam's",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "luka-dzhordana",
+   "Лука Джордана",
+   "Luca Giordana",
+   "Выступает на курсах профессионального обучения Ассоциации сомелье Италии. Является редактором престижного журнала Vitae и проводит тематические уроки и дегустации для профессионалов и любителей вина как в Италии, так и за границей",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "luka-radikki",
+   "Лука Радикки",
+   "Luca Radicchi",
+   "Известный в Италии специалист в области виноделия. Получил квалификацию преподавателя AIS в 2007 году и проводит курсы AIS уже 17 лет",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "lyudmila-moroz",
+   "Людмила Мороз",
+   "Lyudmila Moroz",
+   "Шеф-повар ресторана Avocado Queen",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "maksim-galishnikov",
+   "Максим Галишников",
+   "Maxim Galishnikov",
+   "Шеф грузинской кухни и любительского направления школы",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "maksim-lyubimov",
+   "Максим Любимов",
+   "Maxim Lyubimov",
+   "Шеф-повар ресторана Leo Wine&Kitchen (Ростов-на-Дону), шеф-преподаватель Novikov School",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "maksim-torganov",
+   "Максим Торганов",
+   "Maxim Torganov",
+   "Шеф-преподователь профессионального направления Сооснователь и партнер в ресторанах Beefzavod и Max's - Beef For Money и мясной лавки Муся. Выпускник Universität Hamburg (MiBA)",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "margarita-suraykina",
+   "Маргарита Сурайкина",
+   "Margarita Suraykina",
+   "Шеф-преподаватель онлайн направления Novikov School. Су-шеф кондитерской студии Соль",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "mariya-vlasova-bushnyak",
+   "Мария Власова (Бушняк)",
+   "Maria Vlasova (Bushnyak)",
+   "Спикер школы ресторанного менеджмента и сервиса Novikov School. Руководитель службы доставки Поляна Delivery в г. Самара",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "mauro-elli",
+   "Мауро Элли",
+   "Mauro Elli",
+   "Автор серии профессиональных мастер-классов Преподаватель Международной академии итальянской кухни ALMA (Парма, Италия), шеф-повар ресторана Il Cantuccio (* Michelin)",
+   "pro star",
+   "Chef-instructor · professional programme · award winner"
+  ],
+  [
+   "mikele-mastroperro",
+   "Микеле Мастропьерро",
+   "Michele Mastropierro",
+   "Выступает на курсах профессионального обучения Ассоциации сомелье Италии и имеет множество квалификаций в области преподавания",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "mirko-dzago",
+   "Мирко Дзаго",
+   "Mirko Zago",
+   "Шеф-преподаватель профессионального направления. Шеф-повар ресторана «Аист» и Bro&N Pizzeria. Член жюри Bo­cuse d’Or Rus­sia, су­дья те­ле­шоу «Ма­стер­Шеф»",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "mihail-murzin",
+   "Михаил Мурзин",
+   "Mikhail Murzin",
+   "Шеф-преподаватель Школа Шефа PRO Кондитер и профессионального направления Novikov School. Бренд-шеф и партнер проекта EmCake&Cafe",
+   "pro pastry",
+   "Pastry chef-instructor · professional programme"
+  ],
+  [
+   "mihail-samonov",
+   "Михаил Самонов",
+   "Mikhail Samonov",
+   "Бренд-шеф KИDO",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "mihail-sogomonyan",
+   "Михаил Согомонян",
+   "Mikhail Sogomonyan",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "mihail-chagay",
+   "Михаил Чагай",
+   "Mikhail Chagay",
+   "Концепт-шеф Oshi Izakaya",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "mishel-viyom",
+   "Мишель Вийом",
+   "Michel Villaume",
+   "Автор видеоуроков на сайте Novikov School. Шеф-кондитер. Чемпион мира по кондитерскому искусству 2001 года",
+   "pastry star",
+   "Pastry chef · award winner"
+  ],
+  [
+   "moshik-rot",
+   "Мошик Рот",
+   "Moshik Roth",
+   "Шеф-преподаватель курса All Stars Шеф-повар ресторана &Moshik (Амстердам)",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "nadezhda-glushko",
+   "Надежда Глушко",
+   "Nadezhda Glushko",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Гастроблогер, ресторанный критик",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "nata-dunaevskaya",
+   "Ната Дунаевская",
+   "Nata Dunaevskaya",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Выпускница школы Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "nidzhati-ilmaz",
+   "Ниджати Илмаз",
+   "Nijati Ilmaz",
+   "Шеф-повар ресторана Deraliye (Стамбул), эксперт по дворцовой османской кухне",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "nikolay-bobrov",
+   "Николай Бобров",
+   "Nikolay Bobrov",
+   "Шеф-повар ресторана Tunguska (Красноярск)",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "nikolay-kim",
+   "Николай Ким",
+   "Nikolay Kim",
+   "Бренд-шеф японского направления ресторана Bluefin",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "nikolay-fedotov",
+   "Николай Федотов",
+   "Nikolay Fedotov",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "nikolya-sal",
+   "Николя Саль",
+   "Nicolas Sale",
+   "Автор серии профессиональных мастер-классов Шеф-повар отеля Ritz Paris",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "nina-nadolinskaya",
+   "Нина Надолинская",
+   "Nina Nadolinskaya",
+   "Шеф-преподаватель профессионального направления Novikov School, шеф-кондитер The Carlton, Moscow",
+   "pro pastry",
+   "Pastry chef-instructor · professional programme"
+  ],
+  [
+   "oleg-porotikov",
+   "Олег Поротиков",
+   "Oleg Porotikov",
+   "Спикер кулинарного профессионального направления Novikov School. Экс концепт-шеф Группы Компаний Аркадия Новикова",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "olive-len",
+   "Оливье Лен",
+   "Olivier Len",
+   "Автор серии мастер-классов любительского направления. Преподаватель кондитерского мастерства École Ritz Escoffier (Париж)",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "olga-dobychina",
+   "Ольга Добычина",
+   "Olga Dobychina",
+   "Основатель булочных и пекарни БАТОН, международный сертифицированный хлебный сомелье",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "pavel-dzyublo",
+   "Павел Дзюбло",
+   "Pavel Dzyublo",
+   "Шеф-преподаватель профессионального и любительского кулинарных направлений Novikov School. Спикер Novikov Business School",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "pavel-kozachuk",
+   "Павел Козачук",
+   "Pavel Kozachuk",
+   "Шеф любительского направления. Шеф проекта, входящего в топ-100 лучших ресторанов России по версии всероссийской премии WHERETOEAT, «Ван Гоги» – Грузия в центре Тюмени",
+   "amateur star",
+   "Chef-instructor · amateur programme · award winner"
+  ],
+  [
+   "pavel-morgunov",
+   "Павел Моргунов",
+   "Pavel Morgunov",
+   "Повар и кондитер 5 разряда с карьерой, охватившей всю страну — от Калининграда до Дальнего Востока. Специалист в области инновационных пищевых технологий, фокусируется на развитии вкусных и полезных растительных альтернатив мясу и молоку",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "pavel-poceluev",
+   "Павел Поцелуев",
+   "Pavel Potseluev",
+   "Шеф профессионального направления Novikov School. Шеф-повар ресторана \"Жажда крови\". Мясной сомелье",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "paolo-bokkolini",
+   "Паоло Бокколини",
+   "Paolo Boccolini",
+   "Преподаватель профессионального направления Novikov School, шеф-абмассадор \"Dolce & Salato\", консультант ресторанных и промышленных проектов Евразии",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "petya-pavlovich",
+   "Петя Павлович",
+   "Petya Pavlovich",
+   "Шеф-преподаватель профессионального и любительского направления Novikov School",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "polina-kosheleva",
+   "Полина Кошелева",
+   "Polina Kosheleva",
+   "Автор видеоуроков на сайте Novikov School. Ранее шеф-кондитер Vogue Café",
+   "pastry",
+   "Pastry chef"
+  ],
+  [
+   "ramil-rzaev",
+   "Рамиль Рзаев",
+   "Ramil Rzaev",
+   "Многократный призер чемпионата бариста. Чемпиона России в категории кофе алкоголь 2019",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "roman-zernov",
+   "Роман Зернов",
+   "Roman Zernov",
+   "Шеф-преподаватель профессионального кулинарного направления Novikov School. Шеф-повар ресторана Поле",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "roman-kalinin",
+   "Роман Калинин",
+   "Roman Kalinin",
+   "Шеф-повар ресторана MOMO",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "roman-palkin",
+   "Роман Палкин",
+   "Roman Palkin",
+   "Шеф-преподаватель профессионального направления Novikov School. Шеф-повар ресторанов Masa Madre, Carniceria Vino. Ранее шеф-повар питерского ресторана Art-Caviar, кондитерской Cafe de Paris, ресторанов КМ20 и Geraldine",
+   "pro pastry",
+   "Pastry chef-instructor · professional programme"
+  ],
+  [
+   "ruslan-zakirov",
+   "Руслан Закиров",
+   "Ruslan Zakirov",
+   "Шеф-преподаватель профессионального направления Novikov School. Шеф-повар ресторана KUZNYAHOUSE и KUZNYA Сafe, CRUISE by Kuznyahouse и HIDDEN. Также является концепт-шефом ресторана \"Огонек\" в Алматы",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "ruslan-mutaliev",
+   "Руслан Муталиев",
+   "Ruslan Mutaliev",
+   "Автор видеоуроков на сайте Novikov School. Шеф-повар ресторана «Ветерок»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "sergey-markin",
+   "Сергей Маркин",
+   "Sergey Markin",
+   "Шеф любительского и профессионального направлений Novikov School. Ранее шеф-повар «Недальнего востока», GQ bar, «Галереи» и TriBeCa",
+   "pro amateur",
+   "Chef-instructor · professional & amateur programmes"
+  ],
+  [
+   "sergey-fokin",
+   "Сергей Фокин",
+   "Sergey Fokin",
+   "Шеф-преподователь профессионального направления и участник Novikov School. Ех. Совладелец и бренд-шеф авторского ресторана Eclipse",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "sergey-yugay",
+   "Сергей Югай",
+   "Sergey Yugay",
+   "Карьеру в гастроиндустрии начал в 2001 году. Работал в арт-кафе «Галерея». Руководил японской кухней в ресторане «Ваниль». Возглавлял суши-бар при казино «Голден ринг» в гостинице «Золотое кольцо». Работал в ресторане Tommy D. С 2014 по 2019 год был бренд-шефом сети ресторанов «Китайские новости». Бренд-шеф сети ресторанов «Шикари» и «Планета суши» в ресторанном холдинге «Росинтер Ресторантс»",
+   "star",
+   "Novikov School chef · award winner"
+  ],
+  [
+   "simon-manukyan",
+   "Симон Манукян",
+   "Simon Manukyan",
+   "Автор серии профессиональных мастер-классов Ведущий преподаватель всемирно известной кулинарной школы Ecole Ritz Escoffier",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "stasya-varkalova",
+   "Стася Варкалова",
+   "Stasya Varkalova",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Основатель кондитерской школы, кондитер с 11‑летним опытом работы",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "tatyana-elizarova",
+   "Татьяна Елизарова",
+   "Tatiana Elizarova",
+   "Спикер профессионального поварского направления Novikov School. Бариста, обжарщик и дегустатор с 20-ти летним стажем работы с кофе и чаем. Сертфицированный Q-grader. Совладелец обжарки кофе Happy Roasters",
+   "pro",
+   "Chef-instructor · professional programme"
+  ],
+  [
+   "tatyana-rogachenko",
+   "Татьяна Рогаченко",
+   "Tatiana Rogachenko",
+   "Автор кулинарных мастер-классов Novikov School. Владелица московских салонов красоты Jean Louis David",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "ulyana-suzdalkina",
+   "Ульяна Суздалкина",
+   "Ulyana Suzdalkina",
+   "ex-Шеф-повар ресторана «Pavilion Пруд Патрики»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "filipp-kolveg",
+   "Филипп Кольвег",
+   "Philipp Kollweg",
+   "Бренд-шеф компании Wiberg",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "hakim-ganiev",
+   "Хаким Ганиев",
+   "Hakim Ganiev",
+   "Автор книг «Восточный пир. Узбекская кухня с Хакимом Ганиевым», «Шашлыки. На гриле, мангале, в тандыре, в казане» и «Плов — дело тонкое»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "eduard-arhipov",
+   "Эдуард Архипов",
+   "Eduard Arkhipov",
+   "Ех. бренд-шеф гастробара «Гастроли», ресторанов «Крабы, Гады и Вино» и «Сойка», а также кофейни «Энгельс»",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "elenika-korelova",
+   "Эленика Корелова",
+   "Elenika Korelova",
+   "Шеф любительского направления. Основательница Zanoza open bar и бара здоровых привычек Сельдерей (Краснодар). Автор кулинарных мастер-классов, блогер",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "yuliya-brusenskaya",
+   "Юлия Брусенская",
+   "Yulia Brusenskaya",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School",
+   "amateur",
+   "Chef-instructor · amateur programme"
+  ],
+  [
+   "yuliya-mitrovich",
+   "Юлия Митрович",
+   "Yulia Mitrovich",
+   "Соосновательница кулинарной школы и школы ресторанного менеджмента Novikov School",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "yuliya-tuckaya",
+   "Юлия Туцкая",
+   "Yulia Tutskaya",
+   "Шеф-преподаватель любительского кулинарного направления Novikov School. Шеф-кондитер SIMACH и \"Ресторан №13\"",
+   "amateur pastry",
+   "Pastry chef-instructor · amateur programme"
+  ],
+  [
+   "yana-pershina",
+   "Яна Першина",
+   "Yana Pershina",
+   "Автор видеоуроков на сайте Novikov School. Ранее су-шеф телешоу «Адская кухня» на канале «Пятница», шеф-повар ресторанов «ERWIN Река Море Океан», GQ Bar, Zupperia",
+   "guest",
+   "Guest chef · masterclasses"
+  ],
+  [
+   "yasuhiro-fudzhio",
+   "Ясухиро Фуджио",
+   "Yasuhiro Fujio",
+   "Автор серии профессиональных мастер-классов Победитель престижного международного конкурса S.Pellegrino Young Сhef of the Уear 2018",
+   "pro star",
+   "Chef-instructor · professional programme · award winner"
+  ]
+ ]
+}
