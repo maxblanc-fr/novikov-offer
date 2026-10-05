@@ -1012,7 +1012,7 @@ const DATA = {
     {
       id:"bar", icon:"🍷", type:"bar",
       title:{ru:"Барная карта", en:"Bar Card"},
-      sub:{ru:"Вино, крепкие напитки и пиво", en:"Wine, spirits & beer"},
+      sub:{ru:"Вино, крепкие напитки, пиво и коктейли", en:"Wine, spirits, beer & cocktails"},
       price:{ru:"Алкоголь с собой строго запрещён", en:"Bringing your own alcohol is strictly prohibited"},
       note:{ru:"Цена за бокал, порцию 50 мл или бутылку, ₽", en:"Price per glass, 50 ml serving or bottle, ₽"},
       intro:{ru:'Бокал игристого — 125 мл, тихого вина — 150 мл. Позиции с отметкой <span class="po">предзаказ</span> заказываются заранее, до мероприятия.',
@@ -1155,6 +1155,9 @@ const DATA = {
           ["Peroni Nastro Azzurro", "0,33 л", null, 600],
           ["Clausthaler", "безалкогольное · 0,33 л", null, 600],
           ["Stiegl Weisse", "0,5 л", null, 900]
+        ]},
+        {ru:"Коктейли", en:"Cocktails", kind:"cocktail", items:[
+          ["", "Выбор коктейлей можно рассмотреть в окне коктейльных мастер-классов в доп. услугах", null, 1300]
         ]}
       ]
     },
@@ -1322,7 +1325,8 @@ function wireOneCarousel(c){
 const BAR_COLS = {
   wine:  {ru:["бокал","бутылка"], en:["glass","bottle"]},
   spirit:{ru:["50 мл","бутылка"], en:["50 ml","bottle"]},
-  beer:  {ru:[null,"бутылка"],    en:[null,"bottle"]}
+  beer:  {ru:[null,"бутылка"],    en:[null,"bottle"]},
+  cocktail:{ru:[null,"порция"],  en:[null,"serving"]}
 };
 const TP = s => s.split(" · ").map(T).join(" · ");
 function barCat2(cat){
@@ -1359,6 +1363,7 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
+"Выбор коктейлей можно рассмотреть в окне коктейльных мастер-классов в доп. услугах":"See the cocktail choice in the cocktail masterclass window under Additional services",
 "Россия":"Russia",
 "Южная Африка":"South Africa",
 "Новая Зеландия":"New Zealand",
