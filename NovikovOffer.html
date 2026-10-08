@@ -1062,7 +1062,7 @@ const DATA = {
     {
       id:"soft", icon:"🥤", type:"bar",
       title:{ru:"Безалкогольные напитки", en:"Soft Drinks"},
-      sub:{ru:"Безлимитный бар, лимонады и напитки в бутылках", en:"Unlimited bar, lemonades & bottled drinks"},
+      sub:{ru:"Безлимитный бар, лимонады, вода, соки и фреши", en:"Unlimited bar, lemonades, water, juices & fresh juices"},
       price:{ru:"Вода, чай и кофе включены", en:"Water, tea & coffee included"},
       note:{ru:"Цена за порцию / бутылку, ₽", en:"Price per serving / bottle, ₽"},
       cats:[
@@ -1083,6 +1083,17 @@ const DATA = {
           ["Лаванда-смородина"],
           ["Яблоко-лимон"],
           ["Клубника-мята"]
+        ]},
+        {ru:"Вода", en:"Water", kind:"water", items:[
+          ["Acqua Panna", "негазированная", 500, 800],
+          ["San Pellegrino", "газированная", 500, 800]
+        ]},
+        {ru:"Соки, фреши и другие напитки", en:"Juices, fresh juices & more", kind:"soft", items:[
+          ["Сок Il Primo в ассортименте", "0,2 л", null, 400],
+          ["Coca-Cola Original", "", null, 400],
+          ["Coca-Cola Zero", "", null, 400],
+          ["Кофейный напиток в ассортименте", "эспрессо-тоник, бамбл", null, 600],
+          ["Фреш в ассортименте", "апельсин, грейпфрут, яблоко, морковь, сельдерей", null, 700]
         ]}
       ]
     }]
@@ -1223,7 +1234,9 @@ const BAR_COLS = {
   wine:  {ru:["бокал","бутылка"], en:["glass","bottle"]},
   spirit:{ru:["50 мл","бутылка"], en:["50 ml","bottle"]},
   beer:  {ru:[null,"бутылка"],    en:[null,"bottle"]},
-  cocktail:{ru:[null,"порция"],  en:[null,"serving"]}
+  cocktail:{ru:[null,"порция"],  en:[null,"serving"]},
+  water: {ru:["0,25 л","0,7 л"],   en:["0.25 L","0.7 L"]},
+  soft:  {ru:[null,"порция"],     en:[null,"serving"]}
 };
 const TP = s => s.split(" · ").map(T).join(" · ");
 function barCat2(cat){
@@ -1260,6 +1273,13 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
+"негазированная":"still",
+"газированная":"sparkling",
+"Сок Il Primo в ассортименте":"Il Primo juice, assorted",
+"Кофейный напиток в ассортименте":"Coffee drink, assorted",
+"эспрессо-тоник, бамбл":"espresso tonic, bumble",
+"Фреш в ассортименте":"Fresh juice, assorted",
+"апельсин, грейпфрут, яблоко, морковь, сельдерей":"orange, grapefruit, apple, carrot, celery",
 "Выбор коктейлей можно рассмотреть в окне коктейльных мастер-классов в доп. услугах":"See the cocktail choice in the cocktail masterclass window under Additional services",
 "Россия":"Russia",
 "Южная Африка":"South Africa",
