@@ -237,7 +237,7 @@ function catCard(c){
   const rows = c.items.map(([n,d,p1,p2,po])=>`
       <div class="bi"><span class="n"><b>${T(n)}</b> <span>${T(d)}</span>${po?`<em class="po">${PO[LANG]}</em>`:""}</span>${one?"":(p1?`<span class="p">${fmt(p1)}</span>`:`<span class="p none" title="${LANG==="ru"?"только бутылкой":"bottle only"}">—</span>`)}<span class="p">${fmt(p2)}</span></div>`).join("");
   return `
-    <div class="cat${one?" one":""}" id="${c.id}" data-spy>
+    <div class="cat${one?" one":""}" id="${c.id}" data-spy data-chip="${CHIP_OF[c.id]||""}">
       <div class="ch"><b>${c[LANG]}</b>${one?"":`<span class="col">${c1}</span>`}<span class="col">${c2}</span></div>${rows}
     </div>`;
 }
@@ -247,9 +247,21 @@ function renderGroup(g){
     <div class="bar-grid">${g.cats.map(catCard).join("")}</div>`;
 }
 
+/* Quick nav: wine gets a chip per category (rosé has none), spirits and soft
+   drinks get one chip each that jumps to the group heading. CHIP_OF maps every
+   card to the chip the scrollspy should light up. */
+const NAV_GROUP = {spirits:{ru:"Крепкие напитки", en:"Spirits"}, softdrinks:{ru:"Б/а напитки", en:"Soft drinks"}};
+const NAV_SKIP = ["rose"];
+const CHIP_OF = {};
+DATA.groups.forEach(g=>g.cats.forEach(c=>{
+  CHIP_OF[c.id] = NAV_GROUP[g.id] ? g.id : (NAV_SKIP.includes(c.id) ? "" : c.id);
+}));
+
 function render(){
   document.getElementById("nav").innerHTML = DATA.groups
-    .map(s=>s.cats.map(c=>`<a href="#${c.id}" data-nav="${c.id}">${c.nav[LANG]}</a>`).join(""))
+    .map(g=>NAV_GROUP[g.id]
+      ? `<a href="#${g.id}" data-nav="${g.id}">${NAV_GROUP[g.id][LANG]}</a>`
+      : g.cats.filter(c=>!NAV_SKIP.includes(c.id)).map(c=>`<a href="#${c.id}" data-nav="${c.id}">${c.nav[LANG]}</a>`).join(""))
     .join(`<span class="sep" aria-hidden="true"></span>`);
   document.getElementById("groups").innerHTML = DATA.groups.map(renderGroup).join("");
   document.querySelectorAll("[data-i18n]").forEach(el=>{
@@ -282,7 +294,7 @@ function spy(){
   });
   // the last block can never reach the line: at the very bottom, it wins
   if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) best = spied[spied.length-1];
-  const id = best ? best.id : null;
+  const id = best ? (best.dataset.chip || spyActive) : null;
   if(id === spyActive) return;
   spyActive = id;
   const nav = document.getElementById("nav");
