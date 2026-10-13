@@ -91,6 +91,18 @@
   .baritem .q{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--muted);white-space:nowrap}
   .baritem input{width:44px;border:1px solid var(--line);padding:3px 4px;font-size:12.5px;background:#fff}
   .baritem input:disabled{visibility:hidden}
+  .baritem .bp{grid-column:1/-1;display:none;gap:8px;align-items:center;font-size:11px;color:var(--muted);padding:2px 0 4px}
+  .baritem.on .bp{display:flex}
+  .baritem .bp input{width:72px}
+  .sw-row{display:grid;grid-template-columns:18px 1fr 26px;gap:6px;align-items:center;margin-bottom:5px}
+  .sw-row .i{font-family:var(--head);font-weight:700;font-size:12px;color:var(--muted)}
+  .sw-row input{border:1px solid var(--line);padding:6px;background:var(--card);font-size:13px;width:100%}
+  .sw-row.chg input{border-color:var(--red);background:#FFF4F2}
+  .sw-row button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:15px}
+  .seg{display:flex;gap:0}
+  .seg input{flex:1}
+  .seg select{width:64px!important;flex:none}
+  table.est td s{color:var(--muted);font-size:10.5px;margin-right:4px}
   .scroller{max-height:360px;overflow:auto;border:1px solid var(--bone-2);padding:0 6px}
 
   .tl-row{display:grid;grid-template-columns:52px 60px 1fr 26px;gap:6px;align-items:center;margin-bottom:5px}
@@ -311,7 +323,9 @@ function unitOf(p, n){
 function buildCatalog(kind){
   const S = SRC[kind], D = S.DATA, A = SRC.adult.DATA;
   const sec = (d, t) => d.sections.find(s => s.type === t || s.id === t);
-  const C = {pkgs:[], buffet:[], included:null, ff:[], bar:[], soft:[], services:[], halls:[], hallIncl:{}, softNote:""};
+  const C = {pkgs:[], buffet:[], included:null, ff:[], bar:[], soft:[], services:[], halls:[], hallIncl:{}, softNote:"", swap:0};
+  /* Доплата за замену блюда в сете — из примечания к форматам («замена блюда +500 ₽») */
+  C.swap = num((L((sec(D, "formats") || {}).note).match(/замена блюда\s*\+\s*([\d  ]+)/i) || [])[1]);
 
   /* Кулинарные пакеты */
   if (kind === "kids"){
@@ -414,7 +428,8 @@ function buildCatalog(kind){
 /* ---------- Состояние ---------- */
 function blank(){
   return {kind:"adult", client:"", contact:"", occasion:"", date:"", start:"19:00", guests:12, kids:10, hall:"", pkg:"", setId:"", dishes:[],
-    ff:"", ffHours:0, sel:{}, bar:{}, custom:[], discount:0, valid:"", note:"", vat:true, tl:null};
+    setDishes:null, swapPrice:"", ff:"", ffHours:0, ffPrice:"", ffExt:"", sel:{}, bar:{}, custom:[], discount:0, discUnit:"%", showOld:true,
+    valid:"", note:"", vat:true, tl:null};
 }
 let ST = blank(), CAT = null;
 try { const s = JSON.parse(localStorage.getItem(LS_KEY)); if (s && s.kind) ST = Object.assign(blank(), s); } catch(e){}
@@ -426,6 +441,13 @@ const defQty = it => it.per === "guest" ? (+ST.guests || 0) : it.per === "kids" 
 const qtyOf = it => { const s = ST.sel[it.key]; return s && s.qty != null && s.qty !== "" ? +s.qty : defQty(it); };
 const priceOf = it => { const s = ST.sel[it.key]; return s && s.price != null && s.price !== "" ? +s.price : it.price; };
 const isOn = it => !!(ST.sel[it.key] && ST.sel[it.key].on);
+const ov = (v, d) => v != null && v !== "" ? +v : d;   /* ручная цена поверх цены лендинга */
+/* Сет меню с учётом замен */
+const curSet = () => pkg() && ST.setId ? SRC[ST.kind].SETS[ST.setId] || null : null;
+const setDishes = () => { const s = curSet(); return s ? s.d.map((d, i) => ((ST.setDishes || [])[i] || "").trim() || d) : []; };
+const swapCount = () => { const s = curSet(); return s ? setDishes().filter((d, i) => d !== s.d[i]).length : 0; };
+const swapPrice = () => ov(ST.swapPrice, CAT.swap);
+const ffPrice = ff => ov(ST.ffPrice, ff.price), ffExt = ff => ov(ST.ffExt, ff.ext);
 const guestsLabel = () => ST.kind === "kids" ? `${+ST.kids||0} ${plural(+ST.kids,"ребёнок","ребёнка","детей")}${+ST.guests ? ` + ${ST.guests} ${plural(+ST.guests,"взрослый","взрослых","взрослых")}` : ""}` : `${+ST.guests||0} ${plural(+ST.guests,"гость","гостя","гостей")}`;
 
 /* Включённый в пакет фуршет */
@@ -445,31 +467,37 @@ function lines(){
     const q = p.per === "kids" ? +ST.kids : p.per === "guest" ? +ST.guests : 1;
     out.push({g:"Кулинарная программа", t:p.title, q, u:p.unit, pr:p.price});
     if (p.extra) out.push({g:"Кулинарная программа", t:`${p.short}: каждый участник`, q:+ST.guests, u:p.extra.unit, pr:p.extra.price});
+    const sw = swapCount();
+    if (sw && swapPrice()) out.push({g:"Кулинарная программа", t:`Замена ${sw} ${plural(sw,"блюда","блюд","блюд")} в сете <small>· ${rub(swapPrice())} за блюдо</small>`, q:q, u:p.unit, pr:swapPrice() * sw});
     const ib = includedBuffet();
     if (ib) out.push({g:"Кулинарная программа", t:ibShort(ib), incl:true});
   }
   const ff = CAT.ff.find(f => f.key === ST.ff);
   if (ff){
-    out.push({g:"Напитки", t:`${ff.title}, 4 часа`, q:+ST.guests, u:"гость", pr:ff.price});
-    if (+ST.ffHours) out.push({g:"Напитки", t:`Продление free-flow, +${ST.ffHours} ч <small>· ${rub(ff.ext)} за час</small>`, q:+ST.guests, u:"гость", pr:ff.ext * +ST.ffHours});
+    out.push({g:"Напитки", t:`${ff.title}, 4 часа`, q:+ST.guests, u:"гость", pr:ffPrice(ff), pr0:ff.price});
+    if (+ST.ffHours) out.push({g:"Напитки", t:`Продление free-flow, +${ST.ffHours} ч <small>· ${rub(ffExt(ff))} за час</small>`, q:+ST.guests, u:"гость", pr:ffExt(ff) * +ST.ffHours, pr0:ff.ext * +ST.ffHours});
   }
   CAT.bar.forEach(c => c.items.forEach(it => {
     const b = ST.bar[`${c.h}|${it.name}`]; if (!b) return;
-    if (+b.g && it.glass) out.push({g:"Напитки", t:`${it.name}${it.origin && c.kind !== "cocktail" ? ` <small>· ${esc(it.origin)}</small>` : ""}`, q:+b.g, u:it.gUnit, pr:it.glass});
-    if (+b.b && it.bottle) out.push({g:"Напитки", t:`${it.name}${it.origin ? ` <small>· ${esc(it.origin)}</small>` : ""}`, q:+b.b, u: c.kind === "cocktail" ? "порция" : "бут.", pr:it.bottle});
+    if (+b.g && it.glass) out.push({g:"Напитки", t:`${it.name}${it.origin && c.kind !== "cocktail" ? ` <small>· ${esc(it.origin)}</small>` : ""}`, q:+b.g, u:it.gUnit, pr:ov(b.gp, it.glass), pr0:it.glass});
+    if (+b.b && it.bottle) out.push({g:"Напитки", t:`${it.name}${it.origin ? ` <small>· ${esc(it.origin)}</small>` : ""}`, q:+b.b, u: c.kind === "cocktail" ? "порция" : "бут.", pr:ov(b.bp, it.bottle), pr0:it.bottle});
   }));
-  CAT.soft.forEach(it => { if (isOn(it)) out.push({g:"Напитки", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it)}); });
+  CAT.soft.forEach(it => { if (isOn(it)) out.push({g:"Напитки", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); });
   const ibKey = (includedBuffet() || {}).key;
-  CAT.buffet.forEach(g => g.items.forEach(it => { if (isOn(it) && it.key !== ibKey) out.push({g:"Фуршет", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it)}); }));
-  CAT.services.forEach(g => g.items.forEach(it => { if (isOn(it)) out.push({g:"Дополнительные услуги", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), req:it.req && !priceOf(it)}); }));
+  CAT.buffet.forEach(g => g.items.forEach(it => { if (isOn(it) && it.key !== ibKey) out.push({g:"Фуршет", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); }));
+  CAT.services.forEach(g => g.items.forEach(it => { if (isOn(it)) out.push({g:"Дополнительные услуги", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, req:it.req && !priceOf(it)}); }));
   ST.custom.forEach(c => { if (c.t) out.push({g:"Дополнительно", t:esc(c.t), q:+c.q || 1, u:"", pr:+c.p || 0, req:!+c.p}); });
   out.forEach(l => { if (!l.incl) l.sum = (l.pr || 0) * (l.q || 0); });
   return out;
 }
 function totals(){
-  const ls = lines(), sub = ls.reduce((s, l) => s + (l.sum || 0), 0), d = Math.min(100, Math.max(0, +ST.discount || 0));
-  const disc = Math.round(sub * d / 100), tot = sub - disc, heads = (ST.kind === "kids" ? +ST.kids + +ST.guests : +ST.guests) || 0;
-  return {ls, sub, d, disc, tot, per: heads ? tot / heads : 0, heads};
+  const ls = lines(), sub = ls.reduce((s, l) => s + (l.sum || 0), 0), pct = ST.discUnit !== "₽";
+  const d = pct ? Math.min(100, Math.max(0, +ST.discount || 0)) : 0;
+  const disc = pct ? Math.round(sub * d / 100) : Math.min(sub, Math.max(0, +ST.discount || 0));
+  const tot = sub - disc, heads = (ST.kind === "kids" ? +ST.kids + +ST.guests : +ST.guests) || 0;
+  /* Подпись скидки: «−10%» или «−15 000 ₽» */
+  const dl = !disc ? "" : pct ? `${d}%` : rub(disc);
+  return {ls, sub, d, disc, dl, tot, per: heads ? tot / heads : 0, heads};
 }
 
 /* Тайминг: авто по шаблону, пока его не правили руками */
@@ -521,7 +549,16 @@ function renderForm(){
   if (p && p.setIds){
     menuHtml = `<div class="sub">Сет меню</div><div class="fld full"><select id="setId"><option value="">Выбор сета — позже, по согласованию</option>${
       p.setIds.map(id => SRC[ST.kind].SETS[id] ? `<option value="${id}" ${ST.setId === id ? "selected" : ""}>${esc(SRC[ST.kind].SETS[id].ru)}</option>` : "").join("")}</select></div>`;
-    if (ST.setId && SRC[ST.kind].SETS[ST.setId]) menuHtml += `<div class="hint">${SRC[ST.kind].SETS[ST.setId].d.map(esc).join(" · ")}</div>`;
+    const s = curSet();
+    if (s){
+      const cur = setDishes(), sw = swapCount();
+      const pool = [...new Set(Object.values(SRC[ST.kind].SETS).flatMap(x => x.d))];
+      menuHtml += `<div class="hint">Блюда сета — впишите или выберите из других сетов, чтобы заменить:</div>` +
+        s.d.map((d, i) => `<div class="sw-row${cur[i] !== d ? " chg" : ""}"><span class="i">${i + 1}</span><input list="dishPool" data-sw="${i}" value="${esc(cur[i])}" placeholder="${esc(d)}" title="В сете: ${esc(d)}"><button type="button" data-swr="${i}" title="Вернуть «${esc(d)}»">↺</button></div>`).join("") +
+        `<datalist id="dishPool">${pool.map(d => `<option value="${esc(d)}">`).join("")}</datalist>` +
+        `<div class="grid2" style="margin-top:6px"><label class="fld">Доплата за замену, ₽ с ${p.unit === "гость" ? "гостя" : "участника"} за блюдо<input type="number" id="swapPrice" min="0" step="100" value="${swapPrice()}"></label>
+          <div class="hint" style="align-self:end">${sw ? `Заменено: <b>${sw}</b> → +${rub(swapPrice() * sw)} / ${esc(p.unit)}` : "Замен нет"}</div></div>`;
+    }
   }
   if (p && p.menu){
     menuHtml = `<div class="sub">Блюда (${p.dishes} из списка) — можно не отмечать</div>` + p.menu.map(m => `<div class="hint"><b>${esc(L(m.t))}</b></div>` +
@@ -533,14 +570,17 @@ function renderForm(){
 
   const ffHtml = C.ff.map(f => optRow({...f, sub:`+1 час: ${rub(f.ext)} / гость · ` + f.cats.map(c => L(c.t)).join(", ")}, "radio", "ff", ST.ff === f.key, false)).join("") +
     `<div class="opt${!ST.ff ? " on" : ""}" data-key=""><input type="radio" name="ff" id="o-noff" ${!ST.ff ? "checked" : ""}><label for="o-noff"><div class="t">Без free-flow</div></label><div></div></div>` +
-    (ST.ff ? `<div class="grid2" style="margin-top:8px"><label class="fld">Продление, часов<input type="number" id="ffHours" min="0" value="${ST.ffHours}"></label></div>` : "");
+    (ST.ff ? (f => `<div class="grid2" style="margin-top:8px"><label class="fld">Цена, ₽ / гость <small>(по лендингу ${rub(f.price)})</small><input type="number" id="ffPrice" min="0" step="100" value="${ffPrice(f)}"></label>
+      <label class="fld">+1 час, ₽ / гость <small>(${rub(f.ext)})</small><input type="number" id="ffExt" min="0" step="50" value="${ffExt(f)}"></label>
+      <label class="fld">Продление, часов<input type="number" id="ffHours" min="0" value="${ST.ffHours}"></label></div>`)(C.ff.find(f => f.key === ST.ff)) : "");
   const barOn = Object.values(ST.bar).filter(b => +b.g || +b.b).length;
   const barHtml = `<input class="search" id="barSearch" placeholder="Поиск по барной карте…"><div class="scroller" id="barList">` + C.bar.map(c =>
     `<div class="barcat">${esc(c.h)}</div>` + c.items.map(it => { const k = `${c.h}|${it.name}`, b = ST.bar[k] || {};
       return `<div class="baritem${+b.g || +b.b ? " on" : ""}" data-bk="${esc(k)}" data-s="${esc((it.name + " " + it.origin + " " + c.h).toLowerCase())}">
         <div>${esc(it.name)}${it.pre ? " <small>· предзаказ</small>" : ""}<br><small>${esc(it.origin)}${it.glass ? ` · ${it.gUnit} ${rub(it.glass)}` : ""}${it.bottle ? ` · ${c.kind === "cocktail" ? "порция" : "бут."} ${rub(it.bottle)}` : ""}</small></div>
         <span class="q">${it.gUnit}<input type="number" min="0" data-f="g" value="${b.g || ""}" ${it.glass ? "" : "disabled"}></span>
-        <span class="q">${c.kind === "cocktail" ? "порц." : "бут."}<input type="number" min="0" data-f="b" value="${b.b || ""}" ${it.bottle ? "" : "disabled"}></span></div>`; }).join("")).join("") + `</div>`;
+        <span class="q">${c.kind === "cocktail" ? "порц." : "бут."}<input type="number" min="0" data-f="b" value="${b.b || ""}" ${it.bottle ? "" : "disabled"}></span>
+        <div class="bp">цена, ₽:${it.glass ? ` ${it.gUnit} <input type="number" min="0" step="50" data-f="gp" value="${ov(b.gp, it.glass)}">` : ""}${it.bottle ? ` ${c.kind === "cocktail" ? "порц." : "бут."} <input type="number" min="0" step="100" data-f="bp" value="${ov(b.bp, it.bottle)}">` : ""}</div></div>`; }).join("")).join("") + `</div>`;
 
   const svcHtml = C.services.map(g => `<div class="sub">${esc(g.h)}${g.min ? ` · ${esc(g.min)}` : ""}</div>` + g.items.map(it => optRow({...it, title: it.short || it.title})).join("")).join("");
   const tl = timeline();
@@ -579,12 +619,13 @@ function renderForm(){
     <div class="hint">${ST.tl ? "Изменён вручную." : "Собирается автоматически из пакета и услуг."} Минуты · описание.</div>${tlHtml}
     <button type="button" class="btn sm" id="addTl">+ Пункт</button> ${ST.tl ? `<button type="button" class="btn sm" id="resetTl">Сбросить по шаблону</button>` : ""}</div></details>
   <details class="box" data-id="terms" ${op("terms", true)}><summary>Скидка и условия</summary><div class="bx grid2">
-    <label class="fld">Скидка на итог, %<input type="number" id="discount" min="0" max="100" value="${ST.discount}"></label>
+    <label class="fld">Скидка на итог<span class="seg"><input type="number" id="discount" min="0" ${ST.discUnit === "₽" ? 'step="1000"' : 'max="100"'} value="${ST.discount}"><select id="discUnit"><option ${ST.discUnit !== "₽" ? "selected" : ""}>%</option><option ${ST.discUnit === "₽" ? "selected" : ""}>₽</option></select></span></label>
     <label class="fld">Предложение действительно до<input type="date" id="valid" value="${esc(ST.valid)}"></label>
     <label class="fld full">Комментарий для клиента<textarea id="note" placeholder="Например: меню согласовываем за 7 дней до мероприятия">${esc(ST.note)}</textarea></label>
     <label class="fld full" style="flex-direction:row;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="vat" ${ST.vat ? "checked" : ""} style="width:auto;accent-color:var(--red)"> Пометка «В стоимость не включён НДС 22%»</label>
+    <label class="fld full" style="flex-direction:row;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="showOld" ${ST.showOld ? "checked" : ""} style="width:auto;accent-color:var(--red)"> Если цена снижена вручную — показывать в смете старую цену зачёркнутой</label>
   </div></details>
-  <div class="totalbar"><span>Итого${T.d ? ` (−${T.d}%)` : ""}</span><b>${rub(T.tot)}</b></div>`;
+  <div class="totalbar"><span>Итого${T.dl ? ` (−${T.dl})` : ""}</span><b>${rub(T.tot)}</b></div>`;
 }
 
 /* ---------- События формы ---------- */
@@ -598,17 +639,21 @@ F.addEventListener("click", async e => {
   if (e.target.dataset.cdel != null){ ST.custom.splice(+e.target.dataset.cdel, 1); rerender(); return; }
   if (e.target.id === "addTl"){ ST.tl = timeline().map(r => ({...r})); ST.tl.push({m:30, t:""}); rerender(); return; }
   if (e.target.id === "resetTl"){ ST.tl = null; rerender(); return; }
+  if (e.target.dataset.swr != null){ if (ST.setDishes) ST.setDishes[+e.target.dataset.swr] = ""; rerender(); return; }
   if (e.target.dataset.del != null){ ST.tl = timeline().map(r => ({...r})); ST.tl.splice(+e.target.dataset.del, 1); rerender(); return; }
 });
 F.addEventListener("change", e => {
   const t = e.target, row = t.closest(".opt");
   if (row && (t.type === "checkbox" || t.type === "radio")){
     if (row.dataset.dish != null){ const d = row.dataset.dish; ST.dishes = t.checked ? [...ST.dishes, d] : ST.dishes.filter(x => x !== d); rerender(); return; }
-    if (t.name === "pkg"){ ST.pkg = row.dataset.key; ST.setId = ""; ST.dishes = []; rerender(); return; }
-    if (t.name === "ff"){ ST.ff = row.dataset.key; if (!ST.ff) ST.ffHours = 0; rerender(); return; }
+    if (t.name === "pkg"){ ST.pkg = row.dataset.key; ST.setId = ""; ST.setDishes = null; ST.dishes = []; rerender(); return; }
+    if (t.name === "ff"){ ST.ff = row.dataset.key; ST.ffHours = 0; ST.ffPrice = ""; ST.ffExt = ""; rerender(); return; }
     const key = row.dataset.key; ST.sel[key] = {...(ST.sel[key] || {}), on:t.checked}; rerender(); return;
   }
-  if (t.id === "setId"){ ST.setId = t.value; rerender(); return; }
+  if (t.id === "setId"){ ST.setId = t.value; ST.setDishes = null; rerender(); return; }
+  if (t.id === "discUnit"){ ST.discUnit = t.value; ST.discount = 0; rerender(); return; }
+  if (t.id === "showOld"){ ST.showOld = t.checked; rerender(false); return; }
+  if (t.dataset.sw != null){ rerender(); return; }
   if (t.id === "hall"){ ST.hall = t.value; rerender(); return; }
   if (t.id === "vat"){ ST.vat = t.checked; rerender(false); return; }
   if (["date","valid","start"].includes(t.id)){ ST[t.id] = t.value; rerender(); return; }
@@ -617,6 +662,9 @@ F.addEventListener("input", e => {
   const t = e.target;
   if (["client","contact","occasion","note"].includes(t.id)){ ST[t.id] = t.value; rerender(false); return; }
   if (["guests","kids","discount","ffHours"].includes(t.id)){ ST[t.id] = t.value === "" ? 0 : +t.value; softUpdate(); return; }
+  if (["ffPrice","ffExt","swapPrice"].includes(t.id)){ ST[t.id] = t.value; softUpdate(); return; }
+  if (t.dataset.sw != null){ const s = curSet(); ST.setDishes = ST.setDishes || s.d.map(() => ""); ST.setDishes[+t.dataset.sw] = t.value === s.d[+t.dataset.sw] ? "" : t.value;
+    t.closest(".sw-row").classList.toggle("chg", !!t.value.trim() && t.value.trim() !== s.d[+t.dataset.sw]); softUpdate(); return; }
   if (t.id === "barSearch"){ const q = t.value.toLowerCase().trim(); F.querySelectorAll(".baritem").forEach(r => r.style.display = !q || r.dataset.s.includes(q) ? "" : "none"); return; }
   const opt = t.closest(".opt");
   if (opt && t.closest(".edit")){
@@ -626,7 +674,7 @@ F.addEventListener("input", e => {
     softUpdate(); return;
   }
   const bi = t.closest(".baritem");
-  if (bi){ const k = bi.dataset.bk, b = ST.bar[k] = {...(ST.bar[k] || {})}; b[t.dataset.f] = t.value; if (!+b.g && !+b.b) delete ST.bar[k];
+  if (bi){ const k = bi.dataset.bk, b = ST.bar[k] = {...(ST.bar[k] || {})}; b[t.dataset.f] = t.value; if (!+b.g && !+b.b && !/p$/.test(t.dataset.f)) delete ST.bar[k];
     bi.classList.toggle("on", !!ST.bar[k]); softUpdate(); return; }
   const tr = t.closest(".tl-row");
   if (tr){ ST.tl = timeline().map(r => ({...r})); const r = ST.tl[+tr.dataset.i]; r[t.dataset.f] = t.dataset.f === "m" ? +t.value : t.value; softUpdate(true); return; }
@@ -637,7 +685,7 @@ F.addEventListener("input", e => {
 let fT = 0;
 function softUpdate(tl){
   save();
-  const T = totals(); const tb = F.querySelector(".totalbar"); if (tb) tb.innerHTML = `<span>Итого${T.d ? ` (−${T.d}%)` : ""}</span><b>${rub(T.tot)}</b>`;
+  const T = totals(); const tb = F.querySelector(".totalbar"); if (tb) tb.innerHTML = `<span>Итого${T.dl ? ` (−${T.dl})` : ""}</span><b>${rub(T.tot)}</b>`;
   if (tl){ let t0 = ST.start; F.querySelectorAll(".tl-row").forEach((r, i) => { r.querySelector(".tm").textContent = t0; t0 = addMin(t0, +(ST.tl[i] || {}).m || 0); }); }
   clearTimeout(rT); rT = setTimeout(renderPages, 400);
   clearTimeout(fT); fT = setTimeout(() => { const a = document.activeElement; if (!F.contains(a)) renderForm(); }, 1500);
@@ -646,7 +694,7 @@ function softUpdate(tl){
 async function switchKind(k){
   $("#status").textContent = "Загружаю цены…";
   try { await load(k); } catch(e){ $("#status").textContent = "Не удалось загрузить: " + KINDS[k].files.join(" / "); return; }
-  ST.kind = k; ST.pkg = ""; ST.setId = ""; ST.dishes = []; ST.sel = {}; ST.ff = ""; ST.ffHours = 0; ST.bar = {}; ST.tl = null; ST.hall = "";
+  ST.kind = k; ST.pkg = ""; ST.setId = ""; ST.setDishes = null; ST.ffPrice = ""; ST.ffExt = ""; ST.swapPrice = ""; ST.dishes = []; ST.sel = {}; ST.ff = ""; ST.ffHours = 0; ST.bar = {}; ST.tl = null; ST.hall = "";
   CAT = buildCatalog(k); $("#status").textContent = "Цены: " + KINDS[k].file;
   rerender();
 }
@@ -674,7 +722,7 @@ function buildBlocks(){
 
   /* Обзор */
   const ov = [];
-  if (p) ov.push(["Кулинария", [p.title + ` — ${rub(p.price)} / ${p.unit}`, set ? `Сет «${set.ru}»: ${set.d.join(", ")}` : p.setIds ? "Сет меню — выбираете из подборки уровня" : "",
+  if (p) ov.push(["Кулинария", [p.title + ` — ${rub(p.price)} / ${p.unit}`, set ? `Сет «${set.ru}»: ${setDishes().join(", ")}` : p.setIds ? "Сет меню — выбираете из подборки уровня" : "",
     p.menu ? (ST.dishes.length ? `Блюда: ${ST.dishes.join(", ")}` : `${p.dishes} блюда: ${p.what}`) : "", p.game ? `Игра: ${p.game[0].toLowerCase() + p.game.slice(1)}` : "", "Профессиональный шеф Novikov, все продукты и инвентарь"].filter(Boolean)]);
   const fb = []; if (ib) fb.push(`${ib.title}${ib.wt ? ` (${ib.wt} на гостя)` : ""} — входит в пакет`); bufOn.forEach(it => fb.push(`${it.title}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
   if (fb.length) ov.push(["Фуршет", fb]);
@@ -698,7 +746,7 @@ function buildBlocks(){
     H("Кулинарная программа", p.short);
     B(`<div class="card"><div class="meta">${esc(p.group)}</div><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>${p.prem ? `<p><b>${esc(p.prem)}</b></p>` : ""}
       <div class="strip c3">${p.imgs.map(u => `<div class="ph" ${bg(u)}></div>`).join("")}</div></div>`);
-    if (set) B(`<div class="card"><div class="meta">Ваш сет</div><h3>«${esc(set.ru)}»</h3><ul class="ticks one">${set.d.map(d => `<li>${esc(d)}</li>`).join("")}</ul></div>`);
+    if (set) B(`<div class="card"><div class="meta">Ваш сет</div><h3>«${esc(set.ru)}»</h3><ul class="ticks one">${setDishes().map(d => `<li>${esc(d)}</li>`).join("")}</ul></div>`);
     else if (p.setIds) B(`<div class="card"><div class="meta">Сеты на выбор · ${esc(p.short)}</div><ul class="ticks">${p.setIds.map(id => SRC[ST.kind].SETS[id]).filter(Boolean).map(s => `<li><b>${esc(s.ru)}</b></li>`).join("")}</ul></div>`);
     if (p.menu){
       if (ST.dishes.length) B(`<div class="card"><div class="meta">Меню праздника</div><ul class="ticks one">${ST.dishes.map(d => `<li>${esc(d)}</li>`).join("")}</ul></div>`);
@@ -752,9 +800,9 @@ function buildBlocks(){
   H("Стоимость", ST.kind === "kids" ? "" : `${guestsLabel()}`);
   let g0 = "";
   const rows = T.ls.map(l => { let s = ""; if (l.g !== g0){ g0 = l.g; s += `<tr class="grp"><td colspan="4">${esc(l.g)}</td></tr>`; }
-    return s + `<tr><td>${l.t}</td><td class="n">${l.incl ? "" : esc(qu(l.q, l.u))}</td><td class="n">${l.incl || l.req ? "" : rub(l.pr)}</td><td class="n">${l.incl ? "включено" : l.req ? "по запросу" : rub(l.sum)}</td></tr>`; }).join("");
+    return s + `<tr><td>${l.t}</td><td class="n">${l.incl ? "" : esc(qu(l.q, l.u))}</td><td class="n">${l.incl || l.req ? "" : (ST.showOld && l.pr0 > l.pr ? `<s>${rub(l.pr0)}</s>` : "") + rub(l.pr)}</td><td class="n">${l.incl ? "включено" : l.req ? "по запросу" : rub(l.sum)}</td></tr>`; }).join("");
   blocks.push({split:true, html:`<div class="blk"><table class="est"><thead><tr><th>Позиция</th><th class="n">Кол-во</th><th class="n">Цена</th><th class="n">Сумма</th></tr></thead><tbody class="rows">${rows}</tbody></table></div>`});
-  B(`<div class="totals">${T.d ? `<div><span>Сумма</span><b>${rub(T.sub)}</b></div><div><span>Скидка ${T.d}%</span><b>−${rub(T.disc)}</b></div>` : ""}
+  B(`<div class="totals">${T.disc ? `<div><span>Сумма</span><b>${rub(T.sub)}</b></div><div><span>Скидка${T.d ? ` ${T.d}%` : ""}</span><b>−${rub(T.disc)}</b></div>` : ""}
     <div class="big"><span>Итого</span><span>${rub(T.tot)}</span></div>${T.heads ? `<div class="pg">≈ ${rub(T.per)} на ${ST.kind === "kids" ? "участника" : "гостя"}</div>` : ""}</div>
     ${ST.note ? `<div class="card" style="margin-top:12px"><div class="meta">Комментарий</div><p>${esc(ST.note).replace(/\n/g,"<br>")}</p></div>` : ""}
     <p class="fine">${[ST.vat ? "В стоимость не включён НДС 22%." : "", ST.valid ? `Предложение действительно до ${new Date(ST.valid + "T12:00:00").toLocaleDateString("ru-RU", {day:"numeric", month:"long", year:"numeric"}).replace(/ г\.$/, "")} г.` : ""].filter(Boolean).join(" ")}</p>
@@ -785,7 +833,7 @@ function coverPage(T, p, hall, ff){
     </div>
     <div class="pkgline"><div class="card"><div class="meta">Ваш формат</div><h3>${p ? esc(p.title) : "Индивидуальная программа"}</h3>
       <p>${[p && includedBuffet() ? ibShort(includedBuffet()) : "", ff ? ff.title : "", ...CAT.services.flatMap(g => g.items).filter(isOn).map(it => it.svc)].filter((v, i, a) => v && a.indexOf(v) === i).join(" · ") || "Полный состав — на следующих страницах"}</p></div>
-      <div class="tot"><div class="l">Стоимость${T.d ? ` со скидкой ${T.d}%` : ""}</div><div class="v">${rub(T.tot)}</div>${T.heads ? `<small>≈ ${rub(T.per)} на ${ST.kind === "kids" ? "участника" : "гостя"}</small>` : ""}</div></div>
+      <div class="tot"><div class="l">Стоимость${T.disc ? ` со скидкой${T.d ? ` ${T.d}%` : ""}` : ""}</div><div class="v">${rub(T.tot)}</div>${T.heads ? `<small>≈ ${rub(T.per)} на ${ST.kind === "kids" ? "участника" : "гостя"}</small>` : ""}</div></div>
     <div class="mgr"><div><div class="l">Ваш менеджер</div><div class="n">${MANAGER.name}</div></div><div class="ph2">${MANAGER.phone}</div></div>
     <div style="margin:auto 44px 18px;font-size:10px;color:var(--muted)">${ADDRESS} · novikov-school.ru</div>`;
   d.style.display = "flex"; d.style.flexDirection = "column";
