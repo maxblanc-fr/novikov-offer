@@ -249,7 +249,7 @@
 </head>
 <body>
 <header class="top">
-  <div class="brand">NOVIKOV<b>SCHOOL</b><small>ГЕНЕРАТОР ПРЕДЛОЖЕНИЙ</small></div>
+  <div class="brand">NOVIKOV<b>SCHOOL</b><small>ГЕНЕРАТОР ПРЕДЛОЖЕНИЙ<span id="mgrName"></span></small></div>
   <span id="status">Загружаю цены с лендингов…</span>
   <span class="sp"></span>
   <button class="btn ghost" id="bArch" type="button">Мои КП</button>
@@ -273,7 +273,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 /* ---------- Константы ---------- */
-const MANAGER = {name:"Максим Бланк", phone:"+7 903 161-80-65", tel:"+79031618065"};
+/* Менеджер выбирается по адресу: /kp-generator — Максим, /kp-generator-darya, /kp-generator-ilya — коллеги.
+   У коллег свой префикс номера КП и свой архив, чтобы не пересекаться. */
+const MANAGERS = {
+  max:  {name:"Максим Бланк",   phone:"+7 903 161-80-65", tel:"+79031618065", code:"",   ls:""},
+  darya:{name:"Дарья Марушко",  phone:"+7 915 089-18-18", tel:"+79150891818", code:"Д-", ls:"-darya"},
+  ilya: {name:"Илья Васильев",  phone:"+7 912 912-52-72", tel:"+79129125272", code:"И-", ls:"-ilya"},
+};
+const MANAGER = MANAGERS[(location.pathname.match(/(darya|ilya)/i) || [, "max"])[1].toLowerCase()];
+document.getElementById("mgrName").textContent = " · " + MANAGER.name.toUpperCase();
+document.title += " — " + MANAGER.name;
 const ADDRESS = "Москва, Большая Якиманка, 22";
 const KINDS = {
   adult:{label:"Взрослое",    files:["index.html","NovikovOffer.html"],   kicker:"Предложение на мероприятие"},
@@ -289,7 +298,7 @@ const TL_TEMPLATE = [
 ];
 const COVER_IMG = {adult:"images/halls/cafe/22.jpg", ny:"images/halls/cafe/23.jpg", kids:"images/halls/cafe/21.jpg"};
 const COOK_IMGS = ["images/halls/cafe/21.jpg","images/halls/cafe/24.jpg","images/halls/cafe/6.jpg"];
-const LS_KEY = "novikov-proposal-v1";
+const LS_KEY = "novikov-proposal-v1" + MANAGER.ls;
 
 /* ---------- Утилиты ---------- */
 const $ = s => document.querySelector(s);
@@ -486,7 +495,7 @@ function withVar(i, fn){
 }
 
 /* ---------- Архив КП (localStorage) + номер и версия ---------- */
-const ARCH_KEY = "novikov-proposal-archive-v1", CNT_KEY = "novikov-proposal-counter";
+const ARCH_KEY = "novikov-proposal-archive-v1" + MANAGER.ls, CNT_KEY = "novikov-proposal-counter" + MANAGER.ls;
 let aT = 0;
 const archGet = () => { try { return JSON.parse(localStorage.getItem(ARCH_KEY)) || []; } catch(e){ return []; } };
 const archSet = a => { try { localStorage.setItem(ARCH_KEY, JSON.stringify(a)); } catch(e){ $("#status").textContent = "Не хватает места для архива КП"; } };
@@ -503,9 +512,9 @@ function archPut(){
 function nextNo(){
   const yy = String(new Date().getFullYear() % 100);
   let n = 0; try { n = +localStorage.getItem(CNT_KEY + yy) || 0; } catch(e){}
-  archGet().forEach(x => { const m = String(x.no || "").match(/^(\d+)-(\d+)$/); if (m && m[1] === yy) n = Math.max(n, +m[2]); });
+  archGet().forEach(x => { const m = String(x.no || "").match(/(\d+)-(\d+)$/); if (m && m[1] === yy) n = Math.max(n, +m[2]); });
   n++; try { localStorage.setItem(CNT_KEY + yy, n); } catch(e){}
-  return `${yy}-${String(n).padStart(3, "0")}`;
+  return `${MANAGER.code}${yy}-${String(n).padStart(3, "0")}`;
 }
 const kpLabel = () => ST.no ? `КП № ${ST.no}${ST.ver > 1 ? `, версия ${ST.ver}` : ""}` : "";
 
