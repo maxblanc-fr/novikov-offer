@@ -1039,7 +1039,7 @@ function invitePage(){
   let t0 = ST.start;
   d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[ST.kind])}></div><div class="in">
       <div class="plate"><img class="logo" src="${LOGO}" alt="Novikov School"></div>
-      <div class="kick">Приглашение</div><h1>${esc(ST.occasion || "Приглашение")}</h1>${from ? `<div class="from">Приглашение от: ${esc(from)}</div>` : ""}</div></div>
+      <h1 style="margin-top:auto">${esc(ST.occasion || ST.client || "Мероприятие")}</h1>${from ? `<div class="from">Приглашение от: ${esc(from)}</div>` : ""}</div></div>
     <div class="facts">
       <div><div class="l">Дата</div><div class="v">${dt ? esc(dt.toLocaleDateString("ru-RU", {day:"numeric", month:"long"})) + `<small>${esc(dt.toLocaleDateString("ru-RU", {weekday:"long"}))}, ${ST.date.slice(0,4)}</small>` : "по согласованию"}</div></div>
       <div><div class="l">Время</div><div class="v">${ST.start} — ${endTime()}<small>сбор гостей с ${ST.start}</small></div></div>
