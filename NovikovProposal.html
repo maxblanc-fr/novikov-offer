@@ -894,7 +894,8 @@ function variantBody(H, B, blocks){
   ov.push(["Напитки", dr]);
   if (svcOn.length || ST.custom.some(c => c.t)) ov.push(["Доп. услуги", [...svcOn.map(it => it.title + (it.unit !== "гость" && qtyOf(it) > 1 ? ` × ${qtyOf(it)}` : "")), ...ST.custom.filter(c => c.t).map(c => c.t)]]);
   const inclTxt = hall ? (hall.biz ? L(C.hallIncl.business) : L(C.hallIncl.culinary)) : L(C.hallIncl.culinary);
-  ov.push(["Площадка", [hall ? `Зал «${hall.title}», ${hall.area}` : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
+  const ppl = +ST.guests + (ST.kind === "kids" ? +ST.kids : 0), wN = ppl >= 6 && ppl <= 19 ? 1 : ppl >= 20 && ppl <= 30 ? 2 : ppl >= 31 && ppl <= 50 ? 3 : 0;
+  ov.push(["Площадка", [hall ? `Зал «${hall.title}», ${hall.area}${+ST.hallHours && hall.ext ? ` + продление ${ST.hallHours} ч` : ""}` : "", wN ? `${wN} ${plural(wN,"официант","официанта","официантов")} — входит в стоимость` : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
   H("Что входит", "всё в одном месте");
   B(`<p class="lead">Ниже — полный состав вашего мероприятия. Всё перечисленное уже учтено в стоимости.</p>`);
   ov.forEach(([k, arr]) => B(`<div class="ov-grp"><div class="k">${esc(k)}</div><ul class="ticks one">${arr.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>`));
