@@ -239,6 +239,18 @@
   .cover .tot .v{font-family:var(--display);font-size:32px;line-height:1.1}
   .cover .tot small{opacity:.85;font-size:11px}
   .cover .mgr{margin:18px 44px 0}
+  /* Приглашение для гостей — одна страница A4 без цен */
+  .invite .hero{height:440px}
+  .invite .from{margin-top:10px;font-size:17px;font-weight:700;color:var(--bone)}
+  .invite .facts{grid-template-columns:repeat(3,1fr)}
+  .invite .body{margin:26px 44px 0}
+  .invite .addr{margin:auto 44px 34px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);padding:16px 20px}
+  .invite .addr .l{font-family:var(--head);font-weight:700;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .invite .addr .v{font-family:var(--head);font-weight:900;font-size:16px;line-height:1.3;margin-top:4px;color:var(--ink)}
+  .invite .addr small{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:3px}
+  #inviteBox{position:fixed;left:-10000px;top:0}
+  .invite.tight .hero{height:330px} .invite.tight .tl-it{padding:5px 0} .invite.tight .body{margin-top:16px} .invite.tight .addr{margin-bottom:24px}
+  .invite.tighter .hero{height:250px} .invite.tighter .tl-it{padding:3px 0;grid-template-columns:70px 1fr} .invite.tighter .tl-it .tm small{display:none} .invite.tighter .tl-it .tx{font-size:12.5px}
   .empty{padding:60px;text-align:center;color:var(--muted)}
 
   @media print{
@@ -261,6 +273,7 @@
   <button class="btn ghost" id="bExample" type="button">Пример</button>
   <button class="btn ghost" id="bReset" type="button">Новое</button>
   <button class="btn ghost" id="bPrint" type="button">Печать</button>
+  <button class="btn ghost" id="bInvite" type="button" title="PDF-приглашение для гостей: название, дата, тайминг и адрес — без цен">Приглашение</button>
   <button class="btn main" id="bPdf" type="button">Сгенерировать PDF</button>
 </header>
 <div class="arch" id="arch" hidden><div class="in">
@@ -1016,6 +1029,28 @@ function coverPage(Ts, hall){
   return d;
 }
 
+/* Приглашение: название мероприятия, от кого, дата, тайминг и адрес */
+const ADDRESS_FULL = "Москва, Большая Якиманка, 22, ТЦ «Гименей», 2 этаж";
+function invitePage(){
+  const hall = CAT.halls.find(h => h.slug === ST.hall), from = ST.contact || ST.client;
+  const dt = ST.date ? new Date(ST.date + "T12:00:00") : null;
+  const d = document.createElement("div"); d.className = "page cover invite";
+  d.style.display = "flex"; d.style.flexDirection = "column";
+  let t0 = ST.start;
+  d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[ST.kind])}></div><div class="in">
+      <div class="plate"><img class="logo" src="${LOGO}" alt="Novikov School"></div>
+      <div class="kick">Приглашение</div><h1>${esc(ST.occasion || "Приглашение")}</h1>${from ? `<div class="from">Приглашение от: ${esc(from)}</div>` : ""}</div></div>
+    <div class="facts">
+      <div><div class="l">Дата</div><div class="v">${dt ? esc(dt.toLocaleDateString("ru-RU", {day:"numeric", month:"long"})) + `<small>${esc(dt.toLocaleDateString("ru-RU", {weekday:"long"}))}, ${ST.date.slice(0,4)}</small>` : "по согласованию"}</div></div>
+      <div><div class="l">Время</div><div class="v">${ST.start} — ${endTime()}<small>сбор гостей с ${ST.start}</small></div></div>
+      <div><div class="l">Место</div><div class="v">Novikov School<small>${hall ? `Зал «${esc(hall.title)}»` : "Б. Якиманка, 22"}</small></div></div>
+    </div>
+    <div class="body"><h2 class="ttl" style="margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:30px;text-transform:uppercase;color:var(--ink)">Тайминг</h2>
+      <div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} мин</small></div><div class="tx">${esc(r.t)}</div></div>`; }).join("")}</div></div>
+    <div class="addr"><div class="l">Адрес</div><div class="v">${esc(ADDRESS_FULL)}</div><small>Novikov School${hall ? ` · зал «${esc(hall.title)}»` : ""} · novikov-school.ru</small></div>`;
+  return d;
+}
+
 function renderPages(){
   if (!CAT) return;
   const box = $("#pages"), z = box.style.getPropertyValue("--z"); box.style.setProperty("--z", 1);
@@ -1090,6 +1125,27 @@ $("#bPdf").addEventListener("click", async () => {
     pdf.save(nm + ".pdf");
   } catch(e){ alert("Не получилось собрать PDF: " + e.message); console.error(e); }
   finally { b.disabled = false; b.textContent = old; fitPreview(); }
+});
+$("#bInvite").addEventListener("click", async () => {
+  if (!CAT) return;
+  const b = $("#bInvite"); b.disabled = true; const old = b.textContent; b.textContent = "Собираю…";
+  const box = document.createElement("div"); box.id = "inviteBox";
+  try {
+    const pg = invitePage(); box.appendChild(pg); document.body.appendChild(box);
+    /* Длинный тайминг не влезает — ужимаем фото и строки */
+    const addr = pg.querySelector(".addr"), tl = pg.querySelector(".tline");
+    const over = () => tl.getBoundingClientRect().bottom + 20 > addr.getBoundingClientRect().top;
+    if (over()) pg.classList.add("tight");
+    if (over()) pg.classList.add("tighter");
+    await waitImages(box);
+    const {jsPDF} = window.jspdf, pdf = new jsPDF({unit:"mm", format:"a4", compress:true});
+    const cv = await html2canvas(pg, {scale:2, useCORS:true, backgroundColor:"#FBF8F2", logging:false, windowWidth:900});
+    pdf.addImage(cv.toDataURL("image/jpeg", 0.88), "JPEG", 0, 0, 210, 297, undefined, "FAST");
+    pdf.setProperties({title:`Приглашение · ${ST.occasion || ST.client || "Novikov School"}`, author:ST.contact || ST.client || "Novikov School"});
+    const nm = ["Приглашение", ST.occasion || ST.client, ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
+    pdf.save(nm + ".pdf");
+  } catch(e){ alert("Не получилось собрать приглашение: " + e.message); console.error(e); }
+  finally { box.remove(); b.disabled = false; b.textContent = old; }
 });
 $("#bPrint").addEventListener("click", () => { renderPages(); waitImages($("#pages")).then(() => print()); });
 $("#bReset").addEventListener("click", async () => { if (!confirm("Начать новое предложение? Текущее сохранено в «Мои КП».")) return; archPut(); const k = ST.kind; ST = blank(); ST.kind = k; CAT = buildCatalog(k); rerender(); });
