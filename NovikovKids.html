@@ -968,16 +968,15 @@ const DATA = {
       note:{ru:"В стоимость не включён НДС 22%", en:"Prices exclude 22% VAT"},
       items:[
         {ic:"🎲", name:{ru:"Интерактивные игры", en:"Interactive Games"},
-          desc:{ru:"Игры с профессиональным ведущим — тот же формат, что и на взрослых мероприятиях, адаптированный по возрасту: час игры или ивент-менеджер на 4 часа, игру выбираете из списка. Отдельно можно заказать караоке на 2 часа.",
-                en:"Games with a professional host — the same format as at adult events, adapted to the age group: one hour of the game or an event manager for 4 hours; pick the game from the list. Karaoke for 2 hours can be booked separately."},
+          desc:{ru:"Игры с профессиональным ведущим — тот же формат, что и на взрослых мероприятиях, адаптированный по возрасту: час игры, игру выбираете из списка. Отдельно можно заказать караоке на 2 часа.",
+                en:"Games with a professional host — the same format as at adult events, adapted to the age group: one hour of the game; pick the game from the list. Karaoke for 2 hours can be booked separately."},
           tags:["Квиз","Угадай мелодию"],
           tiers:[
-            {l:{ru:"Игра", en:"The game"}, p:"20 000 ₽", n:"1 час"},
-            {l:{ru:"Ивент-менеджер", en:"Event manager"}, p:"35 000 ₽", n:"4 часа"},
+            {l:{ru:"Игра", en:"The game"}, p:"2 200 ₽/гость", n:"1 час · минимум 20 000 ₽"},
             {l:{ru:"Караоке", en:"Karaoke"}, p:"45 000 ₽", n:"2 часа"}
           ],
-          note:{ru:"<b>Входит в пакет 3</b> для 8–10 и 11–14 лет. Цена указана для случая, когда игру берут отдельно к пакету 1 или 2.",
-                en:"<b>Included in package 3</b> for ages 8–10 and 11–14. The price shown applies when the game is added to package 1 or 2."}},
+          note:{ru:"<b>Входит в пакет 3</b> для 8–10 и 11–14 лет. Отдельно к пакету 1 или 2 — 2 200 ₽ за гостя, минимум 20 000 ₽ (до 9 гостей — 20 000 ₽). Караоке — цена за мероприятие.",
+                en:"<b>Included in package 3</b> for ages 8–10 and 11–14. Added to package 1 or 2 — 2 200 ₽ per guest, minimum 20 000 ₽ (up to 9 guests — 20 000 ₽). Karaoke is priced per event."}},
 
         {ic:"🥤", name:{ru:"Игра «Угадай напиток»", en:"«Guess the Drink» Game"},
           min:{ru:"4–10 лет", en:"ages 4–10"},
@@ -1325,7 +1324,7 @@ const TR={
 "за порцию":"per serving",
 "Коко Джамбо":"Coco Jambo","Пина Колада":"Pina Colada","Клубника-манго-кокос":"Strawberry, mango & coconut",
 "Сливочное пиво":"Butterbeer","Грейпфрут-малина":"Grapefruit & raspberry","Молочный коктейль":"Milkshake",
-"1 час":"1 hour","2 часа":"2 hours","4 часа":"4 hours","за шт":"per pc","10 шт":"10 pcs",
+"1 час":"1 hour","1 час · минимум 20 000 ₽":"1 hour · minimum 20 000 ₽","2 200 ₽/гость":"2 200 ₽/guest","2 часа":"2 hours","4 часа":"4 hours","за шт":"per pc","10 шт":"10 pcs",
 "10 400 ₽":"10 400 ₽","11 500 ₽":"11 500 ₽","12 500 ₽":"12 500 ₽","13 600 ₽":"13 600 ₽"
 };
 function T(s){ return (LANG==="en" && TR[s]!==undefined) ? TR[s] : s; }
