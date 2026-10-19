@@ -757,20 +757,9 @@ const DATA = {
         {name:"Medium Set: 9 позиций", wt:"166 г", price:1700, d:["Блинный ролл с лососем и шпинатом","Сырное канапе с индейкой","Индейка тандури в кляре с соусом свит чили","Спайси-крекер с лососем","Мини-эклер с томатным муссом","Канапе капрезе с фетой","Ростбиф с соусом блю чиз","Тигровые креветки с соусом карри","Тунец том ям"]},
         {name:"Large Set: 11 позиций", wt:"205 г", price:2150, d:["Блинный ролл с лососем и шпинатом","Сырное канапе с индейкой","Индейка тандури в кляре с соусом свит чили","Спайси-крекер с лососем","Мини-эклер с томатным муссом","Канапе капрезе с фетой","Ростбиф с соусом блю чиз","Тигровые креветки с соусом карри","Тунец том ям","Профитроли с ростбифом","Брускетта с угрём и соусом унаги"]}
       ],
-      kids:{ title:{ru:"Детский фуршет", en:"Kids Buffet"},
-             note:{ru:"минимум 6 порций", en:"minimum 6 portions"},
-             items:[
-               {ru:"Овощные палочки с айоли", en:"Veggie sticks with aioli", wt:"90 г", price:400},
-               {ru:"Картофель фри", en:"French fries", wt:"100 г", price:400},
-               {ru:"Клаб-сэндвич с лососем", en:"Club sandwich with salmon", info:"режем на 4 части", price:1000},
-               {ru:"Клаб-сэндвич с курицей", en:"Club sandwich with chicken", info:"режем на 4 части", price:800},
-               {ru:"Клаб-сэндвич с ветчиной и сыром", en:"Club sandwich with ham & cheese", info:"режем на 4 части", price:900},
-               {ru:"Наггетсы с фри и кетчупом", en:"Nuggets with fries & ketchup", wt:"155 г", price:500},
-               {ru:"Мини-гамбургер с куриной котлетой", en:"Mini burger with chicken patty", wt:"150 г", price:400},
-               {ru:"Мини-пицца «Маргарита»", en:"Mini pizza Margherita", wt:"180 г", price:500},
-               {ru:"Мини-пицца с ветчиной и сыром", en:"Mini pizza with ham & cheese", wt:"180 г", price:600},
-               {ru:"Мини-пицца «Пепперони»", en:"Mini pizza Pepperoni", wt:"180 г", price:600}
-             ] },
+      kids:{ title:{ru:"Детский фуршет Kid Set", en:"Kids Buffet · Kid Set"}, price:1200,
+             wt:{ru:"9 позиций на ребёнка", en:"9 items per child"},
+             d:["Мини-пицца","Рожок с нутеллой и ягодами","Мини-сэндвич с ветчиной и сыром","Картофель фри","Мини-сосиска в кляре","Овощное канапе","Сырное канапе с салями","Фруктовое канапе","Клубника в меренге"] },
       platters:[
         {ru:"Мясная тарелка", en:"Meat platter", info:"ветчина пармская и варёная, брезаола, салями милано, томаты черри, каперсы, розмарин", wt:"480 г", price:5000, img:"uploads/buffet/platter-meat.webp?v=2"},
         {ru:"Сырная тарелка", en:"Cheese platter", info:"раклет, горгонзола, пармезан, пекорино, курага, чернослив, мёд, цукаты апельсиновые, изюм, грецкий орех", wt:"693 г", price:6300, img:"uploads/buffet/platter-cheese.webp?v=2"},
@@ -1295,6 +1284,16 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
+/* Kid Set */
+"Мини-пицца":"Mini pizza",
+"Рожок с нутеллой и ягодами":"Cone with Nutella and berries",
+"Мини-сэндвич с ветчиной и сыром":"Mini sandwich with ham & cheese",
+"Картофель фри":"French fries",
+"Мини-сосиска в кляре":"Mini sausage in batter",
+"Овощное канапе":"Vegetable canapé",
+"Сырное канапе с салями":"Cheese and salami canapé",
+"Фруктовое канапе":"Fruit canapé",
+"Клубника в меренге":"Strawberry in meringue",
 "негазированная":"still",
 "газированная":"sparkling",
 "Сок Il Primo в ассортименте":"Il Primo juice, assorted",
@@ -1760,7 +1759,8 @@ function renderSection(s, i){
         <span class="name">${p[LANG]}${p.badge?` <span class="badge">${p.badge}</span>`:""}${p.info?` <em>— ${T(p.info)}</em>`:""}</span>
         <span class="wt">${p.wt?T(p.wt):""}</span><span class="price">${fmt(p.price)} ₽</span>
       </div>`;
-    const kidsHtml = s.kids ? `<div class="subhead">${s.kids.title[LANG]}${s.kids.note?`<span class="wt">· ${s.kids.note[LANG]}</span>`:""}</div>`+s.kids.items.map(bRow).join("") : "";
+    const kidsHtml = s.kids ? `<div class="subhead">${s.kids.title[LANG]}<span class="wt">· ${s.kids.wt[LANG]}</span><span class="price">${fmt(s.kids.price)} ₽</span></div>
+      <div class="set-list">${s.kids.d.map(x=>`<div>${T(x)}</div>`).join("")}</div>` : "";
     const platHead = LANG==="ru"?"Тарелки":"Platters";
     const platHtml = showcase(s.platters.map(p=>({
       name: `${p[LANG]}${p.badge?` <span class="badge">${p.badge}</span>`:""}`,

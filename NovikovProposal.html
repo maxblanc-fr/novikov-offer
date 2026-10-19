@@ -414,8 +414,8 @@ function buildCatalog(kind){
       price:p.price, per:"one", q0:1, unit:"шт.", imgs:p.img ? [p.img] : []}))});
     (bf.groups || []).forEach(g => C.buffet.push({h:L(g), note:L(g.note), items: g.rows.map(r => ({key:`buf:r:${r.ru}`, title:r.ru,
       price:r.price, per:"one", q0:6, unit:"порция"}))}));
-    if (bf.kids) C.buffet.push({h:L(bf.kids.title), note:L(bf.kids.note), items: bf.kids.items.map(r => ({key:`buf:k:${r.ru}`, title:r.ru,
-      sub:[r.info, r.wt].filter(Boolean).join(" · "), price:r.price, per:"one", q0:6, unit:"порция"}))});
+    if (bf.kids && bf.kids.d) C.buffet.push({h:"Детский фуршет", items:[{key:"buf:k:Kid Set", title:L(bf.kids.title), sub:L(bf.kids.wt),
+      price:bf.kids.price, per:"one", q0:1, unit:"реб.", detail:bf.kids.d, imgs:[]}]});
   } else if (bf.blocks){
     let grp = "";
     bf.blocks.forEach(b => {
