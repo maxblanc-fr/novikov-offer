@@ -478,7 +478,7 @@ function buildCatalog(kind){
 /* ---------- Состояние ---------- */
 function blank(){
   return {kind:"adult", client:"", contact:"", occasion:"", date:"", start:"19:00", guests:12, kids:10, hall:"", pkg:"", setId:"", dishes:[],
-    setDishes:null, swapPrice:"", ff:"", ffHours:0, ffPrice:"", ffExt:"", uff:false, uffPrice:"", uffExt:"", sel:{}, bar:{}, custom:[], discount:0, discUnit:"%", showOld:true,
+    setDishes:null, swapPrice:"", ff:"", ffHours:0, ffPrice:"", ffExt:"", uff:false, uffPrice:"", uffExt:"", uffGuests:"", sel:{}, bar:{}, custom:[], discount:0, discUnit:"%", showOld:true,
     valid:"", note:"", vat:true, tl:null, vname:"", vars:[], vi:0,
     prepay:50, prepayDays:3, deposit:0, depFill:true, wishes:"",
     id:Date.now().toString(36) + Math.random().toString(36).slice(2, 6), no:"", ver:0, verDate:"", sentHash:""};
@@ -488,7 +488,7 @@ try { const s = JSON.parse(localStorage.getItem(LS_KEY)); if (s && s.kind) ST = 
 const save = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(ST)); } catch(e){} clearTimeout(aT); aT = setTimeout(archPut, 700); };
 
 /* ---------- Варианты: поля, которые у каждого варианта свои ---------- */
-const VKEYS = ["vname","pkg","setId","dishes","setDishes","swapPrice","ff","ffHours","ffPrice","ffExt","uff","uffPrice","uffExt","sel","bar","custom","discount","discUnit","tl"];
+const VKEYS = ["vname","pkg","setId","dishes","setDishes","swapPrice","ff","ffHours","ffPrice","ffExt","uff","uffPrice","uffExt","uffGuests","sel","bar","custom","discount","discUnit","tl"];
 const clone = o => JSON.parse(JSON.stringify(o));
 const pickVar = () => clone(Object.fromEntries(VKEYS.map(k => [k, ST[k]])));
 const syncVar = () => { if (ST.vars.length) ST.vars[ST.vi] = pickVar(); };
@@ -540,6 +540,10 @@ const swapPrice = () => ov(ST.swapPrice, CAT.swap);
 const ffPrice = ff => ov(ST.ffPrice, ff.price), ffExt = ff => ov(ST.ffExt, ff.ext);
 const uffOn = () => !!(ST.ff && ST.uff && CAT.uff);
 const uffPrice = () => ov(ST.uffPrice, CAT.uff.price), uffExt = () => ov(ST.uffExt, CAT.uff.ext);
+/* Ultra можно взять не на всех гостей, но не меньше чем на 70% */
+const uffMin = () => Math.ceil(+ST.guests * 0.7);
+const uffQ = () => Math.min(+ST.guests, Math.max(uffMin(), ov(ST.uffGuests, +ST.guests)));
+const uffPart = () => uffQ() < +ST.guests ? ` на ${uffQ()} из ${ST.guests} ${plural(+ST.guests,"гостя","гостей","гостей")}` : "";
 const guestsLabel = () => ST.kind === "kids" ? `${+ST.kids||0} ${plural(+ST.kids,"ребёнок","ребёнка","детей")}${+ST.guests ? ` + ${ST.guests} ${plural(+ST.guests,"взрослый","взрослых","взрослых")}` : ""}` : `${+ST.guests||0} ${plural(+ST.guests,"гость","гостя","гостей")}`;
 
 /* Включённый в пакет фуршет */
@@ -570,8 +574,8 @@ function lines(){
     if (+ST.ffHours) out.push({g:"Напитки", t:`Продление free-flow, +${ST.ffHours} ч <small>· ${rub(ffExt(ff))} за час</small>`, q:+ST.guests, u:"гость", pr:ffExt(ff) * +ST.ffHours, pr0:ff.ext * +ST.ffHours});
     if (uffOn()){
       const u = CAT.uff;
-      out.push({g:"Напитки", t:`${u.title} · крепкий алкоголь, 4 часа`, q:+ST.guests, u:"гость", pr:uffPrice(), pr0:u.price});
-      if (+ST.ffHours) out.push({g:"Напитки", t:`Продление ${u.title}, +${ST.ffHours} ч <small>· ${rub(uffExt())} за час</small>`, q:+ST.guests, u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours});
+      out.push({g:"Напитки", t:`${u.title} · крепкий алкоголь, 4 часа`, q:uffQ(), u:"гость", pr:uffPrice(), pr0:u.price});
+      if (+ST.ffHours) out.push({g:"Напитки", t:`Продление ${u.title}, +${ST.ffHours} ч <small>· ${rub(uffExt())} за час</small>`, q:uffQ(), u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours});
     }
   }
   CAT.bar.forEach(c => c.items.forEach(it => {
@@ -678,7 +682,8 @@ function renderForm(){
       <label for="o-uff"><div class="t">${esc(C.uff.title)}</div><div class="s">${ST.ff ? `+1 час: ${rub(C.uff.ext)} / гость · ` + C.uff.bottles.map(b => b.n).join(", ") : "Только вместе с пакетом free-flow — сначала выберите пакет"}</div></label>
       <div class="pr">${rub(C.uff.price)}<div class="s">/ гость</div></div></div>` +
       (uffOn() ? `<div class="grid2" style="margin-top:8px"><label class="fld">Цена, ₽ / гость <small>(по лендингу ${rub(C.uff.price)})</small><input type="number" id="uffPrice" min="0" step="100" value="${uffPrice()}"></label>
-      <label class="fld">+1 час, ₽ / гость <small>(${rub(C.uff.ext)}) · часы — как у free-flow</small><input type="number" id="uffExt" min="0" step="50" value="${uffExt()}"></label></div>` : "") : "");
+      <label class="fld">+1 час, ₽ / гость <small>(${rub(C.uff.ext)}) · часы — как у free-flow</small><input type="number" id="uffExt" min="0" step="50" value="${uffExt()}"></label>
+      <label class="fld">Гостей с Ultra <small>(от ${uffMin()} до ${ST.guests} — не меньше 70%)</small><input type="number" id="uffGuests" min="${uffMin()}" max="${+ST.guests}" step="1" value="${uffQ()}"></label></div>` : "") : "");
   const barOn = Object.values(ST.bar).filter(b => +b.g || +b.b).length;
   const barHtml = `<input class="search" id="barSearch" placeholder="Поиск по барной карте…"><div class="scroller" id="barList">` + C.bar.map(c =>
     `<div class="barcat">${esc(c.h)}</div>` + c.items.map(it => { const k = `${c.h}|${it.name}`, b = ST.bar[k] || {};
@@ -780,6 +785,8 @@ F.addEventListener("change", e => {
     if (row.dataset.uff){ ST.uff = t.checked; rerender(); return; }
     const key = row.dataset.key; ST.sel[key] = {...(ST.sel[key] || {}), on:t.checked}; rerender(); return;
   }
+  if (t.id === "uffGuests"){ ST.uffGuests = t.value === "" ? "" : String(uffQ()); rerender(); return; }
+  if (t.id === "guests" && uffOn()){ rerender(); return; }
   if (t.id === "setId"){ ST.setId = t.value; ST.setDishes = null; rerender(); return; }
   if (t.id === "discUnit"){ ST.discUnit = t.value; ST.discount = 0; rerender(); return; }
   if (t.id === "showOld"){ ST.showOld = t.checked; rerender(false); return; }
@@ -795,6 +802,7 @@ F.addEventListener("input", e => {
   if (["client","contact","occasion","note","wishes","vname"].includes(t.id)){ ST[t.id] = t.value; rerender(false); return; }
   if (["prepay","prepayDays","deposit"].includes(t.id)){ ST[t.id] = t.value === "" ? 0 : +t.value; softUpdate(); return; }
   if (["guests","kids","discount","ffHours"].includes(t.id)){ ST[t.id] = t.value === "" ? 0 : +t.value; softUpdate(); return; }
+  if (t.id === "uffGuests"){ ST.uffGuests = t.value; softUpdate(); return; }
   if (["ffPrice","ffExt","uffPrice","uffExt","swapPrice"].includes(t.id)){ ST[t.id] = t.value; softUpdate(); return; }
   if (t.dataset.sw != null){ const s = curSet(); ST.setDishes = ST.setDishes || s.d.map(() => ""); ST.setDishes[+t.dataset.sw] = t.value === s.d[+t.dataset.sw] ? "" : t.value;
     t.closest(".sw-row").classList.toggle("chg", !!t.value.trim() && t.value.trim() !== s.d[+t.dataset.sw]); softUpdate(); return; }
@@ -829,7 +837,7 @@ async function switchKind(k){
   $("#status").textContent = "Загружаю цены…";
   try { await load(k); } catch(e){ $("#status").textContent = "Не удалось загрузить: " + KINDS[k].files.join(" / "); return; }
   ST.vars = []; ST.vi = 0; ST.vname = "";
-  ST.kind = k; ST.pkg = ""; ST.setId = ""; ST.setDishes = null; ST.ffPrice = ""; ST.ffExt = ""; ST.swapPrice = ""; ST.dishes = []; ST.sel = {}; ST.ff = ""; ST.ffHours = 0; ST.uff = false; ST.uffPrice = ""; ST.uffExt = ""; ST.bar = {}; ST.tl = null; ST.hall = "";
+  ST.kind = k; ST.pkg = ""; ST.setId = ""; ST.setDishes = null; ST.ffPrice = ""; ST.ffExt = ""; ST.swapPrice = ""; ST.dishes = []; ST.sel = {}; ST.ff = ""; ST.ffHours = 0; ST.uff = false; ST.uffPrice = ""; ST.uffExt = ""; ST.uffGuests = ""; ST.bar = {}; ST.tl = null; ST.hall = "";
   CAT = buildCatalog(k); $("#status").textContent = "Цены: " + KINDS[k].file;
   rerender();
 }
@@ -860,7 +868,7 @@ function variantBody(H, B, blocks){
   const fb = []; if (ib) fb.push(`${ib.title}${ib.wt ? ` (${ib.wt} на гостя)` : ""} — входит в пакет`); bufOn.forEach(it => fb.push(`${it.title}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
   if (fb.length) ov.push(["Фуршет", fb]);
   const dr = []; if (ff) dr.push(`${ff.title} — безлимит 4 часа${+ST.ffHours ? ` + ${ST.ffHours} ч` : ""}`);
-  if (uffOn()) dr.push(`${C.uff.title} — безлимитный крепкий алкоголь на то же время`); softOn.forEach(it => dr.push(it.title)); barOn.forEach(({c, it, b}) => dr.push(`${it.name}${+b.b ? ` × ${b.b} ${c.kind === "cocktail" ? "порц." : "бут."}` : ""}${+b.g ? ` × ${b.g} ${it.gUnit}` : ""}`));
+  if (uffOn()) dr.push(`${C.uff.title} — безлимитный крепкий алкоголь на то же время${uffPart()}`); softOn.forEach(it => dr.push(it.title)); barOn.forEach(({c, it, b}) => dr.push(`${it.name}${+b.b ? ` × ${b.b} ${c.kind === "cocktail" ? "порц." : "бут."}` : ""}${+b.g ? ` × ${b.g} ${it.gUnit}` : ""}`));
   dr.push(C.softNote || "Вода, чай и кофе включены");
   ov.push(["Напитки", dr]);
   if (svcOn.length || ST.custom.some(c => c.t)) ov.push(["Доп. услуги", [...svcOn.map(it => it.title + (it.unit !== "гость" && qtyOf(it) > 1 ? ` × ${qtyOf(it)}` : "")), ...ST.custom.filter(c => c.t).map(c => c.t)]]);
@@ -905,7 +913,7 @@ function variantBody(H, B, blocks){
     if (ff) B(`<div class="card"><div class="meta">Free-flow · 4 часа${+ST.ffHours ? ` + ${ST.ffHours} ч` : ""}</div><h3>${esc(ff.title)}</h3>
       <p>Напитки из списка ниже — без ограничений в течение 4 часов${+ST.ffHours ? ` + ${ST.ffHours} ч продления` : ""}.</p>
       <div class="wines">${ff.cats.map(c => `<div class="c"><b>${esc(L(c.t))}</b>${c.w.map(w => `<div>${esc(w[0])}${w[1] ? ` <span style="color:var(--muted)">· ${esc(w[1])}</span>` : ""}</div>`).join("")}</div>`).join("")}</div></div>`);
-    if (uffOn()) B(`<div class="card"><div class="meta">Крепкий алкоголь · 4 часа${+ST.ffHours ? ` + ${ST.ffHours} ч` : ""}</div><h3>${esc(C.uff.title)}</h3>
+    if (uffOn()) B(`<div class="card"><div class="meta">Крепкий алкоголь · 4 часа${+ST.ffHours ? ` + ${ST.ffHours} ч` : ""}</div><h3>${esc(C.uff.title)}${uffPart() ? ` · ${uffQ()} ${plural(uffQ(),"гость","гостя","гостей")}` : ""}</h3>
       <p>Дополнение к ${esc(ff.title)}: крепкие напитки из списка ниже — без ограничений на всё время free-flow.</p>
       <div class="bottles">${C.uff.bottles.map(b => `<div class="it"><div class="ph" ${bg(b.img)}></div><div class="nm"><b>${esc(b.n)}</b><br>${esc(b.t)}</div></div>`).join("")}</div></div>`);
     if (softOn.length) B(`<div class="card"><div class="meta">Безалкогольное</div><ul class="ticks one">${softOn.map(it => `<li><b>${esc(it.title)}</b>${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}<br><span style="font-size:11.5px">${esc(it.sub)}</span></li>`).join("")}</ul></div>`);
