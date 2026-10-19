@@ -398,6 +398,10 @@
   .ven-clickable:hover .ven-more::after, .svc-clickable:hover .ven-more::after{transform:translateX(3px);}
   .ven-hint{display:flex; align-items:flex-start; gap:9px; margin-top:16px; background:var(--card); border:1px solid var(--line); border-left:3px solid var(--red); padding:12px 15px; font-size:13.5px; color:var(--ink-soft); line-height:1.5;}
   .ven-hint svg{flex:none; color:var(--red); margin-top:1px;}
+  .ven-ext{margin-top:10px; background:var(--card); border:1px solid var(--line); padding:12px 15px; font-size:13.5px; color:var(--ink-soft); line-height:1.5; max-width:520px;}
+  .ven-ext > b{display:block; color:var(--ink); margin-bottom:4px;}
+  .ven-ext div{display:flex; justify-content:space-between; gap:12px; padding:3px 0; border-top:1px dashed var(--line);}
+  .ven-ext div b{color:var(--ink); white-space:nowrap;}
   /* ---------- hall photo modal ---------- */
   body.modal-open{overflow:hidden;}
   .hall-modal{position:fixed; inset:0; z-index:1200; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(28,4,8,.66); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); opacity:0; pointer-events:none; transition:opacity .2s ease;}
@@ -885,6 +889,7 @@ const DATA = {
     },
     {
       id:"venues", icon:"🏛️", type:"venues",
+      ext:[{s:["lemon"], p:"20 000 ₽"}, {s:["olive","granat"], p:"30 000 ₽"}, {s:["cafe"], p:"40 000 ₽"}],
       title:{ru:"Залы", en:"Venues"},
       sub:{ru:"Зал закрывается только для вашей компании — от камерных праздников до 45 гостей", en:"The hall is closed for your party only — from intimate celebrations to 45 guests"},
       note:{ru:"Москва, Большая Якиманка, 22", en:"Moscow, Bolshaya Yakimanka 22"},
@@ -1498,6 +1503,7 @@ function renderSection(s, i){
       </div>
     `).join("")+`</div>
     <div class="ven-hint"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 3c4.97 0 9 3.36 9 7.5 0 4.14-4.03 7.5-9 7.5-1.02 0-2-.14-2.92-.4L5 19.5l.9-3.3C4.1 14.9 3 12.8 3 10.5 3 6.36 7.03 3 12 3z"/></svg>${LANG==="ru"?"Ваш менеджер подскажет, какой зал свободен и подойдёт для выбранного возраста и числа детей.":"Your manager will advise which hall is available and best suits the age group and number of children."}</div>
+    <div class="ven-ext"><b>${LANG==="ru"?"Продление зала, за 1 час":"Hall extension, per hour"}</b>${s.ext.map(e=>`<div><span>${e.s.map(k=>s.halls.find(h=>h.slug===k).n[LANG]).join(LANG==="ru"?" и ":" and ")}</span><b>${e.p}</b></div>`).join("")}</div>
     `
     + s.halls.map(hallModal).join("");
   }
