@@ -470,7 +470,8 @@ function buildCatalog(kind){
     if (it.tiers){
       if (/^[А-ЯA-Z][а-яa-z]+ \d/.test(pstr)){ const part = pstr.split("·")[0]; lines.push({lab:part.replace(/[\d\s]+₽.*$/,"").trim(), price:num(part), ...unitOf(part)}); }
       it.tiers.forEach(t => { const pack = /^\d+ шт/.test(t.n || ""); const u = pack ? {per:"one", unit:"набор"} : unitOf(t.p, t.n);
-        lines.push({lab:L(t.l) + (pack ? ` (${t.n})` : ""), price:num(t.p), note:pack ? "" : t.n, from:/^от/.test(t.p), ...u}); });
+        const mn = (t.n || "").match(/минимум ([\d\s]+)₽/);
+        lines.push({lab:L(t.l) + (pack ? ` (${t.n})` : ""), price:num(t.p), note:pack ? "" : t.n, from:/^от/.test(t.p), min:mn ? num(mn[1]) : 0, ...u}); });
     } else if (/₽/.test(pstr)){
       const parts = pstr.split("·").filter(p => /\d/.test(p) && /₽/.test(p)), g = /гост/.test(pstr), min = (pstr.match(/минимум (\d+)/) || [])[1];
       parts.forEach(p => { const lab = p.replace(/(от\s*)?[\d\s]+₽.*$/,"").trim(); const u = g ? {per:"guest", unit:"гость"} : unitOf(p);
@@ -478,7 +479,7 @@ function buildCatalog(kind){
     } else lines.push({lab:"", price:0, req:true, per:"one", unit:"услуга"});
     C.services.push({h:name, desc, imgs, min:L(it.min), items: lines.map(l => ({key:`svc:${name}:${l.lab}`, svc:name,
       title: l.lab ? `${name} · ${l.lab}${/час/.test(l.note||"") ? `, ${l.note}` : ""}` : name, short:l.lab ? `${l.lab}${/час/.test(l.note||"") ? `, ${l.note}` : ""}` : "", lab:l.lab, sub:[l.note, l.from ? "цена от" : "", l.req ? "цена по запросу — впишите" : ""].filter(Boolean).join(" · "),
-      price:l.price, per: kind === "kids" && l.per === "guest" ? "kids" : l.per, q0:l.q0 ?? (l.per === "one" ? 1 : null), unit:l.unit, req:l.req, desc, imgs, dur:/^1 час/.test(l.note||"") && it.tags ? 60 : 0, generic:/персонал/i.test(name)}))});
+      price:l.price, per: kind === "kids" && l.per === "guest" ? "kids" : l.per, q0:l.q0 ?? (l.per === "one" ? 1 : null), unit:l.unit, req:l.req, desc, imgs, dur:/^1 час/.test(l.note||"") && it.tags ? 60 : 0, minSum:l.min || 0, generic:/персонал/i.test(name)}))});
   });
 
   /* Залы */
@@ -541,6 +542,8 @@ const kpLabel = () => ST.no ? `КП № ${ST.no}${ST.ver > 1 ? `, версия $
 const allItems = () => [...CAT.buffet.flatMap(g => g.items), ...CAT.soft, ...CAT.services.flatMap(g => g.items)];
 const pkg = () => CAT.pkgs.find(p => p.key === ST.pkg);
 const defQty = it => it.per === "guest" ? (+ST.guests || 0) : it.per === "kids" ? (+ST.kids || 0) : (it.q0 ?? 1);
+/* Сумма строки с учётом минимальной стоимости (игра: 2 200 ₽/гость, минимум 20 000 ₽) */
+const lineSum = (it, pr, q) => Math.max(pr * q, pr && q ? it.minSum || 0 : 0);
 const qtyOf = it => { const s = ST.sel[it.key]; return s && s.qty != null && s.qty !== "" ? +s.qty : defQty(it); };
 const priceOf = it => { const s = ST.sel[it.key]; return s && s.price != null && s.price !== "" ? +s.price : it.price; };
 const isOn = it => !!(ST.sel[it.key] && ST.sel[it.key].on);
@@ -599,9 +602,9 @@ function lines(){
   CAT.soft.forEach(it => { if (isOn(it)) out.push({g:"Напитки", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); });
   const ibKey = (includedBuffet() || {}).key;
   CAT.buffet.forEach(g => g.items.forEach(it => { if (isOn(it) && it.key !== ibKey) out.push({g:"Фуршет", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); }));
-  CAT.services.forEach(g => g.items.forEach(it => { if (isOn(it)) out.push({g:"Дополнительные услуги", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, req:it.req && !priceOf(it)}); }));
+  CAT.services.forEach(g => g.items.forEach(it => { if (isOn(it)) out.push({g:"Дополнительные услуги", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, req:it.req && !priceOf(it), min:it.minSum}); }));
   ST.custom.forEach(c => { if (c.t) out.push({g:"Дополнительно", t:esc(c.t), q:+c.q || 1, u:"", pr:+c.p || 0, req:!+c.p}); });
-  out.forEach(l => { if (!l.incl) l.sum = (l.pr || 0) * (l.q || 0); });
+  out.forEach(l => { if (!l.incl) l.sum = Math.max((l.pr || 0) * (l.q || 0), l.q && l.pr ? l.min || 0 : 0); });
   return out;
 }
 function totals(){
@@ -645,7 +648,7 @@ function optRow(it, type = "checkbox", name = "", checked = isOn(it), editable =
     <label for="o-${esc(it.key)}"><div class="t">${esc(it.title)}</div>${it.sub ? `<div class="s">${esc(it.sub)}</div>` : ""}</label>
     <div class="pr">${it.req && !pr ? "по запросу" : rub(it.price)}<div class="s">/ ${esc(it.unit)}</div></div>
     ${editable ? `<div class="edit">цена <input type="number" class="p" value="${pr}" min="0" step="100"> × <input type="number" class="q" value="${q}" min="0"> ${esc(it.unit)}
-      <span class="sum">${rub(pr * q)}</span></div>` : ""}
+      <span class="sum">${rub(lineSum(it, pr, q))}</span></div>` : ""}
   </div>`;
 }
 
@@ -824,7 +827,7 @@ F.addEventListener("input", e => {
   if (opt && t.closest(".edit")){
     const key = opt.dataset.key, s = ST.sel[key] = {...(ST.sel[key] || {on:true})};
     if (t.classList.contains("p")) s.price = t.value; else s.qty = t.value;
-    const it = allItems().find(i => i.key === key); if (it) opt.querySelector(".sum").textContent = rub(priceOf(it) * qtyOf(it));
+    const it = allItems().find(i => i.key === key); if (it) opt.querySelector(".sum").textContent = rub(lineSum(it, priceOf(it), qtyOf(it)));
     softUpdate(); return;
   }
   const bi = t.closest(".baritem");
