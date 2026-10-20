@@ -29,6 +29,9 @@ EOF
   echo "deploy.sh: добавлена витрина курсов (бэкап deploy.sh.bak-precourses)"
 fi
 
+# Пересобираем site/ уже с витриной: deploy.sh мог отработать до правки выше.
+./deploy.sh
+
 mkdir -p data site/data
 pm2 delete courses-sync >/dev/null 2>&1 || true
 pm2 start "$ROOT/repo/tools/sync-courses.mjs" \

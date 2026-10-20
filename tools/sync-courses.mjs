@@ -6,11 +6,13 @@
 //
 //   node tools/sync-courses.mjs <out.json> [<copy-to.json> ...]
 //
-// Без зависимостей — на сервере только Node. Если список курсов не скачался или
+// Без зависимостей — на сервере только Node. Качаем через curl, а не fetch: в контейнере
+// встроенный fetch идёт мимо HTTPS-прокси и падает по таймауту, а curl прокси берёт из env. Если список курсов не скачался или
 // пустой, прошлый файл не трогаем: витрина лучше покажет вчерашние данные, чем пустоту.
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { execFile } from 'node:child_process'
 
 const LISTING = 'https://novikovspace.com/school/direction/professional'
 const COURSE = slug => `https://novikovspace.com/school/course/${slug}`
@@ -48,15 +50,15 @@ const money = s => {
 }
 const first = (s, re) => s.match(re)?.[1]
 
+const curl = args =>
+  new Promise((resolve, reject) =>
+    execFile('curl', ['-sSL', '--max-time', '60', '-A', 'Mozilla/5.0 (novikov-school.ru courses sync)', '-H', 'Accept-Language: ru', ...args],
+      { maxBuffer: 32 * 1024 * 1024 }, (err, stdout, stderr) => (err ? reject(new Error(stderr.trim() || err.message)) : resolve(stdout))))
+
 async function get(url) {
   for (let attempt = 1; ; attempt++) {
     try {
-      const res = await fetch(url, {
-        headers: { 'user-agent': 'Mozilla/5.0 (novikov-school.ru courses sync)', 'accept-language': 'ru' },
-        signal: AbortSignal.timeout(45000),
-      })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      return await res.text()
+      return await curl(['--fail', url])
     } catch (e) {
       if (attempt >= 3) throw new Error(`${url}: ${e.message}`)
       await new Promise(r => setTimeout(r, 3000 * attempt))
@@ -206,8 +208,7 @@ async function cover(img) {
   const big = img.replace(/\/uploads\/school\/courses\/(?!background\/)/, '/uploads/school/courses/background/')
   if (big === img) return img
   try {
-    const res = await fetch(big, { method: 'HEAD', signal: AbortSignal.timeout(20000) })
-    return res.ok ? big : img
+    return (await curl(['-I', '-o', '/dev/null', '-w', '%{http_code}', big])).trim() === '200' ? big : img
   } catch {
     return img
   }
