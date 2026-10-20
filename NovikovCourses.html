@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Курсы Novikov School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Lora:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#6c104c;
+  --accent:#a71374;
+  --accent-2:#d61393;
+  --ink:#ffffff;
+  --ink-soft:rgba(255,255,255,.78);
+  --ink-mute:rgba(255,255,255,.55);
+  --line:rgba(255,255,255,.18);
+  --paper:#ffffff;
+  --paper-ink:#2a0a1f;
+  --paper-mute:#6f5866;
+  --paper-line:#eee3ea;
+  --ok:#3fb67a;
+  --warn:#f0b33a;
+  --sans:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"Lora",Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+a{color:inherit}
+
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+
+/* ——— hero ——— */
+.hero{padding-top:120px;padding-bottom:64px}
+.badge{display:inline-flex;flex-direction:column;align-items:center;gap:6px;background:var(--accent);border-radius:28px;padding:26px 48px 28px;text-align:center}
+.badge__big{font-size:44px;line-height:1.05;font-weight:400;letter-spacing:-.01em}
+.badge__script{font-family:var(--serif);font-style:italic;font-size:44px;line-height:1.05}
+.badge__tags{display:flex;gap:28px;align-items:center;margin-top:12px;font-size:17px;line-height:1.15}
+.bracket{position:relative;padding:4px 18px}
+.bracket::before,.bracket::after{content:"";position:absolute;top:0;bottom:0;width:10px;border:1.5px solid #fff}
+.bracket::before{left:0;border-right:0;border-radius:10px 0 0 10px}
+.bracket::after{right:0;border-left:0;border-radius:0 10px 10px 0}
+
+.h1{font-size:56px;line-height:1.1;font-weight:700;letter-spacing:-.015em;margin:72px 0 14px}
+.lead{font-size:20px;color:var(--ink-soft);margin:0;font-weight:400}
+
+/* ——— filter ——— */
+.filter{display:flex;justify-content:center;margin:36px 0 44px;position:relative;z-index:5}
+.filter__btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:8px 4px}
+.filter__btn svg{transition:transform .2s}
+.filter.open .filter__btn svg{transform:rotate(180deg)}
+.filter__chosen{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:-28px;margin-bottom:36px;min-height:0}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:5px 10px 5px 14px}
+.chip button{opacity:.7;font-size:16px;line-height:1}
+.chip button:hover{opacity:1}
+.filter__menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:8px;background:var(--paper);color:var(--paper-ink);border-radius:14px;box-shadow:0 18px 50px rgba(30,0,20,.35);padding:10px;min-width:290px;display:none}
+.filter.open .filter__menu{display:block}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 12px;border-radius:9px;font-size:15px}
+.opt:hover{background:#f7eff4}
+.opt__box{width:18px;height:18px;border:1.5px solid #c9b3c1;border-radius:5px;flex:none;display:grid;place-items:center}
+.opt[aria-checked="true"] .opt__box{background:var(--accent);border-color:var(--accent)}
+.opt[aria-checked="true"] .opt__box::after{content:"";width:9px;height:5px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.opt__n{margin-left:auto;color:var(--paper-mute);font-size:13px}
+.filter__reset{display:block;width:100%;text-align:center;font-size:13px;color:var(--paper-mute);padding:10px 0 4px;border-top:1px solid var(--paper-line);margin-top:6px}
+.filter__reset:hover{color:var(--accent)}
+
+/* ——— grid ——— */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:72px 40px;padding-bottom:110px}
+.card{display:flex;flex-direction:column}
+.card__img{position:relative;aspect-ratio:1/1;overflow:hidden;background:#561040;cursor:pointer}
+.card__img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.card:hover .card__img img{transform:scale(1.04)}
+.card__tags{position:absolute;left:12px;top:12px;display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;font-weight:600;background:rgba(255,255,255,.94);color:var(--paper-ink);border-radius:999px;padding:4px 10px}
+.status{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;background:rgba(40,4,28,.78);backdrop-filter:blur(6px);border-radius:999px;padding:5px 11px}
+.status i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.status.is-run i{background:var(--warn)}
+.status.is-past i{background:#bbb}
+.card__title{font-size:22px;line-height:1.3;font-weight:600;margin:18px 0 10px}
+.card__text{color:var(--ink-soft);font-size:16px;line-height:1.55;margin:0 0 16px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.card__meta{list-style:none;padding:14px 0 0;margin:auto 0 24px;border-top:1px solid var(--line);display:grid;gap:6px;font-size:14px}
+.card__meta li{display:flex;gap:10px}
+.card__meta span{color:var(--ink-mute);min-width:96px}
+.card__meta b{font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;background:#fff;color:var(--bg);font-weight:600;font-size:15px;border-radius:999px;padding:13px 30px;transition:background .2s,color .2s}
+.btn:hover{background:var(--accent-2);color:#fff}
+
+.empty{grid-column:1/-1;text-align:center;border:1px dashed var(--line);border-radius:24px;padding:64px 24px}
+.empty h3{font-size:24px;margin:0 0 8px;font-weight:600}
+.empty p{margin:0;color:var(--ink-soft)}
+
+.tag--new{background:var(--accent-2);color:#fff}
+.site-note{background:#f8f1f5;border-radius:14px;padding:14px 18px;font-size:14px;color:var(--paper-mute);margin:0}
+.site-note a{color:var(--accent)}
+.changes{padding-bottom:72px}
+.changes h2{font-size:28px;font-weight:700;margin:0 0 20px}
+.changes__list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.changes__list li{display:grid;grid-template-columns:110px minmax(0,320px) 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);font-size:15px}
+.changes__list time{color:var(--ink-mute)}
+.changes__list button{text-align:left;font-weight:600;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.changes__list button:hover{text-decoration-color:#fff}
+.changes__list span{color:var(--ink-soft)}
+.changes__list .changes__none{display:block;color:var(--ink-mute)}
+@media (max-width:640px){.changes__list li{grid-template-columns:1fr;gap:2px}.changes h2{font-size:22px}}
+.foot{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--ink-mute);font-size:13px}
+
+/* ——— modal ——— */
+.modal{position:fixed;inset:0;z-index:50;display:none;background:rgba(25,0,16,.72);overflow-y:auto;padding:40px 20px}
+.modal.open{display:block}
+.sheet{position:relative;max-width:980px;margin:0 auto;background:var(--paper);color:var(--paper-ink);border-radius:24px;overflow:hidden}
+.sheet__close{position:absolute;right:16px;top:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;z-index:2;font-size:22px;color:var(--paper-ink)}
+.sheet__close:hover{background:#fff}
+.sheet__top{display:grid;grid-template-columns:340px 1fr;gap:0}
+.sheet__img{aspect-ratio:1/1;background:#561040}
+.sheet__img img{width:100%;height:100%;object-fit:cover}
+.sheet__head{padding:36px 40px 28px}
+.sheet__dir{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--accent)}
+.sheet__title{font-size:30px;line-height:1.2;font-weight:700;margin:10px 0 12px;letter-spacing:-.01em}
+.sheet__lead{color:var(--paper-mute);margin:0 0 20px}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin:0;padding:0}
+.facts dt{font-size:12px;color:var(--paper-mute);text-transform:uppercase;letter-spacing:.04em}
+.facts dd{margin:2px 0 0;font-size:15px;font-weight:500}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.btn-dark{display:inline-flex;align-items:center;gap:8px;background:var(--bg);color:#fff;border-radius:999px;padding:11px 22px;font-weight:600;font-size:14px;text-decoration:none}
+.btn-dark:hover{background:var(--accent)}
+.btn-line{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--paper-line);border-radius:999px;padding:10px 20px;font-weight:600;font-size:14px;color:var(--paper-ink)}
+.btn-line:hover{border-color:var(--accent);color:var(--accent)}
+
+.sheet__body{padding:8px 40px 40px;display:grid;grid-template-columns:1fr 1fr;gap:8px 48px}
+.sec{padding-top:28px}
+.sec--wide{grid-column:1/-1}
+.sec h4{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+.sec p{margin:0 0 8px;font-size:15px}
+.sec ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.sec li{position:relative;padding-left:18px;font-size:15px;line-height:1.5}
+.sec li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.price-box{background:#f8f1f5;border-radius:16px;padding:18px 20px}
+.price-box .now{font-size:24px;font-weight:700}
+.price-box .note{font-size:14px;color:var(--paper-mute);margin-top:4px}
+.tariffs{display:grid;gap:10px}
+.tariff{background:#f8f1f5;border-radius:14px;padding:14px 18px}
+.tariff b{display:block;font-size:15px}
+.tariff span{font-size:14px;color:var(--paper-mute)}
+.groups{display:grid;gap:10px}
+.group{display:flex;align-items:flex-start;gap:12px;background:#f8f1f5;border-radius:14px;padding:14px 18px;font-size:15px}
+.group i{width:9px;height:9px;border-radius:50%;margin-top:7px;flex:none;background:var(--ok)}
+.group.is-run i{background:var(--warn)}
+.group.is-past{opacity:.55}
+.group.is-past i{background:#aaa}
+.group small{display:block;color:var(--paper-mute);font-size:13px}
+.teachers{display:grid;grid-template-columns:1fr 1fr;gap:10px 28px}
+.teacher b{display:block;font-size:15px;font-weight:600}
+.teacher span{font-size:13px;color:var(--paper-mute);line-height:1.4}
+.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.module{border:1.5px solid var(--paper-line);border-radius:14px;padding:16px}
+.module b{display:block;font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.module strong{display:block;font-size:16px;margin:4px 0 6px}
+.module p{font-size:14px;color:var(--paper-mute);margin:0}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#fff;color:var(--paper-ink);border-radius:999px;padding:10px 20px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:.25s;z-index:60;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:56px 28px}
+  .sheet__top{grid-template-columns:1fr}
+  .sheet__img{aspect-ratio:16/9}
+  .sheet__body{grid-template-columns:1fr}
+  .modules{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .hero{padding-top:56px;padding-bottom:40px}
+  .badge{padding:20px 22px 22px;border-radius:22px;display:flex}
+  .badge__big,.badge__script{font-size:30px}
+  .badge__tags{gap:16px;font-size:14px}
+  .h1{font-size:34px;margin-top:48px}
+  .lead{font-size:17px}
+  .grid{grid-template-columns:1fr;gap:56px}
+  .card__title{font-size:20px}
+  .modal{padding:0}
+  .sheet{border-radius:0;min-height:100%}
+  .sheet__head{padding:24px 20px 20px}
+  .sheet__title{font-size:24px}
+  .sheet__body{padding:0 20px 32px}
+  .facts{grid-template-columns:1fr}
+  .teachers{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="hero wrap">
+  <div class="badge">
+    <div class="badge__big" id="total">7 курсов</div>
+    <div class="badge__script">от лучших шефов Москвы</div>
+    <div class="badge__tags">
+      <span class="bracket">Novikov<br>School</span>
+      <span class="bracket">витрина для<br>менеджеров</span>
+    </div>
+  </div>
+
+  <h1 class="h1">Выбирайте курс</h1>
+  <p class="lead">профессиональные, для взрослых любителей и для детей</p>
+</header>
+
+<main class="wrap">
+  <div class="filter" id="filter">
+    <button class="filter__btn" id="filterBtn" aria-haspopup="true" aria-expanded="false">
+      Направление
+      <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <div class="filter__menu" role="menu" id="filterMenu"></div>
+  </div>
+  <div class="filter__chosen" id="chosen"></div>
+
+  <section class="grid" id="grid"></section>
+</main>
+
+<section class="changes wrap" id="changes" hidden>
+  <h2>Что изменилось на сайте</h2>
+  <ul class="changes__list" id="changesList"></ul>
+</section>
+
+<footer class="foot wrap">
+  Внутренняя витрина для сотрудников отдела продаж. <span id="syncInfo">Цены и даты — по one‑page курсов; перед отправкой клиенту сверяйте с сайтом.</span>
+</footer>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <article class="sheet" role="dialog" aria-modal="true" aria-labelledby="mTitle" id="sheet"></article>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DIRS = {
+  prof:  {label:"Профессиональные направления", short:"Проф"},
+  adult: {label:"Любители · взрослые",          short:"Любители"},
+  kids:  {label:"Любители · дети",              short:"Дети"}
+};
+
+/* groups: start/end в ISO — статус «идёт / набор / прошла» считается от сегодняшней даты */
+const COURSES = [
+{
+  id:"povar-base", dirs:["prof"], img:"uploads/courses/povar-base.jpg",
+  title:"Поварской курс: базовый уровень",
+  kind:"ПРОФ · гос. документ о квалификации",
+  short:"Интенсивный двухмесячный курс для начинающих в будничном формате: ключевые техники и навыки приготовления блюд уровня повара 3‑го разряда.",
+  url:"https://novikovspace.com/school/course/povarskoy-kurs-bazovyy-uroven-1",
+  duration:"2 месяца, 48 занятий",
+  durationFull:"2 месяца, 48 занятий (практические и теоретические уроки, лекции, дегустации, консультации). Будни, пн–пт 14:00–18:00, предусмотрено несколько сдвоенных занятий с 9:00 до 18:00.",
+  doc:"Да, гос. документ о квалификации",
+  price:{now:569900, steps:[[449900,"рассрочка, до 1 сентября"],[569900,"с 1 сентября"]]},
+  groups:[{label:"Группа", start:"2026-09-14", end:"2026-11-19", time:"будни 14:00–18:00", seats:"7 из 12 мест свободно"}],
+  audience:[
+    "Новички, которые мечтают стать профессиональными поварами, но не имеют опыта или специального образования",
+    "Энтузиасты, желающие научиться готовить как шеф‑повар и углубить знания в гастрономии",
+    "Те, кто ищет смену профессии и хочет освоить востребованную профессию с нуля за короткий срок",
+    "Любители кулинарии, готовые превратить хобби в карьеру",
+    "Повара‑самоучки, которым нужно базовое кулинарное образование"
+  ],
+  goals:[
+    "Организовывать работу кухни — от закупки продуктов до подачи блюд",
+    "Готовить блюда любого уровня сложности: от холодных закусок до десертов; жарка, тушение, пар и другие техники",
+    "Работать с продуктами: разделка мяса, рыбы и птицы, нарезка, полуфабрикаты и хранение по санитарным нормам",
+    "Пользоваться профессиональными инструментами и оборудованием",
+    "Избегать самых частых ошибок на кухне",
+    "Понимать ресторанную индустрию: кто есть кто, проф. конкурсы, тренды",
+    "Развивать творческую сторону и создавать оригинальные решения"
+  ],
+  gets:[
+    "48 занятий: практика, теория, лекции, дегустации и консультации",
+    "Полный цикл производства: от поступления сырья до подачи готовых блюд",
+    "Преподаватели — шефы ведущих ресторанов, лауреаты конкурсов, выпускники лучших кулинарных школ мира",
+    "Основы оформления и подачи блюд",
+    "Доступ к записям онлайн‑лекций и доп. материалам",
+    "Рабочая тетрадь, словарь профессиональных терминов и памятки",
+    "Поварская форма: китель и фартук"
+  ],
+  teachers:[
+    ["Денис Демьянов","шеф‑преподаватель проф. и любительского направлений Novikov School"],
+    ["Динар Саитов","шеф‑преподаватель проф. и любительского направлений Novikov School"],
+    ["Дмитрий Каневский","шеф‑преподаватель проф. и любительского направлений Novikov School"],
+    ["Александр Ермаков","шеф‑преподаватель Novikov Space, бренд‑шеф Fitz"],
+    ["Владислав Гришин","шеф‑преподаватель любительского и проф. направлений Novikov School"],
+    ["Дарья Шмарова","шеф‑кондитер Londri"],
+    ["Павел Дзюбло","шеф‑преподаватель любительского и проф. направлений Novikov School"],
+    ["Роман Зернов","шеф‑повар ресторана «Поле»"],
+    ["Сергей Волконенков","шеф‑повар ресторана «Воронеж»"],
+    ["Александр Лебедев","шеф‑преподаватель проф. и любительского направлений Novikov School"],
+    ["Алексей Волков","бренд‑шеф ресторанов LEA и «Поле»"],
+    ["Алексей Кушнир","шеф‑пекарь Fitz Gastro Project"],
+    ["Александр Галуза","шеф‑повар «Интеллигенция 2.0», шеф‑преподаватель Novikov School"],
+    ["Сергей Маркин","экс‑шеф «Недальнего Востока», GQ bar, «Галереи» и TriBeCa"]
+  ],
+  format:"Очно, группа до 12 человек, своё рабочее место с проф. оборудованием. Практика — самостоятельное приготовление на каждом занятии. Требуется медицинская книжка.",
+  extra:[
+    "Форма повара (китель и фартук) включена",
+    "Учебник с рецептами и доступ к записям лекций",
+    "После экзаменов можно продолжить обучение на продвинутом уровне",
+    "Можно посетить экскурсию по школе перед стартом"
+  ]
+},
+{
+  id:"povar-adv", dirs:["prof"], img:"uploads/courses/povar-adv.jpg",
+  title:"Поварской курс: продвинутый уровень",
+  kind:"ПРОФ · удостоверение о повышении квалификации",
+  short:"Для действующих поваров с базой: сложные техники, кухни разных стран мира, гастрономическая теория и основы ресторанного бизнеса.",
+  url:"https://novikovspace.com/school/course/povarskoy-kurs-prodvinutyy-uroven-1",
+  duration:"48 занятий",
+  durationFull:"48 практических и теоретических занятий, лекций, дегустаций и консультаций. Пн–пт 09:00–13:00, возможны сдвоенные занятия (по 2 в день).",
+  doc:"Да, удостоверение о повышении квалификации",
+  price:{now:649900, steps:[[499900,"рассрочка, до 24 августа"],[649900,"с 24 августа"]]},
+  groups:[
+    {label:"Группа 1", start:"2026-09-07", end:"2026-11-11", time:"пн–пт 09:00–13:00", seats:"2 из 12 мест"},
+    {label:"Группа 2", start:"2027-03-15", end:"2027-05-19", time:"пн–пт 09:00–13:00", seats:"8 из 12 мест"}
+  ],
+  audience:["Те, у кого есть базовое поварское образование или опыт работы на ресторанной кухне и кто хочет повысить квалификацию"],
+  goals:[
+    "Освоить сложные кулинарные навыки и техники, которые можно интегрировать в свой проект",
+    "Изучить кухни разных стран мира — от России до Америки",
+    "Освоить гастрономическую теорию: вкусовосприятие, химия и физика гастрономии",
+    "Познакомиться с основами ресторанного бизнеса: инвентаризация, команда, автоматизация кухни",
+    "Выйти на новый уровень: профессиональный рост, свой проект или исследования в гастрономии"
+  ],
+  gets:[
+    "48 практических и теоретических занятий, лекций, дегустаций и консультаций",
+    "Более 10 шефов выдающихся ресторанов, лауреаты конкурсов, историки кулинарии и гастрожурналисты",
+    "Навыки работы с национальными кухнями",
+    "Отработка всех возможных ошибок",
+    "Основы дизайна готовых блюд",
+    "Индивидуальные консультации по профориентации",
+    "Заготовки и хранение по санитарным нормам, инвентаризация и технологические карты"
+  ],
+  teachers:[
+    ["Денис Демьянов","шеф‑преподаватель Novikov School"],
+    ["Павел Дзюбло","шеф‑преподаватель Novikov School"],
+    ["Брайан Диаб","арабская и ближневосточная кухня"],
+    ["Паоло Бокколини","шеф‑преподаватель Novikov School"],
+    ["Юлия Кирдода","экс‑шеф мексиканского бара Veladora"],
+    ["Александр Ермаков","шеф‑преподаватель Novikov Space, бренд‑шеф Fitz"],
+    ["Эдуард Архипов","шеф‑повар гранд‑кафе «Шануар»"],
+    ["Алексей Кушнир","шеф‑пекарь Fitz Gastro Project"],
+    ["Дарья Шмарова","шеф‑кондитер Londri"],
+    ["Илья Черкашин","шеф‑повар Saviv"],
+    ["Мирко Дзаго","шеф‑повар «Аист» и Bro&N Pizzeria"],
+    ["Виталий Тихонов","концепт‑шеф «Алхимиус» и «Посейдон»"],
+    ["Анна Маликова","преподаватель любительского и проф. направлений"],
+    ["Алексей Волков","бренд‑шеф ресторанов LEA и «Поле»"],
+    ["Полина Андрианова","шеф‑пекарь сети «Печорин»"],
+    ["Андрей Федосеев","бренд‑шеф BJÖRN, шеф‑преподаватель Novikov School"],
+    ["Александр Волков‑Медведев","шеф‑повар ресторана Ruski"]
+  ],
+  format:"Очно, группа до 12 человек, своё рабочее место с проф. оборудованием. Финал — «Отчётный ужин»: повара готовят блюда на заданную тему для родственников, руководителей проектов и шеф‑преподавателей.",
+  extra:[
+    "Медицинская книжка обязательна",
+    "Личная поварская форма (китель и фартук) включена",
+    "Эксклюзивный учебник и доступ к онлайн‑урокам на novikovspace.com",
+    "Домашние задания и обязательный итоговый экзамен"
+  ]
+},
+{
+  id:"konditer-base", dirs:["prof"], img:"uploads/courses/konditer-base.jpg",
+  title:"Кондитерский курс: базовый уровень",
+  kind:"ПРОФ · гос. документ о квалификации",
+  short:"Глубокая теория и насыщенная практика в мини‑группах: тесто, шоколад, декор и собственный десерт под руководством шефов топ‑ресторанов.",
+  url:"https://novikovspace.com/school/course/konditerskiy-kurs-bazovyy-uroven",
+  duration:"≈ 5,5 недель, будни",
+  durationFull:"12 октября — 18 ноября, пн–пт 09:00–13:00; предусмотрены сдвоенные занятия с 9:00 до 18:00.",
+  doc:"«Кондитер 3 разряда» — свидетельство о профессии рабочего после экзамена",
+  price:{now:279900, steps:[[215900,"рассрочка, до 28 сентября"],[279900,"с 28 сентября"]]},
+  groups:[{label:"Группа", start:"2026-10-12", end:"2026-11-18", time:"пн–пт 09:00–13:00", seats:"9 из 12 мест свободно"}],
+  audience:[
+    "Начинающие кондитеры, которые хотят освоить основы профессии",
+    "Любители, стремящиеся создавать десерты ресторанного уровня",
+    "Те, кто мечтает о карьере в гастрономии или своём бизнесе",
+    "Те, кто хочет узнать секреты шефов лучших московских ресторанов",
+    "Те, кто хочет попробовать себя в новом направлении"
+  ],
+  goals:[
+    "Работать с тестом: сабле, бисквиты, заварное, дрожжевое",
+    "Пользоваться кондитерским инвентарём и оборудованием — от мешка до пакоджета",
+    "Придумывать дизайн десерта",
+    "Понимать, чем ресторанные десерты отличаются от тортов и пирожных для кондитерской",
+    "Работать с шоколадом: темперирование, корпусные конфеты, декор",
+    "Организовывать производственные процессы кондитера"
+  ],
+  gets:[
+    "Практика под руководством шефов Londri, Flor, Stella Di Mosca",
+    "30+ эксклюзивных рецептов, включая авторские десерты",
+    "Мастер‑классы по шоколадному декору, фуд‑скетчингу и гастрономическим концепциям",
+    "Доступ в кулинарный цех — полный производственный цикл",
+    "Документ, подтверждающий квалификацию",
+    "Лайфхаки по организации рабочих процессов"
+  ],
+  teachers:[
+    ["Дарья Шмарова","шеф‑кондитер Londri"],
+    ["Иляна Чернышева","шеф‑кондитер Miss you"],
+    ["Ирина Леочко","шеф‑кондитер Flor, ReFlor и Blau"],
+    ["Алексей Кушнир","шеф‑пекарь Fitz Gastro Project"],
+    ["Алёна Офицерова","бренд‑шеф‑кондитер FRESAS GROUP"],
+    ["Михаил Мурзин","шеф‑кондитер ресторана Klich"]
+  ],
+  format:"Очно, учебная кухня с отдельными рабочими местами и проф. техникой. Группа до 12 человек.",
+  extra:[
+    "Личная поварская форма (китель и фартук) включена",
+    "Рабочая тетрадь с рецептами и доступ к онлайн‑урокам на novikovspace.com"
+  ]
+},
+{
+  id:"intensiv", dirs:["prof"], img:"uploads/courses/intensiv.jpg",
+  title:"Интенсив для поваров",
+  kind:"ПРОФ · повышение квалификации, без гос. документа",
+  short:"Пять дней с титанами ресторанной индустрии: последние тренды и новые направления развития — компактно и практико‑ориентированно.",
+  url:"https://novikovspace.com/school/course/intensiv-dlya-povarov",
+  duration:"5 дней, 40 часов",
+  durationFull:"5 дней, 40 часов обучения (60% практики, 40% лекций). Занятия по 2 часа с перерывами 15 минут.",
+  doc:"Не выдаётся · членство в закрытом сообществе выпускников",
+  price:{now:95900, steps:[[89900,"акция, до 24 августа"],[95900,"с 24 августа"]], note:"Рассрочка доступна"},
+  groups:[{label:"Группа 1", start:"2026-09-07", end:"2026-09-11", time:"пн–пт 09:00–18:00", seats:"8 из 12 мест свободно"}],
+  audience:[
+    "Шеф‑повара, которые хотят углубить знания и перенять опыт у лучших",
+    "Су‑шефы и линейные повара на пути к должности шефа",
+    "Рестораторы, которые хотят разобраться в тонкостях работы своих проектов"
+  ],
+  goals:[
+    "Разобраться в трендах и техниках 2026 года: от молекулярной кухни до локальных продуктов",
+    "Сочетать кулинарные традиции разных стран с современным подходом",
+    "Создавать яркие блюда, которые запомнятся гостю",
+    "Разрабатывать концептуальное меню под сезон и запросы ресторана",
+    "Управлять кухонной командой",
+    "Не допускать распространённых ошибок"
+  ],
+  gets:[
+    "40 часов: 60% практики, 40% лекций на актуальные темы",
+    "Наставничество ведущих шефов отрасли",
+    "Разборы сложных кейсов и ответы на практические вопросы",
+    "Погружение в профессиональное сообщество"
+  ],
+  teachers:[
+    ["Алексей Волков","бренд‑шеф ресторанов LEA и «Поле»"],
+    ["Александр Ермаков","шеф‑преподаватель Novikov Space, бренд‑шеф Fitz"],
+    ["Эдуард Архипов","шеф‑повар гранд‑кафе «Шануар»"],
+    ["Илья Черкашин","шеф‑повар Saviv"],
+    ["Роман Зернов","шеф‑повар ресторана «Поле»"],
+    ["Дарья Шмарова","шеф‑кондитер Londri"],
+    ["Дарья Митюшкина","шеф‑преподаватель Novikov School, Brasserie 2.0"],
+    ["Ольга Добычина","основатель булочных БАТОН, хлебный сомелье"],
+    ["Евгения Лерман","куратор курса «Профессия: старший официант»"],
+    ["Александр Галуза","шеф‑повар «Интеллигенция 2.0»"]
+  ],
+  format:"Очно, оборудованные учебные кухни в Москве. Группа до 12 человек, своё рабочее место (сувиды Qker, Bork, Thermomix, PacoJet).",
+  extra:[
+    "Фирменный поварской фартук включён",
+    "Рабочая тетрадь и доступ к онлайн‑урокам на novikovspace.com",
+    "Членство в закрытом комьюнити выпускников"
+  ]
+},
+{
+  id:"volkov", dirs:["prof"], img:"uploads/courses/volkov.jpg",
+  title:"Как придумывать блюда: от идеи до тарелки",
+  kind:"ПРОФ · авторский курс Алексея Волкова",
+  short:"Для поваров, которые хотят стать творцами: не готовить по техкартам, а самим придумывать оригинальные блюда — подход бренд‑шефа LEA и «Поле».",
+  url:"https://novikovspace.com/school/course/kak-pridumyvat-blyuda-ot-idei-do-tarelki-avtorskiy-kurs-alekseya-volkova",
+  duration:"2 дня, 12 часов",
+  durationFull:"12 часов образовательной части (2 дня).",
+  doc:"Не выдаётся",
+  price:{now:85900, steps:[[65900,"рассрочка, до 8 августа"],[85900,"с 8 августа"]]},
+  groups:[{label:"Группа 2", start:"2026-11-12", end:"2026-11-13", time:"чт–пт 10:00–17:30", seats:"9 из 12 мест свободно"}],
+  audience:[
+    "Повара с опытом, готовые перейти от исполнения к авторству",
+    "Су‑шефы, которым нужен системный подход к разработке позиций и вкусовых сочетаний",
+    "Шеф‑повара, обновляющие меню и концепцию"
+  ],
+  goals:[
+    "Начинать работу с тарелкой осознанно — от идеи к композиции",
+    "Подбирать ингредиенты в пары и группы с ярким вкусом",
+    "Применять техники разных кухонь мира для трендовых позиций",
+    "Работать с премиальным продуктом, дичью, морепродуктами, рыбой",
+    "Использовать ферментацию, маринады, кремы, глазури и угли",
+    "Декорировать блюдо и усиливать впечатление через подачу",
+    "Собирать блюда в цельное меню под концепцию заведения"
+  ],
+  gets:[
+    "Методы создания собственных блюд и после курса",
+    "Лайфхаки шефа по поиску вкусовых сочетаний",
+    "Готовые решения для меню без дооборудования",
+    "Подача как инструмент, влияющий на средний чек",
+    "Итог: 7 блюд, 10+ современных техник, обратная связь от шефа"
+  ],
+  teachers:[["Алексей Волков","бренд‑шеф ресторанов LEA и «Поле»"]],
+  format:"Очно, оборудованная кухня в центре Москвы, отдельное рабочее место. Группа до 12 человек. На занятии — от 3 до 6 блюд.",
+  extra:[
+    "Поварской фартук включён",
+    "Учебник с рецептами и доступ к онлайн‑урокам на novikovspace.com",
+    "В конце — обмен мнениями с коллегами и вопросы шефу"
+  ]
+},
+{
+  id:"sousy", dirs:["prof"], img:"uploads/courses/sousy.jpg",
+  title:"Французские соусы: от классики до интерпретаций",
+  kind:"ПРОФ · повышение квалификации, без гос. документа",
+  short:"Трёхдневный интенсив с Динаром Саитовым, выпускником Le Cordon Bleu Paris: 15+ соусов — от французской классики до авторских.",
+  url:"https://novikovspace.com/school/course/francuzskie-sousy-ot-klassiki-do-interpretaciy",
+  duration:"3 дня по 4 часа",
+  durationFull:"3 практических занятия по 4 часа, пн–ср 18:00–22:00.",
+  doc:"Не выдаётся",
+  price:{now:59900, steps:[[49900,"рассрочка, до 12 октября"],[59900,"с 12 октября"]]},
+  groups:[{label:"Группа", start:"2026-10-26", end:"2026-10-28", time:"пн–ср 18:00–22:00", seats:"8 из 12 мест свободно"}],
+  audience:[
+    "Шефы и су‑шефы, которые хотят обогатить меню и внедрить новые ТТК",
+    "Повара, оттачивающие основы гастрономии",
+    "Продвинутые энтузиасты — классическая база Le Cordon Bleu",
+    "Любители гастрономии, которые хотят готовить на уровне ресторана Michelin"
+  ],
+  goals:[
+    "Понять, как «держится» вкус в классических соусах",
+    "Разобраться в разнице между бешамелем, демигласом и охотничьим",
+    "Соединять французскую классику с другими кухнями мира",
+    "Создавать универсальные базы для десятков вариаций",
+    "Понять, как соус влияет на блюдо — композиционно и коммерчески",
+    "Готовить, хранить и подавать соусы в реалиях современной кухни"
+  ],
+  gets:[
+    "3 практических занятия по 4 часа",
+    "15+ соусов: от классики до авторских вариаций",
+    "Навыки текстурного и вкусового баланса",
+    "Работа с мясом, рыбой, овощами как основой подачи",
+    "Обратная связь шефа с 10+ летним опытом"
+  ],
+  teachers:[["Динар Саитов","выпускник Le Cordon Bleu Paris, шеф ресторана «Страна, которой нет», шеф‑преподаватель Novikov School"]],
+  format:"Очно, в центре Москвы, отдельные рабочие места и проф. техника. Группа до 12 человек. На каждом занятии — несколько соусов с дегустацией и применением к основному блюду.",
+  extra:[
+    "Поварской фартук включён",
+    "Онлайн‑учебник с рецептами и доступ к онлайн‑урокам на novikovspace.com"
+  ]
+},
+{
+  id:"shkola", dirs:["prof","adult"], img:"uploads/courses/shkola.jpg",
+  title:"Школа Шефа 2026. Кухня нового времени",
+  kind:"ПРОФ + любители · онлайн с офлайн‑финалом",
+  short:"Онлайн‑курс от 20+ известных шефов России, включая шефов со звездой Мишлен: вкус, ресторанные техники, меню как бизнес‑инструмент и личный бренд.",
+  url:"https://online.novikovspace.com/shkola-shefa-kuhnya-novogo-vremeni-2026",
+  duration:"15 дней онлайн + финал",
+  durationFull:"15 дней онлайн‑практики (18 занятий с шефами) + офлайн‑этап в Москве для топ‑10. Доступ к материалам — 5 месяцев (12 месяцев на корпоративном и премиум).",
+  doc:"Именной сертификат Novikov School",
+  priceFrom:"от 4 990 ₽",
+  tariffs:[
+    ["Базовый","4 990 ₽ по акции −50% (21 июля — 10 августа), далее 10 000 ₽, затем 15 000 ₽"],
+    ["Корпоративный","30 000 ₽ до 3 человек (10 000 ₽/чел) или 50 000 ₽ до 10 человек (5 000 ₽/чел) — закрытые лекции, консультация шефа‑куратора, корпоративный сертификат"],
+    ["Премиум · до 10 мест","100 000 ₽ — рабочая тетрадь, китель и фартук, гала‑ужин и авторский мастер‑класс, персональная обратная связь, доступ 12 месяцев"]
+  ],
+  groups:[
+    {label:"Вводный урок", start:"2026-08-03", end:"2026-08-03"},
+    {label:"18 занятий с шефами и конкурс", start:"2026-08-10", end:"2026-08-28"},
+    {label:"Сдача конкурсных работ", start:"2026-09-06", end:"2026-09-06", time:"крайний срок"},
+    {label:"Топ‑10 едут в Москву", start:"2026-09-12", end:"2026-09-12"},
+    {label:"Очная часть в Москве", start:"2026-09-28", end:"2026-10-01", time:"кухня Novikov School + выезд в ресторан, 1 октября — гала‑ужин"}
+  ],
+  audience:[
+    "Профессионалы, которые хотят выйти за пределы текущей роли или открыть своё дело",
+    "Любители, которые хотят выйти за рамки книжных рецептов",
+    "Руководители, которые хотят прокачать себя и команду"
+  ],
+  goals:[
+    "Разобрать вкус, текстуры и ощущения — изменить взгляд на гастрономию",
+    "Научиться создавать продающее меню",
+    "Разобраться в фудкосте, медийности и форматах личного проекта"
+  ],
+  modules:[
+    ["Модуль 1","Вкус и восприятие","Разбираем вкус, текстуры, ощущения"],
+    ["Модуль 2","Меню как концепция","Учимся создавать продающее меню"],
+    ["Модуль 3","От кухни к личному проекту","Фудкост, медийность, форматы"]
+  ],
+  gets:[
+    "18 занятий с шефами и экспертами — живые эфиры + записи",
+    "30+ эксклюзивных рецептов из ресторанов шефов",
+    "Профессиональный конкурс с призами",
+    "Для офлайн‑части — выезд в ресторан"
+  ],
+  teachers:[
+    ["Андрей Шмаков","бренд‑шеф Savva, звезда Мишлен"],
+    ["Игорь Гришечкин","шеф «Машенька», бренд‑шеф Satoshi (Бали)"],
+    ["Алексей Каневский","бренд‑шеф Dreamteam"],
+    ["Эдуард Архипов","шеф‑повар гранд‑кафе «Шануар»"],
+    ["Дмитрий Париков","проект «На Даче»"],
+    ["Виктор Шайдецкий","бренд‑шеф Manul"],
+    ["Ринат Царицанский","шеф сидрерии Pomme Verte"],
+    ["Владислав Корпусов","гастрономические ужины и путешествия"],
+    ["Иван Глушков","создатель журнала «Соль»"],
+    ["Андрей Федосеев","бренд‑шеф BJÖRN"],
+    ["Павел Дзюбло","шеф‑куратор курса"],
+    ["Брайан Диаб","бренд‑шеф ресторанов ADAM"],
+    ["Алексей Волков","бренд‑шеф LEA и «Поле»"],
+    ["Дарья Митюшкина","шеф по ферментации"],
+    ["Александр Чуваков","R&D‑менеджер Sage"],
+    ["Александра Моисеева","бренд‑шеф‑пекарь ЗОЕ"],
+    ["Антон Ничепоренко","амбассадор премии WHERETOEAT"],
+    ["Иляна Чернышева","шеф‑кондитер Miss you"],
+    ["Ирина Полянская","Sage, «Рыба моя»"],
+    ["Нина Надолинская","шеф‑кондитер The Carlton Москва"],
+    ["Артемий Лопатин","бренд‑шеф Jun, Bus, Kiyomi"]
+  ],
+  format:"Онлайн‑практика (живые эфиры с записью), затем очный финал в Москве для топ‑10: кухня Novikov School, выезд в ресторан, кулинарный конкурс. Для онлайн‑части хватает обычной домашней кухни.",
+  extra:[
+    "Призы: обучение в Москве для топ‑10, стипендия 150 000 ₽ или приз от «Инарктики», техника SPIDOFLAT и Kuppersberg, ножи Bereza.Knife",
+    "Почти 2000 выпускников за 4 предыдущих потока"
+  ]
+}
+];
+
+/* ——— helpers ——— */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rub = n => n.toLocaleString("ru-RU").replace(/ /g," ") + " ₽";
+const MONTHS = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+const d = iso => { const [y,m,day] = iso.split("-").map(Number); return new Date(y, m-1, day); };
+const today = (() => { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); })();
+
+function fmtRange(g){
+  if (!g.start) return g.raw || "даты уточняются";
+  const a = d(g.start), b = d(g.end), yr = a.getFullYear() !== today.getFullYear() ? " " + a.getFullYear() : "";
+  if (+a === +b) return `${a.getDate()} ${MONTHS[a.getMonth()]}${yr}`;
+  if (a.getMonth() === b.getMonth()) return `${a.getDate()}–${b.getDate()} ${MONTHS[a.getMonth()]}${yr}`;
+  return `${a.getDate()} ${MONTHS[a.getMonth()]} — ${b.getDate()} ${MONTHS[b.getMonth()]}${yr}`;
+}
+const groupState = g => !g.start ? "next" : d(g.end) < today ? "past" : d(g.start) <= today ? "run" : "next";
+const startOf = g => g.start ? fmtRange({start:g.start, end:g.start}) : fmtRange(g);
+
+function courseStatus(c){
+  const next = c.groups.filter(g => groupState(g) === "next");
+  const open = next.find(g => g.free !== 0);
+  if (open) return {cls:"", text:"Набор · старт " + startOf(open)};
+  if (next.length) return {cls:"is-run", text:"Мест нет · старт " + startOf(next[0]) + " · лист ожидания"};
+  if (c.groups.some(g => groupState(g) === "run")) return {cls:"is-run", text:"Идёт группа · даты новой уточнить"};
+  if (!c.groups.length) return {cls:"is-past", text:"Даты не объявлены · уточнить"};
+  return {cls:"is-past", text:"Даты прошли · уточнить новый поток"};
+}
+
+/* ——— живые данные с novikovspace.com ———
+   data/courses-live.json раз в день собирает tools/sync-courses.mjs на сервере.
+   У курсов из one-page с сайта берутся только цена и группы — описания остаются
+   свои; курсы, которых в one-page нет, добавляются карточками целиком с сайта. */
+let LIVE = null;
+const slugOf = url => url.replace(/[?#].*$/, "").replace(/\/+$/, "").split("/").pop();
+const dayMonth = iso => { const x = d(iso); return `${x.getDate()} ${MONTHS[x.getMonth()]}`; };
+const recentChange = slug => LIVE?.changes.find(ch => ch.slug === slug && (today - d(ch.date)) / 864e5 <= 7);
+
+function livePrice(p){
+  const steps = [];
+  if (p.raise){
+    const before = d(p.raise.from); before.setDate(before.getDate() - 1);
+    steps.push([p.now, "до " + `${before.getDate()} ${MONTHS[before.getMonth()]}`], [p.raise.price, "с " + dayMonth(p.raise.from)]);
+  }
+  return {now:p.now, steps, note:p.credit ? "Рассрочка доступна" : ""};
+}
+function liveGroups(gs){
+  return gs.map(g => ({
+    label:g.name, start:g.start, end:g.end, raw:g.dates, time:g.schedule, free:g.free,
+    seats: g.free === 0 ? "мест нет — лист ожидания" : g.free != null ? `${g.free} из ${g.total} мест свободно` : g.seats
+  }));
+}
+function fromSite(l){
+  return {
+    id:l.slug, dirs:["prof"], img:l.img, fromSite:true,
+    title:l.title, kind:"ПРОФ" + (l.level ? " · " + l.level.toLowerCase() + " уровень" : ""),
+    short:l.short || l.description || "", url:l.url,
+    duration:l.lessons || "—", durationFull:l.lessons || "",
+    audience:[], goals:[], gets:[], extra:[], teachers:l.teachers || []
+  };
+}
+function applyLive(data){
+  LIVE = data;
+  const bySlug = new Map(COURSES.map(c => [slugOf(c.url), c]));
+  for (const l of data.courses){
+    let c = bySlug.get(l.slug);
+    if (!c){ c = fromSite(l); COURSES.push(c); }
+    c.live = l.slug;
+    if (l.price?.now) c.price = livePrice(l.price);
+    if (l.groups.length || c.fromSite) c.groups = liveGroups(l.groups);
+  }
+}
+const priceLabel = c => c.priceFrom || rub(c.price.now);
+
+/* ——— filter ——— */
+const active = new Set();
+function renderFilter(){
+  const menu = $("#filterMenu");
+  menu.innerHTML = Object.entries(DIRS).map(([k,v]) => {
+    const n = COURSES.filter(c => c.dirs.includes(k)).length;
+    return `<button class="opt" role="menuitemcheckbox" aria-checked="${active.has(k)}" data-k="${k}">
+      <span class="opt__box"></span>${v.label}<span class="opt__n">${n}</span></button>`;
+  }).join("") + `<button class="filter__reset" data-reset>Сбросить</button>`;
+  $("#chosen").innerHTML = [...active].map(k =>
+    `<span class="chip">${DIRS[k].label}<button aria-label="Убрать" data-k="${k}">×</button></span>`).join("");
+}
+function renderGrid(){
+  const list = active.size ? COURSES.filter(c => c.dirs.some(x => active.has(x))) : COURSES;
+  const grid = $("#grid");
+  if (!list.length){
+    grid.innerHTML = `<div class="empty"><h3>Курсы скоро появятся</h3><p>Программы направления «${[...active].map(k=>DIRS[k].label).join("», «")}» добавим сюда, как только будут готовы one‑page.</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(c => {
+    const st = courseStatus(c);
+    return `<article class="card">
+      <div class="card__img" data-open="${c.id}">
+        <img src="${c.img}" alt="" loading="lazy">
+        <div class="card__tags">${c.dirs.map(k => `<span class="tag">${DIRS[k].short}</span>`).join("")}${c.live && recentChange(c.live) ? `<span class="tag tag--new">Обновлено</span>` : ""}</div>
+        <span class="status ${st.cls}"><i></i>${st.text}</span>
+      </div>
+      <h3 class="card__title">${esc(c.title)}</h3>
+      <p class="card__text">${esc(c.short)}</p>
+      <ul class="card__meta">
+        ${c.duration && c.duration !== "—" ? `<li><span>Длительность</span><b>${esc(c.duration)}</b></li>` : ""}
+        <li><span>Стоимость</span><b>${esc(priceLabel(c))}</b></li>
+      </ul>
+      <button class="btn" data-open="${c.id}">Подробнее</button>
+    </article>`;
+  }).join("");
+}
+function toggleMenu(open){
+  const f = $("#filter"); open = open ?? !f.classList.contains("open");
+  f.classList.toggle("open", open); $("#filterBtn").setAttribute("aria-expanded", open);
+}
+$("#filterBtn").addEventListener("click", e => { e.stopPropagation(); toggleMenu(); });
+document.addEventListener("click", e => {
+  const opt = e.target.closest("[data-k]");
+  if (opt){ e.stopPropagation(); active.has(opt.dataset.k) ? active.delete(opt.dataset.k) : active.add(opt.dataset.k); update(); return; }
+  if (e.target.closest("[data-reset]")){ active.clear(); update(); toggleMenu(false); return; }
+  if (!e.target.closest("#filterMenu")) toggleMenu(false);
+  const op = e.target.closest("[data-open]");
+  if (op) openCourse(op.dataset.open);
+});
+function update(){
+  renderFilter(); renderGrid();
+  const q = [...active].join(",");
+  history.replaceState(null, "", location.pathname + (q ? "?dir=" + q : "") + location.hash);
+}
+
+/* ——— modal ——— */
+const list = arr => `<ul>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
+const sec = (h, arr) => arr?.length ? `<section class="sec"><h4>${h}</h4>${list(arr)}</section>` : "";
+function openCourse(id){
+  const c = COURSES.find(x => x.id === id); if (!c) return;
+  const priceBlock = c.tariffs
+    ? `<div class="tariffs">${c.tariffs.map(([t,s]) => `<div class="tariff"><b>${esc(t)}</b><span>${esc(s)}</span></div>`).join("")}</div>`
+    : `<div class="price-box"><div class="now">${rub(c.price.now)}</div>
+       <div class="note">${[...c.price.steps.map(([p,s]) => `${rub(p)} — ${esc(s)}`), c.price.note && esc(c.price.note)].filter(Boolean).join("<br>")}</div></div>`;
+  const groups = `<div class="groups">${c.groups.map(g => {
+      const s = groupState(g), tag = s === "past" ? " · прошла" : s === "run" ? " · идёт сейчас" : "";
+      return `<div class="group is-${s}"><i></i><div><b>${esc(g.label)}: ${fmtRange(g)}</b>${tag}
+        <small>${[g.time, g.seats].filter(Boolean).map(esc).join(" · ")}</small></div></div>`;
+    }).join("")}</div>`;
+  $("#sheet").innerHTML = `
+    <button class="sheet__close" data-close aria-label="Закрыть">×</button>
+    <div class="sheet__top">
+      <div class="sheet__img"><img src="${c.img}" alt=""></div>
+      <div class="sheet__head">
+        <div class="sheet__dir">${esc(c.kind)}</div>
+        <h2 class="sheet__title" id="mTitle">${esc(c.title)}</h2>
+        <p class="sheet__lead">${esc(c.short)}</p>
+        <dl class="facts">
+          <div><dt>Стоимость</dt><dd>${esc(priceLabel(c))}</dd></div>
+          ${c.duration && c.duration !== "—" ? `<div><dt>Длительность</dt><dd>${esc(c.duration)}</dd></div>` : ""}
+          ${c.doc ? `<div><dt>Документ</dt><dd>${esc(c.doc)}</dd></div>` : ""}
+          <div><dt>Ближайший поток</dt><dd>${esc(courseStatus(c).text)}</dd></div>
+        </dl>
+        <div class="actions">
+          <a class="btn-dark" href="${c.url}" target="_blank" rel="noopener">Страница курса ↗</a>
+          <button class="btn-line" data-copy="${c.url}">Скопировать ссылку для клиента</button>
+        </div>
+      </div>
+    </div>
+    <div class="sheet__body">
+      <section class="sec"><h4>Стоимость</h4>${priceBlock}</section>
+      <section class="sec"><h4>Даты и места</h4>${c.groups.length ? groups : `<p>На сайте даты пока не объявлены — уточнить у руководителя направления.</p>`}</section>
+      ${c.fromSite ? `<section class="sec sec--wide"><p class="site-note">Курса нет в one-page — карточка собрана автоматически с novikovspace.com. Программа и подробности — на <a href="${c.url}" target="_blank" rel="noopener">странице курса</a>.</p></section>` : ""}
+      ${sec("Кому подойдёт", c.audience)}
+      ${sec("Чему научится", c.goals)}
+      ${c.modules ? `<section class="sec sec--wide"><h4>Программа</h4><div class="modules">${c.modules.map(([n,t,p]) =>
+          `<div class="module"><b>${n}</b><strong>${esc(t)}</strong><p>${esc(p)}</p></div>`).join("")}</div></section>` : ""}
+      ${sec("Что получит", c.gets)}
+      ${c.format ? `<section class="sec"><h4>Формат и объём</h4><p>${esc(c.format)}</p><p>${esc(c.durationFull)}</p></section>` : ""}
+      ${!c.teachers.length ? "" : `<section class="sec sec--wide"><h4>Кто преподаёт</h4><div class="teachers">${c.teachers.map(([n,r]) =>
+          `<div class="teacher"><b>${esc(n)}</b><span>${esc(r)}</span></div>`).join("")}</div></section>`}
+      ${c.extra.length ? `<section class="sec sec--wide"><h4>Дополнительно</h4>${list(c.extra)}</section>` : ""}
+    </div>`;
+  const m = $("#modal"); m.classList.add("open"); m.scrollTop = 0; m.setAttribute("aria-hidden","false");
+  document.body.style.overflow = "hidden";
+  history.replaceState(null, "", location.pathname + location.search + "#" + id);
+}
+function closeCourse(){
+  $("#modal").classList.remove("open"); $("#modal").setAttribute("aria-hidden","true");
+  document.body.style.overflow = "";
+  history.replaceState(null, "", location.pathname + location.search);
+}
+$("#modal").addEventListener("click", e => {
+  if (e.target.id === "modal" || e.target.closest("[data-close]")) closeCourse();
+  const cp = e.target.closest("[data-copy]");
+  if (cp) navigator.clipboard.writeText(cp.dataset.copy).then(() => toast("Ссылка скопирована"), () => toast(cp.dataset.copy));
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape"){ closeCourse(); toggleMenu(false); } });
+function toast(t){ const el = $("#toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 1800); }
+
+/* ——— init ——— */
+new URLSearchParams(location.search).get("dir")?.split(",").forEach(k => DIRS[k] && active.add(k));
+const plural = (n, f) => f[(n % 10 === 1 && n % 100 !== 11) ? 0 : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 1 : 2];
+const setTotal = () => $("#total").textContent = COURSES.length + " " + plural(COURSES.length, ["курс","курса","курсов"]);
+
+function renderChanges(){
+  const fresh = LIVE.changes.filter(ch => (today - d(ch.date)) / 864e5 <= 14).slice(0, 15);
+  const t = new Date(LIVE.updated);
+  $("#syncInfo").textContent = `Цены и даты проф. курсов сверяются с novikovspace.com каждый день. Последняя проверка: ${t.getDate()} ${MONTHS[t.getMonth()]}, ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}.`;
+  $("#changes").hidden = false;
+  $("#changesList").innerHTML = fresh.length ? fresh.map(ch => `<li><time>${dayMonth(ch.date)}</time>
+      <button data-open="${COURSES.find(c => c.live === ch.slug)?.id || ""}">${esc(ch.title)}</button><span>${esc(ch.text)}</span></li>`).join("")
+    : `<li class="changes__none">За последние две недели на сайте ничего не менялось.</li>`;
+}
+
+setTotal(); update();
+fetch("data/courses-live.json?t=" + Date.now(), {cache:"no-store"})
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(data => { applyLive(data); setTotal(); update(); renderChanges(); })
+  .catch(() => {})
+  .finally(() => { if (location.hash) openCourse(location.hash.slice(1)); });
+</script>
+</body>
+</html>
