@@ -710,7 +710,7 @@
 <div class="hero">
   <div class="kicker" data-i18n="kicker">Коммерческое предложение</div>
   <h1 data-i18n="h1">Детские праздники <span>Novikov School</span></h1>
-  <p class="lead" data-i18n="lead">Кулинарные мастер-классы для детей 4–14 лет: дети готовят сами под руководством шефа, а дальше — игры, шоу и настоящий праздник. Программа, меню и активности подбираются под возраст.</p>
+  <p class="lead" data-i18n="lead">Кулинарные мастер-классы для детей 4–17 лет: дети готовят сами под руководством шефа, а дальше — игры, шоу и настоящий праздник. Программа, меню и активности подбираются под возраст.</p>
   <div class="stats" id="stats"></div>
 </div>
 
@@ -739,8 +739,8 @@ const I18N = {
   brandsub:{ru:"ДЕТСКИЕ ПРАЗДНИКИ · 2026", en:"KIDS PARTIES · 2026"},
   kicker:{ru:"Коммерческое предложение", en:"Event Offer"},
   h1:{ru:'Детские праздники <span>Novikov School</span>', en:'<span>Novikov School</span> Kids Parties'},
-  lead:{ru:"Кулинарные мастер-классы для детей 4–14 лет: дети готовят сами под руководством шефа, а дальше — игры, шоу и настоящий праздник. Программа, меню и активности подбираются под возраст.",
-        en:"Culinary masterclasses for children aged 4–14: the kids cook themselves under a chef's guidance, and then come the games, shows and a real celebration. Programme, menu and activities are matched to the age group."},
+  lead:{ru:"Кулинарные мастер-классы для детей 4–17 лет: дети готовят сами под руководством шефа, а дальше — игры, шоу и настоящий праздник. Программа, меню и активности подбираются под возраст.",
+        en:"Culinary masterclasses for children aged 4–17: the kids cook themselves under a chef's guidance, and then come the games, shows and a real celebration. Programme, menu and activities are matched to the age group."},
   f_contacts:{ru:"Контакты", en:"Contacts"},
   f_about:{ru:"Novikov School", en:"Novikov School"},
   f_abouttext:{ru:"Кулинарная студия и площадка<br>для событий любого формата.", en:"Culinary studio & venue<br>for events of any format."},
@@ -750,7 +750,7 @@ const I18N = {
 
 /* ---------- OFFER DATA ----------
    Три возрастные группы — вкладки, внутри каждой пакеты.
-   Меню взяты из PDF 4-7 / 8-10 / 11-14 лет, цены — из сметы 2026 (дети).   */
+   Меню взяты из PDF 4-7 / 8-13 / 14-17 лет, цены — из сметы 2026 (дети).   */
 const DATA = {
   stats:[
     {n:"3", ru:"возрастные группы", en:"age groups"},
@@ -773,23 +773,23 @@ const DATA = {
             d:{ru:"Приветственный детский фуршет, приготовление 2 блюд и игра «Угадай напиток» (30 мин).",
                en:"Welcome kids buffet, cooking 2 dishes and the «Guess the Drink» game (30 min)."}, p:"10 400 ₽"}
         ]},
-        {head:{ru:"8–10 лет", en:"Ages 8–10"}, items:[
+        {head:{ru:"8–13 лет", en:"Ages 8–13"}, items:[
           {n:{ru:"Пакет 1", en:"Package 1"},
-            d:{ru:"Детский фуршет и приготовление 2 блюд — горячее и десерт.", en:"Kids buffet and cooking 2 dishes — a main and a dessert."}, p:"10 400 ₽"},
+            d:{ru:"Детский фуршет и приготовление 2 блюд — горячее и десерт.", en:"Kids buffet and cooking 2 dishes — a main and a dessert."}, p:"10 800 ₽"},
           {n:{ru:"Пакет 2", en:"Package 2"},
-            d:{ru:"Детский фуршет и приготовление 3 блюд — горячее, салат и десерт.", en:"Kids buffet and cooking 3 dishes — a main, a salad and a dessert."}, p:"11 500 ₽"},
+            d:{ru:"Детский фуршет и приготовление 3 блюд — горячее, салат и десерт.", en:"Kids buffet and cooking 3 dishes — a main, a salad and a dessert."}, p:"12 000 ₽"},
           {n:{ru:"Пакет 3", en:"Package 3"},
             d:{ru:"Детский фуршет, приготовление 3 блюд и интерактивная игра на выбор (1 час).",
-               en:"Kids buffet, cooking 3 dishes and an interactive game of your choice (1 hour)."}, p:"12 500 ₽"}
+               en:"Kids buffet, cooking 3 dishes and an interactive game of your choice (1 hour)."}, p:"13 300 ₽"}
         ]},
-        {head:{ru:"11–14 лет", en:"Ages 11–14"}, items:[
+        {head:{ru:"14–17 лет", en:"Ages 14–17"}, items:[
           {n:{ru:"Пакет 1", en:"Package 1"},
-            d:{ru:"Детский фуршет и приготовление 2 блюд — горячее и десерт.", en:"Kids buffet and cooking 2 dishes — a main and a dessert."}, p:"11 500 ₽"},
+            d:{ru:"Детский фуршет и приготовление 2 блюд — горячее и десерт.", en:"Kids buffet and cooking 2 dishes — a main and a dessert."}, p:"11 800 ₽"},
           {n:{ru:"Пакет 2", en:"Package 2"},
-            d:{ru:"Детский фуршет и приготовление 3 блюд — горячее, закуска и десерт.", en:"Kids buffet and cooking 3 dishes — a main, a starter and a dessert."}, p:"12 500 ₽"},
+            d:{ru:"Детский фуршет и приготовление 3 блюд — горячее, закуска и десерт.", en:"Kids buffet and cooking 3 dishes — a main, a starter and a dessert."}, p:"13 000 ₽"},
           {n:{ru:"Пакет 3", en:"Package 3"},
             d:{ru:"Детский фуршет, приготовление 3 блюд и интерактивная игра на выбор (1 час).",
-               en:"Kids buffet, cooking 3 dishes and an interactive game of your choice (1 hour)."}, p:"13 600 ₽"}
+               en:"Kids buffet, cooking 3 dishes and an interactive game of your choice (1 hour)."}, p:"14 300 ₽"}
         ]}
       ],
       foot:{ru:"В стоимость каждого пакета входит: выбор меню из списка · закрытие зала для вашей компании · шеф-повар и ассистент · event-менеджер и бармен · официанты (6–19 гостей — 1, 20–30 — 2, 31–50 — 3) · безалкогольные напитки (чай, фильтрованная вода) · гардероб, ресепшн и клининг.",
@@ -827,7 +827,7 @@ const DATA = {
          ]},
 
         {k:"a810", ic:"🚀",
-         n:{ru:"8–10 лет", en:"Ages 8–10"},
+         n:{ru:"8–13 лет", en:"Ages 8–13"},
          short:{ru:"Вкус приключений", en:"A Taste of Adventure"},
          d:{ru:"Дети уже уверенно работают на кухне: появляются салаты и настоящие десерты — тарт татен, фондан, тирамису. Три пакета отличаются числом блюд и наличием интерактивной игры.",
             en:"By now the children are confident in the kitchen: salads appear, along with real desserts — tarte tatin, fondant, tiramisu. The three packages differ in the number of dishes and whether an interactive game is included."},
@@ -841,11 +841,11 @@ const DATA = {
          tlNote:{ru:"Час интерактивной игры входит только в пакет 3. В пакетах 1 и 2 это время остаётся свободным — итого 2 часа на общение, фотографии и торт.",
                  en:"The hour of interactive games is part of package 3 only. In packages 1 and 2 that time stays free — 2 hours in total for mingling, photos and the cake."},
          packages:[
-           {k:"p1", n:{ru:"Пакет 1", en:"Package 1"}, price:"10 400 ₽",
+           {k:"p1", n:{ru:"Пакет 1", en:"Package 1"}, price:"10 800 ₽",
             buffet:true, dishes:2, what:{ru:"горячее и десерт", en:"a main and a dessert"}, game:null},
-           {k:"p2", n:{ru:"Пакет 2", en:"Package 2"}, price:"11 500 ₽",
+           {k:"p2", n:{ru:"Пакет 2", en:"Package 2"}, price:"12 000 ₽",
             buffet:true, dishes:3, what:{ru:"горячее, салат и десерт", en:"a main, a salad and a dessert"}, game:null},
-           {k:"p3", n:{ru:"Пакет 3", en:"Package 3"}, price:"12 500 ₽", tag:{ru:"С игрой", en:"With a game"},
+           {k:"p3", n:{ru:"Пакет 3", en:"Package 3"}, price:"13 300 ₽", tag:{ru:"С игрой", en:"With a game"},
             buffet:true, dishes:3, what:{ru:"горячее, салат и десерт", en:"a main, a salad and a dessert"},
             game:{ru:"На выбор, 1 час", en:"Of your choice, 1 hour"}}
          ],
@@ -856,10 +856,10 @@ const DATA = {
          ]},
 
         {k:"a1114", ic:"🎸",
-         n:{ru:"11–14 лет", en:"Ages 11–14"},
+         n:{ru:"14–17 лет", en:"Ages 14–17"},
          short:{ru:"Кулинарные открытия", en:"Culinary Discoveries"},
-         d:{ru:"Подростковый формат со взрослым меню: том ям, гречневая лапша с курицей, тартар из томатов с бурратой, средиземноморский салат с тигровыми креветками. Те же три пакета — на 1 000 ₽ дороже.",
-            en:"A teenage format with a grown-up menu: tom yum, buckwheat noodles with chicken, tomato tartare with burrata, Mediterranean salad with tiger prawns. The same three packages — 1 000 ₽ more each."},
+         d:{ru:"Подростки готовят взрослые блюда: том ям, гречневая лапша с курицей, тартар из томатов с бурратой, средиземноморский салат с тигровыми креветками. Те же три пакета — по ценам взрослых мастер-классов.",
+            en:"Teenagers cook grown-up dishes: tom yum, buckwheat noodles with chicken, tomato tartare with burrata, Mediterranean salad with tiger prawns. The same three packages — at adult masterclass prices."},
          tl:[
            {m:30, ru:"Сбор гостей и детский фуршет", en:"Guest welcome and kids buffet"},
            {m:60, ru:"Готовим в командах", en:"Cooking in teams", hi:true},
@@ -870,11 +870,11 @@ const DATA = {
          tlNote:{ru:"Час интерактивной игры входит только в пакет 3. В пакетах 1 и 2 это время остаётся свободным.",
                  en:"The hour of interactive games is part of package 3 only; in packages 1 and 2 that time stays free."},
          packages:[
-           {k:"p1", n:{ru:"Пакет 1", en:"Package 1"}, price:"11 500 ₽",
+           {k:"p1", n:{ru:"Пакет 1", en:"Package 1"}, price:"11 800 ₽",
             buffet:true, dishes:2, what:{ru:"горячее и десерт", en:"a main and a dessert"}, game:null},
-           {k:"p2", n:{ru:"Пакет 2", en:"Package 2"}, price:"12 500 ₽",
+           {k:"p2", n:{ru:"Пакет 2", en:"Package 2"}, price:"13 000 ₽",
             buffet:true, dishes:3, what:{ru:"горячее, закуска и десерт", en:"a main, a starter and a dessert"}, game:null},
-           {k:"p3", n:{ru:"Пакет 3", en:"Package 3"}, price:"13 600 ₽", tag:{ru:"С игрой", en:"With a game"},
+           {k:"p3", n:{ru:"Пакет 3", en:"Package 3"}, price:"14 300 ₽", tag:{ru:"С игрой", en:"With a game"},
             buffet:true, dishes:3, what:{ru:"горячее, закуска и десерт", en:"a main, a starter and a dessert"},
             game:{ru:"На выбор, 1 час", en:"Of your choice, 1 hour"}}
          ],
@@ -980,15 +980,15 @@ const DATA = {
             {l:{ru:"Игра", en:"The game"}, p:"2 200 ₽/гость", n:"1 час · минимум 20 000 ₽"},
             {l:{ru:"Караоке", en:"Karaoke"}, p:"45 000 ₽", n:"2 часа"}
           ],
-          note:{ru:"<b>Входит в пакет 3</b> для 8–10 и 11–14 лет. Отдельно к пакету 1 или 2 — 2 200 ₽ за гостя, минимум 20 000 ₽ (до 9 гостей — 20 000 ₽). Караоке — цена за мероприятие.",
-                en:"<b>Included in package 3</b> for ages 8–10 and 11–14. Added to package 1 or 2 — 2 200 ₽ per guest, minimum 20 000 ₽ (up to 9 guests — 20 000 ₽). Karaoke is priced per event."}},
+          note:{ru:"<b>Входит в пакет 3</b> для 8–13 и 14–17 лет. Отдельно к пакету 1 или 2 — 2 200 ₽ за гостя, минимум 20 000 ₽ (до 9 гостей — 20 000 ₽). Караоке — цена за мероприятие.",
+                en:"<b>Included in package 3</b> for ages 8–13 and 14–17. Added to package 1 or 2 — 2 200 ₽ per guest, minimum 20 000 ₽ (up to 9 guests — 20 000 ₽). Karaoke is priced per event."}},
 
         {ic:"🥤", name:{ru:"Игра «Угадай напиток»", en:"«Guess the Drink» Game"},
           min:{ru:"4–10 лет", en:"ages 4–10"},
           desc:{ru:"Команды пробуют напитки вслепую и угадывают, что в стакане, — по вкусу, запаху и цвету. Азартно, вкусно и всегда по-разному.",
                 en:"Teams taste drinks blind and guess what is in the glass — by taste, smell and colour. Competitive, tasty and never the same twice."},
           price:{ru:"20 000 ₽ · 30–40 минут", en:"20 000 ₽ · 30–40 minutes"},
-          note:{ru:"<b>Входит в пакет 4–7 лет.</b> Для 8–10 лет берётся отдельно.", en:"<b>Included in the 4–7 package.</b> For ages 8–10 it is booked separately."}},
+          note:{ru:"<b>Входит в пакет 4–7 лет.</b> Для 8–13 лет берётся отдельно.", en:"<b>Included in the 4–7 package.</b> For ages 8–13 it is booked separately."}},
 
         {ic:"🎩", name:{ru:"Фокусник", en:"Magician"},
           desc:{ru:"Иллюзионист показывает программу для детей — фокусы вблизи и на публику, с участием самих гостей.",
@@ -1231,7 +1231,7 @@ const TR={
 "Ванильный коктейль":"Vanilla shake",
 "Шоколадный коктейль":"Chocolate shake",
 "Клубничный коктейль":"Strawberry shake",
-/* 8–10 */
+/* 8–13 */
 "Шоколадный брауни с мороженым":"Chocolate brownie with ice cream",
 "Чизбургер с домашним майонезом и картофелем по-деревенски":"Cheeseburger with homemade mayo and country potatoes",
 "Салат Коул слоу":"Coleslaw salad",
@@ -1248,7 +1248,7 @@ const TR={
 "Мильфей с ягодами":"Mille-feuille with berries",
 "Чизкейк с клубничным соусом":"Cheesecake with strawberry sauce",
 "Лимонад тархун":"Tarragon lemonade",
-/* 11–14 */
+/* 14–17 */
 "Цезарь с креветками":"Caesar salad with shrimp",
 "Биг Тейсти с двойной котлетой, запечённым картофелем и сырным соусом":"Big Tasty with a double patty, baked potatoes and cheese sauce",
 "Салат с баклажанами и томатами":"Salad with eggplant and tomatoes",
@@ -1333,7 +1333,7 @@ const TR={
 "Коко Джамбо":"Coco Jambo","Пина Колада":"Pina Colada","Клубника-манго-кокос":"Strawberry, mango & coconut",
 "Сливочное пиво":"Butterbeer","Грейпфрут-малина":"Grapefruit & raspberry","Молочный коктейль":"Milkshake",
 "1 час":"1 hour","1 час · минимум 20 000 ₽":"1 hour · minimum 20 000 ₽","2 200 ₽/гость":"2 200 ₽/guest","2 часа":"2 hours","4 часа":"4 hours","за шт":"per pc","10 шт":"10 pcs",
-"10 400 ₽":"10 400 ₽","11 500 ₽":"11 500 ₽","12 500 ₽":"12 500 ₽","13 600 ₽":"13 600 ₽"
+"10 400 ₽":"10 400 ₽","10 800 ₽":"10 800 ₽","12 000 ₽":"12 000 ₽","13 300 ₽":"13 300 ₽","11 800 ₽":"11 800 ₽","13 000 ₽":"13 000 ₽","14 300 ₽":"14 300 ₽"
 };
 function T(s){ return (LANG==="en" && TR[s]!==undefined) ? TR[s] : s; }
 
