@@ -62,8 +62,17 @@
   .hall-head .meta{font-size:13.5px; color:var(--muted); font-weight:500}
   .hall-head .meta b{color:var(--red-deep); font-family:var(--head); font-weight:700}
 
-  .grid{display:grid; gap:10px; grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr))}
-  .ph{position:relative; display:block; padding:0; border:0; margin:0; cursor:zoom-in; background:#E3DCD1; aspect-ratio:4/3; overflow:hidden}
+  /* Каждый зал — одна лента-карусель одинаковой высоты, сколько бы в нём ни было фото */
+  .car{position:relative}
+  .strip{display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; scrollbar-width:none; overscroll-behavior-x:contain}
+  .strip::-webkit-scrollbar{display:none}
+  .ph{position:relative; display:block; padding:0; border:0; margin:0; cursor:zoom-in; background:#E3DCD1; aspect-ratio:4/3; overflow:hidden;
+    flex:0 0 calc((100% - 30px) / 4); scroll-snap-align:start}
+  .car-btn{position:absolute; top:50%; transform:translateY(-50%); z-index:2; width:42px; height:42px; border:0; background:rgba(255,255,255,.94); color:var(--red-deep); font-family:var(--display); font-size:24px; line-height:1; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,.18); transition:opacity .2s}
+  .car-btn:hover{background:var(--red); color:#fff}
+  .car-btn.prev{left:8px} .car-btn.next{right:8px}
+  .car-btn[disabled]{opacity:0; pointer-events:none}
+  .car-count{margin-left:auto; font-family:var(--head); font-weight:700; font-size:11.5px; letter-spacing:.08em; color:var(--muted)}
   .ph img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .35s ease, opacity .3s ease; opacity:0}
   .ph img.ok{opacity:1}
   .ph:hover img{transform:scale(1.04)}
@@ -85,7 +94,9 @@
   .lb-nav:hover{background:rgba(214,18,43,.85)}
   .lb-nav.prev{left:clamp(4px,1.5vw,18px)} .lb-nav.next{right:clamp(4px,1.5vw,18px)}
   @media (max-width:640px){
-    .grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px}
+    .strip{gap:6px}
+    .ph{flex-basis:calc((100% - 6px) / 1.6)}
+    .car-btn{width:36px; height:36px; font-size:20px}
     .lb-nav{width:38px; height:52px; font-size:26px; background:rgba(0,0,0,.35)}
     .lb-stage{padding:0 0 12px}
   }
@@ -103,7 +114,7 @@
 <div class="hero">
   <div class="kicker" data-i18n="kicker">Большая Якиманка, 22</div>
   <h1 data-i18n="h1">Залы <span>Novikov School</span></h1>
-  <p class="lead" data-i18n="lead">Кулинарные студии, бизнес-залы и арт-пространство. Нажмите на фото, чтобы открыть его целиком.</p>
+  <p class="lead" data-i18n="lead">Кулинарные студии, бизнес-залы и арт-пространство. Листайте фото каждого зала стрелками или свайпом, нажмите на снимок, чтобы открыть его целиком.</p>
 </div>
 <nav class="lv" id="nav"></nav>
 <main id="main"><p class="msg">Загружаем фото…</p></main>
@@ -141,8 +152,8 @@ const I18N = {
   brandsub:{ru:"ЗАЛЫ", en:"VENUES"},
   kicker:{ru:"Большая Якиманка, 22", en:"Bolshaya Yakimanka 22"},
   h1:{ru:'Залы <span>Novikov School</span>', en:'Novikov School <span>venues</span>'},
-  lead:{ru:"Кулинарные студии, бизнес-залы и арт-пространство. Нажмите на фото, чтобы открыть его целиком.",
-        en:"Cooking studios, business rooms and an art space. Tap a photo to see it full size."},
+  lead:{ru:"Кулинарные студии, бизнес-залы и арт-пространство. Листайте фото каждого зала стрелками или свайпом, нажмите на снимок, чтобы открыть его целиком.",
+        en:"Cooking studios, business rooms and an art space. Scroll through each room with the arrows or a swipe; tap a photo to see it full size."},
   foot:{ru:"Novikov School · Москва, Большая Якиманка, 22. Залы можно объединять — уточняйте у менеджера.",
         en:"Novikov School · Moscow, Bolshaya Yakimanka 22. Rooms can be combined — ask your manager."},
   fail:{ru:"Не удалось загрузить фото. Обновите страницу.", en:"Could not load the photos. Please reload the page."},
@@ -181,7 +192,7 @@ function render(){
         const i = LIST.push({t:hallTitle(c,h), src:full(h,f), n:j + 1, of:all.length}) - 1;
         return `<button class="ph" data-i="${i}" aria-label="${hallTitle(c,h)}"><img loading="lazy" decoding="async" src="${thumb(h,f)}" onload="this.classList.add('ok')" onerror="this.onerror=null;this.src='${full(h,f)}'" alt=""></button>`;
       }).join("");
-      return `<div class="hall" id="${h.k.replace("/","-")}"><div class="hall-head"><h3>${h.n[LANG]}</h3>${meta}</div><div class="grid">${tiles}</div></div>`;
+      return `<div class="hall" id="${h.k.replace("/","-")}"><div class="hall-head"><h3>${h.n[LANG]}</h3>${meta}<span class="car-count">${files(h).length} ${photoWord(files(h).length)}</span></div><div class="car"><button class="car-btn prev" data-d="-1" aria-label="${LANG==="ru"?"Назад":"Previous"}">‹</button><div class="strip">${tiles}</div><button class="car-btn next" data-d="1" aria-label="${LANG==="ru"?"Вперёд":"Next"}">›</button></div></div>`;
     }).join("");
     const note = c.note ? `<div class="hall-head" style="margin:10px 0 0"><span class="meta">${c.note[LANG]}</span></div>` : "";
     out.push(`<section class="cat" id="${c.id}"><div class="sec-head"><h2>${c.n[LANG]}</h2><span class="cnt">${c.halls.filter(h=>files(h).length).length} ${hallWord(c.halls.filter(h=>files(h).length).length)} · ${total} ${photoWord(total)}</span></div>${note}${halls}</section>`);
@@ -189,7 +200,16 @@ function render(){
   document.getElementById("nav").innerHTML = nav.join("");
   document.getElementById("main").innerHTML = out.join("") + `<p class="foot">${I18N.foot[LANG]}</p>`;
   spy();
+  document.querySelectorAll(".strip").forEach(st => { st.addEventListener("scroll", () => arrows(st), {passive:true}); arrows(st); });
 }
+
+/* Стрелки карусели: прячем ту, дальше которой листать некуда */
+function arrows(st){
+  const car = st.parentElement, max = st.scrollWidth - st.clientWidth - 2;
+  car.querySelector(".prev").disabled = st.scrollLeft <= 2;
+  car.querySelector(".next").disabled = st.scrollLeft >= max;
+}
+addEventListener("resize", () => document.querySelectorAll(".strip").forEach(arrows));
 
 function setLang(l){
   LANG = l;
@@ -219,11 +239,17 @@ function show(i){
   [LIST[(CUR + 1) % LIST.length], LIST[(CUR - 1 + LIST.length) % LIST.length]].forEach(q => { new Image().src = q.src; });
 }
 function openLb(i){ lb.hidden = false; document.body.classList.add("lb-open"); show(i); }
-function closeLb(){ lb.hidden = true; document.body.classList.remove("lb-open"); lbI.removeAttribute("src"); }
+function closeLb(){
+  lb.hidden = true; document.body.classList.remove("lb-open"); lbI.removeAttribute("src");
+  const ph = document.querySelector(`.ph[data-i="${CUR}"]`), st = ph && ph.parentElement;
+  if (st && (ph.offsetLeft < st.scrollLeft || ph.offsetLeft + ph.offsetWidth > st.scrollLeft + st.clientWidth)) st.scrollTo({left:ph.offsetLeft});
+}
 
 document.addEventListener("click", e => {
   const ph = e.target.closest(".ph"); if (ph) return openLb(+ph.dataset.i);
   const nv = e.target.closest(".lb-nav"); if (nv) return show(CUR + +nv.dataset.d);
+  const cb = e.target.closest(".car-btn");
+  if (cb){ const st = cb.parentElement.querySelector(".strip"); return st.scrollBy({left:+cb.dataset.d * st.clientWidth * .9}); }
   if (e.target.id === "lbX" || e.target.id === "lbS") closeLb();
 });
 document.addEventListener("keydown", e => {
