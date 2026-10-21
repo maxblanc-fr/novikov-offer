@@ -391,11 +391,16 @@ function buildCatalog(kind){
   /* Кулинарные пакеты */
   if (kind === "kids"){
     const pr = sec(D, "kids");
+    /* Пакеты 14–17 (p.lvl) готовят взрослые сеты: подборку уровня берём из командного
+       мастер-класса взрослого лендинга, сами сеты — из его SETS */
+    const team = (sec(A, "sets").tabs || []).find(t => t.k === "team");
+    S.SETS = {...SRC.adult.SETS, ...S.SETS};
     pr.ages.forEach(a => a.packages.forEach(p => {
       const tl = a.tl.filter(r => !r.opt || p.game).map(r => ({m:r.m, t:r.ru}));
       if (!p.game && a.tl.some(r => r.opt)){ const fr = tl[tl.length-1]; fr.m += a.tl.filter(r=>r.opt).reduce((s,r)=>s+r.m,0); }
       C.pkgs.push({key:`pkg:${a.k}:${p.k}`, group:L(a.n), title:`${L(a.n)} · ${L(p.n)}`, short:L(p.n), price:num(p.price), per:"kids", unit:"ребёнок",
-        desc:L(a.d), what:L(p.what), dishes:p.dishes, game:L(p.game), menu:a.menu, tl, buffet:"Kid Set", imgs:COOK_IMGS});
+        desc:L(a.d), what:L(p.what), dishes:p.dishes, game:L(p.game), menu:a.menu, tl, buffet:"Kid Set", imgs:COOK_IMGS,
+        setIds: p.lvl && team ? (team.levels.find(l => l.k === p.lvl) || {}).ids : undefined});
     }));
   } else {
     const st = sec(D, "sets");
