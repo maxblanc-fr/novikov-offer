@@ -838,15 +838,17 @@ const DATA = {
                 en:"<b>Per-guest rate for each round</b> — plus the sommelier at 2 200 ₽/guest. Every round is a new blind flight. Total = sommelier × guests + rate × rounds × guests. Usually 3 rounds; add or drop rounds as you like."},
           price:{ru:"Сомелье 2 200 ₽/гость · 3 раунда", en:"Sommelier 2 200 ₽/guest · 3 rounds"}},
         {ic:"🍖", name:{ru:"Хамон-станция", en:"Jamón Station"},
-          min:{ru:"ингредиенты — от 20 гостей", en:"accompaniments — from 20 guests"},
+          min:{ru:"от 20 гостей · ингредиенты обязательны", en:"from 20 guests · accompaniments mandatory"},
           desc:{ru:"Целая нога хамона на хамонере в зале. Су-шеф нарезает его тонкими ломтиками прямо при гостях и собирает тарелки с закусками — его работа входит в стоимость. К хамону — сыры, овощи, фрукты и хлеб, около 145 г на гостя.",
                 en:"A whole leg of jamón on a stand in the room. A sous-chef carves it into thin slices in front of the guests and plates it with the accompaniments — the sous-chef is included in the price. Served with cheeses, vegetables, fruit and bread, about 145 g per guest."},
           tags:["Хамон","Сырная тарелка","Артишоки","Маслины","Оливки","Вяленые томаты","Каперсы","Томаты черри","Рукола","Виноград","Дыня","Груша","Багет","Хлебцы"],
+          /* step: доплата за гостей сверх 20 — генератор КП считает её сам по числу гостей */
           tiers:[
-            {l:{ru:"Хамон, целая нога", en:"Jamón, whole leg"},                         p:"69 000 ₽", n:"нарезка су-шефом"},
-            {l:{ru:"Ингредиенты на 20 гостей", en:"Accompaniments for 20 guests"},      p:"13 800 ₽", n:""},
-            {l:{ru:"Каждые следующие 5 гостей", en:"Every further 5 guests"},          p:"3 500 ₽",  n:""}
-          ]},
+            {l:{ru:"Станция на 20 гостей", en:"Station for 20 guests"},                 p:"82 800 ₽", n:"хамон + ингредиенты"},
+            {l:{ru:"Каждые следующие 5 гостей", en:"Every further 5 guests"},          p:"3 500 ₽",  n:"", step:{over:20, per:5}}
+          ],
+          note:{ru:"<b>Ингредиенты входят обязательно</b> — станция заказывается только вместе с ними: нога хамона 69 000 ₽ + ингредиенты на 20 гостей 13 800 ₽ = 82 800 ₽. Если гостей больше 20 — +3 500 ₽ за каждые следующие 5.",
+                en:"<b>The accompaniments are mandatory</b> — the station is only booked together with them: jamón leg 69 000 ₽ + accompaniments for 20 guests 13 800 ₽ = 82 800 ₽. Above 20 guests — +3 500 ₽ for every further 5."}},
 
         {ic:"🍸", name:{ru:"Коктейльный мастер-класс", en:"Cocktail Masterclass"},
           min:{ru:"от 6 человек", en:"from 6 guests"},
@@ -1320,6 +1322,7 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
+"хамон + ингредиенты":"jamón + accompaniments",
 "Вегетарианский сет: 5 позиций":"Vegetarian Set: 5 items",
 "153 г":"153 g",
 "от 6 порций":"from 6 servings",

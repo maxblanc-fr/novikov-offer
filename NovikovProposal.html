@@ -476,7 +476,7 @@ function buildCatalog(kind){
       if (/^[А-ЯA-Z][а-яa-z]+ \d/.test(pstr)){ const part = pstr.split("·")[0]; lines.push({lab:part.replace(/[\d\s]+₽.*$/,"").trim(), price:num(part), ...unitOf(part)}); }
       it.tiers.forEach(t => { const pack = /^\d+ шт/.test(t.n || ""); const u = pack ? {per:"one", unit:"набор"} : unitOf(t.p, t.n);
         const mn = (t.n || "").match(/минимум ([\d\s]+)₽/);
-        lines.push({lab:L(t.l) + (pack ? ` (${t.n})` : ""), price:num(t.p), note:pack ? "" : t.n, from:/^от/.test(t.p), min:mn ? num(mn[1]) : 0, ...u}); });
+        lines.push({lab:L(t.l) + (pack ? ` (${t.n})` : ""), price:num(t.p), note:pack ? "" : t.n, from:/^от/.test(t.p), min:mn ? num(mn[1]) : 0, ...u, step:t.step}); });
     } else if (/₽/.test(pstr)){
       const parts = pstr.split("·").filter(p => /\d/.test(p) && /₽/.test(p)), g = /гост/.test(pstr), min = (pstr.match(/минимум (\d+)/) || [])[1];
       parts.forEach(p => { const lab = p.replace(/(от\s*)?[\d\s]+₽.*$/,"").trim(); const u = g ? {per:"guest", unit:"гость"} : unitOf(p);
@@ -484,7 +484,9 @@ function buildCatalog(kind){
     } else lines.push({lab:"", price:0, req:true, per:"one", unit:"услуга"});
     C.services.push({h:name, desc, imgs, min:L(it.min), items: lines.map(l => ({key:`svc:${name}:${l.lab}`, svc:name,
       title: l.lab ? `${name} · ${l.lab}${/час/.test(l.note||"") ? `, ${l.note}` : ""}` : name, short:l.lab ? `${l.lab}${/час/.test(l.note||"") ? `, ${l.note}` : ""}` : "", lab:l.lab, sub:[l.note, l.from ? "цена от" : "", l.req ? "цена по запросу — впишите" : ""].filter(Boolean).join(" · "),
-      price:l.price, per: kind === "kids" && l.per === "guest" ? "kids" : l.per, q0:l.q0 ?? (l.per === "one" ? 1 : null), unit:l.unit, req:l.req, desc, imgs, dur:/^1 час/.test(l.note||"") && it.tags ? 60 : 0, minSum:l.min || 0, generic:/персонал/i.test(name)}))});
+      price:l.price, per: kind === "kids" && l.per === "guest" ? "kids" : l.per, q0:l.q0 ?? (l.per === "one" ? 1 : null), unit:l.unit, req:l.req, desc, imgs, dur:/^1 час/.test(l.note||"") && it.tags ? 60 : 0, minSum:l.min || 0, generic:/персонал/i.test(name),
+      /* Доплата-шаг (хамон: +3 500 ₽ за каждые 5 гостей сверх 20) не выбирается отдельно — идёт вместе с первой строкой услуги */
+      ...(l.step ? {per:"step", step:l.step, unit:`× ${l.step.per} гостей`, q0:null, with:`svc:${name}:${lines[0].lab}`, sub:`добавляется сама, если гостей больше ${l.step.over}`} : {})}))});
   });
 
   /* Залы */
@@ -548,12 +550,12 @@ const kpLabel = () => ST.no ? `КП № ${ST.no}${ST.ver > 1 ? `, версия $
 
 const allItems = () => [...CAT.buffet.flatMap(g => g.items), ...CAT.soft, ...CAT.services.flatMap(g => g.items)];
 const pkg = () => CAT.pkgs.find(p => p.key === ST.pkg);
-const defQty = it => it.per === "guest" ? (+ST.guests || 0) : it.per === "kids" ? (+ST.kids || 0) : (it.q0 ?? 1);
+const defQty = it => it.per === "guest" ? (+ST.guests || 0) : it.per === "kids" ? (+ST.kids || 0) : it.per === "step" ? Math.ceil(Math.max(0, (+ST.guests || 0) - it.step.over) / it.step.per) : (it.q0 ?? 1);
 /* Сумма строки с учётом минимальной стоимости (игра: 2 200 ₽/гость, минимум 20 000 ₽) */
 const lineSum = (it, pr, q) => Math.max(pr * q, pr && q ? it.minSum || 0 : 0);
 const qtyOf = it => { const s = ST.sel[it.key]; return s && s.qty != null && s.qty !== "" ? +s.qty : defQty(it); };
 const priceOf = it => { const s = ST.sel[it.key]; return s && s.price != null && s.price !== "" ? +s.price : it.price; };
-const isOn = it => !!(ST.sel[it.key] && ST.sel[it.key].on);
+const isOn = it => it.with ? !!(ST.sel[it.with] && ST.sel[it.with].on) && qtyOf(it) > 0 : !!(ST.sel[it.key] && ST.sel[it.key].on);
 const ov = (v, d) => v != null && v !== "" ? +v : d;   /* ручная цена поверх цены лендинга */
 /* Сет меню с учётом замен */
 const curSet = () => pkg() && ST.setId ? SRC[ST.kind].SETS[ST.setId] || null : null;
@@ -653,7 +655,7 @@ function dateRu(d){
 function optRow(it, type = "checkbox", name = "", checked = isOn(it), editable = true){
   const pr = priceOf(it), q = qtyOf(it);
   return `<div class="opt${checked ? " on" : ""}" data-key="${esc(it.key)}">
-    <input type="${type}" ${name ? `name="${name}"` : ""} id="o-${esc(it.key)}" ${checked ? "checked" : ""}>
+    <input type="${type}" ${name ? `name="${name}"` : ""} id="o-${esc(it.key)}" ${checked ? "checked" : ""} ${it.with ? "disabled" : ""}>
     <label for="o-${esc(it.key)}"><div class="t">${esc(it.title)}</div>${it.sub ? `<div class="s">${esc(it.sub)}</div>` : ""}</label>
     <div class="pr">${it.req && !pr ? "по запросу" : rub(it.price)}<div class="s">/ ${esc(it.unit)}</div></div>
     ${editable ? `<div class="edit">цена <input type="number" class="p" value="${pr}" min="0" step="100"> × <input type="number" class="q" value="${q}" min="0"> ${esc(it.unit)}
