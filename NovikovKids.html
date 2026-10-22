@@ -673,6 +673,10 @@
   .age-note b{color:var(--maroon)}
 
   /* Group heading inside the services grid */
+  /* Взрослый стол в фуршете — отдельной карточкой, чтобы не сливался с детским */
+  .menu-gh{margin:44px 0 14px; padding-top:26px; border-top:2px dashed var(--line); display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+    font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.03em; font-size:19px; color:var(--maroon)}
+  .menu-gh em{font-style:normal; font-family:var(--body); font-weight:600; text-transform:none; letter-spacing:0; font-size:13.5px; color:var(--muted)}
   .svc-gh{
     grid-column:1/-1; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
     font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.03em;
@@ -909,7 +913,7 @@ const DATA = {
         {h:{ru:"Детский фуршет Kid Set", en:"Kids Buffet · Kid Set"}, badge:{ru:"Включён в пакет", en:"Included"},
          list:["Мини-пицца","Рожок с нутеллой и ягодами","Мини-сэндвич с ветчиной и сыром","Картофель фри","Мини-сосиска в кляре","Овощное канапе","Сырное канапе с салями","Фруктовое канапе","Клубника в меренге"]},
         {h:{ru:"Детские напитки", en:"Kids Drinks"}, rows:[
-          {ru:"Безалкогольный безлимитный бар", en:"Unlimited soft bar", info:"соки и морс без ограничений", wt:"на гостя", price:900},
+          {ru:"Безалкогольный безлимитный бар", en:"Unlimited soft bar", info:"соки, морс и газировка без ограничений", wt:"на гостя", price:900},
           {ru:"Лимонад: манго-маракуйя / клубника-манго-кокос / мохито классический / линчбургский / Berries Punch / лаванда-смородина / яблоко-лимон / клубника-мята", en:"Lemonade: mango & passion fruit / strawberry, mango & coconut / classic mojito / Lynchburg / Berries Punch / lavender & blackcurrant / apple & lemon / strawberry & mint", wt:"0,4 л", price:750},
           {ru:"Лимонад в графине", en:"Lemonade carafe", info:"те же вкусы", wt:"1 л", price:1500},
           {ru:"Вода Acqua Panna / San Pellegrino", en:"Water: Acqua Panna / San Pellegrino", info:"негазированная / газированная", wt:"0,25 л", price:500},
@@ -1349,7 +1353,7 @@ const TR={
 "180 г":"180 g",
 "120 г":"120 g","90 г":"90 g","100 г":"100 g","155 г":"155 g","150 г":"150 g","180 г ":"180 g",
 "0,4 л":"0.4 L","1 л":"1 L","2 л":"2 L","0,33 л":"0.33 L","285 мл":"285 ml","585 мл":"585 ml",
-"на гостя":"per guest","соки и морс без ограничений":"juices and mors, unlimited","те же вкусы":"same flavours",
+"на гостя":"per guest","соки, морс и газировка без ограничений":"juices, mors and soft drinks, unlimited","те же вкусы":"same flavours",
 "150 м²":"150 m²","50 м²":"50 m²","104 м²":"104 m²","105 м²":"105 m²","82 м²":"82 m²","161 м²":"161 m²",
 "за шт.":"per piece","от 60 000 ₽":"from 60 000 ₽","от 80 000 ₽":"from 80 000 ₽",
 "за порцию":"per serving",
@@ -1492,7 +1496,6 @@ function renderSection(s, i){
         <span class="wt">${p.wt?T(p.wt):""}</span><span class="price">${fmt(p.price)} ₽</span>
       </div>`;
     const block = b=>{
-      if(b.gh) return `<div class="subhead">${b.gh[LANG]}${b.ghNote?`<span class="wt">· ${b.ghNote[LANG]}</span>`:""}</div>`;
       const title = typeof b.h === "string" ? b.h : b.h[LANG];
       const bits = [
         b.badge ? ` <span class="badge">${typeof b.badge==="string"?b.badge:b.badge[LANG]}</span>` : "",
@@ -1518,7 +1521,12 @@ function renderSection(s, i){
       })), b.h && b.h.ru==="Тарелки" ? "mshow--plates" : "");
       return head + (rich || b.rows.map(bRow).join(""));
     };
-    body = `<div class="rows">${s.blocks.map(block).join("")}</div>`
+    /* Группа (gh) открывает новую карточку со своим заголовком */
+    const segs = [{blocks:[]}];
+    s.blocks.forEach(b => b.gh ? segs.push({gh:b, blocks:[]}) : segs[segs.length-1].blocks.push(b));
+    body = segs.filter(g => g.blocks.length).map(g =>
+        (g.gh ? `<div class="menu-gh">${g.gh.gh[LANG]}${g.gh.ghNote?`<em>${g.gh.ghNote[LANG]}</em>`:""}</div>` : "")
+        + `<div class="rows">${g.blocks.map(block).join("")}</div>`).join("")
       + (s.foot?`<div class="sec-foot">${s.foot[LANG]}</div>`:"");
   }
 
