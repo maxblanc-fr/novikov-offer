@@ -421,7 +421,8 @@ function buildCatalog(kind){
       C.pkgs.push({key:`pkg:f:${L(g.head)}:${i}`, group:L(g.head), title:`${L(g.head)} · ${L(it.n)}`, short:L(it.n),
         price:num(parts[0]), per: isDemo ? "guest" : "one", unit: isDemo ? "гость" : "мероприятие",
         extra: parts[1] ? {price:num(parts[1]), per:"guest", unit:"участник"} : null,
-        desc:L(it.d), buffet:null, setIds: isDemo && chefs ? chefs.levels[0].ids : undefined,
+        desc:L(it.d), buffet: isDemo && chefs ? chefs.levels[0].buffet : null, bwt: isDemo && chefs ? chefs.levels[0].bwt : undefined,
+        setIds: isDemo && chefs ? chefs.levels[0].ids : undefined,
         tl: isDemo ? [{m:30, t:"Встреча гостей, welcome-фуршет"},{m:210, t:"Шеф готовит, рассказывает о блюдах и угощает гостей"}]
                    : [{m:30, t:"Встреча гостей"},{m:180, t:"Мастер-класс: 3–4 блюда под руководством шефа"},{m:30, t:"Дегустация приготовленного"}],
         imgs:COOK_IMGS});

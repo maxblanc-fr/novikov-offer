@@ -788,8 +788,8 @@ const DATA = {
         ]},
         {head:{ru:"Open kitchen", en:"Open kitchen"}, items:[
           {n:{ru:"Демо-ужин", en:"Demo-dinner"},
-            d:{ru:"Шеф готовит и рассказывает о блюдах, гости наблюдают. 30 мин — встреча гостей, затем 3,5 часа шеф готовит, общается и рассказывает гостям о приготовленных блюдах.",
-               en:"The chef cooks and narrates while guests watch. 30 min guest welcome, then 3.5 h with the chef cooking, talking to guests and presenting every dish."}, p:"17 400 ₽"}
+            d:{ru:"Шеф готовит и рассказывает о блюдах, гости наблюдают. 30 мин — встреча гостей, затем 3,5 часа шеф готовит, общается и рассказывает гостям о приготовленных блюдах. Фуршет «Small Set» (7 позиций, 132 г) включён.",
+               en:"The chef cooks and narrates while guests watch. 30 min guest welcome, then 3.5 h with the chef cooking, talking to guests and presenting every dish. «Small Set» buffet (7 items, 132 g) included."}, p:"17 400 ₽"}
         ]},
         {head:{ru:"Индивидуальный мастер-класс (максимум 5 гостей)", en:"Private masterclass (max 5 guests)"}, items:[
           {n:{ru:"Утро / день · будни", en:"Morning / day · weekdays"},
@@ -832,7 +832,7 @@ const DATA = {
       id:"sets", type:"sets",
       title:{ru:"Кулинарная часть", en:"Culinary Programme"},
       sub:{ru:"Командный или индивидуальный мастер-класс \u00b7 три уровня в каждом \u00b7 демо-ужин Chef\u2019s table", en:"Team or individual masterclass \u00b7 three levels each \u00b7 Chef\u2019s table demo dinner"},
-      note:{ru:"3 блюда на гостя \u00b7 в мастер-классах фуршет включён в стоимость", en:"3 courses per guest \u00b7 buffet included in masterclasses"},
+      note:{ru:"3 блюда на гостя \u00b7 фуршет включён в стоимость", en:"3 courses per guest \u00b7 buffet included"},
       intro:{ru:"Сначала выберите формат готовки, затем уровень — от него зависят подборка сетов, включённый фуршет и цена за гостя.",
              en:"First choose the cooking format, then the level — it defines the set selection, the included buffet and the price per guest."},
       tabs:[
@@ -879,11 +879,11 @@ const DATA = {
          d:{ru:"Шеф готовит сет при гостях, рассказывает о каждом блюде и подаёт его к столу — гости наблюдают и пробуют, готовить не нужно.",
             en:"The chef cooks the set in front of the guests, tells the story of every dish and serves it — guests watch and taste, no cooking required."},
          tl:[
-           {m:30,  ru:"Встреча гостей", en:"Guest welcome"},
+           {m:30,  ru:"Сбор гостей и дегустация фуршета", en:"Guest welcome and buffet tasting"},
            {m:210, ru:"Шеф готовит, рассказывает о блюдах и угощает гостей", en:"The chef cooks, presents every dish and serves the guests", hi:true}
          ],
          levels:[
-           {k:"std", n:{ru:"Chef\u2019s table", en:"Chef\u2019s table"}, price:"17 400 \u20bd",
+           {k:"std", n:{ru:"Chef\u2019s table", en:"Chef\u2019s table"}, buffet:"Small Set", bwt:"132 г", price:"17 400 \u20bd",
             ids:["ct1","ct2","ct3","ct4","ct5","ct6"]}
          ]}
       ],
