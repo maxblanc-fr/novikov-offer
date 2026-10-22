@@ -759,7 +759,7 @@ const DATA = {
     {n:"7", ru:"пакетов на выбор", en:"packages to choose"},
     {n:"6", ru:"залов на площадке", en:"halls at the venue"},
     {n:"4", ru:"часа праздник", en:"hours per party"},
-    {n:"22", ru:"доп. активностей", en:"add-on activities"}
+    {n:"20", ru:"доп. активностей", en:"add-on activities"}
   ],
   sections:[
     {
@@ -773,7 +773,7 @@ const DATA = {
         {head:{ru:"4–7 лет", en:"Ages 4–7"}, items:[
           {n:{ru:"Юный шеф", en:"Young Chef"},
             d:{ru:"Приветственный детский фуршет, приготовление 2 блюд и игра «Угадай напиток» (30 мин).",
-               en:"Welcome kids buffet, cooking 2 dishes and the «Guess the Drink» game (30 min)."}, p:"10 400 ₽"}
+               en:"Welcome kids buffet, cooking 2 dishes and the «Guess the Drink» game (30 min)."}, p:"10 000 ₽"}
         ]},
         {head:{ru:"8–13 лет", en:"Ages 8–13"}, items:[
           {n:{ru:"Пакет 1", en:"Package 1"},
@@ -817,7 +817,7 @@ const DATA = {
            {m:90, ru:"Свободное время: общение, фото, торт", en:"Free time: mingling, photos, the cake"}
          ],
          packages:[
-           {k:"p1", n:{ru:"Юный шеф", en:"Young Chef"}, price:"10 400 ₽", tag:{ru:"Единственный пакет", en:"The only package"},
+           {k:"p1", n:{ru:"Юный шеф", en:"Young Chef"}, price:"10 000 ₽", tag:{ru:"Единственный пакет", en:"The only package"},
             buffet:true, dishes:2,
             what:{ru:"горячее и десерт", en:"a main and a dessert"},
             game:{ru:"«Угадай напиток», 30 мин", en:"«Guess the Drink», 30 min"}}
@@ -979,22 +979,15 @@ const DATA = {
           note:{ru:"<b>Входит в пакет 3</b> для 8–13 лет. Отдельно к пакету 1 или 2 и для 14–17 лет — 1 700 ₽ за гостя, минимум 20 000 ₽ (до 11 гостей — 20 000 ₽). Караоке — цена за мероприятие.",
                 en:"<b>Included in package 3</b> for ages 8–13. Added to package 1 or 2, and for ages 14–17 — 1 700 ₽ per guest, minimum 20 000 ₽ (up to 11 guests — 20 000 ₽). Karaoke is priced per event."}},
 
-        {ic:"🥤", name:{ru:"Игра «Угадай напиток»", en:"«Guess the Drink» Game"},
-          min:{ru:"4–10 лет", en:"ages 4–10"},
-          desc:{ru:"Команды пробуют напитки вслепую и угадывают, что в стакане, — по вкусу, запаху и цвету. Азартно, вкусно и всегда по-разному.",
-                en:"Teams taste drinks blind and guess what is in the glass — by taste, smell and colour. Competitive, tasty and never the same twice."},
-          price:{ru:"15 000 ₽ · 30–40 минут", en:"15 000 ₽ · 30–40 minutes"},
-          note:{ru:"<b>Входит в пакет 4–7 лет.</b> Для 8–13 лет берётся отдельно.", en:"<b>Included in the 4–7 package.</b> For ages 8–13 it is booked separately."}},
-
         {ic:"🎩", name:{ru:"Фокусник", en:"Magician"},
           desc:{ru:"Иллюзионист показывает программу для детей — фокусы вблизи и на публику, с участием самих гостей.",
                 en:"An illusionist performs a children's programme — close-up and stage magic, with the guests taking part."},
           price:{ru:"Цена по запросу", en:"Price on request"}},
 
-        {ic:"🧪", name:{ru:"Химическое шоу", en:"Chemistry Show"},
-          desc:{ru:"Эффектные безопасные опыты: дым, пена, цветные реакции. Дети участвуют в экспериментах вместе с ведущим.",
-                en:"Spectacular but safe experiments: smoke, foam and colour reactions. The children take part alongside the presenter."},
-          price:{ru:"Цена по запросу", en:"Price on request"}},
+        {ic:"🧪", name:{ru:"Шоу чокнутого профессора", en:"Crazy Professor Show"},
+          desc:{ru:"Химическое шоу: эффектные безопасные опыты — дым, пена, цветные реакции. Дети участвуют в экспериментах вместе с ведущим.",
+                en:"A chemistry show: spectacular but safe experiments — smoke, foam and colour reactions. The children take part alongside the presenter."},
+          price:{ru:"26 500 ₽", en:"26 500 ₽"}},
 
         {ic:"🐻", name:{ru:"Ростовая кукла", en:"Mascot Character"},
           desc:{ru:"Любимый персонаж встречает гостей, фотографируется и играет с детьми. Персонаж согласовывается заранее.",
@@ -1030,7 +1023,7 @@ const DATA = {
             {l:{ru:"Продление диджея", en:"DJ extension"},                         p:"13 500 ₽",    n:"1 час"},
             {l:{ru:"Профессиональный фотограф", en:"Professional photographer"},   p:"42 600 ₽",    n:"4 часа"},
             {l:{ru:"Топ-фотограф", en:"Top photographer"},                                p:"54 100 ₽",    n:"4 часа"},
-            {l:{ru:"Продление фотографа", en:"Photographer extension"},            p:"11 000 ₽",    n:"1 час"}
+            {l:{ru:"Продление фотографа", en:"Photographer extension"},            p:"10 600 ₽",    n:"1 час"}
           ],
           note:{ru:"<b>Уже входят в стоимость формата:</b> 6–19 гостей — 1 официант, 20–30 — 2, 31–50 — 3. Здесь — дополнительные официанты и продление сверх 4 часов.",
                 en:"<b>Already included in the format price:</b> 6–19 guests — 1 waiter, 20–30 — 2, 31–50 — 3. These prices are for extra waiters and for hours beyond 4."}},
@@ -1038,22 +1031,14 @@ const DATA = {
         {ic:"🎈", modal:"balloons", modalLabel:{ru:"Смотреть каталог и цены", en:"View catalogue & prices"},
           cardImgs:["uploads/balloons/01.jpg","uploads/balloons/02.jpg","uploads/balloons/12.jpg","uploads/balloons/06.jpg"], cardMore:11,
           name:{ru:"Украшение воздушными шарами", en:"Balloon Décor"},
-          desc:{ru:"Оформление зала шарами под цвета праздника: фонтаны и композиции у фотозоны и на столе именинника, цифра возраста, фигуры любимых персонажей и именные букеты.",
-                en:"Balloon styling in the colours of the party: bouquets and arrangements by the photo zone and the birthday table, an age numeral, favourite-character figures and personalised bouquets."},
+          desc:{ru:"Оформление зала шарами под цвета праздника: фонтаны и композиции в зале и на столе именинника, цифра возраста, фигуры любимых персонажей и именные букеты.",
+                en:"Balloon styling in the colours of the party: bouquets and arrangements around the hall and at the birthday table, an age numeral, favourite-character figures and personalised bouquets."},
           tiers:[
             {l:{ru:"Ассорти, 25 см", en:"Assorted, 25 cm"}, p:"13 300 ₽", n:"50 шт"},
             {l:{ru:"Ассорти, 25 см", en:"Assorted, 25 cm"}, p:"26 500 ₽", n:"100 шт"},
             {l:{ru:"Цифра возраста", en:"Age numeral"}, p:"4 600 ₽", n:"1 шт"}
           ],
           price:{ru:"от 4 600 ₽ · полный прайс в каталоге", en:"from 4 600 ₽ · full price list in the catalogue"}},
-
-        {ic:"📸", name:{ru:"Фотозона", en:"Photo Zone"},
-          desc:{ru:"Оформленная зона для фотографий под тему праздника: фон, декор и реквизит. Собирается под ваш сценарий и цветовую гамму. Хорошо сочетается с оформлением шарами.",
-                en:"A styled backdrop for photos matched to the party theme: background, décor and props, built around your concept and colour scheme. Pairs well with the balloon décor."},
-          tiers:[
-            {l:{ru:"Фон с пайетками и неоновая надпись", en:"Sequin backdrop with neon sign"}, p:"28 800 ₽", n:"аренда"},
-            {l:{ru:"Неоновая надпись под заказ", en:"Custom neon sign"}, p:"от 30 000 ₽", n:"ваш текст"}
-          ]},
 
         {ic:"✨", name:{ru:"Тату-бар", en:"Tattoo Bar"},
           desc:{ru:"Мастер наносит детям яркие временные тату: блёстки, цветные рисунки, любимые персонажи. Косметические материалы, безопасные для кожи, смываются водой с мылом.",
@@ -1119,11 +1104,11 @@ const DATA = {
           price:{ru:"от 6 000 ₽/кг · минимум 2 кг", en:"from 6 000 ₽/kg · min 2 kg"}},
 
         {ic:"👕", cardImg:"uploads/aprons/birthday.jpg", name:{ru:"Фартуки", en:"Aprons"},
-          desc:{ru:"Брендированные — с вашим логотипом: гости готовят в них на мастер-классе и забирают с собой. Для именинников — персональный фартук с именем.",
+          desc:{ru:"Брендированные — с вашим логотипом: гости готовят в них на мастер-классе и забирают с собой. Кастомизированные — персональный фартук с именем гостя или именинника.",
                 en:"Branded — with your logo: guests cook in them at the masterclass and keep them. For the birthday guest — a personalised apron with their name."},
           tiers:[
-            {l:{ru:"Брендированные", en:"Branded"},                                  p:"4 800 ₽", n:"за шт."},
-            {l:{ru:"Для именинников", en:"For the birthday guest"},                    p:"5 400 ₽", n:"за шт."}
+            {l:{ru:"Брендированные", en:"Branded"},                                  p:"3 500 ₽", n:"за шт."},
+            {l:{ru:"Кастомизированные", en:"Customised"},                             p:"4 000 ₽", n:"за шт."}
           ]}
       ]
     }
