@@ -156,7 +156,7 @@
   @media(hover:hover){ .chef.cta .cta-link:hover{background:var(--red); border-color:var(--red); color:#fff} .chef.cta:hover .cta-link::after{transform:translateX(3px)} }
 
   /* ---------- Сомелье ---------- */
-  .somms{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px}
+  .somms{display:grid; grid-template-columns:repeat(2,minmax(0,380px)); justify-content:center; gap:18px}
   @media(max-width:900px){ .somms{grid-template-columns:repeat(2,minmax(0,1fr))} }
   @media(max-width:620px){ .somms{grid-template-columns:1fr; gap:14px} }
   .somm{display:flex; flex-direction:column; background:var(--card); border:1px solid var(--line); box-shadow:var(--card-shadow); overflow:hidden}
@@ -399,12 +399,7 @@ const SOMMELIERS = [
    name:{ru:"Александр Архипов", en:"Alexander Arkhipov"},
    role:{ru:"Сомелье, ведущий дегустаций", en:"Sommelier, tasting host"},
    text:{ru:"За моими плечами — обучение в школе сомелье и несколько лет практического опыта в мире вина. Я помогаю не просто пробовать вино, а понимать его характер, раскрывать вкусы и находить напитки, которые действительно подходят именно вам. Вместе мы отправимся в небольшое путешествие по винным регионам, сортам винограда и стилям. Научимся замечать ароматы, разбираться во вкусе и понимать, почему одно вино становится любимым с первого глотка, а другое раскрывается постепенно.",
-         en:"Behind me are a sommelier school and several years of hands-on work in wine. I help people not merely taste a wine but understand its character, open up its flavours and find the bottles that genuinely suit them. Together we take a short journey through wine regions, grape varieties and styles, learning to catch aromas, read a flavour and see why one wine becomes a favourite at the first sip while another unfolds slowly."}},
-
-  {slug:"aleksey-pavenko", tbd:true,
-   name:{ru:"Алексей Павенко", en:"Alexey Pavenko"},
-   role:{ru:"Сомелье", en:"Sommelier"},
-   text:{ru:"Фото и описание заказчик пришлёт позже.", en:"Photo and bio to follow."}}
+         en:"Behind me are a sommelier school and several years of hands-on work in wine. I help people not merely taste a wine but understand its character, open up its flavours and find the bottles that genuinely suit them. Together we take a short journey through wine regions, grape varieties and styles, learning to catch aromas, read a flavour and see why one wine becomes a favourite at the first sip while another unfolds slowly."}}
 ];
 
 /* ---------- Render ---------- */
