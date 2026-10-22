@@ -126,7 +126,7 @@
   .set .course{font-family:var(--head); font-weight:700; font-size:9.5px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:1px}
 
   /* ---------- Culinary part: format tabs + level cards ---------- */
-  .mc-tabs{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 18px;}
+  .mc-tabs{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 0 18px;}
   .mc-tab{display:flex; align-items:center; gap:13px; text-align:left; padding:14px 18px; border:1px solid var(--line); background:var(--card); box-shadow:var(--card-shadow); font-family:var(--body); cursor:pointer; transition:background .15s ease, border-color .15s ease;}
   .mc-tab-ic{font-size:24px; line-height:1; flex:none;}
   .mc-tab-tx{display:flex; flex-direction:column; gap:2px; min-width:0;}
@@ -647,13 +647,19 @@ const SETS = {
   crabwine:     {ru:"Краб и шабли", en:"Crab & Chablis", d:["Салат с крабом в соусе белое вино","Фетучини с крабом в соусе том ям","Мильфей с ванильным кремом"]},
   crabtomyam:   {ru:"Краб по-тайски", en:"Thai-Style Crab", d:["Краб-кейк с кисло-сладким соусом","Фетучини с крабом в соусе том ям","Мильфей с воздушным кремом и ягодами"]},
   crablang:     {ru:"Морской деликатес", en:"Seafood Delicacy", d:["Салат с крабом в соусе белое вино","Орекьетте с соусом аррабиата и лангустинами","Мильфей с ванильным кремом"]},
-  surfturf:     {ru:"Сёрф энд тёрф", en:"Surf & Turf", d:["Краб-кейк с кисло-сладким соусом","Филе миньон со спаржей и голландским соусом","Тирамису с манговым муссом и вафельной крошкой"]}
+  surfturf:     {ru:"Сёрф энд тёрф", en:"Surf & Turf", d:["Краб-кейк с кисло-сладким соусом","Филе миньон со спаржей и голландским соусом","Тирамису с манговым муссом и вафельной крошкой"]},
+  ct1:          {ru:"Южноамериканский акцент", en:"South American Accent", d:["Эмпанадас с креветками","Лукум из мраморной говядины с грибами","Шоколадный брауни с ванильным мороженым"]},
+  ct2:          {ru:"Современное бистро", en:"Modern Bistro", d:["Жареный романо с куриной грудкой","Фланк-стейк с соусом чимичурри и пюре из батата","Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе"]},
+  ct3:          {ru:"Средиземноморский вечер", en:"Mediterranean Evening", d:["Стейк-салат","Филе дикого сибаса с соусом из спаржи","Мильфей с воздушным кремом и ягодами"]},
+  ct4:          {ru:"Сезонный гастроужин", en:"Seasonal Gastro Dinner", d:["Салат из утиной грудки с печёными овощами","Филе палтуса с соусом из горгонзолы и бланшированными овощами","Меренговый рулет с фисташками и малиной"]},
+  ct5:          {ru:"Перечный контраст", en:"Pepper Contrast", d:["Тёплый салат с говядиной и чёрно-перечным соусом","Запечённый цыплёнок с кукурузным кремом и соусом жу","Тирамису с манговым муссом и вафельной крошкой"]},
+  ct6:          {ru:"Цитрусы и Италия", en:"Citrus & Italy", d:["Севиче из тунца с цитрусами","Утиная грудка с сельдереем и черникой","Сицилийские канноли с рикоттой и цедрой апельсина"]}
 };
 
 /* ---------- OFFER DATA ---------- */
 const DATA = {
   stats:[
-    {n:"47", ru:"тематических сетов", en:"themed sets"},
+    {n:"53", ru:"тематических сетов", en:"themed sets"},
     {n:"4",  ru:"формата мероприятий", en:"event formats"},
     {n:"8", ru:"залов на площадке", en:"halls at the venue"},
     {n:"100+", ru:"позиций в барной карте", en:"drinks on the bar card"},
@@ -681,7 +687,7 @@ const DATA = {
         {head:{ru:"Open kitchen", en:"Open kitchen"}, items:[
           {n:{ru:"Демо-ужин", en:"Demo-dinner"},
             d:{ru:"Шеф готовит и рассказывает о блюдах, гости наблюдают. 30 мин — встреча гостей, затем 3,5 часа шеф готовит, общается и рассказывает гостям о приготовленных блюдах.",
-               en:"The chef cooks and narrates while guests watch. 30 min guest welcome, then 3.5 h with the chef cooking, talking to guests and presenting every dish."}, p:"12 600 ₽"}
+               en:"The chef cooks and narrates while guests watch. 30 min guest welcome, then 3.5 h with the chef cooking, talking to guests and presenting every dish."}, p:"13 600 ₽"}
         ]},
         {head:{ru:"Индивидуальный мастер-класс (максимум 5 гостей)", en:"Private masterclass (max 5 guests)"}, items:[
           {n:{ru:"Утро / день · будни", en:"Morning / day · weekdays"},
@@ -723,8 +729,8 @@ const DATA = {
     {
       id:"sets", type:"sets",
       title:{ru:"Кулинарная часть", en:"Culinary Programme"},
-      sub:{ru:"Командный или индивидуальный мастер-класс \u00b7 три уровня в каждом", en:"Team or individual masterclass \u00b7 three levels each"},
-      note:{ru:"3 блюда на гостя \u00b7 фуршет включён в стоимость", en:"3 courses per guest \u00b7 buffet included"},
+      sub:{ru:"Командный или индивидуальный мастер-класс \u00b7 три уровня в каждом \u00b7 демо-ужин Chef\u2019s table", en:"Team or individual masterclass \u00b7 three levels each \u00b7 Chef\u2019s table demo dinner"},
+      note:{ru:"3 блюда на гостя \u00b7 в мастер-классах фуршет включён в стоимость", en:"3 courses per guest \u00b7 buffet included in masterclasses"},
       intro:{ru:"Сначала выберите формат готовки, затем уровень — от него зависят подборка сетов, включённый фуршет и цена за гостя.",
              en:"First choose the cooking format, then the level — it defines the set selection, the included buffet and the price per guest."},
       tabs:[
@@ -764,6 +770,19 @@ const DATA = {
             ids:["america","greek","sicily","sea","asian","festive","basicsfish","meatitaly","seatrout","asianbeef","northitaly","frbistro","bistro","crablang"]},
            {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"14 300 \u20bd", buffet:"Large Set", bwt:"205 г", prem:true,
             ids:["excl1","excl2","crabwine","crabtomyam","surfturf","marbled","frenchkiss"]}
+         ]},
+        {k:"chefs", ic:"\ud83d\udc68\u200d\ud83c\udf73",
+         n:{ru:"Демо ужин Chef\u2019s table", en:"Demo dinner · Chef\u2019s table"},
+         short:{ru:"Шеф готовит для вас", en:"The chef cooks for you"},
+         d:{ru:"Шеф готовит сет при гостях, рассказывает о каждом блюде и подаёт его к столу — гости наблюдают и пробуют, готовить не нужно.",
+            en:"The chef cooks the set in front of the guests, tells the story of every dish and serves it — guests watch and taste, no cooking required."},
+         tl:[
+           {m:30,  ru:"Встреча гостей", en:"Guest welcome"},
+           {m:210, ru:"Шеф готовит, рассказывает о блюдах и угощает гостей", en:"The chef cooks, presents every dish and serves the guests", hi:true}
+         ],
+         levels:[
+           {k:"std", n:{ru:"Chef\u2019s table", en:"Chef\u2019s table"}, price:"13 600 \u20bd",
+            ids:["ct1","ct2","ct3","ct4","ct5","ct6"]}
          ]}
       ],
       premNote:{ru:"Фуа-гра, Вагю, трюфель, краб \u00b7 меню согласовывается за неделю до мероприятия",
@@ -1322,6 +1341,10 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
+"Фланк-стейк с соусом чимичурри и пюре из батата":"Flank steak with chimichurri and sweet potato purée",
+"Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе":"Mango sorbet with strawberry, basil, passion fruit confiture and lime meringue",
+"Филе палтуса с соусом из горгонзолы и бланшированными овощами":"Halibut fillet with gorgonzola sauce and blanched vegetables",
+"Запечённый цыплёнок с кукурузным кремом и соусом жу":"Roast chicken with corn cream and jus",
 "хамон + ингредиенты":"jamón + accompaniments",
 "Вегетарианский сет: 5 позиций":"Vegetarian Set: 5 items",
 "153 г":"153 g",
@@ -1830,7 +1853,7 @@ function renderSection(s, i){
       <button type="button" class="lvl-card${l.k==="std"?" active":""}" data-mcfmt="${t.k}" data-mclvl="${l.k}" role="tab" aria-selected="${l.k==="std"}">
         <span class="lvl-n">${l.n[LANG]}</span>
         <span class="lvl-p">${T(l.price)}<small>${LANG==="ru"?"/гость":"/guest"}</small></span>
-        <span class="lvl-inc">✓ ${LANG==="ru"?"Фуршет":"Buffet"} ${l.buffet} · ${T(l.bwt)} — ${LANG==="ru"?"включён":"included"}</span>
+        ${l.buffet?`<span class="lvl-inc">✓ ${LANG==="ru"?"Фуршет":"Buffet"} ${l.buffet} · ${T(l.bwt)} — ${LANG==="ru"?"включён":"included"}</span>`:""}
         <span class="lvl-cnt">${nSets(l.ids.length)}</span>
       </button>`;
     const panels = s.tabs.map(t=>`
