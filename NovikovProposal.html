@@ -499,8 +499,13 @@ function buildCatalog(kind){
   /* Залы */
   const vn = sec(D, "venues"), va = sec(A, "venues");
   const hext = vn.ext || va.ext || [];
-  C.halls = vn.halls.map(h => ({slug:h.slug, title:L(h.n), area:h.area, cap:L(h.cap), biz:/бизнес/.test(L(h.n)), tab:h.tabs ? h.tabs[0].k : null,
-    ext:num((hext.find(e => e.s.includes(h.slug)) || {}).p)}));
+  /* ART на лендинге — одна карточка с вкладками; в КП каждая мастерская — отдельный зал, часто берут только один */
+  C.halls = vn.halls.flatMap(h => {
+    const ext = num((hext.find(e => e.s.includes(h.slug)) || {}).p);
+    if (!h.tabs) return [{slug:h.slug, title:L(h.n), area:h.area, cap:L(h.cap), biz:/бизнес/.test(L(h.n)), tab:null, ext}];
+    const cap = L(h.cap).split("·")[0].replace(/\s*каждый/, "").trim();
+    return h.tabs.map(t => ({slug:`${h.slug}-${t.k}`, img:h.slug, tab:t.k, title:`ART · ${L(t.l)}`, area:"", cap, biz:false, ext}));
+  });
   C.hallIncl = (vn.incl || va.incl);
   return C;
 }
@@ -515,9 +520,10 @@ function blank(){
 }
 let ST = blank(), CAT = null;
 /* Раньше зал был один (ST.hall) — старые КП из архива и PDF переводим в список */
-const fixHalls = s => { if (!Array.isArray(s.halls)) s.halls = []; if (s.hall && !s.halls.length) s.halls = [s.hall]; delete s.hall; return s; };
+const fixHalls = s => { if (!Array.isArray(s.halls)) s.halls = []; if (s.hall && !s.halls.length) s.halls = [s.hall]; delete s.hall;
+  s.halls = s.halls.flatMap(h => h === "art" ? ["art-floristry","art-painting","art-ceramics"] : [h]); return s; };
 const selHalls = () => ST.halls.map(slug => CAT.halls.find(h => h.slug === slug)).filter(Boolean);
-const hallArea = hs => hs.length === 1 ? hs[0].area : `${hs.reduce((s, h) => s + (parseInt(h.area) || 0), 0)} м²`;
+const hallArea = hs => { if (hs.length === 1) return hs[0].area; if (hs.some(h => !h.area)) return ""; return `${hs.reduce((s, h) => s + (parseInt(h.area) || 0), 0)} м²`; };
 const hallNames = hs => hs.map(h => `«${h.title}»`).join(", ");
 try { const s = JSON.parse(localStorage.getItem(LS_KEY)); if (s && s.kind) ST = fixHalls(Object.assign(blank(), s)); } catch(e){}
 const save = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(ST)); } catch(e){} clearTimeout(aT); aT = setTimeout(archPut, 700); };
@@ -679,7 +685,7 @@ function renderForm(){
   const cnt = arr => { const n = arr.filter(Boolean).length; return n ? `<span class="cnt">${n}</span>` : ""; };
   const openState = {}; F.querySelectorAll("details.box").forEach(d => openState[d.dataset.id] = d.open);
   const op = (id, def) => (openState[id] ?? def) ? "open" : "";
-  const hallOpts = C.halls.map(h => { const on = ST.halls.includes(h.slug); return `<label class="${on ? "on" : ""}"><input type="checkbox" data-hall="${h.slug}" ${on ? "checked" : ""}><span>${esc(h.title)} <small>${h.area}</small></span></label>`; }).join("");
+  const hallOpts = C.halls.map(h => { const on = ST.halls.includes(h.slug); return `<label class="${on ? "on" : ""}"><input type="checkbox" data-hall="${h.slug}" ${on ? "checked" : ""}><span>${esc(h.title)}${h.area ? ` <small>${h.area}</small>` : ""}</span></label>`; }).join("");
 
   let pkgHtml = "", grp = "";
   C.pkgs.forEach(x => {
@@ -885,8 +891,9 @@ async function switchKind(k){
 const bg = u => `style="background-image:url('${esc(u)}')"`;
 function hallPhotos(h, n){
   if (!h) return [];
-  const base = h.tab ? `images/halls/${h.slug}/${h.tab}` : `images/halls/${h.slug}`;
-  const list = (h.tab ? (MANIFEST[h.slug] || {})[h.tab] : MANIFEST[h.slug]) || [];
+  const slug = h.img || h.slug;
+  const base = h.tab ? `images/halls/${slug}/${h.tab}` : `images/halls/${slug}`;
+  const list = MANIFEST[h.tab ? `${slug}/${h.tab}` : slug] || [];
   const files = Array.isArray(list) ? list : [];
   const pick = h.slug === "cafe" ? ["22.jpg","10.jpg","6.jpg","14.jpg"] : files;
   return pick.slice(0, n).map(f => `${base}/${f}`);
@@ -913,7 +920,7 @@ function variantBody(H, B, blocks){
   if (svcOn.length || ST.custom.some(c => c.t)) ov.push(["Доп. услуги", [...svcOn.map(it => it.title + (it.unit !== "гость" && qtyOf(it) > 1 ? ` × ${qtyOf(it)}` : "")), ...ST.custom.filter(c => c.t).map(c => c.t)]]);
   const inclTxt = hs.length && hs.every(h => h.biz) ? L(C.hallIncl.business) : L(C.hallIncl.culinary);
   const ppl = +ST.guests + (ST.kind === "kids" ? +ST.kids : 0), wN = ppl >= 6 && ppl <= 19 ? 1 : ppl >= 20 && ppl <= 30 ? 2 : ppl >= 31 && ppl <= 50 ? 3 : 0;
-  ov.push(["Площадка", [...hs.map(h => `Зал «${h.title}», ${h.area}${+ST.hallHours && h.ext ? ` + продление ${ST.hallHours} ч` : ""}`), wN ? `${wN} ${plural(wN,"официант","официанта","официантов")} — входит в стоимость` : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
+  ov.push(["Площадка", [...hs.map(h => `Зал «${h.title}»${h.area ? `, ${h.area}` : ""}${+ST.hallHours && h.ext ? ` + продление ${ST.hallHours} ч` : ""}`), wN ? `${wN} ${plural(wN,"официант","официанта","официантов")} — входит в стоимость` : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
   H("Что входит", "всё в одном месте");
   B(`<p class="lead">Ниже — полный состав вашего мероприятия. Всё перечисленное уже учтено в стоимости.</p>`);
   ov.forEach(([k, arr]) => B(`<div class="ov-grp"><div class="k">${esc(k)}</div><ul class="ticks one">${arr.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>`));
@@ -1003,7 +1010,7 @@ function buildBlocks(){
   hs.forEach(hall => {
     const inclTxt = hall.biz ? L(C.hallIncl.business) : L(C.hallIncl.culinary);
     const ph = hallPhotos(hall, 3);
-    B(`<div class="card"><h3>${esc(hall.title)}</h3><div class="meta">${esc(hall.area)} · ${esc(hall.cap)}</div>
+    B(`<div class="card"><h3>${esc(hall.title)}</h3><div class="meta">${esc([hall.area, hall.cap].filter(Boolean).join(" · "))}</div>
       ${ph.length ? `<div class="strip c3">${ph.map(u => `<div class="ph" ${bg(u)} style="height:200px"></div>`).join("")}</div>` : ""}
       <ul class="ticks" style="margin-top:10px">${inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => `<li>${esc(s[0].toUpperCase() + s.slice(1))}</li>`).join("")}</ul></div>`);
 });
