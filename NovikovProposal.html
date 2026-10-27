@@ -52,6 +52,7 @@
     font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--red-deep)}
   .kinds button+button{border-left:0}
   .kinds button.on{background:var(--red);color:#fff;border-color:var(--red)}
+  .langs{align-items:center;margin-top:-4px}.langs span{flex:none;padding-right:10px;font-size:12px;color:var(--muted)}.langs button{padding:6px}
   .vars{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
   .vars button{border:1px solid var(--line);background:#fff;padding:6px 10px;cursor:pointer;font-family:var(--head);font-weight:700;font-size:11.5px;color:var(--red-deep)}
   .vars button.on{background:var(--maroon);color:#fff;border-color:var(--maroon)}
@@ -299,18 +300,19 @@
 /* Менеджер выбирается по адресу: /kp-generator — Максим, /kp-generator-darya, /kp-generator-ilya — коллеги.
    У коллег свой префикс номера КП и свой архив, чтобы не пересекаться. */
 const MANAGERS = {
-  max:  {name:"Максим Бланк",   phone:"+7 903 161-80-65", tel:"+79031618065", code:"",   ls:""},
-  darya:{name:"Дарья Марушко",  phone:"+7 915 089-18-18", tel:"+79150891818", code:"Д-", ls:"-darya"},
-  ilya: {name:"Илья Васильев",  phone:"+7 912 912-52-72", tel:"+79129125272", code:"И-", ls:"-ilya"},
+  max:  {name:"Максим Бланк",   en:"Maxim Blanc",    phone:"+7 903 161-80-65", tel:"+79031618065", code:"",   ls:""},
+  darya:{name:"Дарья Марушко",  en:"Daria Marushko", phone:"+7 915 089-18-18", tel:"+79150891818", code:"Д-", ls:"-darya"},
+  ilya: {name:"Илья Васильев",  en:"Ilya Vasilyev",  phone:"+7 912 912-52-72", tel:"+79129125272", code:"И-", ls:"-ilya"},
 };
 const MANAGER = MANAGERS[(location.pathname.match(/(darya|ilya)/i) || [, "max"])[1].toLowerCase()];
 document.getElementById("mgrName").textContent = " · " + MANAGER.name.toUpperCase();
 document.title += " — " + MANAGER.name;
-const ADDRESS = "Москва, Большая Якиманка, 22";
+const ADDRESS = "Москва, Большая Якиманка, 22", ADDRESS_EN = "Moscow, Bolshaya Yakimanka 22";
+const mgrName = () => EN() ? MANAGER.en : MANAGER.name, addr = () => EN() ? ADDRESS_EN : ADDRESS;
 const KINDS = {
-  adult:{label:"Взрослое",    files:["index.html","NovikovOffer.html"],   kicker:"Предложение на мероприятие"},
-  kids: {label:"Детское",     files:["deti.html","NovikovKids.html"],    kicker:"Детский праздник"},
-  ny:   {label:"Новогоднее",  files:["newyear.html","NovikovNewYear.html"], kicker:"Новогоднее мероприятие"}
+  adult:{label:"Взрослое",    files:["index.html","NovikovOffer.html"],   kicker:"Предложение на мероприятие", kickerEn:"Event proposal"},
+  kids: {label:"Детское",     files:["deti.html","NovikovKids.html"],    kicker:"Детский праздник", kickerEn:"Kids' party"},
+  ny:   {label:"Новогоднее",  files:["newyear.html","NovikovNewYear.html"], kicker:"Новогоднее мероприятие", kickerEn:"New Year event"}
 };
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
 const TL_TEMPLATE = [
@@ -333,7 +335,66 @@ const rub = n => Math.round(n).toLocaleString("ru-RU").replace(/,/g," ") + " ₽
 const plural = (n, a, b, c) => { n = Math.abs(n) % 100; const n1 = n % 10; return n > 10 && n < 20 ? c : n1 > 1 && n1 < 5 ? b : n1 === 1 ? a : c; };
 const UNIT_FORMS = {"час":["час","часа","часов"], "гость":["гость","гостя","гостей"], "ребёнок":["ребёнок","ребёнка","детей"], "услуга":["услуга","услуги","услуг"], "порция":["порция","порции","порций"],
   "участник":["участник","участника","участников"], "набор":["набор","набора","наборов"], "мероприятие":["мероприятие","мероприятия","мероприятий"], "раунд":["раунд","раунда","раундов"]};
-const qu = (q, u) => `${q} ${UNIT_FORMS[u] ? plural(q, ...UNIT_FORMS[u]) : u}`;
+const qu = (q, u) => EN() ? `${q} ${unitEn(q, u)}` : `${q} ${UNIT_FORMS[u] ? plural(q, ...UNIT_FORMS[u]) : u}`;
+
+/* ---------- Английская версия КП ----------
+   Форма остаётся русской — на английский переводится только то, что видит клиент (PDF и приглашение).
+   Тексты с лендингов берём из их пар {ru, en} и словаря TR, фразы самого генератора — через X(ru, en).
+   Всё, что перевести не удалось, собирается в MISS и показывается менеджеру над формой. */
+const EN = () => ST.lang === "en";
+const X = (ru, en) => EN() ? en : ru;
+const LOC = () => EN() ? "en-GB" : "ru-RU";
+const plx = (n, a, b, c, e1, e2) => EN() ? (Math.abs(n) === 1 ? e1 : e2) : plural(n, a, b, c);
+const UNIT_EN = {"час":["hour","hours"], "гость":["guest","guests"], "ребёнок":["child","children"], "реб.":["child","children"], "услуга":["service","services"],
+  "порция":["serving","servings"], "порц.":["serving","servings"], "участник":["participant","participants"], "набор":["set","sets"], "мероприятие":["event","events"],
+  "раунд":["round","rounds"], "шт.":["pc","pcs"], "бут.":["bottle","bottles"], "кг":["kg","kg"], "бокал":["glass","glasses"], "50 мл":["× 50 ml","× 50 ml"]};
+const unitEn = (q, u) => { if (!u) return ""; const f = UNIT_EN[u]; if (f) return Math.abs(q) === 1 ? f[0] : f[1];
+  const m = String(u).match(/^× (\d+) гостей$/); return m ? `× ${m[1]} guests` : tr(u); };
+const unitWord = u => EN() ? unitEn(1, u) : u;
+const DICT = {}, MISS = new Set(), CYR = /[А-Яа-яЁё]/;
+/* Фразы генератора, которые попадают в PDF через каталог (группы сметы, шаблоны тайминга, подписи из цен лендинга) */
+const GEN = {
+  "Кулинарная программа":"Culinary programme", "Площадка":"Venue", "Напитки":"Drinks", "Фуршет":"Buffet", "Дополнительные услуги":"Additional services", "Дополнительно":"Extras",
+  "Фуршетные сеты":"Buffet sets", "Тарелки и ассорти":"Platters", "Детский фуршет":"Kids' buffet", "Коктейль по выбору":"Cocktail of your choice",
+  "Welcome-фуршет: закуски, сбор гостей":"Welcome buffet: snacks, guests arrive", "Welcome-фуршет: закуски, игристое, сбор гостей":"Welcome buffet: snacks, sparkling wine, guests arrive",
+  "Мастер-класс с профессиональным шефом Novikov":"Masterclass with a professional Novikov chef", "Праздничный обед / ужин из приготовленных блюд":"Festive lunch / dinner of the dishes you cooked",
+  "Праздничный ужин из приготовленных блюд":"Festive dinner of the dishes you cooked", "Праздничный обед из приготовленных блюд":"Festive lunch of the dishes you cooked",
+  "Свободное время и активности":"Free time and activities", "Свободное время":"Free time", "игра с ведущим":"game with a host",
+  "Встреча гостей, welcome-фуршет":"Guests arrive, welcome buffet", "Шеф готовит, рассказывает о блюдах и угощает гостей":"The chef cooks, talks about the dishes and treats the guests",
+  "Встреча гостей":"Guests arrive", "Мастер-класс: 3–4 блюда под руководством шефа":"Masterclass: 3–4 dishes guided by the chef", "Дегустация приготовленного":"Tasting what you cooked",
+  "цена от":"price from", "игристое":"sparkling wine", "Сомелье":"Sommelier", "Рисование":"Painting", "Свечеварение":"Candle making",
+  "Утро / день":"Morning / afternoon", "будни":"weekdays", "Ассорти":"Assorted"
+};
+function learn(o, seen = new Set()){
+  if (!o || typeof o !== "object" || seen.has(o)) return; seen.add(o);
+  if (Array.isArray(o)) return o.forEach(x => learn(x, seen));
+  const put = (r, e) => { if (typeof r !== "string" || typeof e !== "string" || !e.trim()) return; DICT[r.trim()] ??= e.trim(); const sr = strip(r).trim(); if (sr !== r.trim()) DICT[sr] ??= strip(e).trim(); };
+  put(o.ru, o.en);
+  if (Array.isArray(o.ru) && Array.isArray(o.en)) o.ru.forEach((r, i) => put(r, o.en[i]));
+  Object.values(o).forEach(x => learn(x, seen));
+}
+function tr(s){
+  if (s == null) return "";
+  s = String(s);
+  if (!EN() || !CYR.test(s)) return s;
+  const k = s.trim();
+  if (GEN[k] != null) return GEN[k];
+  if (DICT[k] != null) return DICT[k];
+  if (/«[^»]+»/.test(k)){ const r = k.replace(/«([^»]+)»/g, (m, x) => `“${tr(x)}”`); return CYR.test(r) ? trParts(r, k) : r; }
+  return trParts(k, k);
+}
+function trParts(s, orig){
+  for (const sep of [" · ", " — ", ": ", ", ", " + "]) if (s.includes(sep)) return s.split(sep).map(tr).join(sep);
+  let m = s.match(/^(.*\S)\s*\(([^()]*)\)$/); if (m) return `${tr(m[1])} (${tr(m[2])})`;
+  m = s.match(/^(.*\S) на (гостя|человека|ребёнка)$/); if (m) return `${tr(m[1])} per ${m[2] === "ребёнка" ? "child" : "guest"}`;
+  m = s.match(/^от (.+)$/); if (m) return `from ${tr(m[1])}`;
+  m = s.match(/^минимум (.+)$/); if (m) return `minimum ${tr(m[1])}`;
+  m = s.match(/^([\d–-]+) мест$/); if (m) return `${m[1]} places`;
+  const u = s.replace(/(\d)\s*(кг|г|мл|л|см|шт\.?|ч|мин|м²)(?=$|[\s,.;)])/g, (x, d, w) => `${d} ${{"кг":"kg","г":"g","мл":"ml","л":"l","см":"cm","шт":"pcs","шт.":"pcs","ч":"h","мин":"min","м²":"m²"}[w]}`)
+    .replace(/(\d+)\s*(час|часа|часов)(?![а-яё])/g, (x, d) => `${d} ${+d === 1 ? "hour" : "hours"}`);
+  if (!CYR.test(u)) return u;
+  MISS.add(orig); return s;
+}
 
 /* Вырезает литерал `const NAME = {…}` из исходника лендинга и вычисляет его. */
 function grab(src, name){
@@ -363,7 +424,11 @@ async function load(kind){
     if (r && r.ok){ const h = await r.text(); if (/const DATA\s*=/.test(h)){ html = h; KINDS[kind].file = f; break; } }
   }
   if (!html) throw new Error("нет данных лендинга " + KINDS[kind].files.join(" / "));
-  return SRC[kind] = {DATA:grab(html,"DATA"), SETS:grab(html,"SETS") || {}, BUFFET_IMG:grab(html,"BUFFET_IMG") || {}};
+  const S = SRC[kind] = {DATA:grab(html,"DATA"), SETS:grab(html,"SETS") || {}, BUFFET_IMG:grab(html,"BUFFET_IMG") || {}};
+  /* Английские тексты лендинга — для КП на английском */
+  [S.DATA, S.SETS, grab(html,"I18N")].forEach(o => learn(o));
+  Object.entries(grab(html,"TR") || {}).forEach(([r, e]) => { if (typeof e === "string" && e.trim()) DICT[r.trim()] ??= e.trim(); });
+  return S;
 }
 let MANIFEST = {};
 
@@ -514,7 +579,7 @@ function buildCatalog(kind){
 function blank(){
   return {kind:"adult", client:"", contact:"", occasion:"", date:"", start:"19:00", guests:12, kids:10, halls:[], hallHours:0, pkg:"", setId:"", dishes:[],
     setDishes:null, swapPrice:"", ff:"", ffHours:0, ffPrice:"", ffExt:"", uff:false, uffPrice:"", uffExt:"", uffGuests:"", sel:{}, bar:{}, custom:[], discount:0, discUnit:"%", showOld:true,
-    valid:"", note:"", vat:true, tl:null, vname:"", vars:[], vi:0,
+    valid:"", note:"", vat:true, lang:"ru", tl:null, vname:"", vars:[], vi:0,
     prepay:50, prepayDays:3, deposit:0, depFill:true, wishes:"",
     id:Date.now().toString(36) + Math.random().toString(36).slice(2, 6), no:"", ver:0, verDate:"", sentHash:""};
 }
@@ -535,7 +600,7 @@ const pickVar = () => clone(Object.fromEntries(VKEYS.map(k => [k, ST[k]])));
 const syncVar = () => { if (ST.vars.length) ST.vars[ST.vi] = pickVar(); };
 const loadVar = i => { const b = blank(); Object.assign(ST, Object.fromEntries(VKEYS.map(k => [k, b[k]])), clone(ST.vars[i])); ST.vi = i; };
 const multi = () => ST.vars.length > 1;
-const vName = i => (multi() ? (ST.vars[i] || {}).vname : ST.vname) || `Вариант ${i + 1}`;
+const vName = i => (multi() ? (ST.vars[i] || {}).vname : ST.vname) || X(`Вариант ${i + 1}`, `Option ${i + 1}`);
 function withVar(i, fn){
   if (!ST.vars.length) return fn();
   syncVar(); const cur = ST.vi; loadVar(i);
@@ -564,7 +629,7 @@ function nextNo(){
   n++; try { localStorage.setItem(CNT_KEY + yy, n); } catch(e){}
   return `${MANAGER.code}${yy}-${String(n).padStart(3, "0")}`;
 }
-const kpLabel = () => ST.no ? `КП № ${ST.no}${ST.ver > 1 ? `, версия ${ST.ver}` : ""}` : "";
+const kpLabel = () => ST.no ? X(`КП № ${ST.no}${ST.ver > 1 ? `, версия ${ST.ver}` : ""}`, `Proposal No. ${ST.no}${ST.ver > 1 ? `, version ${ST.ver}` : ""}`) : "";
 
 const allItems = () => [...CAT.buffet.flatMap(g => g.items), ...CAT.soft, ...CAT.services.flatMap(g => g.items)];
 const pkg = () => CAT.pkgs.find(p => p.key === ST.pkg);
@@ -586,8 +651,8 @@ const uffPrice = () => ov(ST.uffPrice, CAT.uff.price), uffExt = () => ov(ST.uffE
 /* Ultra можно взять не на всех гостей, но не меньше чем на 70% */
 const uffMin = () => Math.ceil(+ST.guests * 0.7);
 const uffQ = () => Math.min(+ST.guests, Math.max(uffMin(), ov(ST.uffGuests, +ST.guests)));
-const uffPart = () => uffQ() < +ST.guests ? ` на ${uffQ()} из ${ST.guests} ${plural(+ST.guests,"гостя","гостей","гостей")}` : "";
-const guestsLabel = () => ST.kind === "kids" ? `${+ST.kids||0} ${plural(+ST.kids,"ребёнок","ребёнка","детей")}${+ST.guests ? ` + ${ST.guests} ${plural(+ST.guests,"взрослый","взрослых","взрослых")}` : ""}` : `${+ST.guests||0} ${plural(+ST.guests,"гость","гостя","гостей")}`;
+const uffPart = () => uffQ() < +ST.guests ? X(` на ${uffQ()} из ${ST.guests} ${plural(+ST.guests,"гостя","гостей","гостей")}`, ` for ${uffQ()} of ${ST.guests} guests`) : "";
+const guestsLabel = () => ST.kind === "kids" ? `${+ST.kids||0} ${plx(+ST.kids,"ребёнок","ребёнка","детей","child","children")}${+ST.guests ? ` + ${ST.guests} ${plx(+ST.guests,"взрослый","взрослых","взрослых","adult","adults")}` : ""}` : `${+ST.guests||0} ${plx(+ST.guests,"гость","гостя","гостей","guest","guests")}`;
 
 /* Включённый в пакет фуршет */
 function includedBuffet(){
@@ -598,39 +663,39 @@ function includedBuffet(){
   return s ? {title:`${s.title}`, wt:p.bwt, list:s.detail, imgs:s.imgs, key:s.key} : null;
 }
 
-const ibShort = ib => { const s = ib.title.split(":")[0].trim(); return /фуршет/i.test(s) ? s : `Фуршет ${s}`; };
+const ibShort = ib => { const s = ib.title.split(":")[0].trim(); return /фуршет/i.test(s) ? tr(s) : X(`Фуршет ${s}`, `${tr(s)} buffet`); };
 /* Строки сметы */
 function lines(){
   const out = [], p = pkg();
   if (p){
     const q = p.per === "kids" ? +ST.kids : p.per === "guest" ? +ST.guests : 1;
-    out.push({g:"Кулинарная программа", t:p.title, q, u:p.unit, pr:p.price});
-    if (p.extra) out.push({g:"Кулинарная программа", t:`${p.short}: каждый участник`, q:+ST.guests, u:p.extra.unit, pr:p.extra.price});
+    out.push({g:"Кулинарная программа", t:esc(tr(p.title)), q, u:p.unit, pr:p.price});
+    if (p.extra) out.push({g:"Кулинарная программа", t:`${esc(tr(p.short))}: ${X("каждый участник", "each participant")}`, q:+ST.guests, u:p.extra.unit, pr:p.extra.price});
     const sw = swapCount();
-    if (sw && swapPrice()) out.push({g:"Кулинарная программа", t:`Замена ${sw} ${plural(sw,"блюда","блюд","блюд")} в сете <small>· ${rub(swapPrice())} за блюдо</small>`, q:q, u:p.unit, pr:swapPrice() * sw});
+    if (sw && swapPrice()) out.push({g:"Кулинарная программа", t:X(`Замена ${sw} ${plural(sw,"блюда","блюд","блюд")} в сете`, `${sw} ${sw === 1 ? "dish" : "dishes"} swapped in the set`) + ` <small>· ${rub(swapPrice())} ${X("за блюдо", "per dish")}</small>`, q:q, u:p.unit, pr:swapPrice() * sw});
     const ib = includedBuffet();
-    if (ib) out.push({g:"Кулинарная программа", t:ibShort(ib), incl:true});
+    if (ib) out.push({g:"Кулинарная программа", t:esc(ibShort(ib)), incl:true});
   }
-  if (+ST.hallHours) selHalls().forEach(hl => { if (hl.ext) out.push({g:"Площадка", t:`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, q:+ST.hallHours, u:"час", pr:hl.ext}); });
+  if (+ST.hallHours) selHalls().forEach(hl => { if (hl.ext) out.push({g:"Площадка", t:X(`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, `Hall extension “${esc(tr(hl.title))}”, +${ST.hallHours} h`), q:+ST.hallHours, u:"час", pr:hl.ext}); });
   const ff = CAT.ff.find(f => f.key === ST.ff);
   if (ff){
-    out.push({g:"Напитки", t:`${ff.title}, 4 часа`, q:+ST.guests, u:"гость", pr:ffPrice(ff), pr0:ff.price});
-    if (+ST.ffHours) out.push({g:"Напитки", t:`Продление free-flow, +${ST.ffHours} ч <small>· ${rub(ffExt(ff))} за час</small>`, q:+ST.guests, u:"гость", pr:ffExt(ff) * +ST.ffHours, pr0:ff.ext * +ST.ffHours});
+    out.push({g:"Напитки", t:`${esc(tr(ff.title))}, ${X("4 часа", "4 hours")}`, q:+ST.guests, u:"гость", pr:ffPrice(ff), pr0:ff.price});
+    if (+ST.ffHours) out.push({g:"Напитки", t:X(`Продление free-flow, +${ST.ffHours} ч`, `Free-flow extension, +${ST.ffHours} h`) + ` <small>· ${rub(ffExt(ff))} ${X("за час", "per hour")}</small>`, q:+ST.guests, u:"гость", pr:ffExt(ff) * +ST.ffHours, pr0:ff.ext * +ST.ffHours});
     if (uffOn()){
       const u = CAT.uff;
-      out.push({g:"Напитки", t:`${u.title} · крепкий алкоголь, 4 часа`, q:uffQ(), u:"гость", pr:uffPrice(), pr0:u.price});
-      if (+ST.ffHours) out.push({g:"Напитки", t:`Продление ${u.title}, +${ST.ffHours} ч <small>· ${rub(uffExt())} за час</small>`, q:uffQ(), u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours});
+      out.push({g:"Напитки", t:`${esc(u.title)} · ${X("крепкий алкоголь, 4 часа", "spirits, 4 hours")}`, q:uffQ(), u:"гость", pr:uffPrice(), pr0:u.price});
+      if (+ST.ffHours) out.push({g:"Напитки", t:`${X("Продление", "Extension:")} ${esc(u.title)}, +${ST.ffHours} ${X("ч", "h")} <small>· ${rub(uffExt())} ${X("за час", "per hour")}</small>`, q:uffQ(), u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours});
     }
   }
   CAT.bar.forEach(c => c.items.forEach(it => {
     const b = ST.bar[`${c.h}|${it.name}`]; if (!b) return;
-    if (+b.g && it.glass) out.push({g:"Напитки", t:`${it.name}${it.origin && c.kind !== "cocktail" ? ` <small>· ${esc(it.origin)}</small>` : ""}`, q:+b.g, u:it.gUnit, pr:ov(b.gp, it.glass), pr0:it.glass});
-    if (+b.b && it.bottle) out.push({g:"Напитки", t:`${it.name}${it.origin ? ` <small>· ${esc(it.origin)}</small>` : ""}`, q:+b.b, u: c.kind === "cocktail" ? "порция" : "бут.", pr:ov(b.bp, it.bottle), pr0:it.bottle});
+    if (+b.g && it.glass) out.push({g:"Напитки", t:`${esc(tr(it.name))}${it.origin && c.kind !== "cocktail" ? ` <small>· ${esc(tr(it.origin))}</small>` : ""}`, q:+b.g, u:it.gUnit, pr:ov(b.gp, it.glass), pr0:it.glass});
+    if (+b.b && it.bottle) out.push({g:"Напитки", t:`${esc(tr(it.name))}${it.origin ? ` <small>· ${esc(tr(it.origin))}</small>` : ""}`, q:+b.b, u: c.kind === "cocktail" ? "порция" : "бут.", pr:ov(b.bp, it.bottle), pr0:it.bottle});
   }));
-  CAT.soft.forEach(it => { if (isOn(it)) out.push({g:"Напитки", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); });
+  CAT.soft.forEach(it => { if (isOn(it)) out.push({g:"Напитки", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); });
   const ibKey = (includedBuffet() || {}).key;
-  CAT.buffet.forEach(g => g.items.forEach(it => { if (isOn(it) && it.key !== ibKey) out.push({g:"Фуршет", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); }));
-  CAT.services.forEach(g => g.items.forEach(it => { if (isOn(it)) out.push({g:"Дополнительные услуги", t:esc(it.title), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, req:it.req && !priceOf(it), min:it.minSum}); }));
+  CAT.buffet.forEach(g => g.items.forEach(it => { if (isOn(it) && it.key !== ibKey) out.push({g:"Фуршет", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); }));
+  CAT.services.forEach(g => g.items.forEach(it => { if (isOn(it)) out.push({g:"Дополнительные услуги", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, req:it.req && !priceOf(it), min:it.minSum}); }));
   ST.custom.forEach(c => { if (c.t) out.push({g:"Дополнительно", t:esc(c.t), q:+c.q || 1, u:"", pr:+c.p || 0, req:!+c.p}); });
   out.forEach(l => { if (!l.incl) l.sum = Math.max((l.pr || 0) * (l.q || 0), l.q && l.pr ? l.min || 0 : 0); });
   return out;
@@ -747,6 +812,8 @@ function renderForm(){
 
   F.innerHTML = `
   <div class="kinds">${Object.entries(KINDS).map(([k, v]) => `<button type="button" data-kind="${k}" class="${ST.kind === k ? "on" : ""}">${v.label}</button>`).join("")}</div>
+  <div class="kinds langs"><span>Язык КП</span>${[["ru","Русский"],["en","English"]].map(([k, v]) => `<button type="button" data-lang="${k}" class="${(ST.lang || "ru") === k ? "on" : ""}">${v}</button>`).join("")}</div>
+  <div class="warn" id="trWarn" hidden></div>
   <div class="kpno">${ST.no ? `${esc(kpLabel())}${ST.verDate ? ` · PDF от ${new Date(ST.verDate).toLocaleDateString("ru-RU")}` : ""}${ST.sentHash && ST.sentHash !== stateHash() ? " · есть правки → следующий PDF станет версией " + (ST.ver + 1) : ""}` : "Новое КП — номер присвоится при первом PDF"}</div>
   <details class="box" data-id="client" ${op("client", true)}><summary>Клиент и дата</summary><div class="bx grid2">
     <label class="fld full">Клиент / компания<input id="client" value="${esc(ST.client)}" placeholder="ООО «Ромашка» или Анна Петрова"></label>
@@ -793,6 +860,7 @@ function renderForm(){
     <label class="fld full" style="flex-direction:row;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="showOld" ${ST.showOld ? "checked" : ""} style="width:auto;accent-color:var(--red)"> Если цена снижена вручную — показывать в смете старую цену зачёркнутой</label>
   </div></details>
   <div class="totalbar">${totalbarHtml(T)}</div>`;
+  showMiss();
 }
 
 const totalbarHtml = T => `<span>Итого${multi() ? ` · ${esc(vName(ST.vi))}` : ""}${T.dl ? ` (−${T.dl})` : ""}</span><b>${rub(T.tot)}</b>`;
@@ -804,6 +872,8 @@ const F = $("#form");
 F.addEventListener("click", async e => {
   const k = e.target.closest("[data-kind]");
   if (k && k.dataset.kind !== ST.kind){ await switchKind(k.dataset.kind); return; }
+  const lg = e.target.closest("[data-lang]");
+  if (lg){ ST.lang = lg.dataset.lang; rerender(); return; }
   if (e.target.id === "addCustom"){ ST.custom.push({t:"", p:"", q:1}); rerender(); return; }
   const vb = e.target.closest("[data-vsel],[data-vadd],[data-vdel]");
   if (vb){
@@ -908,92 +978,98 @@ function variantBody(H, B, blocks){
   const barOn = []; C.bar.forEach(c => c.items.forEach(it => { const b = ST.bar[`${c.h}|${it.name}`]; if (b) barOn.push({c, it, b}); }));
 
   /* Обзор */
-  const ov = [];
-  if (p) ov.push(["Кулинария", [p.title + ` — ${rub(p.price)} / ${p.unit}`, set ? `Сет «${set.ru}»: ${setDishes().join(", ")}` : p.setIds ? "Сет меню — выбираете из подборки уровня" : "",
-    p.menu ? (ST.dishes.length ? `Блюда: ${ST.dishes.join(", ")}` : `${p.dishes} блюда: ${p.what}`) : "", p.game ? `Игра: ${p.game[0].toLowerCase() + p.game.slice(1)}` : "", "Профессиональный шеф Novikov, все продукты и инвентарь"].filter(Boolean)]);
-  const fb = []; if (ib) fb.push(`${ib.title}${ib.wt ? ` (${ib.wt} на гостя)` : ""} — входит в пакет`); bufOn.forEach(it => fb.push(`${it.title}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
-  if (fb.length) ov.push(["Фуршет", fb]);
-  const dr = []; if (ff) dr.push(`${ff.title} — безлимит 4 часа${+ST.ffHours ? ` + ${ST.ffHours} ч` : ""}`);
-  if (uffOn()) dr.push(`${C.uff.title} — безлимитный крепкий алкоголь на то же время${uffPart()}`); softOn.forEach(it => dr.push(it.title)); barOn.forEach(({c, it, b}) => dr.push(`${it.name}${+b.b ? ` × ${b.b} ${c.kind === "cocktail" ? "порц." : "бут."}` : ""}${+b.g ? ` × ${b.g} ${it.gUnit}` : ""}`));
-  dr.push(C.softNote || "Вода, чай и кофе включены");
-  ov.push(["Напитки", dr]);
-  if (svcOn.length || ST.custom.some(c => c.t)) ov.push(["Доп. услуги", [...svcOn.map(it => it.title + (it.unit !== "гость" && qtyOf(it) > 1 ? ` × ${qtyOf(it)}` : "")), ...ST.custom.filter(c => c.t).map(c => c.t)]]);
-  const inclTxt = hs.length && hs.every(h => h.biz) ? L(C.hallIncl.business) : L(C.hallIncl.culinary);
+  const ov = [], perG = X("на гостя", "per guest");
+  const bunit = (c, n) => c.kind === "cocktail" ? (EN() ? (+n === 1 ? "serving" : "servings") : "порц.") : (EN() ? (+n === 1 ? "bottle" : "bottles") : "бут.");
+  if (p) ov.push([X("Кулинария", "Cooking"), [tr(p.title) + ` — ${rub(p.price)} / ${unitWord(p.unit)}`, set ? X(`Сет «${set.ru}»: ${setDishes().join(", ")}`, `Set “${tr(set.ru)}”: ${setDishes().map(tr).join(", ")}`) : p.setIds ? X("Сет меню — выбираете из подборки уровня", "Set menu — you choose from the sets of this level") : "",
+    p.menu ? (ST.dishes.length ? `${X("Блюда", "Dishes")}: ${ST.dishes.map(tr).join(", ")}` : X(`${p.dishes} блюда: ${p.what}`, `${p.dishes} dishes: ${tr(p.what)}`)) : "", p.game ? (g => `${X("Игра", "Game")}: ${g[0].toLowerCase() + g.slice(1)}`)(tr(p.game)) : "", X("Профессиональный шеф Novikov, все продукты и инвентарь", "A professional Novikov chef, all ingredients and equipment")].filter(Boolean)]);
+  const fb = []; if (ib) fb.push(`${tr(ib.title)}${ib.wt ? ` (${tr(ib.wt)} ${perG})` : ""} — ${X("входит в пакет", "included in the package")}`); bufOn.forEach(it => fb.push(`${tr(it.title)}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
+  if (fb.length) ov.push([X("Фуршет", "Buffet"), fb]);
+  const dr = []; if (ff) dr.push(`${tr(ff.title)} — ${X("безлимит 4 часа", "unlimited for 4 hours")}${+ST.ffHours ? ` + ${ST.ffHours} ${X("ч", "h")}` : ""}`);
+  if (uffOn()) dr.push(`${C.uff.title} — ${X("безлимитный крепкий алкоголь на то же время", "unlimited spirits for the same time")}${uffPart()}`); softOn.forEach(it => dr.push(tr(it.title))); barOn.forEach(({c, it, b}) => dr.push(`${tr(it.name)}${+b.b ? ` × ${b.b} ${bunit(c, b.b)}` : ""}${+b.g ? ` × ${b.g} ${EN() ? unitEn(b.g, it.gUnit) : it.gUnit}` : ""}`));
+  dr.push(tr(C.softNote) || X("Вода, чай и кофе включены", "Water, tea and coffee are included"));
+  ov.push([X("Напитки", "Drinks"), dr]);
+  if (svcOn.length || ST.custom.some(c => c.t)) ov.push([X("Доп. услуги", "Extras"), [...svcOn.map(it => tr(it.title) + (it.unit !== "гость" && qtyOf(it) > 1 ? ` × ${qtyOf(it)}` : "")), ...ST.custom.filter(c => c.t).map(c => c.t)]]);
+  const inclTxt = tr(hs.length && hs.every(h => h.biz) ? L(C.hallIncl.business) : L(C.hallIncl.culinary));
   const ppl = +ST.guests + (ST.kind === "kids" ? +ST.kids : 0), wN = ppl >= 6 && ppl <= 19 ? 1 : ppl >= 20 && ppl <= 30 ? 2 : ppl >= 31 && ppl <= 50 ? 3 : 0;
-  ov.push(["Площадка", [...hs.map(h => `Зал «${h.title}»${h.area ? `, ${h.area}` : ""}${+ST.hallHours && h.ext ? ` + продление ${ST.hallHours} ч` : ""}`), wN ? `${wN} ${plural(wN,"официант","официанта","официантов")} — входит в стоимость` : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
-  H("Что входит", "всё в одном месте");
-  B(`<p class="lead">Ниже — полный состав вашего мероприятия. Всё перечисленное уже учтено в стоимости.</p>`);
+  ov.push([X("Площадка", "Venue"), [...hs.map(h => X(`Зал «${h.title}»${h.area ? `, ${h.area}` : ""}${+ST.hallHours && h.ext ? ` + продление ${ST.hallHours} ч` : ""}`,
+    `Hall “${tr(h.title)}”${h.area ? `, ${tr(h.area)}` : ""}${+ST.hallHours && h.ext ? ` + ${ST.hallHours} h extension` : ""}`)), wN ? X(`${wN} ${plural(wN,"официант","официанта","официантов")} — входит в стоимость`, `${wN} ${wN === 1 ? "waiter" : "waiters"} — included`) : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
+  H(X("Что входит", "What's included"), X("всё в одном месте", "all in one place"));
+  B(`<p class="lead">${X("Ниже — полный состав вашего мероприятия. Всё перечисленное уже учтено в стоимости.", "Below is everything your event includes. All of it is already reflected in the price.")}</p>`);
   ov.forEach(([k, arr]) => B(`<div class="ov-grp"><div class="k">${esc(k)}</div><ul class="ticks one">${arr.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>`));
 
   /* Тайминг */
-  H("Тайминг", `${ST.start} — ${endTime()}`);
+  H(X("Тайминг", "Timeline"), `${ST.start} — ${endTime()}`);
   let t0 = ST.start;
-  B(`<div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} мин</small></div><div class="tx">${esc(r.t)}</div></div>`; }).join("")}</div>`);
+  B(`<div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} ${X("мин", "min")}</small></div><div class="tx">${esc(tr(r.t))}</div></div>`; }).join("")}</div>`);
 
   /* Кулинария */
   if (p){
-    H("Кулинарная программа", p.short);
-    B(`<div class="card"><div class="meta">${esc(p.group)}</div><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>${p.prem ? `<p><b>${esc(p.prem)}</b></p>` : ""}
+    H(X("Кулинарная программа", "Culinary programme"), tr(p.short));
+    B(`<div class="card"><div class="meta">${esc(tr(p.group))}</div><h3>${esc(tr(p.title))}</h3><p>${esc(tr(p.desc))}</p>${p.prem ? `<p><b>${esc(tr(p.prem))}</b></p>` : ""}
       <div class="strip c3">${p.imgs.map(u => `<div class="ph" ${bg(u)}></div>`).join("")}</div></div>`);
-    if (set) B(`<div class="card"><div class="meta">Ваш сет</div><h3>«${esc(set.ru)}»</h3><ul class="ticks one">${setDishes().map(d => `<li>${esc(d)}</li>`).join("")}</ul></div>`);
-    else if (p.setIds) B(`<div class="card"><div class="meta">Сеты на выбор · ${esc(p.short)}</div><ul class="ticks">${p.setIds.map(id => SRC[ST.kind].SETS[id]).filter(Boolean).map(s => `<li><b>${esc(s.ru)}</b></li>`).join("")}</ul></div>`);
+    if (set) B(`<div class="card"><div class="meta">${X("Ваш сет", "Your set")}</div><h3>${X("«", "“")}${esc(tr(set.ru))}${X("»", "”")}</h3><ul class="ticks one">${setDishes().map(d => `<li>${esc(tr(d))}</li>`).join("")}</ul></div>`);
+    else if (p.setIds) B(`<div class="card"><div class="meta">${X("Сеты на выбор", "Sets to choose from")} · ${esc(tr(p.short))}</div><ul class="ticks">${p.setIds.map(id => SRC[ST.kind].SETS[id]).filter(Boolean).map(s => `<li><b>${esc(tr(s.ru))}</b></li>`).join("")}</ul></div>`);
     if (p.menu){
-      if (ST.dishes.length) B(`<div class="card"><div class="meta">Меню праздника</div><ul class="ticks one">${ST.dishes.map(d => `<li>${esc(d)}</li>`).join("")}</ul></div>`);
-      else B(`<div class="card"><div class="meta">Меню на выбор · ${p.dishes} блюда: ${esc(p.what)}</div>${p.menu.map(m => `<p style="margin-top:8px"><b>${esc(L(m.t))}:</b> ${m.items.map(esc).join(" · ")}</p>`).join("")}</div>`);
+      if (ST.dishes.length) B(`<div class="card"><div class="meta">${X("Меню праздника", "Party menu")}</div><ul class="ticks one">${ST.dishes.map(d => `<li>${esc(tr(d))}</li>`).join("")}</ul></div>`);
+      else B(`<div class="card"><div class="meta">${X(`Меню на выбор · ${p.dishes} блюда: ${esc(p.what)}`, `Menu to choose from · ${p.dishes} dishes: ${esc(tr(p.what))}`)}</div>${p.menu.map(m => `<p style="margin-top:8px"><b>${esc(tr(L(m.t)))}:</b> ${m.items.map(d => esc(tr(d))).join(" · ")}</p>`).join("")}</div>`);
     }
   }
 
   /* Фуршет */
   if (ib || bufOn.length){
-    H("Фуршет", ib ? "входит в пакет" : "");
-    if (ib) B(`<div class="card"><div class="meta">Welcome-фуршет<span class="incl">включено</span></div><h3>${esc(ib.title)}${ib.wt ? ` · ${esc(ib.wt)} на гостя` : ""}</h3>
-      ${ib.imgs.length ? `<div class="dish">${ib.list.map((n, i) => { const u = SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n]; return u ? `<div class="it"><div class="ph" ${bg(u)}></div><div class="nm">${esc(n)}</div></div>` : ""; }).join("")}</div>` : ""}
-      ${ib.list.some(n => !(SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n])) ? `<ul class="ticks">${ib.list.filter(n => !(SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n])).map(n => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}</div>`);
+    H(X("Фуршет", "Buffet"), ib ? X("входит в пакет", "included in the package") : "");
+    if (ib) B(`<div class="card"><div class="meta">${X("Welcome-фуршет", "Welcome buffet")}<span class="incl">${X("включено", "included")}</span></div><h3>${esc(tr(ib.title))}${ib.wt ? ` · ${esc(tr(ib.wt))} ${perG}` : ""}</h3>
+      ${ib.imgs.length ? `<div class="dish">${ib.list.map((n, i) => { const u = SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n]; return u ? `<div class="it"><div class="ph" ${bg(u)}></div><div class="nm">${esc(tr(n))}</div></div>` : ""; }).join("")}</div>` : ""}
+      ${ib.list.some(n => !(SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n])) ? `<ul class="ticks">${ib.list.filter(n => !(SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n])).map(n => `<li>${esc(tr(n))}</li>`).join("")}</ul>` : ""}</div>`);
     const withImg = bufOn.filter(it => it.imgs && it.imgs.length && !it.detail), plain = bufOn.filter(it => !(it.imgs && it.imgs.length && !it.detail));
-    if (withImg.length) B(`<div class="dish">${withImg.map(it => `<div class="it"><div class="ph" ${bg(it.imgs[0])}></div><div class="nm"><b>${esc(it.title)}</b> × ${qtyOf(it)}${it.sub ? `<br>${esc(it.sub)}` : ""}</div></div>`).join("")}</div>`);
-    if (plain.length) B(`<div class="card"><div class="meta">Дополнительно к столу</div><ul class="ticks one">${plain.map(it => `<li><b>${esc(it.title)}</b>${it.unit === "гость" ? ` — на ${qtyOf(it)} ${plural(qtyOf(it),"гостя","гостей","гостей")}` : ` × ${qtyOf(it)} ${esc(it.unit)}`}${it.detail ? `<br><span style="font-size:11.5px">${esc(it.detail.join(", "))}</span>` : ""}</li>`).join("")}</ul></div>`);
+    if (withImg.length) B(`<div class="dish">${withImg.map(it => `<div class="it"><div class="ph" ${bg(it.imgs[0])}></div><div class="nm"><b>${esc(tr(it.title))}</b> × ${qtyOf(it)}${it.sub ? `<br>${esc(tr(it.sub))}` : ""}</div></div>`).join("")}</div>`);
+    if (plain.length) B(`<div class="card"><div class="meta">${X("Дополнительно к столу", "Also on the table")}</div><ul class="ticks one">${plain.map(it => `<li><b>${esc(tr(it.title))}</b>${it.unit === "гость" ? X(` — на ${qtyOf(it)} ${plural(qtyOf(it),"гостя","гостей","гостей")}`, ` — for ${qtyOf(it)} ${qtyOf(it) === 1 ? "guest" : "guests"}`) : ` × ${esc(qu(qtyOf(it), it.unit))}`}${it.detail ? `<br><span style="font-size:11.5px">${esc(it.detail.map(tr).join(", "))}</span>` : ""}</li>`).join("")}</ul></div>`);
   }
 
   /* Напитки */
   if (ff || softOn.length || barOn.length){
-    H("Напитки", ff ? "безлимитный бар" : "");
-    if (ff) B(`<div class="card"><div class="meta">Free-flow · 4 часа${+ST.ffHours ? ` + ${ST.ffHours} ч` : ""}</div><h3>${esc(ff.title)}</h3>
-      <p>Напитки из списка ниже — без ограничений в течение 4 часов${+ST.ffHours ? ` + ${ST.ffHours} ч продления` : ""}.</p>
-      <div class="wines">${ff.cats.map(c => `<div class="c"><b>${esc(L(c.t))}</b>${c.w.map(w => `<div>${esc(w[0])}${w[1] ? ` <span style="color:var(--muted)">· ${esc(w[1])}</span>` : ""}</div>`).join("")}</div>`).join("")}</div></div>`);
-    if (uffOn()) B(`<div class="card"><div class="meta">Крепкий алкоголь · 4 часа${+ST.ffHours ? ` + ${ST.ffHours} ч` : ""}</div><h3>${esc(C.uff.title)}${uffPart() ? ` · ${uffQ()} ${plural(uffQ(),"гость","гостя","гостей")}` : ""}</h3>
-      <p>Дополнение к ${esc(ff.title)}: крепкие напитки из списка ниже — без ограничений на всё время free-flow.</p>
-      <div class="bottles">${C.uff.bottles.map(b => `<div class="it"><div class="ph" ${bg(b.img)}></div><div class="nm"><b>${esc(b.n)}</b><br>${esc(b.t)}</div></div>`).join("")}</div></div>`);
-    if (softOn.length) B(`<div class="card"><div class="meta">Безалкогольное</div><ul class="ticks one">${softOn.map(it => `<li><b>${esc(it.title)}</b>${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}<br><span style="font-size:11.5px">${esc(it.sub)}</span></li>`).join("")}</ul></div>`);
-    if (barOn.length) B(`<div class="card"><div class="meta">Из барной карты</div><ul class="ticks one">${barOn.map(({c, it, b}) => `<li><b>${esc(it.name)}</b> <span style="color:var(--muted)">${esc(it.origin)}</span> — ${[+b.b ? `${b.b} ${c.kind === "cocktail" ? "порц." : "бут."}` : "", +b.g ? `${b.g} × ${it.gUnit}` : ""].filter(Boolean).join(", ")}</li>`).join("")}</ul></div>`);
-    B(`<p class="fine">${esc(C.softNote || "Вода, чай и кофе включены")}. Алкоголь с собой приносить нельзя.</p>`);
+    H(X("Напитки", "Drinks"), ff ? X("безлимитный бар", "open bar") : "");
+    const hrs = +ST.ffHours ? ` + ${ST.ffHours} ${X("ч", "h")}` : "";
+    if (ff) B(`<div class="card"><div class="meta">Free-flow · ${X("4 часа", "4 hours")}${hrs}</div><h3>${esc(tr(ff.title))}</h3>
+      <p>${X(`Напитки из списка ниже — без ограничений в течение 4 часов${+ST.ffHours ? ` + ${ST.ffHours} ч продления` : ""}.`, `Unlimited drinks from the list below for 4 hours${+ST.ffHours ? ` + ${ST.ffHours} h extension` : ""}.`)}</p>
+      <div class="wines">${ff.cats.map(c => `<div class="c"><b>${esc(tr(L(c.t)))}</b>${c.w.map(w => `<div>${esc(tr(w[0]))}${w[1] ? ` <span style="color:var(--muted)">· ${esc(tr(w[1]))}</span>` : ""}</div>`).join("")}</div>`).join("")}</div></div>`);
+    if (uffOn()) B(`<div class="card"><div class="meta">${X("Крепкий алкоголь", "Spirits")} · ${X("4 часа", "4 hours")}${hrs}</div><h3>${esc(C.uff.title)}${uffPart() ? ` · ${uffQ()} ${plx(uffQ(),"гость","гостя","гостей","guest","guests")}` : ""}</h3>
+      <p>${X(`Дополнение к ${esc(ff.title)}: крепкие напитки из списка ниже — без ограничений на всё время free-flow.`, `An add-on to ${esc(tr(ff.title))}: unlimited spirits from the list below for the whole free-flow time.`)}</p>
+      <div class="bottles">${C.uff.bottles.map(b => `<div class="it"><div class="ph" ${bg(b.img)}></div><div class="nm"><b>${esc(b.n)}</b><br>${esc(tr(b.t))}</div></div>`).join("")}</div></div>`);
+    if (softOn.length) B(`<div class="card"><div class="meta">${X("Безалкогольное", "Soft drinks")}</div><ul class="ticks one">${softOn.map(it => `<li><b>${esc(tr(it.title))}</b>${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}<br><span style="font-size:11.5px">${esc((it.detail || []).map(tr).join(", ") || tr(it.sub))}</span></li>`).join("")}</ul></div>`);
+    if (barOn.length) B(`<div class="card"><div class="meta">${X("Из барной карты", "From the bar menu")}</div><ul class="ticks one">${barOn.map(({c, it, b}) => `<li><b>${esc(tr(it.name))}</b> <span style="color:var(--muted)">${esc(tr(it.origin))}</span> — ${[+b.b ? `${b.b} ${bunit(c, b.b)}` : "", +b.g ? `${b.g} × ${EN() ? unitEn(1, it.gUnit).replace(/^× /, "") : it.gUnit}` : ""].filter(Boolean).join(", ")}</li>`).join("")}</ul></div>`);
+    B(`<p class="fine">${esc(tr(C.softNote) || X("Вода, чай и кофе включены", "Water, tea and coffee are included"))}. ${X("Алкоголь с собой приносить нельзя.", "Guests may not bring their own alcohol.")}</p>`);
   }
 
   /* Доп. услуги — карточка на услугу */
   if (svcOn.length || ST.custom.some(c => c.t)){
-    H("Дополнительные услуги");
+    H(X("Дополнительные услуги", "Additional services"));
     const bySvc = {}; svcOn.forEach(it => (bySvc[it.svc] = bySvc[it.svc] || []).push(it));
     Object.entries(bySvc).forEach(([name, its]) => { const it = its[0];
-      B(`<div class="card"><h3>${esc(name)}</h3><div class="meta">${its.map(x => `${esc(x.short || "")}${x.unit === "гость" || qtyOf(x) === 1 ? "" : ` × ${qtyOf(x)}`}`).join(" · ")}</div>
-        ${it.generic ? "" : `<p>${esc(it.desc)}</p>`}${it.imgs.length ? `<div class="strip c${Math.min(4, Math.max(2, it.imgs.length))}">${it.imgs.slice(0,4).map(u => `<div class="ph" ${bg(u)}></div>`).join("")}</div>` : ""}</div>`); });
+      B(`<div class="card"><h3>${esc(tr(name))}</h3><div class="meta">${its.map(x => `${esc(tr(x.short || ""))}${x.unit === "гость" || qtyOf(x) === 1 ? "" : ` × ${qtyOf(x)}`}`).join(" · ")}</div>
+        ${it.generic ? "" : `<p>${esc(tr(it.desc))}</p>`}${it.imgs.length ? `<div class="strip c${Math.min(4, Math.max(2, it.imgs.length))}">${it.imgs.slice(0,4).map(u => `<div class="ph" ${bg(u)}></div>`).join("")}</div>` : ""}</div>`); });
     const cu = ST.custom.filter(c => c.t);
     if (cu.length) B(`<div class="card"><ul class="ticks one">${cu.map(c => `<li><b>${esc(c.t)}</b>${+c.q > 1 ? ` × ${c.q}` : ""}</li>`).join("")}</ul></div>`);
   }
 
   /* Смета */
-  H(multi() ? `Стоимость · ${vName(ST.vi)}` : "Стоимость", ST.kind === "kids" ? "" : `${guestsLabel()}`);
+  const perW = ST.kind === "kids" ? X("на участника", "per participant") : perG;
+  H(multi() ? `${X("Стоимость", "Price")} · ${vName(ST.vi)}` : X("Стоимость", "Price"), ST.kind === "kids" ? "" : `${guestsLabel()}`);
   let g0 = "";
-  const rows = T.ls.map(l => { let s = ""; if (l.g !== g0){ g0 = l.g; s += `<tr class="grp"><td colspan="4">${esc(l.g)}</td></tr>`; }
-    return s + `<tr><td>${l.t}</td><td class="n">${l.incl ? "" : esc(qu(l.q, l.u))}</td><td class="n">${l.incl || l.req ? "" : (ST.showOld && l.pr0 > l.pr ? `<s>${rub(l.pr0)}</s>` : "") + rub(l.pr)}</td><td class="n">${l.incl ? "включено" : l.req ? "по запросу" : rub(l.sum)}</td></tr>`; }).join("");
-  blocks.push({split:true, html:`<div class="blk"><table class="est"><thead><tr><th>Позиция</th><th class="n">Кол-во</th><th class="n">Цена</th><th class="n">Сумма</th></tr></thead><tbody class="rows">${rows}</tbody></table></div>`});
-  B(`<div class="totals">${T.disc || T.top ? `<div><span>Сумма</span><b>${rub(T.sub)}</b></div>` : ""}${T.disc ? `<div><span>Скидка${T.d ? ` ${T.d}%` : ""}</span><b>−${rub(T.disc)}</b></div>` : ""}${T.top ? `<div><span>Доплата до депозита ${rub(T.dep)}</span><b>+${rub(T.top)}</b></div>` : ""}
-    <div class="big"><span>Итого${multi() ? ` · ${esc(vName(ST.vi))}` : ""}</span><span>${rub(T.tot)}</span></div>${T.heads ? `<div class="pg">≈ ${rub(T.per)} на ${ST.kind === "kids" ? "участника" : "гостя"}</div>` : ""}</div>`);
+  const rows = T.ls.map(l => { let s = ""; if (l.g !== g0){ g0 = l.g; s += `<tr class="grp"><td colspan="4">${esc(tr(l.g))}</td></tr>`; }
+    return s + `<tr><td>${l.t}</td><td class="n">${l.incl ? "" : esc(qu(l.q, l.u))}</td><td class="n">${l.incl || l.req ? "" : (ST.showOld && l.pr0 > l.pr ? `<s>${rub(l.pr0)}</s>` : "") + rub(l.pr)}</td><td class="n">${l.incl ? X("включено", "included") : l.req ? X("по запросу", "on request") : rub(l.sum)}</td></tr>`; }).join("");
+  blocks.push({split:true, html:`<div class="blk"><table class="est"><thead><tr><th>${X("Позиция", "Item")}</th><th class="n">${X("Кол-во", "Qty")}</th><th class="n">${X("Цена", "Price")}</th><th class="n">${X("Сумма", "Amount")}</th></tr></thead><tbody class="rows">${rows}</tbody></table></div>`});
+  B(`<div class="totals">${T.disc || T.top ? `<div><span>${X("Сумма", "Subtotal")}</span><b>${rub(T.sub)}</b></div>` : ""}${T.disc ? `<div><span>${X("Скидка", "Discount")}${T.d ? ` ${T.d}%` : ""}</span><b>−${rub(T.disc)}</b></div>` : ""}${T.top ? `<div><span>${X("Доплата до депозита", "Top-up to the deposit of")} ${rub(T.dep)}</span><b>+${rub(T.top)}</b></div>` : ""}
+    <div class="big"><span>${X("Итого", "Total")}${multi() ? ` · ${esc(vName(ST.vi))}` : ""}</span><span>${rub(T.tot)}</span></div>${T.heads ? `<div class="pg">≈ ${rub(T.per)} ${perW}</div>` : ""}</div>`);
   return T;
 }
 
 const payText = T => { const p = Math.min(100, Math.max(0, +ST.prepay || 0)), d = +ST.prepayDays || 0;
   if (!p) return "";
-  const rest = p < 100 ? `, остаток${T ? ` ${rub(T.tot - Math.round(T.tot * p / 100))}` : ""} — не позднее чем за ${d} ${plural(d, "день", "дня", "дней")} до мероприятия` : "";
-  return `Предоплата ${p}% при бронировании${T ? ` — ${rub(Math.round(T.tot * p / 100))}` : multi() ? " от стоимости выбранного варианта" : ""}${rest}.`; };
+  const amt = T ? Math.round(T.tot * p / 100) : 0;
+  if (EN()) return `${p}% prepayment on booking${T ? ` — ${rub(amt)}` : multi() ? " of the chosen option's price" : ""}${p < 100 ? `, the balance${T ? ` of ${rub(T.tot - amt)}` : ""} no later than ${d} ${d === 1 ? "day" : "days"} before the event` : ""}.`;
+  const rest = p < 100 ? `, остаток${T ? ` ${rub(T.tot - amt)}` : ""} — не позднее чем за ${d} ${plural(d, "день", "дня", "дней")} до мероприятия` : "";
+  return `Предоплата ${p}% при бронировании${T ? ` — ${rub(amt)}` : multi() ? " от стоимости выбранного варианта" : ""}${rest}.`; };
 
 function buildBlocks(){
   const C = CAT, hs = selHalls(), blocks = []; let no = 0;
@@ -1001,33 +1077,34 @@ function buildBlocks(){
   const B = (html, split) => blocks.push({html:`<div class="blk">${html}</div>`, split});
   const idx = multi() ? ST.vars.map((_, i) => i) : [ST.vi];
   const Ts = idx.map(i => withVar(i, () => {
-    if (multi()){ const t = totals(); blocks.push({kwn:true, html:`<div class="blk"><div class="vban"><div><div class="l">Вариант ${i + 1} из ${idx.length}</div><div class="n">${esc(vName(i))}</div></div><div class="v">${rub(t.tot)}</div></div></div>`}); }
+    if (multi()){ const t = totals(); blocks.push({kwn:true, html:`<div class="blk"><div class="vban"><div><div class="l">${X(`Вариант ${i + 1} из ${idx.length}`, `Option ${i + 1} of ${idx.length}`)}</div><div class="n">${esc(vName(i))}</div></div><div class="v">${rub(t.tot)}</div></div></div>`}); }
     return variantBody(H, B, blocks);
   }));
 
   /* Залы — общие для всех вариантов */
-  if (hs.length) H(hs.length > 1 ? "Залы" : "Зал", hallArea(hs));
+  if (hs.length) H(hs.length > 1 ? X("Залы", "Halls") : X("Зал", "Hall"), tr(hallArea(hs)));
   hs.forEach(hall => {
-    const inclTxt = hall.biz ? L(C.hallIncl.business) : L(C.hallIncl.culinary);
+    const inclTxt = tr(hall.biz ? L(C.hallIncl.business) : L(C.hallIncl.culinary));
     const ph = hallPhotos(hall, 3);
-    B(`<div class="card"><h3>${esc(hall.title)}</h3><div class="meta">${esc([hall.area, hall.cap].filter(Boolean).join(" · "))}</div>
+    B(`<div class="card"><h3>${esc(tr(hall.title))}</h3><div class="meta">${esc([hall.area, hall.cap].filter(Boolean).map(tr).join(" · "))}</div>
       ${ph.length ? `<div class="strip c3">${ph.map(u => `<div class="ph" ${bg(u)} style="height:200px"></div>`).join("")}</div>` : ""}
       <ul class="ticks" style="margin-top:10px">${inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => `<li>${esc(s[0].toUpperCase() + s.slice(1))}</li>`).join("")}</ul></div>`);
 });
 
   /* Сравнение вариантов, условия, менеджер */
   if (multi()){
-    H("Сравнение вариантов");
-    B(`<table class="est"><thead><tr><th>Вариант</th><th>Программа</th><th class="n">На гостя</th><th class="n">Итого</th></tr></thead><tbody>${idx.map(i => withVar(i, () => { const t = Ts[i], p = pkg(), ff = C.ff.find(f => f.key === ST.ff);
-      return `<tr><td><b>${esc(vName(i))}</b></td><td>${esc([p ? p.title : "", ff ? ff.title : "", uffOn() ? CAT.uff.title : ""].filter(Boolean).join(" · ") || "Индивидуальная программа")}</td><td class="n">${t.heads ? rub(t.per) : ""}</td><td class="n"><b>${rub(t.tot)}</b></td></tr>`; })).join("")}</tbody></table>`);
+    H(X("Сравнение вариантов", "Options compared"));
+    B(`<table class="est"><thead><tr><th>${X("Вариант", "Option")}</th><th>${X("Программа", "Programme")}</th><th class="n">${X("На гостя", "Per guest")}</th><th class="n">${X("Итого", "Total")}</th></tr></thead><tbody>${idx.map(i => withVar(i, () => { const t = Ts[i], p = pkg(), ff = C.ff.find(f => f.key === ST.ff);
+      return `<tr><td><b>${esc(vName(i))}</b></td><td>${esc([p ? tr(p.title) : "", ff ? tr(ff.title) : "", uffOn() ? CAT.uff.title : ""].filter(Boolean).join(" · ") || X("Индивидуальная программа", "Custom programme"))}</td><td class="n">${t.heads ? rub(t.per) : ""}</td><td class="n"><b>${rub(t.tot)}</b></td></tr>`; })).join("")}</tbody></table>`);
   }
   const T1 = multi() ? null : Ts[0], dep = Math.max(0, +ST.deposit || 0);
-  const terms = [dep ? `Депозит — ${rub(dep)}: минимальная сумма заказа на мероприятие.` : "", payText(T1)].filter(Boolean);
-  B(`${ST.wishes ? `<div class="card" style="margin-top:12px"><div class="meta">Пожелания по меню и аллергии</div><p>${esc(ST.wishes).replace(/\n/g,"<br>")}</p></div>` : ""}
-    ${terms.length ? `<div class="card" style="margin-top:12px"><div class="meta">Условия</div><ul class="ticks one">${terms.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>` : ""}
-    ${ST.note ? `<div class="card" style="margin-top:12px"><div class="meta">Комментарий</div><p>${esc(ST.note).replace(/\n/g,"<br>")}</p></div>` : ""}
-    <p class="fine">${[ST.vat ? "В стоимость не включён НДС 22%." : "", ST.valid ? `Предложение действительно до ${new Date(ST.valid + "T12:00:00").toLocaleDateString("ru-RU", {day:"numeric", month:"long", year:"numeric"}).replace(/ г\.$/, "")} г.` : ""].filter(Boolean).join(" ")}</p>
-    <div class="mgr"><div><div class="l">Ваш менеджер</div><div class="n">${MANAGER.name}</div></div><div class="ph2">${MANAGER.phone}</div></div>`);
+  const terms = [dep ? X(`Депозит — ${rub(dep)}: минимальная сумма заказа на мероприятие.`, `Deposit — ${rub(dep)}: the minimum order amount for the event.`) : "", payText(T1)].filter(Boolean);
+  const validTxt = ST.valid ? (d => X(`Предложение действительно до ${d.toLocaleDateString("ru-RU", {day:"numeric", month:"long", year:"numeric"}).replace(/ г\.$/, "")} г.`, `This proposal is valid until ${d.toLocaleDateString("en-GB", {day:"numeric", month:"long", year:"numeric"})}.`))(new Date(ST.valid + "T12:00:00")) : "";
+  B(`${ST.wishes ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Пожелания по меню и аллергии", "Menu requests and allergies")}</div><p>${esc(ST.wishes).replace(/\n/g,"<br>")}</p></div>` : ""}
+    ${terms.length ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Условия", "Terms")}</div><ul class="ticks one">${terms.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>` : ""}
+    ${ST.note ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Комментарий", "Comment")}</div><p>${esc(ST.note).replace(/\n/g,"<br>")}</p></div>` : ""}
+    <p class="fine">${[ST.vat ? X("В стоимость не включён НДС 22%.", "Prices exclude 22% VAT.") : "", validTxt].filter(Boolean).join(" ")}</p>
+    <div class="mgr"><div><div class="l">${X("Ваш менеджер", "Your manager")}</div><div class="n">${mgrName()}</div></div><div class="ph2">${MANAGER.phone}</div></div>`);
   return {blocks, Ts, hs};
 }
 
@@ -1035,58 +1112,64 @@ const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABXgAAAB6CAYAAAAF+zub
 
 function pageShell(i){
   const d = document.createElement("div"); d.className = "page";
-  d.innerHTML = `<div class="pg-head"><img class="logo" src="${LOGO}" alt="Novikov School"><div class="who">${kpLabel() ? esc(kpLabel()) + " · " : ""}${esc(ST.client || "Предложение")}${ST.date ? " · " + esc(new Date(ST.date + "T12:00:00").toLocaleDateString("ru-RU")) : ""}</div></div>
-    <div class="pc"></div><div class="pg-foot"><span>Ваш менеджер <b>${MANAGER.name}</b> · ${MANAGER.phone} · ${ADDRESS}</span><span class="pn"></span></div>`;
+  d.innerHTML = `<div class="pg-head"><img class="logo" src="${LOGO}" alt="Novikov School"><div class="who">${kpLabel() ? esc(kpLabel()) + " · " : ""}${esc(ST.client || X("Предложение", "Proposal"))}${ST.date ? " · " + esc(new Date(ST.date + "T12:00:00").toLocaleDateString(LOC())) : ""}</div></div>
+    <div class="pc"></div><div class="pg-foot"><span>${X("Ваш менеджер", "Your manager")} <b>${mgrName()}</b> · ${MANAGER.phone} · ${addr()}</span><span class="pn"></span></div>`;
   return d;
 }
+
+/* Дата крупно (13 ноября / 13 November) и день недели с годом под ней */
+const dateBig = dt => esc(dt.toLocaleDateString(LOC(), {day:"numeric", month:"long"})) + `<small>${esc(dt.toLocaleDateString(LOC(), {weekday:"long"}))}, ${dt.getFullYear()}</small>`;
 
 function coverPage(Ts, hs){
   const T = Ts[0], p = pkg(), ff = CAT.ff.find(f => f.key === ST.ff);
   const d = document.createElement("div"); d.className = "page cover";
-  const title = ST.client || "Ваше мероприятие";
+  const title = ST.client || X("Ваше мероприятие", "Your event");
+  const perW = ST.kind === "kids" ? X("на участника", "per participant") : X("на гостя", "per guest");
   d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[ST.kind])}></div><div class="in">
       <div class="plate"><img class="logo" src="${LOGO}" alt="Novikov School"></div>
-      <div class="kick">${esc(KINDS[ST.kind].kicker)}</div><h1>${esc(title)}</h1>${ST.occasion ? `<div class="occ">${esc(ST.occasion)}</div>` : ""}</div></div>
+      <div class="kick">${esc(X(KINDS[ST.kind].kicker, KINDS[ST.kind].kickerEn))}</div><h1>${esc(title)}</h1>${ST.occasion ? `<div class="occ">${esc(ST.occasion)}</div>` : ""}</div></div>
     <div class="facts">
-      <div><div class="l">Дата</div><div class="v">${ST.date ? esc(new Date(ST.date + "T12:00:00").toLocaleDateString("ru-RU", {day:"numeric", month:"long"})) + `<small>${esc(new Date(ST.date + "T12:00:00").toLocaleDateString("ru-RU", {weekday:"long"}))}, ${ST.date.slice(0,4)}</small>` : "по согласованию"}</div></div>
-      <div><div class="l">Время</div><div class="v">${ST.start} — ${endTime()}<small>${Math.round(timeline().reduce((s, r) => s + (+r.m||0), 0) / 6) / 10} ч</small></div></div>
-      <div><div class="l">Гости</div><div class="v">${ST.kind === "kids" ? `${+ST.kids||0} ${plural(+ST.kids,"ребёнок","ребёнка","детей")}${+ST.guests ? `<small>+ ${ST.guests} ${plural(+ST.guests,"взрослый","взрослых","взрослых")}</small>` : ""}` : `${+ST.guests||0}<small>${plural(+ST.guests,"гость","гостя","гостей")}</small>`}</div></div>
-      <div><div class="l">${hs.length > 1 ? "Залы" : hs.length ? "Зал" : "Площадка"}</div><div class="v">${hs.length ? esc(hs.map(h => h.title).join(" + ")) + `<small>${esc(hallArea(hs))}</small>` : `Novikov School<small>Б. Якиманка, 22</small>`}</div></div>
+      <div><div class="l">${X("Дата", "Date")}</div><div class="v">${ST.date ? dateBig(new Date(ST.date + "T12:00:00")) : X("по согласованию", "to be agreed")}</div></div>
+      <div><div class="l">${X("Время", "Time")}</div><div class="v">${ST.start} — ${endTime()}<small>${Math.round(timeline().reduce((s, r) => s + (+r.m||0), 0) / 6) / 10} ${X("ч", "h")}</small></div></div>
+      <div><div class="l">${X("Гости", "Guests")}</div><div class="v">${ST.kind === "kids" ? `${+ST.kids||0} ${plx(+ST.kids,"ребёнок","ребёнка","детей","child","children")}${+ST.guests ? `<small>+ ${ST.guests} ${plx(+ST.guests,"взрослый","взрослых","взрослых","adult","adults")}</small>` : ""}` : `${+ST.guests||0}<small>${plx(+ST.guests,"гость","гостя","гостей","guest","guests")}</small>`}</div></div>
+      <div><div class="l">${hs.length > 1 ? X("Залы", "Halls") : hs.length ? X("Зал", "Hall") : X("Площадка", "Venue")}</div><div class="v">${hs.length ? esc(hs.map(h => tr(h.title)).join(" + ")) + `<small>${esc(tr(hallArea(hs)))}</small>` : `Novikov School<small>${X("Б. Якиманка, 22", "Bolshaya Yakimanka 22")}</small>`}</div></div>
     </div>
-    ${multi() ? `<div class="vtots">${Ts.map((t, i) => withVar(i, () => { const q = pkg(), qf = CAT.ff.find(f => f.key === ST.ff); return `<div class="tot"><div class="l">${esc(vName(i))}</div><div class="v">${rub(t.tot)}</div>${t.heads ? `<small>≈ ${rub(t.per)} на ${ST.kind === "kids" ? "участника" : "гостя"}</small>` : ""}<b>${esc([q ? q.title : "Индивидуальная программа", qf ? qf.title : ""].filter(Boolean).join(" · "))}</b></div>`; })).join("")}</div>` : `
-    <div class="pkgline"><div class="card"><div class="meta">Ваш формат</div><h3>${p ? esc(p.title) : "Индивидуальная программа"}</h3>
-      <p>${[p && includedBuffet() ? ibShort(includedBuffet()) : "", ff ? ff.title : "", ...CAT.services.flatMap(g => g.items).filter(isOn).map(it => it.svc)].filter((v, i, a) => v && a.indexOf(v) === i).join(" · ") || "Полный состав — на следующих страницах"}</p></div>
-      <div class="tot"><div class="l">Стоимость${T.disc ? ` со скидкой${T.d ? ` ${T.d}%` : ""}` : ""}</div><div class="v">${rub(T.tot)}</div>${T.heads ? `<small>≈ ${rub(T.per)} на ${ST.kind === "kids" ? "участника" : "гостя"}</small>` : ""}</div></div>`}
-    <div class="mgr"><div><div class="l">Ваш менеджер</div><div class="n">${MANAGER.name}</div></div><div class="ph2">${MANAGER.phone}</div></div>
-    <div style="margin:auto 44px 18px;font-size:10px;color:var(--muted)">${[kpLabel() ? `${kpLabel()}${ST.verDate ? ` от ${new Date(ST.verDate).toLocaleDateString("ru-RU")}` : ""}` : "", ADDRESS, "novikov-school.ru"].filter(Boolean).map(esc).join(" · ")}</div>`;
+    ${multi() ? `<div class="vtots">${Ts.map((t, i) => withVar(i, () => { const q = pkg(), qf = CAT.ff.find(f => f.key === ST.ff); return `<div class="tot"><div class="l">${esc(vName(i))}</div><div class="v">${rub(t.tot)}</div>${t.heads ? `<small>≈ ${rub(t.per)} ${perW}</small>` : ""}<b>${esc([q ? tr(q.title) : X("Индивидуальная программа", "Custom programme"), qf ? tr(qf.title) : ""].filter(Boolean).join(" · "))}</b></div>`; })).join("")}</div>` : `
+    <div class="pkgline"><div class="card"><div class="meta">${X("Ваш формат", "Your format")}</div><h3>${p ? esc(tr(p.title)) : X("Индивидуальная программа", "Custom programme")}</h3>
+      <p>${esc([p && includedBuffet() ? ibShort(includedBuffet()) : "", ff ? tr(ff.title) : "", ...CAT.services.flatMap(g => g.items).filter(isOn).map(it => tr(it.svc))].filter((v, i, a) => v && a.indexOf(v) === i).join(" · ") || X("Полный состав — на следующих страницах", "Full details on the following pages"))}</p></div>
+      <div class="tot"><div class="l">${T.disc ? X(`Стоимость со скидкой${T.d ? ` ${T.d}%` : ""}`, `Price after ${T.d ? `${T.d}% ` : ""}discount`) : X("Стоимость", "Price")}</div><div class="v">${rub(T.tot)}</div>${T.heads ? `<small>≈ ${rub(T.per)} ${perW}</small>` : ""}</div></div>`}
+    <div class="mgr"><div><div class="l">${X("Ваш менеджер", "Your manager")}</div><div class="n">${mgrName()}</div></div><div class="ph2">${MANAGER.phone}</div></div>
+    <div style="margin:auto 44px 18px;font-size:10px;color:var(--muted)">${[kpLabel() ? `${kpLabel()}${ST.verDate ? ` ${X("от", "of")} ${new Date(ST.verDate).toLocaleDateString(LOC())}` : ""}` : "", addr(), "novikov-school.ru"].filter(Boolean).map(esc).join(" · ")}</div>`;
   d.style.display = "flex"; d.style.flexDirection = "column";
   return d;
 }
 
 /* Приглашение: название мероприятия, от кого, дата, тайминг и адрес */
-const ADDRESS_FULL = "Москва, Большая Якиманка, 22, ТЦ «Гименей», 2 этаж";
+const ADDRESS_FULL = "Москва, Большая Якиманка, 22, ТЦ «Гименей», 2 этаж", ADDRESS_FULL_EN = "Moscow, Bolshaya Yakimanka 22, Gimeney shopping centre, 2nd floor";
 function invitePage(){
-  const hs = selHalls(), where = hs.length ? `${hs.length > 1 ? "Залы" : "Зал"} ${hallNames(hs)}` : "", from = ST.contact || ST.client;
+  const hs = selHalls(), from = ST.contact || ST.client;
+  const where = hs.length ? X(`${hs.length > 1 ? "Залы" : "Зал"} ${hallNames(hs)}`, `${hs.length > 1 ? "Halls" : "Hall"} ${hs.map(h => `“${tr(h.title)}”`).join(", ")}`) : "";
   const dt = ST.date ? new Date(ST.date + "T12:00:00") : null;
   const d = document.createElement("div"); d.className = "page cover invite";
   d.style.display = "flex"; d.style.flexDirection = "column";
   let t0 = ST.start;
   d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[ST.kind])}></div><div class="in">
       <div class="plate"><img class="logo" src="${LOGO}" alt="Novikov School"></div>
-      <h1 style="margin-top:auto">${esc(ST.occasion || ST.client || "Мероприятие")}</h1>${from ? `<div class="from">Приглашение от: ${esc(from)}</div>` : ""}</div></div>
+      <h1 style="margin-top:auto">${esc(ST.occasion || ST.client || X("Мероприятие", "Event"))}</h1>${from ? `<div class="from">${X("Приглашение от", "Invitation from")}: ${esc(from)}</div>` : ""}</div></div>
     <div class="facts">
-      <div><div class="l">Дата</div><div class="v">${dt ? esc(dt.toLocaleDateString("ru-RU", {day:"numeric", month:"long"})) + `<small>${esc(dt.toLocaleDateString("ru-RU", {weekday:"long"}))}, ${ST.date.slice(0,4)}</small>` : "по согласованию"}</div></div>
-      <div><div class="l">Время</div><div class="v">${ST.start} — ${endTime()}<small>сбор гостей с ${ST.start}</small></div></div>
-      <div><div class="l">Место</div><div class="v">Novikov School<small>${where ? esc(where) : "Б. Якиманка, 22"}</small></div></div>
+      <div><div class="l">${X("Дата", "Date")}</div><div class="v">${dt ? dateBig(dt) : X("по согласованию", "to be agreed")}</div></div>
+      <div><div class="l">${X("Время", "Time")}</div><div class="v">${ST.start} — ${endTime()}<small>${X(`сбор гостей с ${ST.start}`, `guests arrive from ${ST.start}`)}</small></div></div>
+      <div><div class="l">${X("Место", "Venue")}</div><div class="v">Novikov School<small>${where ? esc(where) : X("Б. Якиманка, 22", "Bolshaya Yakimanka 22")}</small></div></div>
     </div>
-    <div class="body"><h2 class="ttl" style="margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:30px;text-transform:uppercase;color:var(--ink)">Тайминг</h2>
-      <div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} мин</small></div><div class="tx">${esc(r.t)}</div></div>`; }).join("")}</div></div>
-    <div class="addr"><div class="l">Адрес</div><div class="v">${esc(ADDRESS_FULL)}</div><small>Novikov School${where ? ` · ${esc(where[0].toLowerCase() + where.slice(1))}` : ""} · novikov-school.ru</small></div>`;
+    <div class="body"><h2 class="ttl" style="margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:30px;text-transform:uppercase;color:var(--ink)">${X("Тайминг", "Timeline")}</h2>
+      <div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} ${X("мин", "min")}</small></div><div class="tx">${esc(tr(r.t))}</div></div>`; }).join("")}</div></div>
+    <div class="addr"><div class="l">${X("Адрес", "Address")}</div><div class="v">${esc(X(ADDRESS_FULL, ADDRESS_FULL_EN))}</div><small>Novikov School${where ? ` · ${esc(EN() ? where : where[0].toLowerCase() + where.slice(1))}` : ""} · novikov-school.ru</small></div>`;
   return d;
 }
 
 function renderPages(){
   if (!CAT) return;
+  MISS.clear();
   const box = $("#pages"), z = box.style.getPropertyValue("--z"); box.style.setProperty("--z", 1);
   box.innerHTML = "";
   const {blocks, Ts, hs} = buildBlocks();
@@ -1117,7 +1200,18 @@ function renderPages(){
   blocks.forEach(b => { const w = document.createElement("div"); w.innerHTML = b.html; const el = w.firstElementChild; if (b.kwn) el.dataset.kwn = 1; place(el, b.split); });
   const pages = [...box.querySelectorAll(".page")];
   pages.forEach((pg, i) => { const n = pg.querySelector(".pn"); if (n) n.textContent = `${i + 1} / ${pages.length}`; });
+  showMiss();
   fitPreview();
+}
+/* КП на английском: перечисляем всё, что осталось по-русски, — менеджер впишет английский текст сам */
+function showMiss(){
+  const w = $("#trWarn"); if (!w) return;
+  const own = EN() ? [["Клиент", ST.client], ["Контактное лицо", ST.contact], ["Повод", ST.occasion], ["Пожелания", ST.wishes], ["Комментарий", ST.note],
+    ...ST.custom.map(c => ["Своя позиция", c.t]), ...(ST.vars.length > 1 ? ST.vars.map((v, i) => ["Название варианта", (v || {}).vname]) : [])].filter(([, v]) => CYR.test(v || "")).map(([k]) => k) : [];
+  const miss = EN() ? [...MISS] : [];
+  w.hidden = !own.length && !miss.length;
+  w.innerHTML = w.hidden ? "" : `Останется по-русски в английском КП:` + (own.length ? `<br>• поля формы: ${esc([...new Set(own)].join(", "))} — впишите их по-английски` : "") +
+    (miss.length ? `<br>• нет перевода на лендинге: ${miss.slice(0, 8).map(s => `«${esc(s)}»`).join(", ")}${miss.length > 8 ? ` и ещё ${miss.length - 8}` : ""}${ST.tl ? " — если это тайминг, перепишите пункт по-английски" : ""}` : "");
 }
 function fitPreview(){
   const box = $("#pages"), w = box.parentElement.clientWidth - 40;
@@ -1153,9 +1247,9 @@ $("#bPdf").addEventListener("click", async () => {
     }
     /* Вся форма лежит в свойствах PDF — «Открыть из PDF» восстановит её для правки */
     syncVar();
-    pdf.setProperties({title:`Novikov School · ${kpLabel()} · ${ST.client || "предложение"}`, author:MANAGER.name,
+    pdf.setProperties({title:`Novikov School · ${kpLabel()} · ${ST.client || X("предложение", "proposal")}`, author:mgrName(),
       keywords:"NVKP1:" + btoa(unescape(encodeURIComponent(JSON.stringify(ST))))});
-    const nm = ["Novikov", `КП-${ST.no}${ST.ver > 1 ? `-v${ST.ver}` : ""}`, ST.client || "предложение", ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
+    const nm = ["Novikov", `${X("КП", "Proposal")}-${ST.no}${ST.ver > 1 ? `-v${ST.ver}` : ""}`, ST.client || X("предложение", "proposal"), ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
     pdf.save(nm + ".pdf");
   } catch(e){ alert("Не получилось собрать PDF: " + e.message); console.error(e); }
   finally { b.disabled = false; b.textContent = old; fitPreview(); }
@@ -1175,8 +1269,8 @@ $("#bInvite").addEventListener("click", async () => {
     const {jsPDF} = window.jspdf, pdf = new jsPDF({unit:"mm", format:"a4", compress:true});
     const cv = await html2canvas(pg, {scale:2, useCORS:true, backgroundColor:"#FBF8F2", logging:false, windowWidth:900});
     pdf.addImage(cv.toDataURL("image/jpeg", 0.88), "JPEG", 0, 0, 210, 297, undefined, "FAST");
-    pdf.setProperties({title:`Приглашение · ${ST.occasion || ST.client || "Novikov School"}`, author:ST.contact || ST.client || "Novikov School"});
-    const nm = ["Приглашение", ST.occasion || ST.client, ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
+    pdf.setProperties({title:`${X("Приглашение", "Invitation")} · ${ST.occasion || ST.client || "Novikov School"}`, author:ST.contact || ST.client || "Novikov School"});
+    const nm = [X("Приглашение", "Invitation"), ST.occasion || ST.client, ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
     pdf.save(nm + ".pdf");
   } catch(e){ alert("Не получилось собрать приглашение: " + e.message); console.error(e); }
   finally { box.remove(); b.disabled = false; b.textContent = old; }
