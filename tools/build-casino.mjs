@@ -255,8 +255,8 @@ function build(kindKey, seasonKey){
 ${items}
         ]}
       ],
-      foot:{ru:"Мероприятие — от 6 человек. Казино не является азартной игрой: участники не делают денежных ставок. 18+. Чрезмерное употребление алкоголя вредит вашему здоровью.",
-            en:"Events from 6 guests. The casino is not gambling: no money is staked. 18+. Excessive drinking is harmful to your health."}
+      foot:{ru:"Казино не является азартной игрой: участники не делают денежных ставок. 18+. Чрезмерное употребление алкоголя вредит вашему здоровью.",
+            en:"The casino is not gambling: no money is staked. 18+. Excessive drinking is harmful to your health."}
     }`);
   }
 
@@ -284,8 +284,8 @@ ${items}
       halls:[
 ${halls}
       ],
-      combos:{ru:"Оливковый + Остров — до 40 гостей. В Томатном, Апельсиновом и залах ART казино проходит в барном формате: места для посадки на время игры нет.",
-              en:"Olive + Island — up to 40 guests. In Tomato, Orange and the ART halls the casino runs bar-style: there is no seating during the game."},
+      combos:{ru:"В Томатном, Апельсиновом и залах ART казино проходит в барном формате: места для посадки на время игры нет.",
+              en:"In Tomato, Orange and the ART halls the casino runs bar-style: there is no seating during the game."},
       ${incl}
     }`);
   }
