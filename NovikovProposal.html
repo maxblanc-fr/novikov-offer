@@ -308,11 +308,12 @@ const MANAGER = MANAGERS[(location.pathname.match(/(darya|ilya)/i) || [, "max"])
 document.getElementById("mgrName").textContent = " · " + MANAGER.name.toUpperCase();
 document.title += " — " + MANAGER.name;
 const ADDRESS = "Москва, Большая Якиманка, 22", ADDRESS_EN = "Moscow, Bolshaya Yakimanka 22";
-const mgrName = () => EN() ? MANAGER.en : MANAGER.name, addr = () => EN() ? ADDRESS_EN : ADDRESS;
+const ADDRESS_IT = "Mosca, Bolshaya Yakimanka 22";
+const mgrName = () => RU() ? MANAGER.name : MANAGER.en, addr = () => X(ADDRESS, ADDRESS_EN, ADDRESS_IT);
 const KINDS = {
-  adult:{label:"Взрослое",    files:["index.html","NovikovOffer.html"],   kicker:"Предложение на мероприятие", kickerEn:"Event proposal"},
-  kids: {label:"Детское",     files:["deti.html","NovikovKids.html"],    kicker:"Детский праздник", kickerEn:"Kids' party"},
-  ny:   {label:"Новогоднее",  files:["newyear.html","NovikovNewYear.html"], kicker:"Новогоднее мероприятие", kickerEn:"New Year event"}
+  adult:{label:"Взрослое",    files:["index.html","NovikovOffer.html"],   kicker:"Предложение на мероприятие", kickerEn:"Event proposal", kickerIt:"Proposta per il vostro evento"},
+  kids: {label:"Детское",     files:["deti.html","NovikovKids.html"],    kicker:"Детский праздник", kickerEn:"Kids' party", kickerIt:"Festa per bambini"},
+  ny:   {label:"Новогоднее",  files:["newyear.html","NovikovNewYear.html"], kicker:"Новогоднее мероприятие", kickerEn:"New Year event", kickerIt:"Evento di Capodanno"}
 };
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
 const TL_TEMPLATE = [
@@ -331,26 +332,31 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;
 const L = o => o == null ? "" : typeof o === "string" ? o : (o.ru ?? "");
 const strip = s => String(s ?? "").replace(/<[^>]+>/g, "");
 const num = s => { if (typeof s === "number") return s; const m = String(s ?? "").replace(/[  ]/g," ").match(/\d[\d ]*/); return m ? parseInt(m[0].replace(/ /g,""),10) : 0; };
-const rub = n => Math.round(n).toLocaleString("ru-RU").replace(/,/g," ") + " ₽";
+const rub = n => { const s = Math.round(n).toLocaleString("ru-RU").replace(/,/g," ") + " ₽"; return typeof ST !== "undefined" && ST.lang === "it" ? itNum(s) : s; };
 const plural = (n, a, b, c) => { n = Math.abs(n) % 100; const n1 = n % 10; return n > 10 && n < 20 ? c : n1 > 1 && n1 < 5 ? b : n1 === 1 ? a : c; };
 const UNIT_FORMS = {"час":["час","часа","часов"], "гость":["гость","гостя","гостей"], "ребёнок":["ребёнок","ребёнка","детей"], "услуга":["услуга","услуги","услуг"], "порция":["порция","порции","порций"],
   "участник":["участник","участника","участников"], "набор":["набор","набора","наборов"], "мероприятие":["мероприятие","мероприятия","мероприятий"], "раунд":["раунд","раунда","раундов"]};
-const qu = (q, u) => EN() ? `${q} ${unitEn(q, u)}` : `${q} ${UNIT_FORMS[u] ? plural(q, ...UNIT_FORMS[u]) : u}`;
+const qu = (q, u) => RU() ? `${q} ${UNIT_FORMS[u] ? plural(q, ...UNIT_FORMS[u]) : u}` : `${q} ${unitFx(q, u)}`;
 
-/* ---------- Английская версия КП ----------
-   Форма остаётся русской — на английский переводится только то, что видит клиент (PDF и приглашение).
-   Тексты с лендингов берём из их пар {ru, en} и словаря TR, фразы самого генератора — через X(ru, en).
+/* ---------- КП на английском и итальянском ----------
+   Форма остаётся русской — переводится только то, что видит клиент (PDF и приглашение).
+   Английский: тексты с лендингов берём из их пар {ru, en} и словаря TR.
+   Итальянский: на лендингах его нет — переводы лежат здесь, в IT_DICT (ключ — русский текст).
+   Фразы самого генератора — через X(ru, en, it).
    Всё, что перевести не удалось, собирается в MISS и показывается менеджеру над формой. */
-const EN = () => ST.lang === "en";
-const X = (ru, en) => EN() ? en : ru;
-const LOC = () => EN() ? "en-GB" : "ru-RU";
-const plx = (n, a, b, c, e1, e2) => EN() ? (Math.abs(n) === 1 ? e1 : e2) : plural(n, a, b, c);
-const UNIT_EN = {"час":["hour","hours"], "гость":["guest","guests"], "ребёнок":["child","children"], "реб.":["child","children"], "услуга":["service","services"],
-  "порция":["serving","servings"], "порц.":["serving","servings"], "участник":["participant","participants"], "набор":["set","sets"], "мероприятие":["event","events"],
-  "раунд":["round","rounds"], "шт.":["pc","pcs"], "бут.":["bottle","bottles"], "кг":["kg","kg"], "бокал":["glass","glasses"], "50 мл":["× 50 ml","× 50 ml"]};
-const unitEn = (q, u) => { if (!u) return ""; const f = UNIT_EN[u]; if (f) return Math.abs(q) === 1 ? f[0] : f[1];
-  const m = String(u).match(/^× (\d+) гостей$/); return m ? `× ${m[1]} guests` : tr(u); };
-const unitWord = u => EN() ? unitEn(1, u) : u;
+const LANG = () => ST.lang || "ru";
+const RU = () => LANG() === "ru", IT = () => LANG() === "it";
+const X = (ru, en, it) => RU() ? ru : IT() ? (it ?? (MISS.add(en), en)) : en;
+const LOC = () => ({ru:"ru-RU", en:"en-GB", it:"it-IT"})[LANG()];
+const plx = (n, a, b, c, e1, e2, i1, i2) => RU() ? plural(n, a, b, c) : Math.abs(n) === 1 ? X(a, e1, i1) : X(c, e2, i2);
+const UNIT_FX = {"час":["hour","hours","ora","ore"], "гость":["guest","guests","ospite","ospiti"], "ребёнок":["child","children","bambino","bambini"], "реб.":["child","children","bambino","bambini"],
+  "услуга":["service","services","servizio","servizi"], "порция":["serving","servings","porzione","porzioni"], "порц.":["serving","servings","porzione","porzioni"],
+  "участник":["participant","participants","partecipante","partecipanti"], "набор":["set","sets","set","set"], "мероприятие":["event","events","evento","eventi"],
+  "раунд":["round","rounds","round","round"], "шт.":["pc","pcs","pz","pz"], "бут.":["bottle","bottles","bottiglia","bottiglie"], "кг":["kg","kg","kg","kg"],
+  "бокал":["glass","glasses","calice","calici"], "50 мл":["× 50 ml","× 50 ml","× 50 ml","× 50 ml"]};
+const unitFx = (q, u) => { if (!u) return ""; const f = UNIT_FX[u], o = IT() ? 2 : 0; if (f) return Math.abs(q) === 1 ? f[o] : f[o + 1];
+  const m = String(u).match(/^× (\d+) гостей$/); return m ? `× ${m[1]} ${X("", "guests", "ospiti")}` : tr(u); };
+const unitWord = u => RU() ? u : unitFx(1, u);
 const DICT = {}, MISS = new Set(), CYR = /[А-Яа-яЁё]/;
 /* Фразы генератора, которые попадают в PDF через каталог (группы сметы, шаблоны тайминга, подписи из цен лендинга) */
 const GEN = {
@@ -365,6 +371,291 @@ const GEN = {
   "цена от":"price from", "игристое":"sparkling wine", "Сомелье":"Sommelier", "Рисование":"Painting", "Свечеварение":"Candle making",
   "Утро / день":"Morning / afternoon", "будни":"weekdays", "Ассорти":"Assorted"
 };
+/* Итальянский для КП. Ключ — русский текст с лендинга или из генератора, значение — как это написал бы итальянский ресторан или event-площадка.
+   Составные строки («Фартуки · Брендированные», «Игра, 1 час · минимум 20 000 ₽») tr() режет по « · », «: », «, » и переводит по частям,
+   поэтому здесь в основном отдельные названия. Обращение к клиенту — на «voi», кавычки — «ёлочки», как принято в итальянском. */
+const IT_DICT = {
+  /* Группы сметы, тайминг по шаблону, подписи генератора */
+  "Кулинарная программа":"Programma culinario", "Площадка":"Location", "Напитки":"Bevande", "Фуршет":"Buffet", "Дополнительные услуги":"Servizi aggiuntivi", "Дополнительно":"Extra",
+  "Фуршетные сеты":"Set buffet", "Тарелки и ассорти":"Taglieri e piatti misti", "Детский фуршет":"Buffet per bambini", "Детский фуршет Kid Set":"Buffet per bambini Kid Set",
+  "Коктейль по выбору":"Cocktail a scelta", "Выбор коктейлей можно рассмотреть в окне коктейльных мастер-классов в доп. услугах":"si sceglie tra i cocktail della masterclass (vedi Servizi aggiuntivi)",
+  "Welcome-фуршет: закуски, сбор гостей":"Buffet di benvenuto: stuzzichini e arrivo degli ospiti",
+  "Welcome-фуршет: закуски, игристое, сбор гостей":"Buffet di benvenuto: stuzzichini, bollicine e arrivo degli ospiti",
+  "Мастер-класс с профессиональным шефом Novikov":"Masterclass con uno chef professionista Novikov",
+  "Праздничный обед / ужин из приготовленных блюд":"Pranzo o cena di festa con i piatti preparati insieme",
+  "Праздничный ужин из приготовленных блюд":"Cena di festa con i piatti preparati insieme", "Праздничный обед из приготовленных блюд":"Pranzo di festa con i piatti preparati insieme",
+  "Свободное время и активности":"Tempo libero e attività", "Свободное время":"Tempo libero", "игра с ведущим":"gioco con il presentatore",
+  "Встреча гостей, welcome-фуршет":"Accoglienza degli ospiti e buffet di benvenuto", "Шеф готовит, рассказывает о блюдах и угощает гостей":"Lo chef cucina, racconta i piatti e li offre agli ospiti",
+  "Встреча гостей":"Accoglienza degli ospiti", "Мастер-класс: 3–4 блюда под руководством шефа":"Masterclass: 3–4 piatti sotto la guida dello chef", "Дегустация приготовленного":"Degustazione dei piatti preparati",
+  "цена от":"prezzo a partire da", "игристое":"bollicine",
+
+  /* Залы */
+  "Остров":"Isola", "Гранатовый":"Melograno", "Оливковый":"Oliva", "Лимонный":"Limone", "Томатный":"Pomodoro", "Апельсиновый":"Arancia", "бизнес":"business",
+  "Керамика":"Ceramica", "Живопись":"Pittura", "Флористика":"Arte floreale",
+  "Закрытие зала под вашу компанию · гардероб, ресепшн, уборка · посуда и оборудование · менеджер на площадке · время монтажа/демонтажа включено.":
+    "Sala riservata in esclusiva · guardaroba, reception, pulizie · stoviglie e attrezzature · un nostro responsabile presente in sala · tempi di allestimento e smontaggio inclusi.",
+  "Закрытие зала · гардероб, ресепшн, уборка · менеджер · монтаж/демонтаж включён · проектор, кондиционер, флипчарт (звук — по запросу).":
+    "Sala riservata in esclusiva · guardaroba, reception, pulizie · un nostro responsabile · allestimento e smontaggio inclusi · proiettore, aria condizionata, lavagna a fogli mobili (impianto audio su richiesta).",
+  "до 45 гостей":"fino a 45 ospiti", "25 рабочих мест":"25 postazioni di lavoro", "проф. кухня":"cucina professionale", "до 18 (групповой МК)":"fino a 18 (masterclass di gruppo)",
+  "до 20 гостей":"fino a 20 ospiti", "до 10 гостей":"fino a 10 ospiti", "18 групп. / 12 инд. МК":"18 in masterclass di gruppo / 12 in individuale", "10 групп. / 12 инд. МК":"10 in masterclass di gruppo / 12 in individuale",
+  "до 30 (театр) / 24 со столами":"fino a 30 (a platea) / 24 con tavoli", "до 18 детей (групповой МК)":"fino a 18 bambini (masterclass di gruppo)",
+  "18 мест на групповом МК":"18 posti in masterclass di gruppo", "10 мест на групповом МК":"10 posti in masterclass di gruppo",
+
+  /* Страны и характеристики вин */
+  "Италия":"Italia", "Россия":"Russia", "Южная Африка":"Sudafrica", "Испания":"Spagna", "Франция":"Francia", "Германия":"Germania", "Новая Зеландия":"Nuova Zelanda",
+  "Аргентина":"Argentina", "Австрия":"Austria", "Венесуэла":"Venezuela", "Мексика":"Messico",
+  "сладкое":"dolce", "сухое":"secco", "белое":"bianco", "в подарочной упаковке":"in confezione regalo", "безалкогольное":"analcolica",
+  "Усадьба Дивноморское, Grand Rose Extra Brut":"Usadba Divnomorskoe, Grand Rose Extra Brut",
+  "Поместье Голубицкое, Резерв Шардоне":"Tenuta Golubitskoe, Chardonnay Riserva", "Поместье Голубицкое, Каберне Совиньон":"Tenuta Golubitskoe, Cabernet Sauvignon",
+  "Cosaque Красная Горка, Галицкий и Галицкий":"Cosaque Krasnaya Gorka, Galitsky & Galitsky",
+
+  /* Free-flow и бар */
+  "Free-flow «Классика»":"Open bar «Classico»", "Free-flow «Авторский»":"Open bar «D'autore»", "Free-flow «Эксклюзив»":"Open bar «Esclusivo»",
+  "Игристое":"Bollicine", "Белое":"Vini bianchi", "Красное":"Vini rossi", "Пиво":"Birra", "Коктейль":"Cocktail", "порция 150 мл":"porzione da 150 ml",
+  "Водка":"Vodka", "Джин":"Gin", "Ром":"Rum", "Текила":"Tequila", "Ирландский виски":"Whiskey irlandese", "Шотландский виски":"Scotch whisky", "Коньяк":"Cognac",
+
+  /* Безалкогольное */
+  "Безалкогольный безлимитный бар":"Open bar analcolico", "Лимонады":"Limonate", "Лимонады, 1 л":"Limonate, caraffa da 1 l", "Лимонады, 0,4 л":"Limonate, bicchiere da 0,4 l", "Яблочный сок":"Succo di mela", "Вишнёвый сок":"Succo di amarena", "Томатный сок":"Succo di pomodoro",
+  "Апельсиновый сок":"Succo d'arancia", "Морс":"Mors (bevanda russa ai frutti rossi)", "Газированные напитки":"Bibite gassate",
+  "Манго-маракуйя":"Mango e frutto della passione", "Клубника-манго-кокос":"Fragola, mango e cocco", "Мохито классический":"Mojito classico (analcolico)", "Линчбургский лимонад":"Lynchburg lemonade",
+  "Лаванда-смородина":"Lavanda e ribes nero", "Яблоко-лимон":"Mela e limone", "Клубника-мята":"Fragola e menta",
+  "Лимонад: манго-маракуйя / клубника-манго-кокос / мохито классический / линчбургский / Berries Punch / лаванда-смородина / яблоко-лимон / клубника-мята":
+    "Limonata: mango e frutto della passione / fragola, mango e cocco / mojito classico / Lynchburg / Berries Punch / lavanda e ribes nero / mela e limone / fragola e menta",
+  "Лимонад в графине":"Limonata in caraffa", "Вода Acqua Panna / San Pellegrino":"Acqua Panna / San Pellegrino", "Сок Il Primo в ассортименте":"Succhi Il Primo assortiti",
+  "Фреш в ассортименте":"Spremute fresche assortite",
+
+  /* Фуршет: сеты, тарелки, блюда в стол */
+  "Вегетарианский сет":"Set vegetariano",
+  "Мясная тарелка":"Tagliere di salumi", "Сырная тарелка":"Tagliere di formaggi", "Рыбная тарелка":"Selezione di pesce",
+  "Ассорти сыров и колбас с артишоками и томатами":"Tagliere misto di formaggi e salumi con carciofi e pomodorini",
+  "Ассорти из фруктов и ягод":"Piatto di frutta fresca", "Ассорти из овощей и зелени":"Piatto di verdure fresche ed erbe aromatiche",
+  "Ассорти солений":"Sottaceti misti", "Хлебная корзина":"Cestino del pane",
+  "ветчина пармская и варёная, брезаола, салями милано, томаты черри, каперсы, розмарин":"prosciutto crudo di Parma e prosciutto cotto, bresaola, salame Milano, pomodorini, capperi, rosmarino",
+  "раклет, горгонзола, пармезан, пекорино, курага, чернослив, мёд, цукаты апельсиновые, изюм, грецкий орех":"raclette, gorgonzola, parmigiano, pecorino, albicocche secche, prugne secche, miele, scorzette d'arancia candite, uvetta, noci",
+  "лосось слабосолёный, масляная рыба, угорь копчёный":"salmone leggermente salato, pesce burro, anguilla affumicata",
+  "салями, ветчина варёная и пармская, пармезан, скаморца, артишоки, томаты черри, каперсы, оливки, грецкий орех, цукаты апельсиновые, мёд, мята":"salame, prosciutto cotto e crudo di Parma, parmigiano, scamorza, carciofi, pomodorini, capperi, olive, noci, scorzette d'arancia candite, miele, menta",
+  "черешня, дыня, виноград, арбуз, абрикосы, мята":"ciliegie, melone, uva, anguria, albicocche, menta",
+  "томаты розовые и черри, огурцы, перец болгарский и чили, редис, базилик, петрушка":"pomodori rosa e pomodorini, cetrioli, peperoni e peperoncino, ravanelli, basilico, prezzemolo",
+  "огурцы солёные, томаты зелёные солёные, патиссоны, чеснок маринованный, перец острый, маринованные черри":"cetrioli in salamoia, pomodori verdi in salamoia, zucchine patisson, aglio marinato, peperoncino piccante, pomodorini marinati",
+  "багет французский и ржаной, сливочное масло с травами":"baguette francese e di segale, burro alle erbe",
+  "Салат с креветками":"Insalata di gamberi", "Греческий салат":"Insalata greca", "Салат с пастрами":"Insalata con pastrami", "Овощи гриль":"Verdure grigliate", "Паста болоньезе":"Pasta alla bolognese",
+  "Филе угольной рыбы в соусе унаги с микс-салатом":"Filetto di merluzzo nero in salsa unagi con insalata mista", "Телячьи щёчки с овощным пюре":"Guance di vitello con purè di verdure",
+  "Стейк из лосося с цукини и мятой":"Trancio di salmone con zucchine e menta",
+  "Блинный ролл с лососем и шпинатом":"Involtino di crêpe con salmone e spinaci", "Сырное канапе с индейкой":"Canapè al formaggio con tacchino",
+  "Индейка тандури в кляре с соусом свит чили":"Tacchino tandoori in pastella con salsa sweet chili", "Спайси-крекер с лососем":"Cracker piccante con salmone",
+  "Мини-эклер с томатным муссом":"Mini éclair con mousse di pomodoro", "Канапе капрезе с фетой":"Canapè caprese con feta", "Ростбиф с соусом блю чиз":"Roast beef con salsa al formaggio erborinato",
+  "Тигровые креветки с соусом карри":"Gamberi tigre con salsa al curry", "Тунец том ям":"Tonno al tom yum", "Профитроли с ростбифом":"Bignè salati con roast beef",
+  "Брускетта с угрём и соусом унаги":"Bruschetta con anguilla e salsa unagi", "Канапе «Капрезе» с генуэзским песто":"Canapè caprese con pesto alla genovese",
+  "Сладкий фруктовый нем":"Involtino dolce alla frutta", "Брускетта с грибным жульеном":"Bruschetta con funghi gratinati alla panna", "Запечённые баклажаны с сыром фета":"Melanzane al forno con feta",
+  "Голубой сыр с грушевым вареньем и орехами":"Formaggio erborinato con confettura di pere e noci",
+  "Мини-пицца":"Pizzetta", "Рожок с нутеллой и ягодами":"Cono con Nutella e frutti di bosco", "Мини-сэндвич с ветчиной и сыром":"Mini tramezzino prosciutto e formaggio",
+  "Картофель фри":"Patatine fritte", "Мини-сосиска в кляре":"Würstel in pastella", "Овощное канапе":"Canapè di verdure", "Сырное канапе с салями":"Canapè con formaggio e salame",
+  "Фруктовое канапе":"Spiedino di frutta", "Клубника в меренге":"Fragole meringate",
+
+  /* Доп. услуги */
+  "Винное казино":"Casinò del vino", "Дегустационные казино":"Casinò della degustazione", "Коктейльное казино":"Casinò dei cocktail", "Пивное казино":"Casinò della birra", "Виски-казино":"Casinò del whisky",
+  "Сомелье":"Sommelier", "Классика":"Classico", "Авторский":"D'autore", "Эксклюзив":"Esclusivo",
+  "Сомелье-крупье проводит слепую дегустацию вин — гости делают ставки фишками. 13 стран · 25 сортов · 54 аромата. Цена = сомелье 2 200 ₽/гость + вино выбранного уровня, 3 раунда. Пример стоимости — для 12 гостей.":
+    "Un sommelier-croupier conduce una degustazione di vini alla cieca e gli ospiti puntano le loro fiches. 13 paesi · 25 vitigni · 54 aromi. Prezzo: sommelier 2 200 ₽ a persona + il vino del livello scelto, 3 round. L'esempio di costo è calcolato per 12 ospiti.",
+  "Сомелье-крупье проводит слепую дегустацию со ставками фишками — гости угадывают напитки. Цена = сомелье 2 200 ₽/гость + ставка за гостя × число раундов (по умолчанию 3). Пример стоимости — для 12 гостей, 3 раунда.":
+    "Un sommelier-croupier conduce una degustazione alla cieca con puntate a fiches: gli ospiti devono indovinare le bevande. Prezzo: sommelier 2 200 ₽ a persona + quota a persona × numero di round (di norma 3). L'esempio di costo è calcolato per 12 ospiti e 3 round.",
+  "Хамон-станция":"Postazione del jamón", "Станция на 20 гостей":"Postazione per 20 ospiti",
+  "Целая нога хамона на хамонере в зале. Су-шеф нарезает его тонкими ломтиками прямо при гостях и собирает тарелки с закусками — его работа входит в стоимость. К хамону — сыры, овощи, фрукты и хлеб, около 145 г на гостя.":
+    "Un'intera coscia di jamón sul suo supporto, direttamente in sala. Il sous-chef la taglia a fette sottili davanti agli ospiti e compone i piatti: il suo servizio è incluso nel prezzo. Il jamón è accompagnato da formaggi, verdure, frutta e pane, circa 145 g a persona.",
+  "Коктейльный мастер-класс":"Masterclass di cocktail", "1 коктейль":"1 cocktail", "2 коктейля":"2 cocktail", "3 коктейля":"3 cocktail",
+  "Профессиональный бармен знакомит с барным инвентарём и техниками — гости готовят коктейли сами. 15–20 мин на коктейль, ~3 в час. Цена — за коктейль на человека. Пример — для 12 гостей.":
+    "Un bartender professionista presenta gli strumenti e le tecniche del bar, poi gli ospiti preparano i cocktail con le proprie mani. 15–20 minuti per cocktail, circa 3 all'ora. Il prezzo è per cocktail a persona. L'esempio è calcolato per 12 ospiti.",
+  "Арт":"Arte", "Рисование":"Pittura", "Свечеварение":"Creazione di candele",
+  "Творческие мастер-классы — рисование и свечеварение. До 8 человек в одном зале. Холст 30 × 40 см. В каталоге 114 авторских работ: акрил, вино, кофе.":
+    "Masterclass creative di pittura e di creazione di candele. Fino a 8 persone per sala. Tela 30 × 40 cm. A catalogo 114 soggetti d'autore: acrilico, vino, caffè.",
+  "Интерактивные игры":"Giochi interattivi", "Разработка квиза":"Quiz su misura",
+  "Игры для гостей с профессиональным ведущим: час игры, игру выбираете из списка. Можно заказать разработку квиза на выбранную вами тематику или с вашими вопросами и ответами. Отдельно можно заказать караоке на 2 часа.":
+    "Giochi per gli ospiti con un presentatore professionista: un'ora di gioco, scelto da voi tra quelli in elenco. Possiamo preparare un quiz su misura sul tema che preferite o con le vostre domande e risposte. A parte si può prenotare il karaoke per 2 ore.", "Игра, 1 час":"Gioco, 1 ora", "Караоке":"Karaoke",
+  "Игры для гостей с профессиональным ведущим: час игры, игру выбираете из списка. Отдельно можно заказать караоке на 2 часа.":
+    "Giochi per gli ospiti con un presentatore professionista: un'ora di gioco, scelto da voi tra quelli in elenco. A parte si può prenotare il karaoke per 2 ore.",
+  "Дополнительный персонал":"Personale aggiuntivo", "Ведущий":"Presentatore", "Звёздный шеф":"Chef di fama", "Официант":"Cameriere",
+  "Продление официанта, 1 час":"Cameriere, 1 ora in più", "Диджей и звуковое оборудование":"DJ e impianto audio", "Продление диджея, 1 час":"DJ, 1 ora in più",
+  "Профессиональный фотограф":"Fotografo professionista", "Топ-фотограф":"Fotografo top", "Продление фотографа, 1 час":"Fotografo, 1 ora in più",
+  "Флористическое оформление":"Allestimento floreale",
+  "Оформление залов и столов под концепцию мероприятия: композиции, президиум, свечи и декор. Портфолио реализованных примеров доступно.":
+    "Allestimento di sale e tavoli secondo il concept dell'evento: composizioni, tavolo d'onore, candele e decorazioni. Disponibile un portfolio dei lavori realizzati.",
+  "Торты":"Torte", "Авторские торты на заказ. Любой цвет и текстура. Начинку и дизайн выбираете из каталога.":"Torte d'autore su ordinazione, in qualsiasi colore e consistenza. Farcitura e design si scelgono dal catalogo.",
+  "Фартуки":"Grembiuli", "Брендированные":"Brandizzati", "Кастомизированные":"Personalizzati",
+  "Брендированные — фирменные фартуки Novikov School: гости готовят в них на мастер-классе и забирают с собой. Кастомизированные — с вашим логотипом или именем гостя.":
+    "Brandizzati: i grembiuli Novikov School, che gli ospiti indossano durante la masterclass e poi portano a casa. Personalizzati: con il vostro logo o il nome dell'ospite.",
+  "Вода, чай и кофе включены":"Acqua, tè e caffè inclusi",
+
+  /* Пакеты */
+  "Командный мастер-класс":"Masterclass di squadra", "Индивидуальный мастер-класс":"Masterclass individuale", "Стандартный":"Standard", "Эксклюзивный":"Esclusivo",
+  "Гости готовят сет вместе, одной командой — живой, азартный формат, который сплачивает компанию. 1 час готовки.":
+    "Gli ospiti preparano il menu insieme, come un'unica squadra: un format vivace e competitivo che unisce il gruppo. 1 ora ai fornelli.",
+  "Каждый гость готовит свой сет сам под руководством шефа — обучающий формат. Отдельные компоненты десертов готовятся общими на группу. Примерно 3 часа готовки.":
+    "Ogni ospite prepara il proprio menu sotto la guida dello chef: un format didattico. Alcune preparazioni dei dolci si fanno insieme per tutto il gruppo. Circa 3 ore ai fornelli.",
+  "Сбор гостей и дегустация фуршета":"Accoglienza degli ospiti e assaggi dal buffet", "Готовим выбранный сет — каждый сам себе":"Ognuno prepara il menu scelto",
+  "Дегустируем приготовленное":"Degustazione dei piatti preparati",
+  "Фуа-гра, Вагю, трюфель, краб":"Foie gras, wagyu, tartufo, granchio", "меню согласовывается за неделю до мероприятия":"menu da concordare una settimana prima dell'evento",
+  "Демо-ужин":"Cena show cooking",
+  "Шеф готовит и рассказывает о блюдах, гости наблюдают. 30 мин — встреча гостей, затем 3,5 часа шеф готовит, общается и рассказывает гостям о приготовленных блюдах. Фуршет «Medium Set» (9 позиций, 166 г) включён.":
+    "Lo chef cucina e racconta i piatti mentre gli ospiti osservano. 30 minuti di accoglienza, poi per tre ore e mezza lo chef cucina, chiacchiera con gli ospiti e presenta ogni piatto. Incluso il buffet «Medium Set» (9 proposte, 166 g).",
+  "Индивидуальный мастер-класс (максимум 5 гостей)":"Masterclass privata (massimo 5 ospiti)", "Утро / день":"Mattina / pomeriggio", "будни":"giorni feriali",
+  "Вечер будни / выходные":"Sera nei giorni feriali / weekend",
+  "3–4 блюда под руководством шефа; каждый участник готовит сам.":"3–4 piatti sotto la guida dello chef; ogni partecipante cucina in prima persona.",
+  "Тот же формат в вечернее и выходное время.":"Lo stesso format, la sera e nel fine settimana.",
+
+  /* Сеты мастер-классов */
+  "Зелёное меню":"Menu verde", "Салат с киноа, авокадо и печёным перцем":"Insalata di quinoa, avocado e peperoni arrostiti", "Чечевичный дал с мятным соусом":"Dal di lenticchie con salsa alla menta",
+  "Пудинг из тапиоки с манго":"Budino di tapioca al mango",
+  "Мейд ин Чайна":"Made in China", "Хрустящие баклажаны по-кантонски":"Melanzane croccanti alla cantonese", "Рисовая лапша с креветками и курицей":"Noodles di riso con gamberi e pollo",
+  "Желе из кокосового молока и манго":"Gelatina al latte di cocco e mango",
+  "Хиты Бангкока":"I classici di Bangkok", "Спринг ролл с уткой и соевыми ростками":"Spring roll con anatra e germogli di soia", "Том ям с креветками и курицей":"Tom yum con gamberi e pollo",
+  "Жареное молоко с клубничным джемом":"Latte fritto con confettura di fragole",
+  "Дольче Вита":"La Dolce Vita", "Артишоки по-римски":"Carciofi alla romana", "Лазанья болоньезе":"Lasagne alla bolognese", "Шоколадный фондан с мороженым":"Tortino al cioccolato dal cuore fondente con gelato",
+  "Обед в Тбилиси":"Pranzo a Tbilisi", "Грузинский салат с ореховой заправкой":"Insalata georgiana con salsa di noci", "Хачапури по-мегрельски":"Khachapuri alla megrela",
+  "Цыпленок по-чкмерски":"Pollo chkmeruli in salsa all'aglio",
+  "А-ля Франсез":"À la française", "Вишисуаз":"Vichyssoise", "Утиная грудка с сельдереем и черникой":"Petto d'anatra con sedano e mirtilli",
+  "Профитроли с заварным кремом и шоколадом":"Profiterole con crema pasticcera e cioccolato",
+  "Московские легенды":"Leggende di Mosca", "Салат «Столичный»":"Insalata russa «Stolichny»", "Пельмени с тремя видами мяса":"Pelmeni ai tre tipi di carne",
+  "Заварные кольца с творожным кремом":"Anelli di pasta choux con crema di ricotta",
+  "Южная Америка":"Sud America", "Эмпанадас с креветками":"Empanadas ai gamberi", "Фланк стейк с соусом чимичури и пюре из батата":"Flank steak con salsa chimichurri e purè di patate dolci",
+  "Трес лечес":"Tres leches",
+  "Мужская классика":"Classici al maschile", "Стейк-салат":"Insalata con tagliata di manzo", "Бефстроганов с картофельным пюре и битыми огурцами":"Manzo alla Stroganoff con purè di patate e cetrioli schiacciati",
+  "Морковный пирог":"Torta di carote",
+  "Стамбул":"Istanbul", "Салат Гавурда":"Insalata gavurdağı", "Донер":"Döner kebab", "Кюнефе":"Künefe",
+  "Грузинское застолье":"Banchetto georgiano", "Лобио":"Lobio, fagioli rossi alla georgiana", "Оджахури из свинины":"Ojakhuri di maiale con patate", "Грузинская пахлава":"Baklava georgiana",
+  "Острое, кислое, сладкое":"Piccante, aspro, dolce", "Тайский салат с говядиной":"Insalata thai di manzo", "Тайский карри с курицей на кокосовом молоке":"Curry thai di pollo al latte di cocco",
+  "Желе манго-маракуйя":"Gelatina di mango e frutto della passione",
+  "Томаты и страчателла":"Pomodori e stracciatella", "Карпаччо из томатов с клубничной заправкой, базиликом и страчателлой":"Carpaccio di pomodori con condimento alla fragola, basilico e stracciatella",
+  "Баклажаны пармиджана":"Parmigiana di melanzane", "Тирамису":"Tiramisù",
+  "Кокосовый бриз":"Brezza di cocco", "Креветки в хрустящем тесте с кисло-сладким соусом":"Gamberi in pastella croccante con salsa agrodolce",
+  "Сибас в кокосовом карри с ароматным жасминовым рисом":"Branzino al curry di cocco con riso jasmine profumato", "Мусс манго-маракуйя со штрейзелем из Oreo":"Mousse di mango e frutto della passione con crumble di Oreo",
+  "Грибная осень":"Autunno ai funghi", "Тартар из томатов с моцареллой":"Tartare di pomodori con mozzarella", "Фетучини с белыми грибами со сливочным соусом":"Fettuccine ai porcini con salsa alla panna",
+  "Шоколадный брауни с ванильным мороженым":"Brownie al cioccolato con gelato alla vaniglia",
+  "Домашние равиоли":"Ravioli fatti in casa", "Равиоли с рикоттой и шпинатом в масле с шалфеем":"Ravioli ricotta e spinaci burro e salvia",
+  "Сицилийские канноли с рикоттой и цедрой апельсина":"Cannoli siciliani con ricotta e scorza d'arancia",
+  "Трактир Пожарского":"La locanda di Pozharsky", "Тёплый салат с говядиной и чёрно-перечным соусом":"Insalata tiepida di manzo con salsa al pepe nero",
+  "Пожарская котлета с картофельным пюре и грибным соусом":"Cotoletta Pozharsky di pollo con purè di patate e salsa ai funghi", "Мильфей с ванильным кремом":"Millefoglie con crema alla vaniglia",
+  "Вечер в Апулии":"Una sera in Puglia", "Орекьетте с соусом аррабиата и лангустинами":"Orecchiette all'arrabbiata con scampi",
+  "Стейк-вечер":"Serata steak", "Салат с ростбифом и медовой заправкой":"Insalata di roast beef con condimento al miele",
+  "Стейк мачете с перечным соусом и картофелем ранч":"Machete steak con salsa al pepe e patate ranch",
+  "Обед для особого случая":"Pranzo per un'occasione speciale", "Мимоза с копчёной форелью":"Insalata Mimosa con trota affumicata",
+  "Запечённый цыплёнок с кукурузным кремом и соусом ЖУ":"Pollo al forno con crema di mais e jus", "Запечённый цыплёнок с кукурузным кремом и соусом жу":"Pollo al forno con crema di mais e jus",
+  "Имбирный бисквит с тыквенным кремом и орехами":"Pan di Spagna allo zenzero con crema di zucca e noci",
+  "Итальянские хиты":"I classici italiani", "Вителло Тонато — ростбиф с соусом из тунца":"Vitello tonnato", "Паста с грибами и трюфельной эмульсией":"Pasta ai funghi con emulsione al tartufo",
+  "Семифредо с шоколадом":"Semifreddo al cioccolato",
+  "Однажды в Америке":"C'era una volta in America", "Жареный романо с куриной грудкой":"Lattuga romana grigliata con petto di pollo",
+  "Чизбургер с карамелизированным луком и беконом":"Cheeseburger con cipolle caramellate e bacon", "Шоколадный брауни с вишней":"Brownie al cioccolato con amarene",
+  "Отпуск на Сицилии":"Vacanze in Sicilia", "Салат из осьминога с печёным картофелем":"Insalata di polpo con patate al forno", "Лингвини с креветками":"Linguine ai gamberi",
+  "Панна-котта с клубникой":"Panna cotta alle fragole",
+  "Морские приключения":"Avventure di mare", "Севиче из тунца с цитрусами":"Ceviche di tonno agli agrumi", "Папильот из палтуса с овощами":"Ippoglosso al cartoccio con verdure",
+  "Десерт балерины Павловой":"Pavlova",
+  "Традиционный праздничный обед":"Pranzo di festa tradizionale", "Закуска из утиной грудки с листьями салата и брусничным соусом":"Antipasto di petto d'anatra con insalatina e salsa ai mirtilli rossi",
+  "Веллингтон с соусом Бордолез":"Filetto alla Wellington con salsa bordolese", "Грушевый Тарт Татен с ванильным мороженым":"Tarte Tatin alle pere con gelato alla vaniglia",
+  "Средиземноморский уикенд":"Weekend mediterraneo", "Салат из морепродуктов":"Insalata di mare", "Филе дикого сибаса с соусом из спаржи":"Filetto di branzino selvaggio con salsa di asparagi",
+  "Тарт с лимонным курдом":"Crostata al lemon curd",
+  "Выходные в Ницце":"Weekend a Nizza", "Салат Нисуаз":"Insalata nizzarda", "Филе миньон со спаржей и голландским соусом":"Filetto mignon con asparagi e salsa olandese", "Крем-брюле":"Crème brûlée",
+  "Яркий праздничный ужин":"Cena di festa a colori", "Салат с маринованной тыквой, яблоком и голубым сыром":"Insalata di zucca marinata, mela e formaggio erborinato",
+  "Ризотто с камчатским крабом и жареным артишоком":"Risotto al granchio reale della Kamčatka e carciofo arrostito",
+  "Карамелизированные мандарины со сливочным кремом":"Mandarini caramellati con crema alla panna",
+  "Мясная траттория":"Trattoria di carne", "Карпаччо из говядины с маринованными артишоками":"Carpaccio di manzo con carciofi marinati", "Фланк-стейк с соусом порто":"Flank steak con salsa al Porto",
+  "Тирамису с манговым муссом и вафельной крошкой":"Tiramisù con mousse al mango e crumble di cialda",
+  "Улов дня":"Il pescato del giorno", "Салат с кальмаром и соусом ромеско":"Insalata di calamari con salsa romesco",
+  "Стейк из форели с брокколи и пиментой из болгарского перца":"Trancio di trota con broccoli e crema di peperoni",
+  "Говядина по-азиатски":"Manzo all'asiatica", "Говядина в хрустящей корочке с овощами под азиатским соусом":"Manzo croccante con verdure in salsa asiatica",
+  "Кофейный кекс с вишней и шоколадным кремом":"Plumcake al caffè con amarene e crema al cioccolato",
+  "Вечер в Пьемонте":"Una sera in Piemonte", "Вителло тоннато с каперсами":"Vitello tonnato con capperi",
+  "Лионский бушон":"Bouchon lionese", "Паштет из куриной печени с луковым конфитюром и бриошью":"Paté di fegatini di pollo con confettura di cipolle e brioche",
+  "Мидии в белом вине":"Cozze al vino bianco", "Тарт Татен с ванильным мороженым":"Tarte Tatin con gelato alla vaniglia", "Тарт татен с ванильным мороженым":"Tarte Tatin con gelato alla vaniglia",
+  "Тартар и мидии":"Tartare e cozze", "Гренка с тартаром из говядины":"Crostone con tartare di manzo", "Мильфей с воздушным кремом и ягодами":"Millefoglie con crema leggera e frutti di bosco",
+  "Морской деликатес":"Delizie di mare", "Салат с крабом в соусе белое вино":"Insalata di granchio con salsa al vino bianco",
+  "Фуа-гра и шампанское":"Foie gras e champagne", "Салат с фуа-гра, козьим сыром и чёрной смородиной":"Insalata con foie gras, formaggio di capra e ribes nero",
+  "Каннелони с рикоттой и овощами под томатным соусом, с каперсами и таджаскими оливками, с фалангой краба":"Cannelloni ricotta e verdure al sugo di pomodoro con capperi, olive taggiasche e zampa di granchio",
+  "Десерт «Наполеон» с кремом, кули из шампанского и запечёнными яблоками":"Torta «Napoleone» con crema, coulis allo champagne e mele al forno",
+  "Вагю и трюфель":"Wagyu e tartufo", "Тартар из говядины в косточке с соусом и свежим трюфелем":"Tartare di manzo servita nell'osso con salsa e tartufo fresco",
+  "Тонкий край Вагю с тарт татеном из шалота и перье из мадеры":"Controfiletto di wagyu con tarte Tatin di scalogno e riduzione al Madeira",
+  "Меренговый рулет с фисташками и малиной":"Rotolo di meringa con pistacchi e lamponi",
+  "Краб и шабли":"Granchio e Chablis", "Фетучини с крабом в соусе том ям":"Fettuccine al granchio in salsa tom yum",
+  "Краб по-тайски":"Granchio alla thailandese", "Краб-кейк с кисло-сладким соусом":"Tortino di granchio con salsa agrodolce",
+  "Сёрф энд тёрф":"Surf & turf", "Мраморная говядина":"Manzo marezzato", "Лукум из мраморной говядины с грибами":"Bocconcini di manzo marezzato con funghi",
+  "Французский поцелуй":"Bacio francese", "Тартар из говядины с хрустящими гренками":"Tartare di manzo con crostini croccanti",
+  "Голодные игры":"Hunger Games", "Салат из утиной грудки с печёными овощами":"Insalata di petto d'anatra con verdure arrostite", "Стейк Мачете и зелёный салат":"Machete steak con insalata verde",
+  "Мильфёй с кремом и ягодами":"Millefoglie con crema e frutti di bosco",
+  "Загадочный Восток":"Il misterioso Oriente", "Печёный баклажан с сыром и томатной сальсой":"Melanzana al forno con formaggio e salsa di pomodoro",
+  "Кебаб из баранины с овощным табуле":"Kebab d'agnello con tabulè di verdure", "Пахлава с мороженым":"Baklava con gelato",
+  "Греческие каникулы":"Vacanze in Grecia", "Мезе баклажан и паприка с лепёшкой":"Mezze di melanzane e peperoni con pane pita", "Осьминог с картофелем и соусом дзадзыки":"Polpo con patate e salsa tzatziki",
+  "Катаифи":"Kataifi",
+  "Азиатские хиты":"I classici asiatici", "Суп том ям":"Zuppa tom yum", "Лапша удон с курицей":"Udon con pollo", "Салат с баклажанами и томатами в сладком соусе":"Insalata di melanzane e pomodori in salsa dolce",
+  "Основы кулинарии: рыба":"Basi di cucina: il pesce", "Сочный стейк из лосося":"Trancio di salmone succoso", "Дорадо, запечённое целиком с травами и лимоном":"Orata intera al forno con erbe aromatiche e limone",
+  "Котлеты из красной и белой рыбы с добавлением креветок":"Polpette di salmone e pesce bianco con gamberi",
+  "Южноамериканский акцент":"Accento sudamericano", "Современное бистро":"Bistrot moderno", "Фланк-стейк с соусом чимичурри и пюре из батата":"Flank steak con salsa chimichurri e purè di patate dolci",
+  "Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе":"Sorbetto al mango con fragole, basilico, confettura di frutto della passione e meringa al lime",
+  "Средиземноморский вечер":"Serata mediterranea", "Сезонный гастроужин":"Cena gourmet di stagione",
+  "Филе палтуса с соусом из горгонзолы и бланшированными овощами":"Filetto di ippoglosso con salsa al gorgonzola e verdure scottate",
+  "Перечный контраст":"Contrasti al pepe", "Цитрусы и Италия":"Agrumi e Italia",
+
+  /* Детский лендинг */
+  "Фокусник":"Mago", "Шоу чокнутого профессора":"Lo show del professore pazzo", "Ростовая кукла":"Mascotte",
+  "Мастер-классы по напиткам":"Masterclass di bevande", "Фрикшейк":"Freakshake", "Бабл-ти":"Bubble tea", "Мастер-класс по букетам":"Masterclass di bouquet",
+  "Украшение воздушными шарами":"Allestimento con palloncini", "Ассорти":"Assortiti", "Цифра возраста":"Numero dell'età",
+  "Волшебные перевоплощения":"Trasformazioni magiche", "Тату-бар":"Tattoo bar", "Аквагрим":"Truccabimbi",
+  "Бумажное шоу":"Paper show", "Белая":"Bianca", "Блестящая":"Brillante", "Разноцветная":"Multicolore", "10 кг бумаги":"10 kg di carta", "20 кг бумаги":"20 kg di carta",
+  "Сладкое дополнение":"Angolo dolce", "Candy bar на 10 гостей":"Candy bar per 10 ospiti", "Candy bar на 20 гостей":"Candy bar per 20 ospiti", "Candy bar на 30 гостей":"Candy bar per 30 ospiti",
+  "Шоколадный фонтан":"Fontana di cioccolato",
+  "Polaroid на праздник":"Polaroid per la festa", "Съёмка и печать":"Scatti e stampa", "С книгой пожеланий":"Con il libro degli auguri",
+  "до 40 фото":"fino a 40 foto", "до 80 фото":"fino a 80 foto", "до 120 фото":"fino a 120 foto",
+  "Игры с профессиональным ведущим — тот же формат, что и на взрослых мероприятиях, адаптированный по возрасту: час игры, игру выбираете из списка. Отдельно можно заказать караоке на 2 часа.":
+    "Giochi con un presentatore professionista: lo stesso format degli eventi per adulti, adattato all'età. Un'ora di gioco, scelto da voi tra quelli in elenco. A parte si può prenotare il karaoke per 2 ore.",
+  "Иллюзионист показывает программу для детей — фокусы вблизи и на публику, с участием самих гостей.":
+    "Un illusionista presenta uno spettacolo per bambini: magie da vicino e sul palco, con la partecipazione dei piccoli ospiti.",
+  "Химическое шоу: эффектные безопасные опыты — дым, пена, цветные реакции. Дети участвуют в экспериментах вместе с ведущим.":
+    "Uno show di chimica con esperimenti spettacolari e sicuri: fumo, schiuma, reazioni colorate. I bambini partecipano agli esperimenti insieme al presentatore.",
+  "Любимый персонаж встречает гостей, фотографируется и играет с детьми. Персонаж согласовывается заранее.":
+    "Il personaggio preferito accoglie gli ospiti, posa per le foto e gioca con i bambini. Il personaggio va concordato in anticipo.",
+  "Бармен показывает, как собрать напиток, — дети смешивают его сами и забирают с собой. Коктейли повторяют взрослую барную карту, но без алкоголя; отдельно берут густой фрикшейк и бабл-ти.":
+    "Il bartender mostra come si prepara la bevanda, poi i bambini la miscelano da soli e la portano con sé. I cocktail sono quelli della carta del bar per adulti, ma senza alcol; a parte si possono scegliere il freakshake e il bubble tea.",
+  "Флорист показывает, как собрать букет: подбор цветов, композиция, упаковка. Каждый участник собирает свой букет и забирает его с собой.":
+    "Il fiorista mostra come si crea un bouquet: scelta dei fiori, composizione, confezione. Ogni partecipante compone il proprio bouquet e lo porta a casa.",
+  "Оформление зала шарами под цвета праздника: фонтаны и композиции в зале и на столе именинника, цифра возраста, фигуры любимых персонажей и именные букеты.":
+    "Allestimento della sala con palloncini nei colori della festa: fontane e composizioni in sala e sul tavolo del festeggiato, il numero dell'età, le sagome dei personaggi preferiti e bouquet con il nome.",
+  "Тату-бар и аквагрим — можно взять что-то одно или оба сразу. Мастер наносит яркие временные тату: блёстки, цветные рисунки, любимые персонажи. Аквагример превращает детей в героев сказок и мультфильмов. Косметические материалы и гипоаллергенные краски безопасны для кожи и легко смываются.":
+    "Tattoo bar e truccabimbi: potete sceglierne uno o prenderli entrambi. L'artista applica tatuaggi temporanei dai colori vivaci: glitter, disegni colorati, personaggi preferiti. La truccatrice trasforma i bambini negli eroi delle fiabe e dei cartoni animati. Cosmetici e colori ipoallergenici, delicati sulla pelle e facili da lavare via.",
+  "Шумная дискотека в море бумажных лент: ведущий собирает гостей, специальная пушка устраивает «бумажный снегопад» — в лентах можно купаться, кидаться и танцевать. 30 минут танцев, игр и веселья.":
+    "Una festa scatenata in un mare di nastri di carta: il presentatore raduna gli ospiti e un cannone speciale fa scendere una «nevicata di carta», in cui tuffarsi, lanciare i nastri e ballare. 30 minuti di balli, giochi e divertimento.",
+  "Candy bar и шоколадный фонтан — можно взять что-то одно или оба сразу. Candy bar — сладкий стол в цветах праздника: эскимо на палочке, зефир в рожке, капкейки, меренги на палочке, кейк-попсы и леденцы, оформление розовое, голубое или разноцветное. Шоколадный фонтан — горячий шоколад с маршмеллоу, клубникой, киви, грушей и бананом на шпажках.":
+    "Candy bar e fontana di cioccolato: potete sceglierne uno o prenderli entrambi. Il candy bar è un tavolo di dolci nei colori della festa: gelati su stecco, marshmallow nel cono, cupcake, meringhe su stecco, cake pop e lecca-lecca, con allestimento rosa, azzurro o multicolore. La fontana di cioccolato è cioccolato caldo con marshmallow, fragole, kiwi, pera e banana su spiedini.",
+  "Фотограф снимает гостей на камеру мгновенной печати — каждый уносит снимок с собой. Во втором варианте снимки вклеиваются в книгу пожеланий для именинника.":
+    "Il fotografo ritrae gli ospiti con una fotocamera a stampa istantanea e ognuno porta a casa la propria foto. Nella seconda opzione le foto vengono incollate in un libro degli auguri per il festeggiato.",
+  "Оформление залов и столов под концепцию праздника: композиции, стол именинника, свечи и декор. Портфолио реализованных примеров доступно.":
+    "Allestimento di sale e tavoli secondo il tema della festa: composizioni, tavolo del festeggiato, candele e decorazioni. Disponibile un portfolio dei lavori realizzati.",
+  "Авторские торты на заказ — 13 начинок и каталог дизайнов. Любой цвет и текстура; фигурки и декор оплачиваются и весят дополнительно.":
+    "Torte d'autore su ordinazione: 13 farciture e un catalogo di design. Qualsiasi colore e consistenza; figurine e decorazioni si pagano a parte e si aggiungono al peso della torta.",
+  "Брендированные — фирменные фартуки Novikov School: гости готовят в них на мастер-классе и забирают с собой. Кастомизированные — с вашим логотипом или с именем гостя или именинника.":
+    "Brandizzati: i grembiuli Novikov School, che gli ospiti indossano durante la masterclass e poi portano a casa. Personalizzati: con il vostro logo o con il nome dell'ospite o del festeggiato.",
+  "4–7 лет":"4–7 anni", "8–13 лет":"8–13 anni", "14–17 лет":"14–17 anni", "Юный шеф":"Piccolo chef", "Пакет 1":"Pacchetto 1", "Пакет 2":"Pacchetto 2", "Пакет 3":"Pacchetto 3",
+  "горячее и десерт":"un piatto principale e un dolce", "салат, горячее и десерт":"un'insalata, un piatto principale e un dolce",
+  "«Угадай напиток», 30 мин":"«Indovina la bevanda», 30 min", "Игра «Угадай напиток»":"Gioco «Indovina la bevanda»",
+  "Сбор гостей и детский фуршет":"Accoglienza degli ospiti e buffet per bambini", "Готовим в командах":"Cuciniamo a squadre", "Свободное время: общение, фото, торт":"Tempo libero: chiacchiere, foto e torta",
+  "Самый младший формат. Простые и понятные блюда — пицца, паста, бургер, печенье и мороженое, — а после дегустации игра «Угадай напиток», где команды пробуют напитки вслепую и угадывают, что в стакане.":
+    "Il format per i più piccoli. Piatti semplici e familiari, come pizza, pasta, hamburger, biscotti e gelato; dopo l'assaggio arriva il gioco «Indovina la bevanda», in cui le squadre assaggiano le bevande alla cieca e indovinano cosa c'è nel bicchiere.",
+  "Горячее":"Piatti principali", "Десерты":"Dolci", "Салаты":"Insalate",
+  "Бургер с картофелем фри":"Hamburger con patatine fritte", "Пицца «Ассорти»":"Pizza mista", "Домашняя паста с соусом":"Pasta fatta in casa con sugo",
+  "Печенье кукис с шоколадками m&m":"Cookies con confettini al cioccolato M&M's", "Конфетное мороженое":"Gelato con caramelle colorate",
+  "Дети уже уверенно работают на кухне: появляются салаты и настоящие десерты — тарт татен, фондан, тирамису. Три пакета отличаются числом блюд и наличием интерактивной игры.":
+    "A questa età i bambini si muovono già con sicurezza in cucina: arrivano le insalate e i veri dolci, come tarte Tatin, tortino fondente e tiramisù. I tre pacchetti si differenziano per numero di piatti e per la presenza di un gioco interattivo.",
+  "Салат Цезарь с индейкой":"Insalata Caesar con tacchino", "Салат овощной со сметаной или маслом":"Insalata di verdure con panna acida o olio", "Салат Коул слоу":"Insalata coleslaw",
+  "Чизбургер с домашним майонезом и картофелем по-деревенски":"Cheeseburger con maionese fatta in casa e patate rustiche", "Пицца":"Pizza", "Шримп ролл":"Shrimp roll",
+  "Клаб-сэндвич с курицей":"Club sandwich con pollo", "Фрикадельки в сливочном соусе с картофельным пюре и брусничным джемом":"Polpettine in salsa alla panna con purè di patate e confettura di mirtilli rossi",
+  "Яблочный тарт татен":"Tarte Tatin di mele", "Шоколадный фондан с солёной карамелью и мороженым":"Tortino al cioccolato fondente con caramello salato e gelato",
+  "Панакота с манго и маракуйей":"Panna cotta al mango e frutto della passione", "Мильфей с ягодами":"Millefoglie ai frutti di bosco", "Чизкейк с клубничным соусом":"Cheesecake con salsa di fragole",
+  "На выбор":"A scelta", "Интерактивная игра":"Gioco interattivo",
+  "Подростки готовят взрослые сеты из меню мастер-классов: закуска, горячее и десерт. Три пакета отличаются только уровнем блюд, цены — как у взрослых мастер-классов.":
+    "I ragazzi preparano i menu per adulti delle nostre masterclass: antipasto, piatto principale e dolce. I tre pacchetti si differenziano solo per il livello dei piatti; i prezzi sono quelli delle masterclass per adulti.",
+
+  /* Новогодний лендинг */
+  "Мастер-класс по новогодней композиции из еловых веток":"Masterclass di composizioni natalizie con rami d'abete",
+  "Новогодний венок":"Ghirlanda natalizia", "Еловый букет":"Bouquet di rami d'abete",
+  "Будем создавать украшение из свежих еловых веток, веселиться и встречать Новый год! На мастер-классе мы предоставим всё необходимое для создания композиции: основу, живые ветки лапника, украшения. Два варианта на выбор.":
+    "Creeremo una decorazione con rami d'abete freschi, ci divertiremo e accoglieremo insieme il nuovo anno! Durante la masterclass forniamo tutto il necessario per la composizione: la base, rami d'abete freschi e decorazioni. Due varianti a scelta."
+};
 function learn(o, seen = new Set()){
   if (!o || typeof o !== "object" || seen.has(o)) return; seen.add(o);
   if (Array.isArray(o)) return o.forEach(x => learn(x, seen));
@@ -373,25 +664,31 @@ function learn(o, seen = new Set()){
   if (Array.isArray(o.ru) && Array.isArray(o.en)) o.ru.forEach((r, i) => put(r, o.en[i]));
   Object.values(o).forEach(x => learn(x, seen));
 }
+/* По-итальянски тысячи отделяются точкой: 20.000 ₽, 1.613 g */
+const itNum = s => s.replace(/(\d)[ \u00a0\u202f](?=\d{3}(?!\d))/g, "$1.");
 function tr(s){
   if (s == null) return "";
   s = String(s);
-  if (!EN() || !CYR.test(s)) return s;
+  if (RU()) return s;
+  if (!CYR.test(s)) return IT() ? itNum(s) : s;
   const k = s.trim();
-  if (GEN[k] != null) return GEN[k];
-  if (DICT[k] != null) return DICT[k];
-  if (/«[^»]+»/.test(k)){ const r = k.replace(/«([^»]+)»/g, (m, x) => `“${tr(x)}”`); return CYR.test(r) ? trParts(r, k) : r; }
+  const hit = IT() ? IT_DICT[k] : GEN[k] ?? DICT[k];
+  if (hit != null) return IT() ? itNum(hit) : hit;
+  /* «Название» — переводим то, что в кавычках; в итальянском кавычки-ёлочки остаются */
+  if (/«[^»]+»/.test(k)){ const r = k.replace(/«([^»]+)»/g, (m, x) => IT() ? `«${tr(x)}»` : `“${tr(x)}”`); return CYR.test(r) ? trParts(r, k) : r; }
   return trParts(k, k);
 }
 function trParts(s, orig){
   for (const sep of [" · ", " — ", ": ", ", ", " + "]) if (s.includes(sep)) return s.split(sep).map(tr).join(sep);
   let m = s.match(/^(.*\S)\s*\(([^()]*)\)$/); if (m) return `${tr(m[1])} (${tr(m[2])})`;
-  m = s.match(/^(.*\S) на (гостя|человека|ребёнка)$/); if (m) return `${tr(m[1])} per ${m[2] === "ребёнка" ? "child" : "guest"}`;
-  m = s.match(/^от (.+)$/); if (m) return `from ${tr(m[1])}`;
-  m = s.match(/^минимум (.+)$/); if (m) return `minimum ${tr(m[1])}`;
-  m = s.match(/^([\d–-]+) мест$/); if (m) return `${m[1]} places`;
-  const u = s.replace(/(\d)\s*(кг|г|мл|л|см|шт\.?|ч|мин|м²)(?=$|[\s,.;)])/g, (x, d, w) => `${d} ${{"кг":"kg","г":"g","мл":"ml","л":"l","см":"cm","шт":"pcs","шт.":"pcs","ч":"h","мин":"min","м²":"m²"}[w]}`)
-    .replace(/(\d+)\s*(час|часа|часов)(?![а-яё])/g, (x, d) => `${d} ${+d === 1 ? "hour" : "hours"}`);
+  m = s.match(/^(.*\S) на (гостя|человека|ребёнка)$/); if (m) return `${tr(m[1])} ${m[2] === "ребёнка" ? X("", "per child", "a bambino") : X("", "per guest", "a persona")}`;
+  m = s.match(/^от (.+)$/); if (m) return `${X("", "from", "da")} ${tr(m[1])}`;
+  m = s.match(/^минимум (.+)$/); if (m) return `${X("", "minimum", "minimo")} ${tr(m[1])}`;
+  m = s.match(/^([\d–-]+) мест$/); if (m) return `${m[1]} ${X("", "places", "posti")}`;
+  m = s.match(/^(\d+) позиц(ия|ии|ий)$/); if (m) return `${m[1]} ${X("", +m[1] === 1 ? "item" : "items", +m[1] === 1 ? "proposta" : "proposte")}`;
+  let u = s.replace(/(\d)\s*(кг|г|мл|л|см|шт\.?|ч|мин|м²)(?=$|[\s,.;)])/g, (x, d, w) => `${d} ${{"кг":"kg","г":"g","мл":"ml","л":"l","см":"cm","шт":IT() ? "pz" : "pcs","шт.":IT() ? "pz" : "pcs","ч":"h","мин":"min","м²":"m²"}[w]}`)
+    .replace(/(\d+)\s*(час|часа|часов)(?![а-яё])/g, (x, d) => `${d} ${+d === 1 ? X("", "hour", "ora") : X("", "hours", "ore")}`);
+  if (IT()) u = itNum(u);
   if (!CYR.test(u)) return u;
   MISS.add(orig); return s;
 }
@@ -600,7 +897,7 @@ const pickVar = () => clone(Object.fromEntries(VKEYS.map(k => [k, ST[k]])));
 const syncVar = () => { if (ST.vars.length) ST.vars[ST.vi] = pickVar(); };
 const loadVar = i => { const b = blank(); Object.assign(ST, Object.fromEntries(VKEYS.map(k => [k, b[k]])), clone(ST.vars[i])); ST.vi = i; };
 const multi = () => ST.vars.length > 1;
-const vName = i => (multi() ? (ST.vars[i] || {}).vname : ST.vname) || X(`Вариант ${i + 1}`, `Option ${i + 1}`);
+const vName = i => (multi() ? (ST.vars[i] || {}).vname : ST.vname) || X(`Вариант ${i + 1}`, `Option ${i + 1}`, `Opzione ${i + 1}`);
 function withVar(i, fn){
   if (!ST.vars.length) return fn();
   syncVar(); const cur = ST.vi; loadVar(i);
@@ -629,7 +926,7 @@ function nextNo(){
   n++; try { localStorage.setItem(CNT_KEY + yy, n); } catch(e){}
   return `${MANAGER.code}${yy}-${String(n).padStart(3, "0")}`;
 }
-const kpLabel = () => ST.no ? X(`КП № ${ST.no}${ST.ver > 1 ? `, версия ${ST.ver}` : ""}`, `Proposal No. ${ST.no}${ST.ver > 1 ? `, version ${ST.ver}` : ""}`) : "";
+const kpLabel = () => ST.no ? X(`КП № ${ST.no}${ST.ver > 1 ? `, версия ${ST.ver}` : ""}`, `Proposal No. ${ST.no}${ST.ver > 1 ? `, version ${ST.ver}` : ""}`, `Proposta n. ${ST.no}${ST.ver > 1 ? `, versione ${ST.ver}` : ""}`) : "";
 
 const allItems = () => [...CAT.buffet.flatMap(g => g.items), ...CAT.soft, ...CAT.services.flatMap(g => g.items)];
 const pkg = () => CAT.pkgs.find(p => p.key === ST.pkg);
@@ -651,8 +948,8 @@ const uffPrice = () => ov(ST.uffPrice, CAT.uff.price), uffExt = () => ov(ST.uffE
 /* Ultra можно взять не на всех гостей, но не меньше чем на 70% */
 const uffMin = () => Math.ceil(+ST.guests * 0.7);
 const uffQ = () => Math.min(+ST.guests, Math.max(uffMin(), ov(ST.uffGuests, +ST.guests)));
-const uffPart = () => uffQ() < +ST.guests ? X(` на ${uffQ()} из ${ST.guests} ${plural(+ST.guests,"гостя","гостей","гостей")}`, ` for ${uffQ()} of ${ST.guests} guests`) : "";
-const guestsLabel = () => ST.kind === "kids" ? `${+ST.kids||0} ${plx(+ST.kids,"ребёнок","ребёнка","детей","child","children")}${+ST.guests ? ` + ${ST.guests} ${plx(+ST.guests,"взрослый","взрослых","взрослых","adult","adults")}` : ""}` : `${+ST.guests||0} ${plx(+ST.guests,"гость","гостя","гостей","guest","guests")}`;
+const uffPart = () => uffQ() < +ST.guests ? X(` на ${uffQ()} из ${ST.guests} ${plural(+ST.guests,"гостя","гостей","гостей")}`, ` for ${uffQ()} of ${ST.guests} guests`, ` per ${uffQ()} ospiti su ${ST.guests}`) : "";
+const guestsLabel = () => ST.kind === "kids" ? `${+ST.kids||0} ${plx(+ST.kids,"ребёнок","ребёнка","детей","child","children","bambino","bambini")}${+ST.guests ? ` + ${ST.guests} ${plx(+ST.guests,"взрослый","взрослых","взрослых","adult","adults","adulto","adulti")}` : ""}` : `${+ST.guests||0} ${plx(+ST.guests,"гость","гостя","гостей","guest","guests","ospite","ospiti")}`;
 
 /* Включённый в пакет фуршет */
 function includedBuffet(){
@@ -663,28 +960,28 @@ function includedBuffet(){
   return s ? {title:`${s.title}`, wt:p.bwt, list:s.detail, imgs:s.imgs, key:s.key} : null;
 }
 
-const ibShort = ib => { const s = ib.title.split(":")[0].trim(); return /фуршет/i.test(s) ? tr(s) : X(`Фуршет ${s}`, `${tr(s)} buffet`); };
+const ibShort = ib => { const s = ib.title.split(":")[0].trim(); return /фуршет/i.test(s) ? tr(s) : X(`Фуршет ${s}`, `${tr(s)} buffet`, `Buffet ${tr(s)}`); };
 /* Строки сметы */
 function lines(){
   const out = [], p = pkg();
   if (p){
     const q = p.per === "kids" ? +ST.kids : p.per === "guest" ? +ST.guests : 1;
     out.push({g:"Кулинарная программа", t:esc(tr(p.title)), q, u:p.unit, pr:p.price});
-    if (p.extra) out.push({g:"Кулинарная программа", t:`${esc(tr(p.short))}: ${X("каждый участник", "each participant")}`, q:+ST.guests, u:p.extra.unit, pr:p.extra.price});
+    if (p.extra) out.push({g:"Кулинарная программа", t:`${esc(tr(p.short))}: ${X("каждый участник", "each participant", "ogni partecipante")}`, q:+ST.guests, u:p.extra.unit, pr:p.extra.price});
     const sw = swapCount();
-    if (sw && swapPrice()) out.push({g:"Кулинарная программа", t:X(`Замена ${sw} ${plural(sw,"блюда","блюд","блюд")} в сете`, `${sw} ${sw === 1 ? "dish" : "dishes"} swapped in the set`) + ` <small>· ${rub(swapPrice())} ${X("за блюдо", "per dish")}</small>`, q:q, u:p.unit, pr:swapPrice() * sw});
+    if (sw && swapPrice()) out.push({g:"Кулинарная программа", t:X(`Замена ${sw} ${plural(sw,"блюда","блюд","блюд")} в сете`, `${sw} ${sw === 1 ? "dish" : "dishes"} swapped in the set`, `Sostituzione di ${sw} ${sw === 1 ? "piatto" : "piatti"} del menu`) + ` <small>· ${rub(swapPrice())} ${X("за блюдо", "per dish", "a piatto")}</small>`, q:q, u:p.unit, pr:swapPrice() * sw});
     const ib = includedBuffet();
     if (ib) out.push({g:"Кулинарная программа", t:esc(ibShort(ib)), incl:true});
   }
-  if (+ST.hallHours) selHalls().forEach(hl => { if (hl.ext) out.push({g:"Площадка", t:X(`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, `Hall extension “${esc(tr(hl.title))}”, +${ST.hallHours} h`), q:+ST.hallHours, u:"час", pr:hl.ext}); });
+  if (+ST.hallHours) selHalls().forEach(hl => { if (hl.ext) out.push({g:"Площадка", t:X(`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, `Hall extension “${esc(tr(hl.title))}”, +${ST.hallHours} h`, `Prolungamento sala «${esc(tr(hl.title))}», +${ST.hallHours} h`), q:+ST.hallHours, u:"час", pr:hl.ext}); });
   const ff = CAT.ff.find(f => f.key === ST.ff);
   if (ff){
-    out.push({g:"Напитки", t:`${esc(tr(ff.title))}, ${X("4 часа", "4 hours")}`, q:+ST.guests, u:"гость", pr:ffPrice(ff), pr0:ff.price});
-    if (+ST.ffHours) out.push({g:"Напитки", t:X(`Продление free-flow, +${ST.ffHours} ч`, `Free-flow extension, +${ST.ffHours} h`) + ` <small>· ${rub(ffExt(ff))} ${X("за час", "per hour")}</small>`, q:+ST.guests, u:"гость", pr:ffExt(ff) * +ST.ffHours, pr0:ff.ext * +ST.ffHours});
+    out.push({g:"Напитки", t:`${esc(tr(ff.title))}, ${X("4 часа", "4 hours", "4 ore")}`, q:+ST.guests, u:"гость", pr:ffPrice(ff), pr0:ff.price});
+    if (+ST.ffHours) out.push({g:"Напитки", t:X(`Продление free-flow, +${ST.ffHours} ч`, `Free-flow extension, +${ST.ffHours} h`, `Prolungamento open bar, +${ST.ffHours} h`) + ` <small>· ${rub(ffExt(ff))} ${X("за час", "per hour", "all'ora")}</small>`, q:+ST.guests, u:"гость", pr:ffExt(ff) * +ST.ffHours, pr0:ff.ext * +ST.ffHours});
     if (uffOn()){
       const u = CAT.uff;
-      out.push({g:"Напитки", t:`${esc(u.title)} · ${X("крепкий алкоголь, 4 часа", "spirits, 4 hours")}`, q:uffQ(), u:"гость", pr:uffPrice(), pr0:u.price});
-      if (+ST.ffHours) out.push({g:"Напитки", t:`${X("Продление", "Extension:")} ${esc(u.title)}, +${ST.ffHours} ${X("ч", "h")} <small>· ${rub(uffExt())} ${X("за час", "per hour")}</small>`, q:uffQ(), u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours});
+      out.push({g:"Напитки", t:`${esc(u.title)} · ${X("крепкий алкоголь, 4 часа", "spirits, 4 hours", "superalcolici, 4 ore")}`, q:uffQ(), u:"гость", pr:uffPrice(), pr0:u.price});
+      if (+ST.ffHours) out.push({g:"Напитки", t:`${X("Продление", "Extension:", "Prolungamento")} ${esc(u.title)}, +${ST.ffHours} ${X("ч", "h", "h")} <small>· ${rub(uffExt())} ${X("за час", "per hour", "all'ora")}</small>`, q:uffQ(), u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours});
     }
   }
   CAT.bar.forEach(c => c.items.forEach(it => {
@@ -812,7 +1109,7 @@ function renderForm(){
 
   F.innerHTML = `
   <div class="kinds">${Object.entries(KINDS).map(([k, v]) => `<button type="button" data-kind="${k}" class="${ST.kind === k ? "on" : ""}">${v.label}</button>`).join("")}</div>
-  <div class="kinds langs"><span>Язык КП</span>${[["ru","Русский"],["en","English"]].map(([k, v]) => `<button type="button" data-lang="${k}" class="${(ST.lang || "ru") === k ? "on" : ""}">${v}</button>`).join("")}</div>
+  <div class="kinds langs"><span>Язык КП</span>${[["ru","Русский"],["en","English"],["it","Italiano"]].map(([k, v]) => `<button type="button" data-lang="${k}" class="${(ST.lang || "ru") === k ? "on" : ""}">${v}</button>`).join("")}</div>
   <div class="warn" id="trWarn" hidden></div>
   <div class="kpno">${ST.no ? `${esc(kpLabel())}${ST.verDate ? ` · PDF от ${new Date(ST.verDate).toLocaleDateString("ru-RU")}` : ""}${ST.sentHash && ST.sentHash !== stateHash() ? " · есть правки → следующий PDF станет версией " + (ST.ver + 1) : ""}` : "Новое КП — номер присвоится при первом PDF"}</div>
   <details class="box" data-id="client" ${op("client", true)}><summary>Клиент и дата</summary><div class="bx grid2">
@@ -978,72 +1275,72 @@ function variantBody(H, B, blocks){
   const barOn = []; C.bar.forEach(c => c.items.forEach(it => { const b = ST.bar[`${c.h}|${it.name}`]; if (b) barOn.push({c, it, b}); }));
 
   /* Обзор */
-  const ov = [], perG = X("на гостя", "per guest");
-  const bunit = (c, n) => c.kind === "cocktail" ? (EN() ? (+n === 1 ? "serving" : "servings") : "порц.") : (EN() ? (+n === 1 ? "bottle" : "bottles") : "бут.");
-  if (p) ov.push([X("Кулинария", "Cooking"), [tr(p.title) + ` — ${rub(p.price)} / ${unitWord(p.unit)}`, set ? X(`Сет «${set.ru}»: ${setDishes().join(", ")}`, `Set “${tr(set.ru)}”: ${setDishes().map(tr).join(", ")}`) : p.setIds ? X("Сет меню — выбираете из подборки уровня", "Set menu — you choose from the sets of this level") : "",
-    p.menu ? (ST.dishes.length ? `${X("Блюда", "Dishes")}: ${ST.dishes.map(tr).join(", ")}` : X(`${p.dishes} блюда: ${p.what}`, `${p.dishes} dishes: ${tr(p.what)}`)) : "", p.game ? (g => `${X("Игра", "Game")}: ${g[0].toLowerCase() + g.slice(1)}`)(tr(p.game)) : "", X("Профессиональный шеф Novikov, все продукты и инвентарь", "A professional Novikov chef, all ingredients and equipment")].filter(Boolean)]);
-  const fb = []; if (ib) fb.push(`${tr(ib.title)}${ib.wt ? ` (${tr(ib.wt)} ${perG})` : ""} — ${X("входит в пакет", "included in the package")}`); bufOn.forEach(it => fb.push(`${tr(it.title)}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
-  if (fb.length) ov.push([X("Фуршет", "Buffet"), fb]);
-  const dr = []; if (ff) dr.push(`${tr(ff.title)} — ${X("безлимит 4 часа", "unlimited for 4 hours")}${+ST.ffHours ? ` + ${ST.ffHours} ${X("ч", "h")}` : ""}`);
-  if (uffOn()) dr.push(`${C.uff.title} — ${X("безлимитный крепкий алкоголь на то же время", "unlimited spirits for the same time")}${uffPart()}`); softOn.forEach(it => dr.push(tr(it.title))); barOn.forEach(({c, it, b}) => dr.push(`${tr(it.name)}${+b.b ? ` × ${b.b} ${bunit(c, b.b)}` : ""}${+b.g ? ` × ${b.g} ${EN() ? unitEn(b.g, it.gUnit) : it.gUnit}` : ""}`));
-  dr.push(tr(C.softNote) || X("Вода, чай и кофе включены", "Water, tea and coffee are included"));
-  ov.push([X("Напитки", "Drinks"), dr]);
-  if (svcOn.length || ST.custom.some(c => c.t)) ov.push([X("Доп. услуги", "Extras"), [...svcOn.map(it => tr(it.title) + (it.unit !== "гость" && qtyOf(it) > 1 ? ` × ${qtyOf(it)}` : "")), ...ST.custom.filter(c => c.t).map(c => c.t)]]);
+  const ov = [], perG = X("на гостя", "per guest", "a persona");
+  const bunit = (c, n) => RU() ? (c.kind === "cocktail" ? "порц." : "бут.") : unitFx(+n, c.kind === "cocktail" ? "порция" : "бут.");
+  if (p) ov.push([X("Кулинария", "Cooking", "Cucina"), [tr(p.title) + ` — ${rub(p.price)} / ${unitWord(p.unit)}`, set ? X(`Сет «${set.ru}»: ${setDishes().join(", ")}`, `Set “${tr(set.ru)}”: ${setDishes().map(tr).join(", ")}`, `Menu «${tr(set.ru)}»: ${setDishes().map(tr).join(", ")}`) : p.setIds ? X("Сет меню — выбираете из подборки уровня", "Set menu — you choose from the sets of this level", "Menu: lo scegliete tra quelli di questo livello") : "",
+    p.menu ? (ST.dishes.length ? `${X("Блюда", "Dishes", "Piatti")}: ${ST.dishes.map(tr).join(", ")}` : X(`${p.dishes} блюда: ${p.what}`, `${p.dishes} dishes: ${tr(p.what)}`, `${p.dishes} piatti: ${tr(p.what)}`)) : "", p.game ? (g => `${X("Игра", "Game", "Gioco")}: ${g[0].toLowerCase() + g.slice(1)}`)(tr(p.game)) : "", X("Профессиональный шеф Novikov, все продукты и инвентарь", "A professional Novikov chef, all ingredients and equipment", "Uno chef professionista Novikov, tutti gli ingredienti e l'attrezzatura")].filter(Boolean)]);
+  const fb = []; if (ib) fb.push(`${tr(ib.title)}${ib.wt ? ` (${tr(ib.wt)} ${perG})` : ""} — ${X("входит в пакет", "included in the package", "incluso nel pacchetto")}`); bufOn.forEach(it => fb.push(`${tr(it.title)}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
+  if (fb.length) ov.push([X("Фуршет", "Buffet", "Buffet"), fb]);
+  const dr = []; if (ff) dr.push(`${tr(ff.title)} — ${X("безлимит 4 часа", "unlimited for 4 hours", "a volontà per 4 ore")}${+ST.ffHours ? ` + ${ST.ffHours} ${X("ч", "h", "h")}` : ""}`);
+  if (uffOn()) dr.push(`${C.uff.title} — ${X("безлимитный крепкий алкоголь на то же время", "unlimited spirits for the same time", "superalcolici a volontà per la stessa durata")}${uffPart()}`); softOn.forEach(it => dr.push(tr(it.title))); barOn.forEach(({c, it, b}) => dr.push(`${tr(it.name)}${+b.b ? ` × ${b.b} ${bunit(c, b.b)}` : ""}${+b.g ? ` × ${b.g} ${RU() ? it.gUnit : unitFx(+b.g, it.gUnit)}` : ""}`));
+  dr.push(tr(C.softNote) || X("Вода, чай и кофе включены", "Water, tea and coffee are included", "Acqua, tè e caffè inclusi"));
+  ov.push([X("Напитки", "Drinks", "Bevande"), dr]);
+  if (svcOn.length || ST.custom.some(c => c.t)) ov.push([X("Доп. услуги", "Extras", "Extra"), [...svcOn.map(it => tr(it.title) + (it.unit !== "гость" && qtyOf(it) > 1 ? ` × ${qtyOf(it)}` : "")), ...ST.custom.filter(c => c.t).map(c => c.t)]]);
   const inclTxt = tr(hs.length && hs.every(h => h.biz) ? L(C.hallIncl.business) : L(C.hallIncl.culinary));
   const ppl = +ST.guests + (ST.kind === "kids" ? +ST.kids : 0), wN = ppl >= 6 && ppl <= 19 ? 1 : ppl >= 20 && ppl <= 30 ? 2 : ppl >= 31 && ppl <= 50 ? 3 : 0;
-  ov.push([X("Площадка", "Venue"), [...hs.map(h => X(`Зал «${h.title}»${h.area ? `, ${h.area}` : ""}${+ST.hallHours && h.ext ? ` + продление ${ST.hallHours} ч` : ""}`,
-    `Hall “${tr(h.title)}”${h.area ? `, ${tr(h.area)}` : ""}${+ST.hallHours && h.ext ? ` + ${ST.hallHours} h extension` : ""}`)), wN ? X(`${wN} ${plural(wN,"официант","официанта","официантов")} — входит в стоимость`, `${wN} ${wN === 1 ? "waiter" : "waiters"} — included`) : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
-  H(X("Что входит", "What's included"), X("всё в одном месте", "all in one place"));
-  B(`<p class="lead">${X("Ниже — полный состав вашего мероприятия. Всё перечисленное уже учтено в стоимости.", "Below is everything your event includes. All of it is already reflected in the price.")}</p>`);
+  ov.push([X("Площадка", "Venue", "Location"), [...hs.map(h => X(`Зал «${h.title}»${h.area ? `, ${h.area}` : ""}${+ST.hallHours && h.ext ? ` + продление ${ST.hallHours} ч` : ""}`,
+    `Hall “${tr(h.title)}”${h.area ? `, ${tr(h.area)}` : ""}${+ST.hallHours && h.ext ? ` + ${ST.hallHours} h extension` : ""}`, `Sala «${tr(h.title)}»${h.area ? `, ${tr(h.area)}` : ""}${+ST.hallHours && h.ext ? ` + prolungamento di ${ST.hallHours} h` : ""}`)), wN ? X(`${wN} ${plural(wN,"официант","официанта","официантов")} — входит в стоимость`, `${wN} ${wN === 1 ? "waiter" : "waiters"} — included`, `${wN} ${wN === 1 ? "cameriere — incluso" : "camerieri — inclusi"} nel prezzo`) : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
+  H(X("Что входит", "What's included", "Cosa è incluso"), X("всё в одном месте", "all in one place", "tutto a colpo d'occhio"));
+  B(`<p class="lead">${X("Ниже — полный состав вашего мероприятия. Всё перечисленное уже учтено в стоимости.", "Below is everything your event includes. All of it is already reflected in the price.", "Qui di seguito trovate tutto ciò che comprende il vostro evento. Ogni voce è già inclusa nel prezzo.")}</p>`);
   ov.forEach(([k, arr]) => B(`<div class="ov-grp"><div class="k">${esc(k)}</div><ul class="ticks one">${arr.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>`));
 
   /* Тайминг */
-  H(X("Тайминг", "Timeline"), `${ST.start} — ${endTime()}`);
+  H(X("Тайминг", "Timeline", "Scaletta"), `${ST.start} — ${endTime()}`);
   let t0 = ST.start;
-  B(`<div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} ${X("мин", "min")}</small></div><div class="tx">${esc(tr(r.t))}</div></div>`; }).join("")}</div>`);
+  B(`<div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} ${X("мин", "min", "min")}</small></div><div class="tx">${esc(tr(r.t))}</div></div>`; }).join("")}</div>`);
 
   /* Кулинария */
   if (p){
-    H(X("Кулинарная программа", "Culinary programme"), tr(p.short));
+    H(X("Кулинарная программа", "Culinary programme", "Programma culinario"), tr(p.short));
     B(`<div class="card"><div class="meta">${esc(tr(p.group))}</div><h3>${esc(tr(p.title))}</h3><p>${esc(tr(p.desc))}</p>${p.prem ? `<p><b>${esc(tr(p.prem))}</b></p>` : ""}
       <div class="strip c3">${p.imgs.map(u => `<div class="ph" ${bg(u)}></div>`).join("")}</div></div>`);
-    if (set) B(`<div class="card"><div class="meta">${X("Ваш сет", "Your set")}</div><h3>${X("«", "“")}${esc(tr(set.ru))}${X("»", "”")}</h3><ul class="ticks one">${setDishes().map(d => `<li>${esc(tr(d))}</li>`).join("")}</ul></div>`);
-    else if (p.setIds) B(`<div class="card"><div class="meta">${X("Сеты на выбор", "Sets to choose from")} · ${esc(tr(p.short))}</div><ul class="ticks">${p.setIds.map(id => SRC[ST.kind].SETS[id]).filter(Boolean).map(s => `<li><b>${esc(tr(s.ru))}</b></li>`).join("")}</ul></div>`);
+    if (set) B(`<div class="card"><div class="meta">${X("Ваш сет", "Your set", "Il vostro menu")}</div><h3>${X("«", "“", "«")}${esc(tr(set.ru))}${X("»", "”", "»")}</h3><ul class="ticks one">${setDishes().map(d => `<li>${esc(tr(d))}</li>`).join("")}</ul></div>`);
+    else if (p.setIds) B(`<div class="card"><div class="meta">${X("Сеты на выбор", "Sets to choose from", "Menu a scelta")} · ${esc(tr(p.short))}</div><ul class="ticks">${p.setIds.map(id => SRC[ST.kind].SETS[id]).filter(Boolean).map(s => `<li><b>${esc(tr(s.ru))}</b></li>`).join("")}</ul></div>`);
     if (p.menu){
-      if (ST.dishes.length) B(`<div class="card"><div class="meta">${X("Меню праздника", "Party menu")}</div><ul class="ticks one">${ST.dishes.map(d => `<li>${esc(tr(d))}</li>`).join("")}</ul></div>`);
-      else B(`<div class="card"><div class="meta">${X(`Меню на выбор · ${p.dishes} блюда: ${esc(p.what)}`, `Menu to choose from · ${p.dishes} dishes: ${esc(tr(p.what))}`)}</div>${p.menu.map(m => `<p style="margin-top:8px"><b>${esc(tr(L(m.t)))}:</b> ${m.items.map(d => esc(tr(d))).join(" · ")}</p>`).join("")}</div>`);
+      if (ST.dishes.length) B(`<div class="card"><div class="meta">${X("Меню праздника", "Party menu", "Menu della festa")}</div><ul class="ticks one">${ST.dishes.map(d => `<li>${esc(tr(d))}</li>`).join("")}</ul></div>`);
+      else B(`<div class="card"><div class="meta">${X(`Меню на выбор · ${p.dishes} блюда: ${esc(p.what)}`, `Menu to choose from · ${p.dishes} dishes: ${esc(tr(p.what))}`, `Menu a scelta · ${p.dishes} piatti: ${esc(tr(p.what))}`)}</div>${p.menu.map(m => `<p style="margin-top:8px"><b>${esc(tr(L(m.t)))}:</b> ${m.items.map(d => esc(tr(d))).join(" · ")}</p>`).join("")}</div>`);
     }
   }
 
   /* Фуршет */
   if (ib || bufOn.length){
-    H(X("Фуршет", "Buffet"), ib ? X("входит в пакет", "included in the package") : "");
-    if (ib) B(`<div class="card"><div class="meta">${X("Welcome-фуршет", "Welcome buffet")}<span class="incl">${X("включено", "included")}</span></div><h3>${esc(tr(ib.title))}${ib.wt ? ` · ${esc(tr(ib.wt))} ${perG}` : ""}</h3>
+    H(X("Фуршет", "Buffet", "Buffet"), ib ? X("входит в пакет", "included in the package", "incluso nel pacchetto") : "");
+    if (ib) B(`<div class="card"><div class="meta">${X("Welcome-фуршет", "Welcome buffet", "Buffet di benvenuto")}<span class="incl">${X("включено", "included", "incluso")}</span></div><h3>${esc(tr(ib.title))}${ib.wt ? ` · ${esc(tr(ib.wt))} ${perG}` : ""}</h3>
       ${ib.imgs.length ? `<div class="dish">${ib.list.map((n, i) => { const u = SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n]; return u ? `<div class="it"><div class="ph" ${bg(u)}></div><div class="nm">${esc(tr(n))}</div></div>` : ""; }).join("")}</div>` : ""}
       ${ib.list.some(n => !(SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n])) ? `<ul class="ticks">${ib.list.filter(n => !(SRC[ST.kind].BUFFET_IMG[n] || SRC.adult.BUFFET_IMG[n])).map(n => `<li>${esc(tr(n))}</li>`).join("")}</ul>` : ""}</div>`);
     const withImg = bufOn.filter(it => it.imgs && it.imgs.length && !it.detail), plain = bufOn.filter(it => !(it.imgs && it.imgs.length && !it.detail));
     if (withImg.length) B(`<div class="dish">${withImg.map(it => `<div class="it"><div class="ph" ${bg(it.imgs[0])}></div><div class="nm"><b>${esc(tr(it.title))}</b> × ${qtyOf(it)}${it.sub ? `<br>${esc(tr(it.sub))}` : ""}</div></div>`).join("")}</div>`);
-    if (plain.length) B(`<div class="card"><div class="meta">${X("Дополнительно к столу", "Also on the table")}</div><ul class="ticks one">${plain.map(it => `<li><b>${esc(tr(it.title))}</b>${it.unit === "гость" ? X(` — на ${qtyOf(it)} ${plural(qtyOf(it),"гостя","гостей","гостей")}`, ` — for ${qtyOf(it)} ${qtyOf(it) === 1 ? "guest" : "guests"}`) : ` × ${esc(qu(qtyOf(it), it.unit))}`}${it.detail ? `<br><span style="font-size:11.5px">${esc(it.detail.map(tr).join(", "))}</span>` : ""}</li>`).join("")}</ul></div>`);
+    if (plain.length) B(`<div class="card"><div class="meta">${X("Дополнительно к столу", "Also on the table", "In aggiunta")}</div><ul class="ticks one">${plain.map(it => `<li><b>${esc(tr(it.title))}</b>${it.unit === "гость" ? X(` — на ${qtyOf(it)} ${plural(qtyOf(it),"гостя","гостей","гостей")}`, ` — for ${qtyOf(it)} ${qtyOf(it) === 1 ? "guest" : "guests"}`, ` — per ${qtyOf(it)} ${qtyOf(it) === 1 ? "ospite" : "ospiti"}`) : ` × ${esc(qu(qtyOf(it), it.unit))}`}${it.detail ? `<br><span style="font-size:11.5px">${esc(it.detail.map(tr).join(", "))}</span>` : ""}</li>`).join("")}</ul></div>`);
   }
 
   /* Напитки */
   if (ff || softOn.length || barOn.length){
-    H(X("Напитки", "Drinks"), ff ? X("безлимитный бар", "open bar") : "");
-    const hrs = +ST.ffHours ? ` + ${ST.ffHours} ${X("ч", "h")}` : "";
-    if (ff) B(`<div class="card"><div class="meta">Free-flow · ${X("4 часа", "4 hours")}${hrs}</div><h3>${esc(tr(ff.title))}</h3>
-      <p>${X(`Напитки из списка ниже — без ограничений в течение 4 часов${+ST.ffHours ? ` + ${ST.ffHours} ч продления` : ""}.`, `Unlimited drinks from the list below for 4 hours${+ST.ffHours ? ` + ${ST.ffHours} h extension` : ""}.`)}</p>
+    H(X("Напитки", "Drinks", "Bevande"), ff ? X("безлимитный бар", "open bar", "open bar") : "");
+    const hrs = +ST.ffHours ? ` + ${ST.ffHours} ${X("ч", "h", "h")}` : "";
+    if (ff) B(`<div class="card"><div class="meta">Free-flow · ${X("4 часа", "4 hours", "4 ore")}${hrs}</div><h3>${esc(tr(ff.title))}</h3>
+      <p>${X(`Напитки из списка ниже — без ограничений в течение 4 часов${+ST.ffHours ? ` + ${ST.ffHours} ч продления` : ""}.`, `Unlimited drinks from the list below for 4 hours${+ST.ffHours ? ` + ${ST.ffHours} h extension` : ""}.`, `Bevande della lista qui sotto a volontà per 4 ore${+ST.ffHours ? ` + ${ST.ffHours} h di prolungamento` : ""}.`)}</p>
       <div class="wines">${ff.cats.map(c => `<div class="c"><b>${esc(tr(L(c.t)))}</b>${c.w.map(w => `<div>${esc(tr(w[0]))}${w[1] ? ` <span style="color:var(--muted)">· ${esc(tr(w[1]))}</span>` : ""}</div>`).join("")}</div>`).join("")}</div></div>`);
-    if (uffOn()) B(`<div class="card"><div class="meta">${X("Крепкий алкоголь", "Spirits")} · ${X("4 часа", "4 hours")}${hrs}</div><h3>${esc(C.uff.title)}${uffPart() ? ` · ${uffQ()} ${plx(uffQ(),"гость","гостя","гостей","guest","guests")}` : ""}</h3>
-      <p>${X(`Дополнение к ${esc(ff.title)}: крепкие напитки из списка ниже — без ограничений на всё время free-flow.`, `An add-on to ${esc(tr(ff.title))}: unlimited spirits from the list below for the whole free-flow time.`)}</p>
+    if (uffOn()) B(`<div class="card"><div class="meta">${X("Крепкий алкоголь", "Spirits", "Superalcolici")} · ${X("4 часа", "4 hours", "4 ore")}${hrs}</div><h3>${esc(C.uff.title)}${uffPart() ? ` · ${uffQ()} ${plx(uffQ(),"гость","гостя","гостей","guest","guests","ospite","ospiti")}` : ""}</h3>
+      <p>${X(`Дополнение к ${esc(ff.title)}: крепкие напитки из списка ниже — без ограничений на всё время free-flow.`, `An add-on to ${esc(tr(ff.title))}: unlimited spirits from the list below for the whole free-flow time.`, `In aggiunta all'${esc(tr(ff.title))}: superalcolici della lista qui sotto a volontà per tutta la durata dell'open bar.`)}</p>
       <div class="bottles">${C.uff.bottles.map(b => `<div class="it"><div class="ph" ${bg(b.img)}></div><div class="nm"><b>${esc(b.n)}</b><br>${esc(tr(b.t))}</div></div>`).join("")}</div></div>`);
-    if (softOn.length) B(`<div class="card"><div class="meta">${X("Безалкогольное", "Soft drinks")}</div><ul class="ticks one">${softOn.map(it => `<li><b>${esc(tr(it.title))}</b>${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}<br><span style="font-size:11.5px">${esc((it.detail || []).map(tr).join(", ") || tr(it.sub))}</span></li>`).join("")}</ul></div>`);
-    if (barOn.length) B(`<div class="card"><div class="meta">${X("Из барной карты", "From the bar menu")}</div><ul class="ticks one">${barOn.map(({c, it, b}) => `<li><b>${esc(tr(it.name))}</b> <span style="color:var(--muted)">${esc(tr(it.origin))}</span> — ${[+b.b ? `${b.b} ${bunit(c, b.b)}` : "", +b.g ? `${b.g} × ${EN() ? unitEn(1, it.gUnit).replace(/^× /, "") : it.gUnit}` : ""].filter(Boolean).join(", ")}</li>`).join("")}</ul></div>`);
-    B(`<p class="fine">${esc(tr(C.softNote) || X("Вода, чай и кофе включены", "Water, tea and coffee are included"))}. ${X("Алкоголь с собой приносить нельзя.", "Guests may not bring their own alcohol.")}</p>`);
+    if (softOn.length) B(`<div class="card"><div class="meta">${X("Безалкогольное", "Soft drinks", "Analcolici")}</div><ul class="ticks one">${softOn.map(it => `<li><b>${esc(tr(it.title))}</b>${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}<br><span style="font-size:11.5px">${esc((it.detail || []).map(tr).join(", ") || tr(it.sub))}</span></li>`).join("")}</ul></div>`);
+    if (barOn.length) B(`<div class="card"><div class="meta">${X("Из барной карты", "From the bar menu", "Dalla carta del bar")}</div><ul class="ticks one">${barOn.map(({c, it, b}) => `<li><b>${esc(tr(it.name))}</b> <span style="color:var(--muted)">${esc(tr(it.origin))}</span> — ${[+b.b ? `${b.b} ${bunit(c, b.b)}` : "", +b.g ? (RU() ? `${b.g} × ${it.gUnit}` : `${b.g} ${unitFx(+b.g, it.gUnit)}`) : ""].filter(Boolean).join(", ")}</li>`).join("")}</ul></div>`);
+    B(`<p class="fine">${esc(tr(C.softNote) || X("Вода, чай и кофе включены", "Water, tea and coffee are included", "Acqua, tè e caffè inclusi"))}. ${X("Алкоголь с собой приносить нельзя.", "Guests may not bring their own alcohol.", "Non è consentito portare alcolici dall'esterno.")}</p>`);
   }
 
   /* Доп. услуги — карточка на услугу */
   if (svcOn.length || ST.custom.some(c => c.t)){
-    H(X("Дополнительные услуги", "Additional services"));
+    H(X("Дополнительные услуги", "Additional services", "Servizi aggiuntivi"));
     const bySvc = {}; svcOn.forEach(it => (bySvc[it.svc] = bySvc[it.svc] || []).push(it));
     Object.entries(bySvc).forEach(([name, its]) => { const it = its[0];
       B(`<div class="card"><h3>${esc(tr(name))}</h3><div class="meta">${its.map(x => `${esc(tr(x.short || ""))}${x.unit === "гость" || qtyOf(x) === 1 ? "" : ` × ${qtyOf(x)}`}`).join(" · ")}</div>
@@ -1053,21 +1350,22 @@ function variantBody(H, B, blocks){
   }
 
   /* Смета */
-  const perW = ST.kind === "kids" ? X("на участника", "per participant") : perG;
-  H(multi() ? `${X("Стоимость", "Price")} · ${vName(ST.vi)}` : X("Стоимость", "Price"), ST.kind === "kids" ? "" : `${guestsLabel()}`);
+  const perW = ST.kind === "kids" ? X("на участника", "per participant", "a partecipante") : perG;
+  H(multi() ? `${X("Стоимость", "Price", "Preventivo")} · ${vName(ST.vi)}` : X("Стоимость", "Price", "Preventivo"), ST.kind === "kids" ? "" : `${guestsLabel()}`);
   let g0 = "";
   const rows = T.ls.map(l => { let s = ""; if (l.g !== g0){ g0 = l.g; s += `<tr class="grp"><td colspan="4">${esc(tr(l.g))}</td></tr>`; }
-    return s + `<tr><td>${l.t}</td><td class="n">${l.incl ? "" : esc(qu(l.q, l.u))}</td><td class="n">${l.incl || l.req ? "" : (ST.showOld && l.pr0 > l.pr ? `<s>${rub(l.pr0)}</s>` : "") + rub(l.pr)}</td><td class="n">${l.incl ? X("включено", "included") : l.req ? X("по запросу", "on request") : rub(l.sum)}</td></tr>`; }).join("");
-  blocks.push({split:true, html:`<div class="blk"><table class="est"><thead><tr><th>${X("Позиция", "Item")}</th><th class="n">${X("Кол-во", "Qty")}</th><th class="n">${X("Цена", "Price")}</th><th class="n">${X("Сумма", "Amount")}</th></tr></thead><tbody class="rows">${rows}</tbody></table></div>`});
-  B(`<div class="totals">${T.disc || T.top ? `<div><span>${X("Сумма", "Subtotal")}</span><b>${rub(T.sub)}</b></div>` : ""}${T.disc ? `<div><span>${X("Скидка", "Discount")}${T.d ? ` ${T.d}%` : ""}</span><b>−${rub(T.disc)}</b></div>` : ""}${T.top ? `<div><span>${X("Доплата до депозита", "Top-up to the deposit of")} ${rub(T.dep)}</span><b>+${rub(T.top)}</b></div>` : ""}
-    <div class="big"><span>${X("Итого", "Total")}${multi() ? ` · ${esc(vName(ST.vi))}` : ""}</span><span>${rub(T.tot)}</span></div>${T.heads ? `<div class="pg">≈ ${rub(T.per)} ${perW}</div>` : ""}</div>`);
+    return s + `<tr><td>${l.t}</td><td class="n">${l.incl ? "" : esc(qu(l.q, l.u))}</td><td class="n">${l.incl || l.req ? "" : (ST.showOld && l.pr0 > l.pr ? `<s>${rub(l.pr0)}</s>` : "") + rub(l.pr)}</td><td class="n">${l.incl ? X("включено", "included", "incluso") : l.req ? X("по запросу", "on request", "su richiesta") : rub(l.sum)}</td></tr>`; }).join("");
+  blocks.push({split:true, html:`<div class="blk"><table class="est"><thead><tr><th>${X("Позиция", "Item", "Voce")}</th><th class="n">${X("Кол-во", "Qty", "Q.tà")}</th><th class="n">${X("Цена", "Price", "Prezzo")}</th><th class="n">${X("Сумма", "Amount", "Importo")}</th></tr></thead><tbody class="rows">${rows}</tbody></table></div>`});
+  B(`<div class="totals">${T.disc || T.top ? `<div><span>${X("Сумма", "Subtotal", "Subtotale")}</span><b>${rub(T.sub)}</b></div>` : ""}${T.disc ? `<div><span>${X("Скидка", "Discount", "Sconto")}${T.d ? ` ${T.d}%` : ""}</span><b>−${rub(T.disc)}</b></div>` : ""}${T.top ? `<div><span>${X("Доплата до депозита", "Top-up to the deposit of", "Integrazione al minimo di spesa di")} ${rub(T.dep)}</span><b>+${rub(T.top)}</b></div>` : ""}
+    <div class="big"><span>${X("Итого", "Total", "Totale")}${multi() ? ` · ${esc(vName(ST.vi))}` : ""}</span><span>${rub(T.tot)}</span></div>${T.heads ? `<div class="pg">≈ ${rub(T.per)} ${perW}</div>` : ""}</div>`);
   return T;
 }
 
 const payText = T => { const p = Math.min(100, Math.max(0, +ST.prepay || 0)), d = +ST.prepayDays || 0;
   if (!p) return "";
   const amt = T ? Math.round(T.tot * p / 100) : 0;
-  if (EN()) return `${p}% prepayment on booking${T ? ` — ${rub(amt)}` : multi() ? " of the chosen option's price" : ""}${p < 100 ? `, the balance${T ? ` of ${rub(T.tot - amt)}` : ""} no later than ${d} ${d === 1 ? "day" : "days"} before the event` : ""}.`;
+  if (IT()) return `Acconto del ${p}% alla prenotazione${T ? ` — ${rub(amt)}` : multi() ? " sul prezzo dell'opzione scelta" : ""}${p < 100 ? `, saldo${T ? ` di ${rub(T.tot - amt)}` : ""} al più tardi ${d} ${d === 1 ? "giorno" : "giorni"} prima dell'evento` : ""}.`;
+  if (!RU()) return `${p}% prepayment on booking${T ? ` — ${rub(amt)}` : multi() ? " of the chosen option's price" : ""}${p < 100 ? `, the balance${T ? ` of ${rub(T.tot - amt)}` : ""} no later than ${d} ${d === 1 ? "day" : "days"} before the event` : ""}.`;
   const rest = p < 100 ? `, остаток${T ? ` ${rub(T.tot - amt)}` : ""} — не позднее чем за ${d} ${plural(d, "день", "дня", "дней")} до мероприятия` : "";
   return `Предоплата ${p}% при бронировании${T ? ` — ${rub(amt)}` : multi() ? " от стоимости выбранного варианта" : ""}${rest}.`; };
 
@@ -1077,12 +1375,12 @@ function buildBlocks(){
   const B = (html, split) => blocks.push({html:`<div class="blk">${html}</div>`, split});
   const idx = multi() ? ST.vars.map((_, i) => i) : [ST.vi];
   const Ts = idx.map(i => withVar(i, () => {
-    if (multi()){ const t = totals(); blocks.push({kwn:true, html:`<div class="blk"><div class="vban"><div><div class="l">${X(`Вариант ${i + 1} из ${idx.length}`, `Option ${i + 1} of ${idx.length}`)}</div><div class="n">${esc(vName(i))}</div></div><div class="v">${rub(t.tot)}</div></div></div>`}); }
+    if (multi()){ const t = totals(); blocks.push({kwn:true, html:`<div class="blk"><div class="vban"><div><div class="l">${X(`Вариант ${i + 1} из ${idx.length}`, `Option ${i + 1} of ${idx.length}`, `Opzione ${i + 1} di ${idx.length}`)}</div><div class="n">${esc(vName(i))}</div></div><div class="v">${rub(t.tot)}</div></div></div>`}); }
     return variantBody(H, B, blocks);
   }));
 
   /* Залы — общие для всех вариантов */
-  if (hs.length) H(hs.length > 1 ? X("Залы", "Halls") : X("Зал", "Hall"), tr(hallArea(hs)));
+  if (hs.length) H(hs.length > 1 ? X("Залы", "Halls", "Sale") : X("Зал", "Hall", "Sala"), tr(hallArea(hs)));
   hs.forEach(hall => {
     const inclTxt = tr(hall.biz ? L(C.hallIncl.business) : L(C.hallIncl.culinary));
     const ph = hallPhotos(hall, 3);
@@ -1093,18 +1391,18 @@ function buildBlocks(){
 
   /* Сравнение вариантов, условия, менеджер */
   if (multi()){
-    H(X("Сравнение вариантов", "Options compared"));
-    B(`<table class="est"><thead><tr><th>${X("Вариант", "Option")}</th><th>${X("Программа", "Programme")}</th><th class="n">${X("На гостя", "Per guest")}</th><th class="n">${X("Итого", "Total")}</th></tr></thead><tbody>${idx.map(i => withVar(i, () => { const t = Ts[i], p = pkg(), ff = C.ff.find(f => f.key === ST.ff);
-      return `<tr><td><b>${esc(vName(i))}</b></td><td>${esc([p ? tr(p.title) : "", ff ? tr(ff.title) : "", uffOn() ? CAT.uff.title : ""].filter(Boolean).join(" · ") || X("Индивидуальная программа", "Custom programme"))}</td><td class="n">${t.heads ? rub(t.per) : ""}</td><td class="n"><b>${rub(t.tot)}</b></td></tr>`; })).join("")}</tbody></table>`);
+    H(X("Сравнение вариантов", "Options compared", "Confronto delle opzioni"));
+    B(`<table class="est"><thead><tr><th>${X("Вариант", "Option", "Opzione")}</th><th>${X("Программа", "Programme", "Programma")}</th><th class="n">${X("На гостя", "Per guest", "A persona")}</th><th class="n">${X("Итого", "Total", "Totale")}</th></tr></thead><tbody>${idx.map(i => withVar(i, () => { const t = Ts[i], p = pkg(), ff = C.ff.find(f => f.key === ST.ff);
+      return `<tr><td><b>${esc(vName(i))}</b></td><td>${esc([p ? tr(p.title) : "", ff ? tr(ff.title) : "", uffOn() ? CAT.uff.title : ""].filter(Boolean).join(" · ") || X("Индивидуальная программа", "Custom programme", "Programma su misura"))}</td><td class="n">${t.heads ? rub(t.per) : ""}</td><td class="n"><b>${rub(t.tot)}</b></td></tr>`; })).join("")}</tbody></table>`);
   }
   const T1 = multi() ? null : Ts[0], dep = Math.max(0, +ST.deposit || 0);
-  const terms = [dep ? X(`Депозит — ${rub(dep)}: минимальная сумма заказа на мероприятие.`, `Deposit — ${rub(dep)}: the minimum order amount for the event.`) : "", payText(T1)].filter(Boolean);
-  const validTxt = ST.valid ? (d => X(`Предложение действительно до ${d.toLocaleDateString("ru-RU", {day:"numeric", month:"long", year:"numeric"}).replace(/ г\.$/, "")} г.`, `This proposal is valid until ${d.toLocaleDateString("en-GB", {day:"numeric", month:"long", year:"numeric"})}.`))(new Date(ST.valid + "T12:00:00")) : "";
-  B(`${ST.wishes ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Пожелания по меню и аллергии", "Menu requests and allergies")}</div><p>${esc(ST.wishes).replace(/\n/g,"<br>")}</p></div>` : ""}
-    ${terms.length ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Условия", "Terms")}</div><ul class="ticks one">${terms.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>` : ""}
-    ${ST.note ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Комментарий", "Comment")}</div><p>${esc(ST.note).replace(/\n/g,"<br>")}</p></div>` : ""}
-    <p class="fine">${[ST.vat ? X("В стоимость не включён НДС 22%.", "Prices exclude 22% VAT.") : "", validTxt].filter(Boolean).join(" ")}</p>
-    <div class="mgr"><div><div class="l">${X("Ваш менеджер", "Your manager")}</div><div class="n">${mgrName()}</div></div><div class="ph2">${MANAGER.phone}</div></div>`);
+  const terms = [dep ? X(`Депозит — ${rub(dep)}: минимальная сумма заказа на мероприятие.`, `Deposit — ${rub(dep)}: the minimum order amount for the event.`, `Minimo di spesa per l'evento: ${rub(dep)}.`) : "", payText(T1)].filter(Boolean);
+  const validTxt = ST.valid ? (d => X(`Предложение действительно до ${d.toLocaleDateString("ru-RU", {day:"numeric", month:"long", year:"numeric"}).replace(/ г\.$/, "")} г.`, `This proposal is valid until ${d.toLocaleDateString("en-GB", {day:"numeric", month:"long", year:"numeric"})}.`, `La presente proposta è valida fino al ${d.toLocaleDateString("it-IT", {day:"numeric", month:"long", year:"numeric"})}.`))(new Date(ST.valid + "T12:00:00")) : "";
+  B(`${ST.wishes ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Пожелания по меню и аллергии", "Menu requests and allergies", "Richieste sul menu e allergie")}</div><p>${esc(ST.wishes).replace(/\n/g,"<br>")}</p></div>` : ""}
+    ${terms.length ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Условия", "Terms", "Condizioni")}</div><ul class="ticks one">${terms.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>` : ""}
+    ${ST.note ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Комментарий", "Comment", "Note")}</div><p>${esc(ST.note).replace(/\n/g,"<br>")}</p></div>` : ""}
+    <p class="fine">${[ST.vat ? X("В стоимость не включён НДС 22%.", "Prices exclude 22% VAT.", "I prezzi si intendono IVA 22% esclusa.") : "", validTxt].filter(Boolean).join(" ")}</p>
+    <div class="mgr"><div><div class="l">${X("Ваш менеджер", "Your manager", "Il vostro referente")}</div><div class="n">${mgrName()}</div></div><div class="ph2">${MANAGER.phone}</div></div>`);
   return {blocks, Ts, hs};
 }
 
@@ -1112,58 +1410,59 @@ const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABXgAAAB6CAYAAAAF+zub
 
 function pageShell(i){
   const d = document.createElement("div"); d.className = "page";
-  d.innerHTML = `<div class="pg-head"><img class="logo" src="${LOGO}" alt="Novikov School"><div class="who">${kpLabel() ? esc(kpLabel()) + " · " : ""}${esc(ST.client || X("Предложение", "Proposal"))}${ST.date ? " · " + esc(new Date(ST.date + "T12:00:00").toLocaleDateString(LOC())) : ""}</div></div>
-    <div class="pc"></div><div class="pg-foot"><span>${X("Ваш менеджер", "Your manager")} <b>${mgrName()}</b> · ${MANAGER.phone} · ${addr()}</span><span class="pn"></span></div>`;
+  d.innerHTML = `<div class="pg-head"><img class="logo" src="${LOGO}" alt="Novikov School"><div class="who">${kpLabel() ? esc(kpLabel()) + " · " : ""}${esc(ST.client || X("Предложение", "Proposal", "Proposta"))}${ST.date ? " · " + esc(new Date(ST.date + "T12:00:00").toLocaleDateString(LOC())) : ""}</div></div>
+    <div class="pc"></div><div class="pg-foot"><span>${X("Ваш менеджер", "Your manager", "Il vostro referente")} <b>${mgrName()}</b> · ${MANAGER.phone} · ${addr()}</span><span class="pn"></span></div>`;
   return d;
 }
 
 /* Дата крупно (13 ноября / 13 November) и день недели с годом под ней */
-const dateBig = dt => esc(dt.toLocaleDateString(LOC(), {day:"numeric", month:"long"})) + `<small>${esc(dt.toLocaleDateString(LOC(), {weekday:"long"}))}, ${dt.getFullYear()}</small>`;
+const dateBig = dt => esc(dt.toLocaleDateString(LOC(), {day:"numeric", month:"long"})) + `<small>${esc((w => RU() ? w : w[0].toUpperCase() + w.slice(1))(dt.toLocaleDateString(LOC(), {weekday:"long"})))}, ${dt.getFullYear()}</small>`;
 
 function coverPage(Ts, hs){
   const T = Ts[0], p = pkg(), ff = CAT.ff.find(f => f.key === ST.ff);
   const d = document.createElement("div"); d.className = "page cover";
-  const title = ST.client || X("Ваше мероприятие", "Your event");
-  const perW = ST.kind === "kids" ? X("на участника", "per participant") : X("на гостя", "per guest");
+  const title = ST.client || X("Ваше мероприятие", "Your event", "Il vostro evento");
+  const perW = ST.kind === "kids" ? X("на участника", "per participant", "a partecipante") : X("на гостя", "per guest", "a persona");
   d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[ST.kind])}></div><div class="in">
       <div class="plate"><img class="logo" src="${LOGO}" alt="Novikov School"></div>
-      <div class="kick">${esc(X(KINDS[ST.kind].kicker, KINDS[ST.kind].kickerEn))}</div><h1>${esc(title)}</h1>${ST.occasion ? `<div class="occ">${esc(ST.occasion)}</div>` : ""}</div></div>
+      <div class="kick">${esc(X(KINDS[ST.kind].kicker, KINDS[ST.kind].kickerEn, KINDS[ST.kind].kickerIt))}</div><h1>${esc(title)}</h1>${ST.occasion ? `<div class="occ">${esc(ST.occasion)}</div>` : ""}</div></div>
     <div class="facts">
-      <div><div class="l">${X("Дата", "Date")}</div><div class="v">${ST.date ? dateBig(new Date(ST.date + "T12:00:00")) : X("по согласованию", "to be agreed")}</div></div>
-      <div><div class="l">${X("Время", "Time")}</div><div class="v">${ST.start} — ${endTime()}<small>${Math.round(timeline().reduce((s, r) => s + (+r.m||0), 0) / 6) / 10} ${X("ч", "h")}</small></div></div>
-      <div><div class="l">${X("Гости", "Guests")}</div><div class="v">${ST.kind === "kids" ? `${+ST.kids||0} ${plx(+ST.kids,"ребёнок","ребёнка","детей","child","children")}${+ST.guests ? `<small>+ ${ST.guests} ${plx(+ST.guests,"взрослый","взрослых","взрослых","adult","adults")}</small>` : ""}` : `${+ST.guests||0}<small>${plx(+ST.guests,"гость","гостя","гостей","guest","guests")}</small>`}</div></div>
-      <div><div class="l">${hs.length > 1 ? X("Залы", "Halls") : hs.length ? X("Зал", "Hall") : X("Площадка", "Venue")}</div><div class="v">${hs.length ? esc(hs.map(h => tr(h.title)).join(" + ")) + `<small>${esc(tr(hallArea(hs)))}</small>` : `Novikov School<small>${X("Б. Якиманка, 22", "Bolshaya Yakimanka 22")}</small>`}</div></div>
+      <div><div class="l">${X("Дата", "Date", "Data")}</div><div class="v">${ST.date ? dateBig(new Date(ST.date + "T12:00:00")) : X("по согласованию", "to be agreed", "da concordare")}</div></div>
+      <div><div class="l">${X("Время", "Time", "Orario")}</div><div class="v">${ST.start} — ${endTime()}<small>${Math.round(timeline().reduce((s, r) => s + (+r.m||0), 0) / 6) / 10} ${X("ч", "h", "h")}</small></div></div>
+      <div><div class="l">${X("Гости", "Guests", "Ospiti")}</div><div class="v">${ST.kind === "kids" ? `${+ST.kids||0} ${plx(+ST.kids,"ребёнок","ребёнка","детей","child","children","bambino","bambini")}${+ST.guests ? `<small>+ ${ST.guests} ${plx(+ST.guests,"взрослый","взрослых","взрослых","adult","adults","adulto","adulti")}</small>` : ""}` : `${+ST.guests||0}<small>${plx(+ST.guests,"гость","гостя","гостей","guest","guests","ospite","ospiti")}</small>`}</div></div>
+      <div><div class="l">${hs.length > 1 ? X("Залы", "Halls", "Sale") : hs.length ? X("Зал", "Hall", "Sala") : X("Площадка", "Venue", "Location")}</div><div class="v">${hs.length ? esc(hs.map(h => tr(h.title)).join(" + ")) + `<small>${esc(tr(hallArea(hs)))}</small>` : `Novikov School<small>${X("Б. Якиманка, 22", "Bolshaya Yakimanka 22", "Bolshaya Yakimanka 22")}</small>`}</div></div>
     </div>
-    ${multi() ? `<div class="vtots">${Ts.map((t, i) => withVar(i, () => { const q = pkg(), qf = CAT.ff.find(f => f.key === ST.ff); return `<div class="tot"><div class="l">${esc(vName(i))}</div><div class="v">${rub(t.tot)}</div>${t.heads ? `<small>≈ ${rub(t.per)} ${perW}</small>` : ""}<b>${esc([q ? tr(q.title) : X("Индивидуальная программа", "Custom programme"), qf ? tr(qf.title) : ""].filter(Boolean).join(" · "))}</b></div>`; })).join("")}</div>` : `
-    <div class="pkgline"><div class="card"><div class="meta">${X("Ваш формат", "Your format")}</div><h3>${p ? esc(tr(p.title)) : X("Индивидуальная программа", "Custom programme")}</h3>
-      <p>${esc([p && includedBuffet() ? ibShort(includedBuffet()) : "", ff ? tr(ff.title) : "", ...CAT.services.flatMap(g => g.items).filter(isOn).map(it => tr(it.svc))].filter((v, i, a) => v && a.indexOf(v) === i).join(" · ") || X("Полный состав — на следующих страницах", "Full details on the following pages"))}</p></div>
-      <div class="tot"><div class="l">${T.disc ? X(`Стоимость со скидкой${T.d ? ` ${T.d}%` : ""}`, `Price after ${T.d ? `${T.d}% ` : ""}discount`) : X("Стоимость", "Price")}</div><div class="v">${rub(T.tot)}</div>${T.heads ? `<small>≈ ${rub(T.per)} ${perW}</small>` : ""}</div></div>`}
-    <div class="mgr"><div><div class="l">${X("Ваш менеджер", "Your manager")}</div><div class="n">${mgrName()}</div></div><div class="ph2">${MANAGER.phone}</div></div>
-    <div style="margin:auto 44px 18px;font-size:10px;color:var(--muted)">${[kpLabel() ? `${kpLabel()}${ST.verDate ? ` ${X("от", "of")} ${new Date(ST.verDate).toLocaleDateString(LOC())}` : ""}` : "", addr(), "novikov-school.ru"].filter(Boolean).map(esc).join(" · ")}</div>`;
+    ${multi() ? `<div class="vtots">${Ts.map((t, i) => withVar(i, () => { const q = pkg(), qf = CAT.ff.find(f => f.key === ST.ff); return `<div class="tot"><div class="l">${esc(vName(i))}</div><div class="v">${rub(t.tot)}</div>${t.heads ? `<small>≈ ${rub(t.per)} ${perW}</small>` : ""}<b>${esc([q ? tr(q.title) : X("Индивидуальная программа", "Custom programme", "Programma su misura"), qf ? tr(qf.title) : ""].filter(Boolean).join(" · "))}</b></div>`; })).join("")}</div>` : `
+    <div class="pkgline"><div class="card"><div class="meta">${X("Ваш формат", "Your format", "Il vostro format")}</div><h3>${p ? esc(tr(p.title)) : X("Индивидуальная программа", "Custom programme", "Programma su misura")}</h3>
+      <p>${esc([p && includedBuffet() ? ibShort(includedBuffet()) : "", ff ? tr(ff.title) : "", ...CAT.services.flatMap(g => g.items).filter(isOn).map(it => tr(it.svc))].filter((v, i, a) => v && a.indexOf(v) === i).join(" · ") || X("Полный состав — на следующих страницах", "Full details on the following pages", "Tutti i dettagli nelle pagine seguenti"))}</p></div>
+      <div class="tot"><div class="l">${T.disc ? X(`Стоимость со скидкой${T.d ? ` ${T.d}%` : ""}`, `Price after ${T.d ? `${T.d}% ` : ""}discount`, `Prezzo scontato${T.d ? ` del ${T.d}%` : ""}`) : X("Стоимость", "Price", "Prezzo")}</div><div class="v">${rub(T.tot)}</div>${T.heads ? `<small>≈ ${rub(T.per)} ${perW}</small>` : ""}</div></div>`}
+    <div class="mgr"><div><div class="l">${X("Ваш менеджер", "Your manager", "Il vostro referente")}</div><div class="n">${mgrName()}</div></div><div class="ph2">${MANAGER.phone}</div></div>
+    <div style="margin:auto 44px 18px;font-size:10px;color:var(--muted)">${[kpLabel() ? `${kpLabel()}${ST.verDate ? ` ${X("от", "of", "del")} ${new Date(ST.verDate).toLocaleDateString(LOC())}` : ""}` : "", addr(), "novikov-school.ru"].filter(Boolean).map(esc).join(" · ")}</div>`;
   d.style.display = "flex"; d.style.flexDirection = "column";
   return d;
 }
 
 /* Приглашение: название мероприятия, от кого, дата, тайминг и адрес */
-const ADDRESS_FULL = "Москва, Большая Якиманка, 22, ТЦ «Гименей», 2 этаж", ADDRESS_FULL_EN = "Moscow, Bolshaya Yakimanka 22, Gimeney shopping centre, 2nd floor";
+const ADDRESS_FULL = "Москва, Большая Якиманка, 22, ТЦ «Гименей», 2 этаж", ADDRESS_FULL_EN = "Moscow, Bolshaya Yakimanka 22, Gimeney shopping centre, 2nd floor",
+  ADDRESS_FULL_IT = "Mosca, Bolshaya Yakimanka 22, centro commerciale Gimeney, 2° piano";
 function invitePage(){
   const hs = selHalls(), from = ST.contact || ST.client;
-  const where = hs.length ? X(`${hs.length > 1 ? "Залы" : "Зал"} ${hallNames(hs)}`, `${hs.length > 1 ? "Halls" : "Hall"} ${hs.map(h => `“${tr(h.title)}”`).join(", ")}`) : "";
+  const where = hs.length ? X(`${hs.length > 1 ? "Залы" : "Зал"} ${hallNames(hs)}`, `${hs.length > 1 ? "Halls" : "Hall"} ${hs.map(h => `“${tr(h.title)}”`).join(", ")}`, `${hs.length > 1 ? "Sale" : "Sala"} ${hs.map(h => `«${tr(h.title)}»`).join(", ")}`) : "";
   const dt = ST.date ? new Date(ST.date + "T12:00:00") : null;
   const d = document.createElement("div"); d.className = "page cover invite";
   d.style.display = "flex"; d.style.flexDirection = "column";
   let t0 = ST.start;
   d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[ST.kind])}></div><div class="in">
       <div class="plate"><img class="logo" src="${LOGO}" alt="Novikov School"></div>
-      <h1 style="margin-top:auto">${esc(ST.occasion || ST.client || X("Мероприятие", "Event"))}</h1>${from ? `<div class="from">${X("Приглашение от", "Invitation from")}: ${esc(from)}</div>` : ""}</div></div>
+      <h1 style="margin-top:auto">${esc(ST.occasion || ST.client || X("Мероприятие", "Event", "Evento"))}</h1>${from ? `<div class="from">${X("Приглашение от", "Invitation from", "Invito da parte di")}: ${esc(from)}</div>` : ""}</div></div>
     <div class="facts">
-      <div><div class="l">${X("Дата", "Date")}</div><div class="v">${dt ? dateBig(dt) : X("по согласованию", "to be agreed")}</div></div>
-      <div><div class="l">${X("Время", "Time")}</div><div class="v">${ST.start} — ${endTime()}<small>${X(`сбор гостей с ${ST.start}`, `guests arrive from ${ST.start}`)}</small></div></div>
-      <div><div class="l">${X("Место", "Venue")}</div><div class="v">Novikov School<small>${where ? esc(where) : X("Б. Якиманка, 22", "Bolshaya Yakimanka 22")}</small></div></div>
+      <div><div class="l">${X("Дата", "Date", "Data")}</div><div class="v">${dt ? dateBig(dt) : X("по согласованию", "to be agreed", "da concordare")}</div></div>
+      <div><div class="l">${X("Время", "Time", "Orario")}</div><div class="v">${ST.start} — ${endTime()}<small>${X(`сбор гостей с ${ST.start}`, `guests arrive from ${ST.start}`, `accoglienza ospiti dalle ${ST.start}`)}</small></div></div>
+      <div><div class="l">${X("Место", "Venue", "Luogo")}</div><div class="v">Novikov School<small>${where ? esc(where) : X("Б. Якиманка, 22", "Bolshaya Yakimanka 22", "Bolshaya Yakimanka 22")}</small></div></div>
     </div>
-    <div class="body"><h2 class="ttl" style="margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:30px;text-transform:uppercase;color:var(--ink)">${X("Тайминг", "Timeline")}</h2>
-      <div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} ${X("мин", "min")}</small></div><div class="tx">${esc(tr(r.t))}</div></div>`; }).join("")}</div></div>
-    <div class="addr"><div class="l">${X("Адрес", "Address")}</div><div class="v">${esc(X(ADDRESS_FULL, ADDRESS_FULL_EN))}</div><small>Novikov School${where ? ` · ${esc(EN() ? where : where[0].toLowerCase() + where.slice(1))}` : ""} · novikov-school.ru</small></div>`;
+    <div class="body"><h2 class="ttl" style="margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:30px;text-transform:uppercase;color:var(--ink)">${X("Тайминг", "Timeline", "Scaletta")}</h2>
+      <div class="card tline">${timeline().map(r => { const s = t0; t0 = addMin(t0, +r.m || 0); return `<div class="tl-it"><div class="tm">${s}<small>${r.m} ${X("мин", "min", "min")}</small></div><div class="tx">${esc(tr(r.t))}</div></div>`; }).join("")}</div></div>
+    <div class="addr"><div class="l">${X("Адрес", "Address", "Indirizzo")}</div><div class="v">${esc(X(ADDRESS_FULL, ADDRESS_FULL_EN, ADDRESS_FULL_IT))}</div><small>Novikov School${where ? ` · ${esc(RU() ? where[0].toLowerCase() + where.slice(1) : where)}` : ""} · novikov-school.ru</small></div>`;
   return d;
 }
 
@@ -1206,12 +1505,12 @@ function renderPages(){
 /* КП на английском: перечисляем всё, что осталось по-русски, — менеджер впишет английский текст сам */
 function showMiss(){
   const w = $("#trWarn"); if (!w) return;
-  const own = EN() ? [["Клиент", ST.client], ["Контактное лицо", ST.contact], ["Повод", ST.occasion], ["Пожелания", ST.wishes], ["Комментарий", ST.note],
+  const own = !RU() ? [["Клиент", ST.client], ["Контактное лицо", ST.contact], ["Повод", ST.occasion], ["Пожелания", ST.wishes], ["Комментарий", ST.note],
     ...ST.custom.map(c => ["Своя позиция", c.t]), ...(ST.vars.length > 1 ? ST.vars.map((v, i) => ["Название варианта", (v || {}).vname]) : [])].filter(([, v]) => CYR.test(v || "")).map(([k]) => k) : [];
-  const miss = EN() ? [...MISS] : [];
+  const miss = !RU() ? [...MISS] : [];
   w.hidden = !own.length && !miss.length;
-  w.innerHTML = w.hidden ? "" : `Останется по-русски в английском КП:` + (own.length ? `<br>• поля формы: ${esc([...new Set(own)].join(", "))} — впишите их по-английски` : "") +
-    (miss.length ? `<br>• нет перевода на лендинге: ${miss.slice(0, 8).map(s => `«${esc(s)}»`).join(", ")}${miss.length > 8 ? ` и ещё ${miss.length - 8}` : ""}${ST.tl ? " — если это тайминг, перепишите пункт по-английски" : ""}` : "");
+  w.innerHTML = w.hidden ? "" : `Останется по-русски в ${X("", "английском", "итальянском")} КП:` + (own.length ? `<br>• поля формы: ${esc([...new Set(own)].join(", "))} — впишите их ${X("", "по-английски", "по-итальянски")}` : "") +
+    (miss.length ? `<br>• нет перевода: ${miss.slice(0, 8).map(s => `«${esc(s)}»`).join(", ")}${miss.length > 8 ? ` и ещё ${miss.length - 8}` : ""}${ST.tl ? ` — если это тайминг, перепишите пункт ${X("", "по-английски", "по-итальянски")}` : ""}` : "");
 }
 function fitPreview(){
   const box = $("#pages"), w = box.parentElement.clientWidth - 40;
@@ -1247,9 +1546,9 @@ $("#bPdf").addEventListener("click", async () => {
     }
     /* Вся форма лежит в свойствах PDF — «Открыть из PDF» восстановит её для правки */
     syncVar();
-    pdf.setProperties({title:`Novikov School · ${kpLabel()} · ${ST.client || X("предложение", "proposal")}`, author:mgrName(),
+    pdf.setProperties({title:`Novikov School · ${kpLabel()} · ${ST.client || X("предложение", "proposal", "proposta")}`, author:mgrName(),
       keywords:"NVKP1:" + btoa(unescape(encodeURIComponent(JSON.stringify(ST))))});
-    const nm = ["Novikov", `${X("КП", "Proposal")}-${ST.no}${ST.ver > 1 ? `-v${ST.ver}` : ""}`, ST.client || X("предложение", "proposal"), ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
+    const nm = ["Novikov", `${X("КП", "Proposal", "Proposta")}-${ST.no}${ST.ver > 1 ? `-v${ST.ver}` : ""}`, ST.client || X("предложение", "proposal", "proposta"), ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
     pdf.save(nm + ".pdf");
   } catch(e){ alert("Не получилось собрать PDF: " + e.message); console.error(e); }
   finally { b.disabled = false; b.textContent = old; fitPreview(); }
@@ -1269,8 +1568,8 @@ $("#bInvite").addEventListener("click", async () => {
     const {jsPDF} = window.jspdf, pdf = new jsPDF({unit:"mm", format:"a4", compress:true});
     const cv = await html2canvas(pg, {scale:2, useCORS:true, backgroundColor:"#FBF8F2", logging:false, windowWidth:900});
     pdf.addImage(cv.toDataURL("image/jpeg", 0.88), "JPEG", 0, 0, 210, 297, undefined, "FAST");
-    pdf.setProperties({title:`${X("Приглашение", "Invitation")} · ${ST.occasion || ST.client || "Novikov School"}`, author:ST.contact || ST.client || "Novikov School"});
-    const nm = [X("Приглашение", "Invitation"), ST.occasion || ST.client, ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
+    pdf.setProperties({title:`${X("Приглашение", "Invitation", "Invito")} · ${ST.occasion || ST.client || "Novikov School"}`, author:ST.contact || ST.client || "Novikov School"});
+    const nm = [X("Приглашение", "Invitation", "Invito"), ST.occasion || ST.client, ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
     pdf.save(nm + ".pdf");
   } catch(e){ alert("Не получилось собрать приглашение: " + e.message); console.error(e); }
   finally { box.remove(); b.disabled = false; b.textContent = old; }
