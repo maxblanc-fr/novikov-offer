@@ -695,6 +695,8 @@
     border-left:3px solid var(--red); font-size:13.5px; color:var(--ink-soft); line-height:1.6;
   }
   .sec-foot b{color:var(--maroon)}
+  .sec-foot .bar-link{display:inline-block; margin-top:8px; font-weight:700; color:var(--red); text-decoration:none; border-bottom:1px solid currentColor}
+  .sec-foot .bar-link:hover{color:var(--maroon)}
 </style>
 </head>
 <body>
@@ -950,8 +952,8 @@ const DATA = {
           {ru:"Стейк из лосося с цукини и мятой", en:"Salmon steak with zucchini & mint", price:2300}
         ]}
       ],
-      foot:{ru:"<b>Алкоголь для взрослых.</b> На детском празднике доступна полная барная карта Novikov School — игристое, вина, крепкий алкоголь и коктейли. Сообщите менеджеру — он направит вам барную карту с ценами. Алкоголь с собой строго запрещён.",
-            en:"<b>Alcohol for the adults.</b> The full Novikov School bar card — sparkling, wines, spirits and cocktails — is available at a kids party. Let your manager know and they will send you the bar card with prices. Bringing your own alcohol is strictly prohibited."}
+      foot:{ru:"<b>Алкоголь для взрослых.</b> На детском празднике доступна полная барная карта Novikov School — игристое, вина, крепкий алкоголь и коктейли. Сообщите менеджеру — он направит вам барную карту с ценами. Алкоголь с собой строго запрещён.<br><a class=\"bar-link\" href=\"https://bar.novikov-school.ru/\" target=\"_blank\" rel=\"noopener\">Барная карта с ценами →</a>",
+            en:"<b>Alcohol for the adults.</b> The full Novikov School bar card — sparkling, wines, spirits and cocktails — is available at a kids party. Let your manager know and they will send you the bar card with prices. Bringing your own alcohol is strictly prohibited.<br><a class=\"bar-link\" href=\"https://bar.novikov-school.ru/\" target=\"_blank\" rel=\"noopener\">Bar card with prices →</a>"}
     },
     {
       id:"services", icon:"✨", type:"services",
