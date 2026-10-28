@@ -25,11 +25,18 @@ const read = f => fs.readFileSync(path.join(ROOT, f), "utf8");
 
 /* ---------- цены ----------
    Пакеты: EventyOn (wine/cocktail_casino_basic_offer_b2b, 10 400 / 11 400 / 12 400)
-   × 1.25, вверх до сотни. Новый год: цена кулинарного НГ-пакета + та же разница
-   «казино − кулинария», что на взрослом (+1 200 / +1 300 / +1 200). */
+   × 1.25, вверх до сотни. Новый год — то же правило от wine-casino-newyear-b2b /
+   cocktail-casino-newyear-b2b, где цена зависит от дня недели:
+   вс–ср 14 500 / 15 500 / 17 000, чт–сб 15 500 / 16 500 / 18 100.
+   days: [[вс–ср, чт–сб], …] — в карточке уровня показывается «от <вс–ср>». */
 const SEASON = {
   adult: {src:"NovikovOffer.html",   prices:["13 000 ₽","14 300 ₽","15 500 ₽"]},
-  ny:    {src:"NovikovNewYear.html", prices:["16 700 ₽","18 300 ₽","19 700 ₽"]}
+  ny:    {src:"NovikovNewYear.html", days:[["18 200 ₽","19 400 ₽"],["19 400 ₽","20 700 ₽"],["21 300 ₽","22 700 ₽"]]}
+};
+for(const s of Object.values(SEASON)) if(s.days) s.prices = s.days.map(([lo])=>"от "+lo);
+const dayNote = (S,i) => !S.days ? {ru:"", en:""} : {
+  ru:` Вс–ср — ${S.days[i][0]}, чт–сб — ${S.days[i][1]} за гостя.`,
+  en:` Sun–Wed ${S.days[i][0]}, Thu–Sat ${S.days[i][1]} per guest.`
 };
 const FF_DISCOUNT = 1000;
 
@@ -241,8 +248,8 @@ function build(kindKey, seasonKey){
     const sub = old.match(/sub:(\{ru:[^\n]*\})/)[1];
     const note = old.match(/note:(\{ru:[^\n]*\})/)[1];
     const items = LEVELS.map((l,i)=>`          {n:${L(l.n)},
-            d:{ru:${q(`${K.game[i].ru} · ${l.dish.ru} · фуршет «${l.buffet}» (${l.bru}) · безалкогольные напитки.`)},
-               en:${q(`${K.game[i].en} · ${l.dish.en} · «${l.buffet}» buffet (${l.ben}) · soft drinks.`)}}, p:"${S.prices[i]}"}`).join(",\n");
+            d:{ru:${q(`${K.game[i].ru} · ${l.dish.ru} · фуршет «${l.buffet}» (${l.bru}) · безалкогольные напитки.${dayNote(S,i).ru}`)},
+               en:${q(`${K.game[i].en} · ${l.dish.en} · «${l.buffet}» buffet (${l.ben}) · soft drinks.${dayNote(S,i).en}`)}}, p:"${S.prices[i]}"}`).join(",\n");
     src = replaceSection(src, "formats", `{
       id:"formats", icon:"💼", type:"formats",
       title:{ru:"Форматы и цены", en:"Formats & Pricing"},
@@ -336,6 +343,12 @@ ${levels}
     "const cc = it.d.length===3 ? c : [];",
     "const cc = it.c ? it.c.map(k=>c[k]) : it.d.length===3 ? c : [];",
     "setCard");
+
+  // EN для «от 18 200 ₽» — T() переводит строку целиком по словарю TR
+  if(S.days){
+    const tr = S.prices.map(p=>`${q(p)}:${q(p.replace(/^от /,"from "))},`).join("\n");
+    src = replaceOnce(src, "const TR={\n", "const TR={\n"+tr+"\n", "TR");
+  }
 
   // В новых страницах не должно остаться следов кулинарного формата в DATA
   const data = src.slice(src.indexOf("const DATA"), src.indexOf("const TR"));

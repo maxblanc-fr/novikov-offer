@@ -790,14 +790,14 @@ const DATA = {
       groups:[
         {head:{ru:"Винное казино — 3 уровня", en:"Wine Casino — 3 levels"}, items:[
           {n:{ru:"Стандартный", en:"Standard"},
-            d:{ru:"Игра «Винное казино» · 6 вин стандартной категории (дегустационная порция 50 мл) · 2 блюда из сета: салат и десерт · фуршет «Small Set» (7 позиций, 132 г) · безалкогольные напитки.",
-               en:"«Wine Casino» game · 6 wines of the standard category (50 ml tasting pour) · 2 courses from the set: salad and dessert · «Small Set» buffet (7 items, 132 g) · soft drinks."}, p:"16 700 ₽"},
+            d:{ru:"Игра «Винное казино» · 6 вин стандартной категории (дегустационная порция 50 мл) · 2 блюда из сета: салат и десерт · фуршет «Small Set» (7 позиций, 132 г) · безалкогольные напитки. Вс–ср — 18 200 ₽, чт–сб — 19 400 ₽ за гостя.",
+               en:"«Wine Casino» game · 6 wines of the standard category (50 ml tasting pour) · 2 courses from the set: salad and dessert · «Small Set» buffet (7 items, 132 g) · soft drinks. Sun–Wed 18 200 ₽, Thu–Sat 19 400 ₽ per guest."}, p:"от 18 200 ₽"},
           {n:{ru:"Авторский", en:"Author’s"},
-            d:{ru:"Игра «Винное казино» + раунд Black Casino · 6 вин авторской категории (дегустационная порция 50 мл) · 2 блюда из сета: горячее и десерт · фуршет «Medium Set» (9 позиций, 166 г) · безалкогольные напитки.",
-               en:"«Wine Casino» game + Black Casino round · 6 wines of the signature category (50 ml tasting pour) · 2 courses from the set: main and dessert · «Medium Set» buffet (9 items, 166 g) · soft drinks."}, p:"18 300 ₽"},
+            d:{ru:"Игра «Винное казино» + раунд Black Casino · 6 вин авторской категории (дегустационная порция 50 мл) · 2 блюда из сета: горячее и десерт · фуршет «Medium Set» (9 позиций, 166 г) · безалкогольные напитки. Вс–ср — 19 400 ₽, чт–сб — 20 700 ₽ за гостя.",
+               en:"«Wine Casino» game + Black Casino round · 6 wines of the signature category (50 ml tasting pour) · 2 courses from the set: main and dessert · «Medium Set» buffet (9 items, 166 g) · soft drinks. Sun–Wed 19 400 ₽, Thu–Sat 20 700 ₽ per guest."}, p:"от 19 400 ₽"},
           {n:{ru:"Эксклюзивный", en:"Exclusive"},
-            d:{ru:"Игра «Винное казино» + раунд Black Casino · 8 вин эксклюзивной категории (дегустационная порция 50 мл) · 3 блюда из сета: салат, горячее и десерт · фуршет «Large Set» (11 позиций, 205 г) · безалкогольные напитки.",
-               en:"«Wine Casino» game + Black Casino round · 8 wines of the exclusive category (50 ml tasting pour) · 3 courses from the set: salad, main and dessert · «Large Set» buffet (11 items, 205 g) · soft drinks."}, p:"19 700 ₽"}
+            d:{ru:"Игра «Винное казино» + раунд Black Casino · 8 вин эксклюзивной категории (дегустационная порция 50 мл) · 3 блюда из сета: салат, горячее и десерт · фуршет «Large Set» (11 позиций, 205 г) · безалкогольные напитки. Вс–ср — 21 300 ₽, чт–сб — 22 700 ₽ за гостя.",
+               en:"«Wine Casino» game + Black Casino round · 8 wines of the exclusive category (50 ml tasting pour) · 3 courses from the set: salad, main and dessert · «Large Set» buffet (11 items, 205 g) · soft drinks. Sun–Wed 21 300 ₽, Thu–Sat 22 700 ₽ per guest."}, p:"от 21 300 ₽"}
         ]}
       ],
       foot:{ru:"Мероприятие — от 6 человек. Казино не является азартной игрой: участники не делают денежных ставок. 18+. Чрезмерное употребление алкоголя вредит вашему здоровью.",
@@ -848,11 +848,11 @@ const DATA = {
            {m:25, ru:"Свободное время: общение, игры и активности", en:"Free time: mingling, games and activities"}
          ],
          levels:[
-           {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"16 700 ₽", buffet:"Small Set", bwt:"132 г",
+           {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"от 18 200 ₽", buffet:"Small Set", bwt:"132 г",
             ids:["cz_s1","cz_s2","cz_s3","cz_s4"]},
-           {k:"author", n:{ru:"Авторский", en:"Author’s"}, price:"18 300 ₽", buffet:"Medium Set", bwt:"166 г",
+           {k:"author", n:{ru:"Авторский", en:"Author’s"}, price:"от 19 400 ₽", buffet:"Medium Set", bwt:"166 г",
             ids:["cz_g1","cz_g2","cz_g3","cz_g4"]},
-           {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"19 700 ₽", buffet:"Large Set", bwt:"205 г",
+           {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"от 21 300 ₽", buffet:"Large Set", bwt:"205 г",
             ids:["cz_p1","cz_p2","cz_p3","cz_p4"]}
          ]}
       ]
@@ -1392,6 +1392,9 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
+"от 18 200 ₽":"from 18 200 ₽",
+"от 19 400 ₽":"from 19 400 ₽",
+"от 21 300 ₽":"from 21 300 ₽",
 "Фланк-стейк с соусом чимичурри и пюре из батата":"Flank steak with chimichurri and sweet potato purée",
 "Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе":"Mango sorbet with strawberry, basil, passion fruit confiture and lime meringue",
 "Филе палтуса с соусом из горгонзолы и бланшированными овощами":"Halibut fillet with gorgonzola sauce and blanched vegetables",
