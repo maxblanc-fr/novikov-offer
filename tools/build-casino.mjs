@@ -243,7 +243,8 @@ function build(kindKey, seasonKey){
     const note = old.match(/note:(\{ru:[^\n]*\})/)[1];
     const items = LEVELS.map((l,i)=>`          {n:${L(l.n)},
             d:{ru:${q(`${K.game[i].ru} · ${l.dish.ru} · фуршет «${l.buffet}» (${l.bru}) · безалкогольные напитки.`)},
-               en:${q(`${K.game[i].en} · ${l.dish.en} · «${l.buffet}» buffet (${l.ben}) · soft drinks.`)}}, p:"${S.prices[i]}"}`).join(",\n");
+               en:${q(`${K.game[i].en} · ${l.dish.en} · «${l.buffet}» buffet (${l.ben}) · soft drinks.`)}}, p:"${S.prices[i]}",
+            game:${L(K.game[i])}}`).join(",\n");
     src = replaceSection(src, "formats", `{
       id:"formats", icon:"💼", type:"formats",
       title:{ru:"Форматы и цены", en:"Formats & Pricing"},

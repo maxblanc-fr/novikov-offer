@@ -47,10 +47,10 @@
   main.preview{padding:20px;overflow:auto}
   #status{font-size:12px;opacity:.9}
 
-  .kinds{display:flex;gap:0;margin-bottom:12px}
+  .kinds{display:flex;flex-wrap:wrap;gap:0;margin-bottom:12px}
   .kinds button{flex:1;border:1px solid var(--line);background:#fff;padding:10px 6px;cursor:pointer;font-family:var(--head);
     font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--red-deep)}
-  .kinds button+button{border-left:0}
+  .kinds button{flex-basis:24%;margin:0 -1px -1px 0}
   .kinds button.on{background:var(--red);color:#fff;border-color:var(--red)}
   .langs{align-items:center;margin-top:-4px}.langs span{flex:none;padding-right:10px;font-size:12px;color:var(--muted)}.langs button{padding:6px}
   .vars{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
@@ -313,7 +313,12 @@ const mgrName = () => RU() ? MANAGER.name : MANAGER.en, addr = () => X(ADDRESS, 
 const KINDS = {
   adult:{label:"Взрослое",    files:["index.html","NovikovOffer.html"],   kicker:"Предложение на мероприятие", kickerEn:"Event proposal", kickerIt:"Proposta per il vostro evento"},
   kids: {label:"Детское",     files:["deti.html","NovikovKids.html"],    kicker:"Детский праздник", kickerEn:"Kids' party", kickerIt:"Festa per bambini"},
-  ny:   {label:"Новогоднее",  files:["newyear.html","NovikovNewYear.html"], kicker:"Новогоднее мероприятие", kickerEn:"New Year event", kickerIt:"Evento di Capodanno"}
+  ny:   {label:"Новогоднее",  files:["newyear.html","NovikovNewYear.html"], kicker:"Новогоднее мероприятие", kickerEn:"New Year event", kickerIt:"Evento di Capodanno"},
+  /* Казино — лендинги из tools/build-casino.mjs */
+  wine:      {label:"Винное казино",       files:["wine-casino.html","NovikovWineCasino.html"], kicker:"Винное казино", kickerEn:"Wine Casino", kickerIt:"Casinò del vino"},
+  cocktail:  {label:"Коктейльное казино",  files:["cocktail-casino.html","NovikovCocktailCasino.html"], kicker:"Коктейльное казино", kickerEn:"Cocktail Casino", kickerIt:"Casinò dei cocktail"},
+  nywine:    {label:"НГ · винное казино",  files:["newyear-wine-casino.html","NovikovNewYearWineCasino.html"], kicker:"Новогоднее винное казино", kickerEn:"New Year Wine Casino", kickerIt:"Casinò del vino di Capodanno"},
+  nycocktail:{label:"НГ · коктейльное казино", files:["newyear-cocktail-casino.html","NovikovNewYearCocktailCasino.html"], kicker:"Новогоднее коктейльное казино", kickerEn:"New Year Cocktail Casino", kickerIt:"Casinò dei cocktail di Capodanno"}
 };
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
 const TL_TEMPLATE = [
@@ -322,7 +327,8 @@ const TL_TEMPLATE = [
   {m:30,  t:"Праздничный обед / ужин из приготовленных блюд"},
   {m:120, t:"Свободное время и активности"}
 ];
-const COVER_IMG = {adult:"images/halls/cafe/22.jpg", ny:"images/halls/cafe/23.jpg", kids:"images/halls/cafe/21.jpg"};
+const COVER_IMG = {adult:"images/halls/cafe/22.jpg", ny:"images/halls/cafe/23.jpg", kids:"images/halls/cafe/21.jpg",
+  wine:"images/halls/cafe/22.jpg", cocktail:"images/halls/cafe/22.jpg", nywine:"images/halls/cafe/23.jpg", nycocktail:"images/halls/cafe/23.jpg"};
 const COOK_IMGS = ["images/halls/cafe/21.jpg","images/halls/cafe/24.jpg","images/halls/cafe/6.jpg"];
 const LS_KEY = "novikov-proposal-v1" + MANAGER.ls;
 
@@ -375,6 +381,22 @@ const GEN = {
    Составные строки («Фартуки · Брендированные», «Игра, 1 час · минимум 20 000 ₽») tr() режет по « · », «: », «, » и переводит по частям,
    поэтому здесь в основном отдельные названия. Обращение к клиенту — на «voi», кавычки — «ёлочки», как принято в итальянском. */
 const IT_DICT = {
+  /* Казино (вино / коктейли) */
+  "Мясная классика":"Classici di carne", "Утка и ягоды":"Anatra e frutti di bosco", "Ростбиф и манго":"Roast beef e mango", "Говядина и тирамису":"Manzo e tiramisù",
+  "Цыплёнок и тирамису":"Galletto e tiramisù", "Утка и шоколад":"Anatra e cioccolato", "Фланк и сорбет":"Flank steak e sorbetto", "Палтус и ягоды":"Halibut e frutti di bosco",
+  "Классика и шоколад":"Classico e cioccolato", "Утка и палтус":"Anatra e halibut", "Перечный ужин":"Cena al pepe", "Мясо и море":"Mare e monti",
+  "Сбор гостей":"Accoglienza degli ospiti", "фуршет и приветственные напитки":"buffet e drink di benvenuto", "правила и первые раунды":"regole e primi round",
+  "Первое блюдо от шефа":"Prima portata dello chef", "Продолжаем игру":"Il gioco continua", "Второе блюдо":"Seconda portata", "Итоги игры":"Risultati del gioco",
+  "общение":"chiacchiere", "игры и активности":"giochi e attività",
+  "Сомелье-крупье ведёт игру":"Il sommelier-croupier conduce il gioco", "Миксолог ведёт игру":"Il mixologist conduce il gioco",
+  "а шеф тем временем готовит блюда выбранного сета":"e intanto lo chef prepara i piatti del menu scelto", "их подают в перерывах между раундами.":"serviti tra un round e l'altro.",
+  "до 40 гостей":"fino a 40 ospiti",
+  "Игра «Винное казино» · 6 вин стандартной категории (дегустационная порция 50 мл)":"Gioco «Casinò del vino» · 6 vini della categoria standard (assaggio da 50 ml)",
+  "Игра «Винное казино» + раунд Black Casino · 6 вин авторской категории (дегустационная порция 50 мл)":"Gioco «Casinò del vino» + round Black Casino · 6 vini della categoria d'autore (assaggio da 50 ml)",
+  "Игра «Винное казино» + раунд Black Casino · 8 вин эксклюзивной категории (дегустационная порция 50 мл)":"Gioco «Casinò del vino» + round Black Casino · 8 vini della categoria esclusiva (assaggio da 50 ml)",
+  "Игра «Коктейльное казино» · 6 коктейлей (дегустационная порция 50 мл)":"Gioco «Casinò dei cocktail» · 6 cocktail (assaggio da 50 ml)",
+  "Игра «Коктейльное казино» · 7 коктейлей (дегустационная порция 50 мл)":"Gioco «Casinò dei cocktail» · 7 cocktail (assaggio da 50 ml)",
+  "Игра «Коктейльное казино» · 8 коктейлей (дегустационная порция 50 мл)":"Gioco «Casinò dei cocktail» · 8 cocktail (assaggio da 50 ml)",
   /* Группы сметы, тайминг по шаблону, подписи генератора */
   "Кулинарная программа":"Programma culinario", "Площадка":"Location", "Напитки":"Bevande", "Фуршет":"Buffet", "Дополнительные услуги":"Servizi aggiuntivi", "Дополнительно":"Extra",
   "Фуршетные сеты":"Set buffet", "Тарелки и ассорти":"Taglieri e piatti misti", "Детский фуршет":"Buffet per bambini", "Детский фуршет Kid Set":"Buffet per bambini Kid Set",
@@ -772,7 +794,9 @@ function buildCatalog(kind){
   } else {
     const st = sec(D, "sets");
     const chefs = st.tabs.find(t => t.k === "chefs");
-    st.tabs.filter(t => t !== chefs).forEach(t => t.levels.forEach(l => C.pkgs.push({
+    /* Казино: что входит в игру (вина / коктейли) — из «Форматов», по порядку уровней */
+    const casinoGame = i => t => t.k === "casino" ? L(((sec(D, "formats").groups[0] || {}).items || [])[i]?.game) || "" : "";
+    st.tabs.filter(t => t !== chefs).forEach(t => t.levels.forEach((l, li) => C.pkgs.push({ casino:casinoGame(li)(t),
       key:`pkg:${t.k}:${l.k}`, group:L(t.n), title:`${L(t.n)} · ${L(l.n)}`, short:L(l.n), price:num(l.price), per:"guest", unit:"гость",
       desc:L(t.d), buffet:l.buffet, bwt:l.bwt, setIds:l.ids, prem:l.prem ? L(st.premNote) : "",
       tl: t.k === "team" ? null : t.tl.map(r => ({m:r.m, t:r.ru})), imgs:COOK_IMGS})));
@@ -865,7 +889,7 @@ function buildCatalog(kind){
   C.halls = vn.halls.flatMap(h => {
     const ext = num((hext.find(e => e.s.includes(h.slug)) || {}).p);
     if (!h.tabs) return [{slug:h.slug, title:L(h.n), area:h.area, cap:L(h.cap), biz:/бизнес/.test(L(h.n)), tab:null, ext}];
-    const cap = L(h.cap).split("·")[0].replace(/\s*каждый/, "").trim();
+    const cap = L(h.cap).split("·")[0].replace(/\s*(каждый|в каждом зале)/, "").trim();
     return h.tabs.map(t => ({slug:`${h.slug}-${t.k}`, img:h.slug, tab:t.k, title:`ART · ${L(t.l)}`, area:"", cap, biz:false, ext}));
   });
   C.hallIncl = (vn.incl || va.incl);
@@ -1130,7 +1154,7 @@ function renderForm(){
     <button type="button" data-vadd="1" title="Копия текущего варианта — поменяйте пакет, бар и т.д.">+ вариант</button>
     ${multi() ? `<div class="vn"><input id="vname" value="${esc(ST.vname)}" placeholder="${esc(vName(ST.vi))} — название, например «Премиум»"><button type="button" class="btn sm" data-vdel="1">Удалить вариант</button></div>
     <div class="hint" style="margin:0">Пакет, фуршет, напитки, услуги, тайминг и скидка — свои у каждого варианта. Клиент, дата, гости и зал — общие.</div>` : ""}</div>
-  <details class="box" data-id="pkg" ${op("pkg", true)}><summary>Кулинарный пакет ${cnt([ST.pkg])}</summary><div class="bx">${pkgHtml}${menuHtml}</div></details>
+  <details class="box" data-id="pkg" ${op("pkg", true)}><summary>${/casino|wine|cocktail/.test(ST.kind) ? "Пакет казино" : "Кулинарный пакет"} ${cnt([ST.pkg])}</summary><div class="bx">${pkgHtml}${menuHtml}</div></details>
   <details class="box" data-id="buffet" ${op("buffet", false)}><summary>Фуршет ${cnt(C.buffet.flatMap(g => g.items).map(isOn))}</summary><div class="bx">${buffetHtml}</div></details>
   <details class="box" data-id="drinks" ${op("drinks", false)}><summary>Алкоголь и напитки ${cnt([ST.ff, uffOn(), ...C.soft.map(isOn)]) || (barOn ? `<span class="cnt">${barOn}</span>` : "")}</summary><div class="bx">
     <div class="sub">Free-flow · безлимитный бар (4 часа)</div>${ffHtml}
@@ -1277,8 +1301,9 @@ function variantBody(H, B, blocks){
   /* Обзор */
   const ov = [], perG = X("на гостя", "per guest", "a persona");
   const bunit = (c, n) => RU() ? (c.kind === "cocktail" ? "порц." : "бут.") : unitFx(+n, c.kind === "cocktail" ? "порция" : "бут.");
-  if (p) ov.push([X("Кулинария", "Cooking", "Cucina"), [tr(p.title) + ` — ${rub(p.price)} / ${unitWord(p.unit)}`, set ? X(`Сет «${set.ru}»: ${setDishes().join(", ")}`, `Set “${tr(set.ru)}”: ${setDishes().map(tr).join(", ")}`, `Menu «${tr(set.ru)}»: ${setDishes().map(tr).join(", ")}`) : p.setIds ? X("Сет меню — выбираете из подборки уровня", "Set menu — you choose from the sets of this level", "Menu: lo scegliete tra quelli di questo livello") : "",
-    p.menu ? (ST.dishes.length ? `${X("Блюда", "Dishes", "Piatti")}: ${ST.dishes.map(tr).join(", ")}` : X(`${p.dishes} блюда: ${p.what}`, `${p.dishes} dishes: ${tr(p.what)}`, `${p.dishes} piatti: ${tr(p.what)}`)) : "", p.game ? (g => `${X("Игра", "Game", "Gioco")}: ${g[0].toLowerCase() + g.slice(1)}`)(tr(p.game)) : "", X("Профессиональный шеф Novikov, все продукты и инвентарь", "A professional Novikov chef, all ingredients and equipment", "Uno chef professionista Novikov, tutti gli ingredienti e l'attrezzatura")].filter(Boolean)]);
+  if (p) ov.push([p.casino ? X("Программа", "Programme", "Programma") : X("Кулинария", "Cooking", "Cucina"), [tr(p.title) + ` — ${rub(p.price)} / ${unitWord(p.unit)}`, p.casino ? tr(p.casino) : "", set ? X(`Сет «${set.ru}»: ${setDishes().join(", ")}`, `Set “${tr(set.ru)}”: ${setDishes().map(tr).join(", ")}`, `Menu «${tr(set.ru)}»: ${setDishes().map(tr).join(", ")}`) : p.setIds ? X("Сет меню — выбираете из подборки уровня", "Set menu — you choose from the sets of this level", "Menu: lo scegliete tra quelli di questo livello") : "",
+    p.menu ? (ST.dishes.length ? `${X("Блюда", "Dishes", "Piatti")}: ${ST.dishes.map(tr).join(", ")}` : X(`${p.dishes} блюда: ${p.what}`, `${p.dishes} dishes: ${tr(p.what)}`, `${p.dishes} piatti: ${tr(p.what)}`)) : "", p.game ? (g => `${X("Игра", "Game", "Gioco")}: ${g[0].toLowerCase() + g.slice(1)}`)(tr(p.game)) : "", p.casino ? X("Ведущий игры, шеф Novikov, все продукты и инвентарь", "Game host, a Novikov chef, all ingredients and equipment", "Conduttore del gioco, uno chef Novikov, tutti gli ingredienti e l'attrezzatura")
+      : X("Профессиональный шеф Novikov, все продукты и инвентарь", "A professional Novikov chef, all ingredients and equipment", "Uno chef professionista Novikov, tutti gli ingredienti e l'attrezzatura")].filter(Boolean)]);
   const fb = []; if (ib) fb.push(`${tr(ib.title)}${ib.wt ? ` (${tr(ib.wt)} ${perG})` : ""} — ${X("входит в пакет", "included in the package", "incluso nel pacchetto")}`); bufOn.forEach(it => fb.push(`${tr(it.title)}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
   if (fb.length) ov.push([X("Фуршет", "Buffet", "Buffet"), fb]);
   const dr = []; if (ff) dr.push(`${tr(ff.title)} — ${X("безлимит 4 часа", "unlimited for 4 hours", "a volontà per 4 ore")}${+ST.ffHours ? ` + ${ST.ffHours} ${X("ч", "h", "h")}` : ""}`);
