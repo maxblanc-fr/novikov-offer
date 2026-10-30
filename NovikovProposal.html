@@ -52,7 +52,8 @@
     font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--red-deep)}
   .kinds button{flex-basis:24%;margin:0 -1px -1px 0}
   .kinds button.on{background:var(--red);color:#fff;border-color:var(--red)}
-  .kindsel{margin:-4px 0 12px}
+  .kinds.sub{margin-top:-6px}
+  .kinds.sub button{font-size:11px;padding:8px 6px}
   .langs{align-items:center;margin-top:-4px}.langs span{flex:none;padding-right:10px;font-size:12px;color:var(--muted)}.langs button{padding:6px}
   .vars{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
   .vars button{border:1px solid var(--line);background:#fff;padding:6px 10px;cursor:pointer;font-family:var(--head);font-weight:700;font-size:11.5px;color:var(--red-deep)}
@@ -316,10 +317,10 @@ const KINDS = {
   kids: {grp:"cook", label:"Детское",     files:["deti.html","NovikovKids.html"],    kicker:"Детский праздник", kickerEn:"Kids' party", kickerIt:"Festa per bambini"},
   ny:   {grp:"cook", label:"Новогоднее",  files:["newyear.html","NovikovNewYear.html"], kicker:"Новогоднее мероприятие", kickerEn:"New Year event", kickerIt:"Evento di Capodanno"},
   /* Казино — лендинги из tools/build-casino.mjs. grp — верхний переключатель «Кулинарное / Казино», внутри него выпадающий список */
-  wine:      {grp:"casino", label:"Винное казино",       files:["wine-casino.html","NovikovWineCasino.html"], kicker:"Винное казино", kickerEn:"Wine Casino", kickerIt:"Casinò del vino"},
-  cocktail:  {grp:"casino", label:"Коктейльное казино",  files:["cocktail-casino.html","NovikovCocktailCasino.html"], kicker:"Коктейльное казино", kickerEn:"Cocktail Casino", kickerIt:"Casinò dei cocktail"},
-  nywine:    {grp:"casino", label:"НГ · винное казино",  files:["newyear-wine-casino.html","NovikovNewYearWineCasino.html"], kicker:"Новогоднее винное казино", kickerEn:"New Year Wine Casino", kickerIt:"Casinò del vino di Capodanno"},
-  nycocktail:{grp:"casino", label:"НГ · коктейльное казино", files:["newyear-cocktail-casino.html","NovikovNewYearCocktailCasino.html"], kicker:"Новогоднее коктейльное казино", kickerEn:"New Year Cocktail Casino", kickerIt:"Casinò dei cocktail di Capodanno"}
+  wine:      {grp:"casino", label:"Винное казино", short:"Винное",       files:["wine-casino.html","NovikovWineCasino.html"], kicker:"Винное казино", kickerEn:"Wine Casino", kickerIt:"Casinò del vino"},
+  cocktail:  {grp:"casino", label:"Коктейльное казино", short:"Коктейльное",  files:["cocktail-casino.html","NovikovCocktailCasino.html"], kicker:"Коктейльное казино", kickerEn:"Cocktail Casino", kickerIt:"Casinò dei cocktail"},
+  nywine:    {grp:"casino", label:"НГ · винное казино", short:"НГ · винное",  files:["newyear-wine-casino.html","NovikovNewYearWineCasino.html"], kicker:"Новогоднее винное казино", kickerEn:"New Year Wine Casino", kickerIt:"Casinò del vino di Capodanno"},
+  nycocktail:{grp:"casino", label:"НГ · коктейльное казино", short:"НГ · коктейльное", files:["newyear-cocktail-casino.html","NovikovNewYearCocktailCasino.html"], kicker:"Новогоднее коктейльное казино", kickerEn:"New Year Cocktail Casino", kickerIt:"Casinò dei cocktail di Capodanno"}
 };
 const KGRP = {cook:"Кулинарное", casino:"Казино"};
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
@@ -1135,7 +1136,7 @@ function renderForm(){
 
   F.innerHTML = `
   <div class="kinds">${Object.entries(KGRP).map(([g, v]) => `<button type="button" data-grp="${g}" class="${KINDS[ST.kind].grp === g ? "on" : ""}">${v}</button>`).join("")}</div>
-  <label class="fld kindsel"><select id="kindSel">${Object.entries(KINDS).filter(([, v]) => v.grp === KINDS[ST.kind].grp).map(([k, v]) => `<option value="${k}" ${ST.kind === k ? "selected" : ""}>${v.label}</option>`).join("")}</select></label>
+  <div class="kinds sub">${Object.entries(KINDS).filter(([, v]) => v.grp === KINDS[ST.kind].grp).map(([k, v]) => `<button type="button" data-kind="${k}" class="${ST.kind === k ? "on" : ""}">${v.short || v.label}</button>`).join("")}</div>
   <div class="kinds langs"><span>Язык КП</span>${[["ru","Русский"],["en","English"],["it","Italiano"]].map(([k, v]) => `<button type="button" data-lang="${k}" class="${(ST.lang || "ru") === k ? "on" : ""}">${v}</button>`).join("")}</div>
   <div class="warn" id="trWarn" hidden></div>
   <div class="kpno">${ST.no ? `${esc(kpLabel())}${ST.verDate ? ` · PDF от ${new Date(ST.verDate).toLocaleDateString("ru-RU")}` : ""}${ST.sentHash && ST.sentHash !== stateHash() ? " · есть правки → следующий PDF станет версией " + (ST.ver + 1) : ""}` : "Новое КП — номер присвоится при первом PDF"}</div>
@@ -1196,6 +1197,8 @@ const F = $("#form");
 F.addEventListener("click", async e => {
   const g = e.target.closest("[data-grp]");
   if (g && g.dataset.grp !== KINDS[ST.kind].grp){ await switchKind(Object.keys(KINDS).find(k => KINDS[k].grp === g.dataset.grp)); return; }
+  const k = e.target.closest("[data-kind]");
+  if (k && k.dataset.kind !== ST.kind){ await switchKind(k.dataset.kind); return; }
   const lg = e.target.closest("[data-lang]");
   if (lg){ ST.lang = lg.dataset.lang; rerender(); return; }
   if (e.target.id === "addCustom"){ ST.custom.push({t:"", p:"", q:1}); rerender(); return; }
@@ -1217,7 +1220,6 @@ F.addEventListener("click", async e => {
 });
 F.addEventListener("change", e => {
   const t = e.target, row = t.closest(".opt");
-  if (t.id === "kindSel"){ if (t.value !== ST.kind) switchKind(t.value); return; }
   if (row && (t.type === "checkbox" || t.type === "radio")){
     if (row.dataset.dish != null){ const d = row.dataset.dish; ST.dishes = t.checked ? [...ST.dishes, d] : ST.dishes.filter(x => x !== d); rerender(); return; }
     if (t.name === "pkg"){ ST.pkg = row.dataset.key; ST.setId = ""; ST.setDishes = null; ST.dishes = []; rerender(); return; }
