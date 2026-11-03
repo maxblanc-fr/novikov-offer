@@ -1031,7 +1031,7 @@ function lines(){
     const sw = swapCount();
     if (sw && swapPrice()) out.push({g:"Кулинарная программа", t:X(`Замена ${sw} ${plural(sw,"блюда","блюд","блюд")} в сете`, `${sw} ${sw === 1 ? "dish" : "dishes"} swapped in the set`, `Sostituzione di ${sw} ${sw === 1 ? "piatto" : "piatti"} del menu`) + ` <small>· ${rub(swapPrice())} ${X("за блюдо", "per dish", "a piatto")}</small>`, q:q, u:p.unit, pr:swapPrice() * sw, x:{k:"swap"}});
     const ib = includedBuffet();
-    if (ib) out.push({g:"Кулинарная программа", t:esc(ibShort(ib)), incl:true});
+    if (ib) out.push({g:"Кулинарная программа", t:esc(ibShort(ib)), incl:true, x:{k:"incl", ib, q}});
   }
   if (+ST.hallHours) selHalls().forEach(hl => { if (hl.ext) out.push({g:"Площадка", t:X(`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, `Hall extension “${esc(tr(hl.title))}”, +${ST.hallHours} h`, `Prolungamento sala «${esc(tr(hl.title))}», +${ST.hallHours} h`), q:+ST.hallHours, u:"час", pr:hl.ext, x:{k:"hall", hl}}); });
   const ff = CAT.ff.find(f => f.key === ST.ff);
@@ -1785,6 +1785,14 @@ function xlSheet(xml, sst){
   let pkgRow = 0;
 
   ls.forEach(l => {
+    /* Фуршет из пакета: в строке сета количество = гости, вместо суммы «включено» (цена шаблона — для справки) */
+    if (l.incl && l.x && l.x.k === "incl"){
+      const ib = l.x.ib, q = l.x.q, bi = ib.key && allItems().find(i => i.key === ib.key);
+      const it = bi ? pick(items([secFood]), bi.setName || bi.title, bi.price) : null;
+      if (it && !fills[it.r]) fills[it.r] = {e:q, incl:true};
+      else if (!it && ST.kind !== "kids") ins.push({after:insertAt([secFood], "Фуршет"), b:plain(l.t), e:q, incl:true, sty:(secFood.items[0] || {}).r});
+      return;
+    }
     if (l.incl || !l.q) return;
     const x = l.x || {}, sumOk = Math.round(l.sum) === Math.round((l.pr || 0) * l.q);
     const D = sumOk ? (l.pr || 0) : l.sum, E = sumOk ? l.q : 1, name = plain(l.t);
@@ -1839,7 +1847,9 @@ function xlSheet(xml, sst){
   }
   if (menuRows.length && !pkgRow && pkg()) setNum(menuRows[0], 5, ST.kind === "kids" ? +ST.kids : +ST.guests);
 
-  Object.entries(fills).forEach(([r, f]) => { setNum(+r, 4, f.d); setNum(+r, 5, f.e); if (f.c) setStr(+r, 3, f.c); });
+  Object.entries(fills).forEach(([r, f]) => {
+    if (f.incl){ setNum(+r, 5, f.e); setStr(+r, 6, "включено"); return; }
+    setNum(+r, 4, f.d); setNum(+r, 5, f.e); if (f.c) setStr(+r, 3, f.c); });
 
   /* Скидка, предоплата, депозит — по подписям в итогах */
   const T = totals(), rD1 = findLabel(/^Скидка на кулинарную/), rD2 = findLabel(/^Скидка на дополнительные/);
@@ -1876,6 +1886,7 @@ function xlSheet(xml, sst){
       sd.insertBefore(row, nx ? rowEl.get(nx) : null); rowEl.set(r, row);
       setStr(r, 2, o.b);
       if (o.menu){ setF(r, 5, `E${r - 1}`); setStr(r, 6, "включено"); return; }
+      if (o.incl){ setNum(r, 5, o.e); setStr(r, 6, "включено"); return; }
       setNum(r, 4, o.d); setNum(r, 5, o.e); setF(r, 6, `D${r}*E${r}`);
     });
   });
