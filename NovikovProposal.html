@@ -282,6 +282,7 @@
   <button class="btn ghost" id="bReset" type="button">Новое</button>
   <button class="btn ghost" id="bPrint" type="button">Печать</button>
   <button class="btn ghost" id="bInvite" type="button" title="PDF-приглашение для гостей: название, дата, тайминг и адрес — без цен">Приглашение</button>
+  <button class="btn ghost" id="bXls" type="button" title="Смета в Excel по шаблону отдела продаж: цены и количества из КП, остальные строки шаблона — с нулём">Смета Excel</button>
   <button class="btn main" id="bPdf" type="button">Сгенерировать PDF</button>
 </header>
 <div class="arch" id="arch" hidden><div class="in">
@@ -349,6 +350,8 @@ const KINDS = {
   nycocktail:{grp:"casino", label:"НГ · коктейльное казино", short:"НГ · коктейльное", files:["newyear-cocktail-casino.html","NovikovNewYearCocktailCasino.html"], kicker:"Новогоднее коктейльное казино", kickerEn:"New Year Cocktail Casino", kickerIt:"Casinò dei cocktail di Capodanno"}
 };
 const KGRP = {cook:"Кулинарное", casino:"Казино"};
+/* Шаблоны сметы Excel отдела продаж — по одному на тип кулинарного мероприятия (казино пока без шаблона) */
+const XL_TPL = {adult:"uploads/smeta/adult.xlsx", ny:"uploads/smeta/ny.xlsx", kids:"uploads/smeta/kids.xlsx"};
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
 const TL_TEMPLATE = [
   {m:30,  t:"Welcome-фуршет: закуски{ff}, сбор гостей"},
@@ -1019,34 +1022,34 @@ function lines(){
   const out = [], p = pkg();
   if (p){
     const q = p.per === "kids" ? +ST.kids : p.per === "guest" ? +ST.guests : 1;
-    out.push({g:"Кулинарная программа", t:esc(tr(p.title)), q, u:p.unit, pr:p.price});
-    if (p.extra) out.push({g:"Кулинарная программа", t:`${esc(tr(p.short))}: ${X("каждый участник", "each participant", "ogni partecipante")}`, q:+ST.guests, u:p.extra.unit, pr:p.extra.price});
+    out.push({g:"Кулинарная программа", t:esc(tr(p.title)), q, u:p.unit, pr:p.price, x:{k:"pkg", p}});
+    if (p.extra) out.push({g:"Кулинарная программа", t:`${esc(tr(p.short))}: ${X("каждый участник", "each participant", "ogni partecipante")}`, q:+ST.guests, u:p.extra.unit, pr:p.extra.price, x:{k:"extra"}});
     const sw = swapCount();
-    if (sw && swapPrice()) out.push({g:"Кулинарная программа", t:X(`Замена ${sw} ${plural(sw,"блюда","блюд","блюд")} в сете`, `${sw} ${sw === 1 ? "dish" : "dishes"} swapped in the set`, `Sostituzione di ${sw} ${sw === 1 ? "piatto" : "piatti"} del menu`) + ` <small>· ${rub(swapPrice())} ${X("за блюдо", "per dish", "a piatto")}</small>`, q:q, u:p.unit, pr:swapPrice() * sw});
+    if (sw && swapPrice()) out.push({g:"Кулинарная программа", t:X(`Замена ${sw} ${plural(sw,"блюда","блюд","блюд")} в сете`, `${sw} ${sw === 1 ? "dish" : "dishes"} swapped in the set`, `Sostituzione di ${sw} ${sw === 1 ? "piatto" : "piatti"} del menu`) + ` <small>· ${rub(swapPrice())} ${X("за блюдо", "per dish", "a piatto")}</small>`, q:q, u:p.unit, pr:swapPrice() * sw, x:{k:"swap"}});
     const ib = includedBuffet();
     if (ib) out.push({g:"Кулинарная программа", t:esc(ibShort(ib)), incl:true});
   }
-  if (+ST.hallHours) selHalls().forEach(hl => { if (hl.ext) out.push({g:"Площадка", t:X(`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, `Hall extension “${esc(tr(hl.title))}”, +${ST.hallHours} h`, `Prolungamento sala «${esc(tr(hl.title))}», +${ST.hallHours} h`), q:+ST.hallHours, u:"час", pr:hl.ext}); });
+  if (+ST.hallHours) selHalls().forEach(hl => { if (hl.ext) out.push({g:"Площадка", t:X(`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, `Hall extension “${esc(tr(hl.title))}”, +${ST.hallHours} h`, `Prolungamento sala «${esc(tr(hl.title))}», +${ST.hallHours} h`), q:+ST.hallHours, u:"час", pr:hl.ext, x:{k:"hall", hl}}); });
   const ff = CAT.ff.find(f => f.key === ST.ff);
   if (ff){
-    out.push({g:"Напитки", t:`${esc(tr(ff.title))}, ${X("4 часа", "4 hours", "4 ore")}`, q:+ST.guests, u:"гость", pr:ffPrice(ff), pr0:ff.price});
-    if (+ST.ffHours) out.push({g:"Напитки", t:X(`Продление free-flow, +${ST.ffHours} ч`, `Free-flow extension, +${ST.ffHours} h`, `Prolungamento open bar, +${ST.ffHours} h`) + ` <small>· ${rub(ffExt(ff))} ${X("за час", "per hour", "all'ora")}</small>`, q:+ST.guests, u:"гость", pr:ffExt(ff) * +ST.ffHours, pr0:ff.ext * +ST.ffHours});
+    out.push({g:"Напитки", t:`${esc(tr(ff.title))}, ${X("4 часа", "4 hours", "4 ore")}`, q:+ST.guests, u:"гость", pr:ffPrice(ff), pr0:ff.price, x:{k:"ff", ff}});
+    if (+ST.ffHours) out.push({g:"Напитки", t:X(`Продление free-flow, +${ST.ffHours} ч`, `Free-flow extension, +${ST.ffHours} h`, `Prolungamento open bar, +${ST.ffHours} h`) + ` <small>· ${rub(ffExt(ff))} ${X("за час", "per hour", "all'ora")}</small>`, q:+ST.guests, u:"гость", pr:ffExt(ff) * +ST.ffHours, pr0:ff.ext * +ST.ffHours, x:{k:"ffext", ff, h:+ST.ffHours, ph:ffExt(ff)}});
     if (uffOn()){
       const u = CAT.uff;
-      out.push({g:"Напитки", t:`${esc(u.title)} · ${X("крепкий алкоголь, 4 часа", "spirits, 4 hours", "superalcolici, 4 ore")}`, q:uffQ(), u:"гость", pr:uffPrice(), pr0:u.price});
-      if (+ST.ffHours) out.push({g:"Напитки", t:`${X("Продление", "Extension:", "Prolungamento")} ${esc(u.title)}, +${ST.ffHours} ${X("ч", "h", "h")} <small>· ${rub(uffExt())} ${X("за час", "per hour", "all'ora")}</small>`, q:uffQ(), u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours});
+      out.push({g:"Напитки", t:`${esc(u.title)} · ${X("крепкий алкоголь, 4 часа", "spirits, 4 hours", "superalcolici, 4 ore")}`, q:uffQ(), u:"гость", pr:uffPrice(), pr0:u.price, x:{k:"uff"}});
+      if (+ST.ffHours) out.push({g:"Напитки", t:`${X("Продление", "Extension:", "Prolungamento")} ${esc(u.title)}, +${ST.ffHours} ${X("ч", "h", "h")} <small>· ${rub(uffExt())} ${X("за час", "per hour", "all'ora")}</small>`, q:uffQ(), u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours, x:{k:"uffext", h:+ST.ffHours, ph:uffExt()}});
     }
   }
   CAT.bar.forEach(c => c.items.forEach(it => {
     const b = ST.bar[`${c.h}|${it.name}`]; if (!b) return;
-    if (+b.g && it.glass) out.push({g:"Напитки", t:`${esc(tr(it.name))}${it.origin && c.kind !== "cocktail" ? ` <small>· ${esc(tr(it.origin))}</small>` : ""}`, q:+b.g, u:it.gUnit, pr:ov(b.gp, it.glass), pr0:it.glass});
-    if (+b.b && it.bottle) out.push({g:"Напитки", t:`${esc(tr(it.name))}${it.origin ? ` <small>· ${esc(tr(it.origin))}</small>` : ""}`, q:+b.b, u: c.kind === "cocktail" ? "порция" : "бут.", pr:ov(b.bp, it.bottle), pr0:it.bottle});
+    if (+b.g && it.glass) out.push({g:"Напитки", t:`${esc(tr(it.name))}${it.origin && c.kind !== "cocktail" ? ` <small>· ${esc(tr(it.origin))}</small>` : ""}`, q:+b.g, u:it.gUnit, pr:ov(b.gp, it.glass), pr0:it.glass, x:{k:"bar", it, c, glass:true}});
+    if (+b.b && it.bottle) out.push({g:"Напитки", t:`${esc(tr(it.name))}${it.origin ? ` <small>· ${esc(tr(it.origin))}</small>` : ""}`, q:+b.b, u: c.kind === "cocktail" ? "порция" : "бут.", pr:ov(b.bp, it.bottle), pr0:it.bottle, x:{k:"bar", it, c}});
   }));
-  CAT.soft.forEach(it => { if (isOn(it)) out.push({g:"Напитки", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); });
+  CAT.soft.forEach(it => { if (isOn(it)) out.push({g:"Напитки", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, x:{k:"soft", it}}); });
   const ibKey = (includedBuffet() || {}).key;
-  CAT.buffet.forEach(g => g.items.forEach(it => { if (isOn(it) && it.key !== ibKey) out.push({g:"Фуршет", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price}); }));
-  CAT.services.forEach(g => g.items.forEach(it => { if (isOn(it)) out.push({g:"Дополнительные услуги", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, req:it.req && !priceOf(it), min:it.minSum}); }));
-  ST.custom.forEach(c => { if (c.t) out.push({g:"Дополнительно", t:esc(c.t), q:+c.q || 1, u:"", pr:+c.p || 0, req:!+c.p}); });
+  CAT.buffet.forEach(g => g.items.forEach(it => { if (isOn(it) && it.key !== ibKey) out.push({g:"Фуршет", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, x:{k:"buf", it, g}}); }));
+  CAT.services.forEach(g => g.items.forEach(it => { if (isOn(it)) out.push({g:"Дополнительные услуги", t:esc(tr(it.title)), q:qtyOf(it), u:it.unit, pr:priceOf(it), pr0:it.price, req:it.req && !priceOf(it), min:it.minSum, x:{k:"svc", it, g}}); }));
+  ST.custom.forEach(c => { if (c.t) out.push({g:"Дополнительно", t:esc(c.t), q:+c.q || 1, u:"", pr:+c.p || 0, req:!+c.p, x:{k:"custom"}}); });
   out.forEach(l => { if (!l.incl) l.sum = Math.max((l.pr || 0) * (l.q || 0), l.q && l.pr ? l.min || 0 : 0); });
   return out;
 }
@@ -1097,6 +1100,7 @@ function optRow(it, type = "checkbox", name = "", checked = isOn(it), editable =
 
 function renderForm(){
   const C = CAT, p = pkg(), F = $("#form");
+  $("#bXls").hidden = !XL_TPL[ST.kind];
   const cnt = arr => { const n = arr.filter(Boolean).length; return n ? `<span class="cnt">${n}</span>` : ""; };
   const openState = {}; F.querySelectorAll("details.box").forEach(d => openState[d.dataset.id] = d.open);
   const op = (id, def) => (openState[id] ?? def) ? "open" : "";
@@ -1633,6 +1637,342 @@ $("#bInvite").addEventListener("click", async () => {
 });
 $("#bPrint").addEventListener("click", () => { renderPages(); waitImages($("#pages")).then(() => print()); });
 $("#bReset").addEventListener("click", async () => { if (!confirm("Начать новое предложение? Текущее сохранено в «Мои КП».")) return; archPut(); const k = ST.kind; ST = blank(); ST.kind = k; CAT = buildCatalog(k); rerender(); });
+
+/* ---------- Смета Excel по шаблону ----------
+   Шаблоны отдела продаж (uploads/smeta/*.xlsx) заполняются как вручную: в строку шаблона
+   ставится цена из КП и количество, остальные строки остаются с нулём. Позиции, которых
+   в шаблоне нет, вставляются новыми строками в свой раздел — суммы «Всего» их захватывают.
+   Правим XML листа напрямую (JSZip), чтобы сохранить оформление, логотип и подсветку строк.
+   Итоги считаем сами и пишем в ячейки — их видно и там, где формулы не пересчитываются. */
+const XNS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+const needZip = () => window.JSZip ? Promise.resolve() : new Promise((ok, no) => {
+  const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+  s.onload = ok; s.onerror = () => no(new Error("не загрузилась библиотека JSZip")); document.head.appendChild(s);
+});
+const colN = s => [...s].reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0);
+const colS = n => { let s = ""; for (; n > 0; n = Math.floor((n - 1) / 26)) s = String.fromCharCode(65 + (n - 1) % 26) + s; return s; };
+/* Сдвиг ссылок при вставке k строк перед строкой at. Диапазон, кончающийся прямо над
+   вставкой, растягивается — так новая строка попадает в SUM своего раздела. */
+const XL_REF = /(\$?)([A-Z]{1,3})(\$?)(\d+)(?::(\$?)([A-Z]{1,3})(\$?)(\d+))?(?![\d(A-Za-z])/g;
+function xlShiftRefs(t, at, k){
+  return t.replace(XL_REF, (m, d1, c1, d2, r1, d3, c2, d4, r2) => {
+    let a = +r1; const one = r2 === undefined; let b = one ? a : +r2;
+    if (!one && b === at - 1 && a < at) b += k; else if (b >= at) b += k;
+    if (a >= at) a += k;
+    return one ? `${d1}${c1}${d2}${a}` : `${d1}${c1}${d2}${a}:${d3}${c2}${d4}${b}`;
+  });
+}
+/* Нормализация названий для сопоставления: основы слов по 5 букв, без предлогов */
+const XL_STOP = new Set("в с и на по для из от или цена the de del della di du des la le".split(" "));
+const xlTok = s => String(s || "").toLowerCase().replace(/ё/g, "е").replace(/<[^>]+>/g, " ").replace(/[-‑–](?=[a-zа-я])/g, "")
+  .split(/[^a-zа-я0-9]+/).filter(w => w && !XL_STOP.has(w)).map(w => w.slice(0, 5));
+const xlCover = (a, b) => { const B = new Set(b); return a.length ? a.filter(w => B.has(w)).length / a.length : 0; };
+
+function xlSheet(xml, sst){
+  const doc = new DOMParser().parseFromString(xml, "application/xml");
+  const sd = doc.getElementsByTagName("sheetData")[0];
+  const rowEl = new Map([...sd.getElementsByTagName("row")].map(r => [+r.getAttribute("r"), r]));
+  const cellOf = (r, col, make = true) => {
+    let row = rowEl.get(r);
+    if (!row){ if (!make) return null; row = doc.createElementNS(XNS, "row"); row.setAttribute("r", r);
+      const nx = [...rowEl.keys()].filter(n => n > r).sort((a, b) => a - b)[0]; sd.insertBefore(row, nx ? rowEl.get(nx) : null); rowEl.set(r, row); }
+    const ref = colS(col) + r; let c = [...row.children].find(x => x.getAttribute("r") === ref);
+    if (!c && make){ c = doc.createElementNS(XNS, "c"); c.setAttribute("r", ref);
+      const nx = [...row.children].find(x => colN(x.getAttribute("r").replace(/\d+/g, "")) > col); row.insertBefore(c, nx || null); }
+    return c;
+  };
+  const txt = c => { if (!c) return ""; const t = c.getAttribute("t"), v = c.getElementsByTagName("v")[0];
+    if (t === "s") return v ? sst[+v.textContent] || "" : ""; if (t === "inlineStr") return [...c.getElementsByTagName("t")].map(x => x.textContent).join("");
+    return v ? v.textContent : ""; };
+  const get = (r, col) => txt(cellOf(r, col, false));
+  const fOf = c => c && c.getElementsByTagName("f")[0];
+  const clear = c => { [...c.childNodes].forEach(n => c.removeChild(n)); c.removeAttribute("t"); };
+  const setNum = (r, col, n) => { const c = cellOf(r, col); clear(c); const v = doc.createElementNS(XNS, "v"); v.textContent = String(n); c.appendChild(v); };
+  const setStr = (r, col, s) => { const c = cellOf(r, col); clear(c); c.setAttribute("t", "inlineStr");
+    const is = doc.createElementNS(XNS, "is"), t = doc.createElementNS(XNS, "t"); t.setAttribute("xml:space", "preserve"); t.textContent = s; is.appendChild(t); c.appendChild(is); };
+  const setF = (r, col, f) => { const c = cellOf(r, col); clear(c); const e = doc.createElementNS(XNS, "f"); e.textContent = f; c.appendChild(e); };
+
+  /* Общие формулы (t="shared") раскрываем — иначе вставка строк их ломает */
+  const masters = {};
+  [...doc.getElementsByTagName("f")].forEach(f => { if (f.getAttribute("t") === "shared" && f.textContent) masters[f.getAttribute("si")] = {f:f.textContent, ref:f.parentNode.getAttribute("r")}; });
+  [...doc.getElementsByTagName("f")].forEach(f => {
+    if (f.getAttribute("t") !== "shared") return;
+    const m = masters[f.getAttribute("si")], at = f.parentNode.getAttribute("r");
+    if (m && !f.textContent){
+      const [, mc, mr] = m.ref.match(/([A-Z]+)(\d+)/), [, ac, ar] = at.match(/([A-Z]+)(\d+)/), dr = +ar - +mr, dc = colN(ac) - colN(mc);
+      f.textContent = m.f.replace(XL_REF, (x, d1, c1, d2, r1, d3, c2, d4, r2) => {
+        const mv = (d, c, dd, r) => `${d}${d ? c : colS(colN(c) + dc)}${dd}${dd ? r : +r + dr}`;
+        return r2 === undefined ? mv(d1, c1, d2, r1) : `${mv(d1, c1, d2, r1)}:${mv(d3, c2, d4, r2)}`; });
+    }
+    ["t", "ref", "si"].forEach(a => f.removeAttribute(a));
+  });
+
+  /* Разметка шаблона: разделы «N. …» до своей строки «Всего», позиции (есть цена в D),
+     подзаголовки и описания (текст без цены сразу под позицией) */
+  const maxR = Math.max(...rowEl.keys()), secs = [], R = {};
+  let cur = null, head = "", last = 0;
+  for (let r = 1; r <= maxR; r++){
+    const b = get(r, 2).trim(), d = get(r, 4).trim();
+    if (/^\d+\.\s/.test(b)){ cur = {r, title:b, items:[], heads:[]}; secs.push(cur); head = ""; continue; }
+    if (!cur || cur.end) continue;
+    if (b === "Всего"){ cur.end = r; continue; }
+    if (!b || b === "Наименование") continue;
+    if (d && !isNaN(+d)){ R[r] = {r, b, c:get(r, 3), d:+d, head, sec:cur, tok:xlTok(b)}; cur.items.push(R[r]); last = r; continue; }
+    if (last === r - 1 && b.length > 60 && R[last]){ R[last].desc = r; last = r; continue; }
+    head = b; cur.heads.push({r, b, tok:xlTok(b)});
+  }
+  const lastRowOf = it => it.desc || it.r;
+  const findLabel = re => { for (let r = 1; r <= maxR; r++) if (re.test(get(r, 2)) || re.test(get(r, 4))) return r; return 0; };
+
+  /* Шапка */
+  const H = [[/^Дата мероприятия/, dateRu(ST.date)], [/^Время начала/, ST.start || ""], [/^Время окончания/, ST.start ? endTime() : ""],
+    [/^Количество гостей/, ST.kind === "kids" ? guestsLabel() : (+ST.guests || "")], [/^Зал$/, selHalls().map(h => h.title).join(" + ")],
+    [/^Контактное лицо/, [ST.contact, ST.client].filter(Boolean).join(", ")]];
+  H.forEach(([re, v]) => { const r = findLabel(re); if (r && v !== "") typeof v === "number" ? setNum(r, 5, v) : setStr(r, 5, String(v)); });
+
+  /* Подбор строки шаблона для строки КП */
+  const sec1 = secs[0], secLast = secs[secs.length - 1];
+  const secFood = secs.find(s => /фуршет/i.test(s.title)) || secs[1] || sec1;
+  const items = ss => ss.flatMap(s => s.items);
+  const headIn = (ss, grp) => { const g = xlTok(grp); let best = null, sc = 0.5;
+    ss.forEach(s => s.heads.forEach(h => { const v = Math.max(xlCover(h.tok, g), xlCover(g, h.tok)); if (v > sc || (v === sc && !best && v >= 0.5)){ best = h; sc = v; } })); return best; };
+  const inHead = (it, h) => h && it.head === h.b;
+  const pick = (cands, name, pr, {grp, strict} = {}) => {
+    const t = xlTok(name), gh = grp ? headIn([...new Set(cands.map(c => c.sec))], grp) : null;
+    let best = null, bs = 0;
+    cands.forEach(it => {
+      const cov = xlCover(t, it.tok), eq = pr && it.d === pr;
+      const ok = strict ? cov === 1 : cov >= 0.8 || (eq && cov >= 0.5);
+      if (!ok) return;
+      const s = cov + (eq ? 0.5 : 0) + (inHead(it, gh) ? 1 : 0) - it.tok.length / 1000;
+      if (s > bs){ best = it; bs = s; }
+    });
+    return best;
+  };
+  const ALIAS = [[/^Арт · Рисование/, /^Живопись/], [/^Интерактивные игры · Игра[,\s]/, /^Игра[\s(]/], [/^Торты$/, /^Торт /], [/^Хамон-станция · Станция/, /^Хамон-станция/],
+    [/^Детский фуршет Kid Set$|Kid Set$/, /^Kid Set/], [/^Коктейль по выбору$/, /^Коктейль в ассортименте/]];
+  const BAR_HEAD = {"Игристое":/игрист/i, "Белое":/^Белые/i, "Красное":/^Красные/i, "Розовое":/^Розовые/i, "Б/а вино":/^Безалкогольное вино/i};
+  const byRe = (ss, re, hre) => items(ss).find(it => re.test(it.b) && (!hre || hre.test(it.head)));
+
+  const fills = {}, ins = [];   /* fills: строка шаблона → {d, e, c}; ins: {after, b, d, e} */
+  const put = (it, d, e, extra = {}) => {
+    if (!it) return false;
+    const f = fills[it.r];
+    if (f){ if (f.d === d){ f.e += e; return true; } ins.push({after:lastRowOf(it), b:extra.name || it.b, d, e, sty:it.r}); return true; }
+    fills[it.r] = {d, e, ...extra}; return true;
+  };
+  /* Куда вставить отсутствующую позицию: после блока подходящего подзаголовка, иначе в конец раздела */
+  const HEAD_ALIAS = [[/^Интерактивные игры/, /^Развлека|^Развлечения/], [/^Дополнительный персонал/, /^Персонал/], [/^Арт$/, /^Творческие/],
+    [/^Polaroid/, /^Фото/], [/^Украшение воздушными шарами/, /^Оформление/]];
+  const insertAt = (ss, grp) => {
+    const ha = grp && HEAD_ALIAS.find(([g]) => g.test(grp));
+    const h = (ha && ss.flatMap(s => s.heads).find(hh => ha[1].test(hh.b))) || (grp && headIn(ss, grp));
+    if (h){ const its = items(ss).filter(it => it.head === h.b); if (its.length) return lastRowOf(its[its.length - 1]); }
+    /* Группа совпала с позицией (хамон: доплата за гостей — под самой станцией) */
+    const gt = grp ? xlTok(grp) : [], hit = gt.length ? items(ss).find(it => it.tok.length && xlCover(it.tok, gt) === 1) : null;
+    if (hit) return lastRowOf(hit);
+    const s = ss[ss.length - 1]; return s.items.length ? lastRowOf(s.items[s.items.length - 1]) : s.end - 1;
+  };
+  const add = (ss, grp, name, d, e) => { const at = insertAt(ss, grp), s = secs.find(x => x.r < at && x.end > at) || ss[0];
+    ins.push({after:at, b:name, d, e, sty:(s.items.find(it => it.b.length < 60) || s.items[0] || {}).r}); };
+  const plain = s => strip(String(s)).replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/\s+/g, " ").trim();
+  const svcSecs = secs.slice(1).length ? secs.slice(1) : secs;
+  const ls = lines();
+  let pkgRow = 0;
+
+  ls.forEach(l => {
+    if (l.incl || !l.q) return;
+    const x = l.x || {}, sumOk = Math.round(l.sum) === Math.round((l.pr || 0) * l.q);
+    const D = sumOk ? (l.pr || 0) : l.sum, E = sumOk ? l.q : 1, name = plain(l.t);
+    switch (x.k){
+      case "pkg": {
+        const p = x.p, key = ST.kind === "kids" ? p.group : p.short;
+        const it = sec1.items.find(i => i.c && xlTok(i.c).join() === xlTok(key).join());
+        if (it && !fills[it.r]){ fills[it.r] = {d:D, e:E, c: ST.kind === "kids" ? p.short : undefined}; pkgRow = it.r; }
+        else add([sec1], "", name, D, E);
+        return;
+      }
+      case "extra": case "swap": return add([sec1], "", name, D, E);
+      case "hall": {
+        const it = items(secs).find(i => /^Продление зала/i.test(i.head || i.b) && xlTok(i.b).includes(xlTok(x.hl.title)[0]));
+        return put(it, D, E) || add(svcSecs, "Продление зала", name, D, E);
+      }
+      case "ff": { const it = byRe(secs, new RegExp(`^${x.ff.short}$`, "i"), /алкогольный бар/i); return put(it, D, E) || add([secFood], "Безлимитный алкогольный бар", name, D, E); }
+      case "ffext": { const it = byRe(secs, new RegExp(`^Продление безлимитного алкогольного бара ${x.ff.short}`, "i"));
+        return put(it, x.ph, l.q * x.h) || add([secFood], "Безлимитный алкогольный бар", name, D, E); }
+      case "uff": return put(byRe(secs, /^Ultra\b/), D, E) || add([secFood], "Безлимитный алкогольный бар", name, D, E);
+      case "uffext": return put(byRe(secs, /^Продление Ultra/), x.ph, l.q * x.h) || add([secFood], "Безлимитный алкогольный бар", name, D, E);
+      case "bar": {
+        const nm = x.it.name, al = ALIAS.find(([a]) => a.test(nm));
+        const bottle = al ? byRe([secFood], al[1]) : pick(items([secFood]), nm, x.glass ? 0 : x.it.bottle, {strict:true});
+        if (!x.glass && put(bottle, D, E)) return;
+        const hre = BAR_HEAD[x.c.h], h = hre ? secFood.heads.find(hh => hre.test(hh.b)) : null;
+        const label = x.glass ? `${plain(nm)}, ${l.u}` : name;
+        if (bottle){ ins.push({after:lastRowOf(bottle), b:label, d:D, e:E, sty:bottle.r}); return; }
+        return add([secFood], h ? h.b : x.c.h, label, D, E);
+      }
+      case "soft": case "buf": {
+        const t = x.k === "buf" && x.it.setName ? x.it.setName : x.it.title, al = ALIAS.find(([a]) => a.test(t));
+        const it = al ? byRe([secFood], al[1]) : pick(items([secFood]), t, x.it.price, {grp:x.g ? x.g.h : t});
+        return put(it, D, E) || add([secFood], x.g ? x.g.h : t, name, D, E);
+      }
+      case "svc": {
+        const it0 = x.it, al = ALIAS.find(([a]) => a.test(it0.title));
+        const nm = it0.lab ? String(it0.short || it0.lab).split(" · ")[0] : it0.svc;
+        const it = al ? byRe(svcSecs, al[1]) : pick(items(svcSecs), nm, it0.price, {grp:it0.svc});
+        return put(it, D, E) || add(svcSecs, it0.svc, name, D, E);
+      }
+      default: return add([secLast], "", name, D, E);
+    }
+  });
+
+  /* Меню сета — вместо строк «Пример — …» */
+  const menuRows = sec1 ? Array.from({length:sec1.end - sec1.r}, (_, i) => sec1.r + i).filter(r => /^Пример/.test(get(r, 2))) : [];
+  const dishes = setDishes();
+  if (menuRows.length && dishes.length){
+    menuRows.forEach((r, i) => { if (dishes[i]) setStr(r, 2, dishes[i]); else { setStr(r, 2, ""); const c = cellOf(r, 5); clear(c); const f = cellOf(r, 6); clear(f); } });
+    dishes.slice(menuRows.length).forEach(dn => ins.push({after:menuRows[menuRows.length - 1], b:dn, menu:true, sty:menuRows[menuRows.length - 1]}));
+  }
+  if (menuRows.length && !pkgRow && pkg()) setNum(menuRows[0], 5, ST.kind === "kids" ? +ST.kids : +ST.guests);
+
+  Object.entries(fills).forEach(([r, f]) => { setNum(+r, 4, f.d); setNum(+r, 5, f.e); if (f.c) setStr(+r, 3, f.c); });
+
+  /* Скидка, предоплата, депозит — по подписям в итогах */
+  const T = totals(), rD1 = findLabel(/^Скидка на кулинарную/), rD2 = findLabel(/^Скидка на дополнительные/);
+  const r1 = findLabel(/^Общая сумма за услуги, не облагаемые НДС \([^)]*\)$/), r2 = findLabel(/^Общая сумма за услуги, облагаемые НДС \([^)]*\)$/);
+  if (T.disc && rD1 && rD2){
+    if (ST.discUnit !== "₽"){ setNum(rD1, 3, T.d / 100); setNum(rD2, 3, T.d / 100); }
+    else { setF(rD1, 3, `${T.disc}/(F${r1}+F${r2})`); setF(rD2, 3, `C${rD1}`); }
+  }
+  const rPre = findLabel(/^Предоплата/), rTot = findLabel(/^Всего к оплате \(включая НДС\)/), rMin = findLabel(/^Минимальная стоимость/);
+  if (rPre && rTot && +ST.prepay){ setStr(rPre, 2, `Предоплата ${ST.prepay}%`); setF(rPre, 6, `F${rTot}*${+ST.prepay / 100}`); }
+  if (rMin && T.dep) setNum(rMin, 6, T.dep);
+
+  /* Вставка строк — снизу вверх, чтобы номера выше не съезжали */
+  const groups = {};
+  ins.forEach(o => (groups[o.after] = groups[o.after] || []).push(o));
+  const shifts = [];
+  Object.keys(groups).map(Number).sort((a, b) => b - a).forEach(after => {
+    const list = groups[after], at = after + 1, k = list.length;
+    [...rowEl.keys()].filter(n => n >= at).sort((a, b) => b - a).forEach(n => {
+      const row = rowEl.get(n); rowEl.delete(n); row.setAttribute("r", n + k); rowEl.set(n + k, row);
+      [...row.children].forEach(c => c.setAttribute("r", c.getAttribute("r").replace(/\d+$/, n + k)));
+    });
+    [...doc.getElementsByTagName("f")].forEach(f => { f.textContent = xlShiftRefs(f.textContent, at, k); });
+    [...doc.getElementsByTagName("mergeCell")].forEach(m => m.setAttribute("ref", xlShiftRefs(m.getAttribute("ref"), at, k)));
+    [...doc.getElementsByTagName("xm:sqref")].forEach(s => { s.textContent = s.textContent.split(" ").map(x => xlShiftRefs(x, at, k)).join(" "); });
+    [...doc.getElementsByTagName("xm:f")].forEach(s => { s.textContent = xlShiftRefs(s.textContent, at, k); });
+    ["conditionalFormatting", "dataValidation"].forEach(t => [...doc.getElementsByTagName(t)].forEach(e => e.setAttribute("sqref", e.getAttribute("sqref").split(" ").map(x => xlShiftRefs(x, at, k)).join(" "))));
+    shifts.push([at, k]);
+    list.forEach((o, j) => {
+      const r = at + j, src = rowEl.get(o.sty) && o.sty < at ? rowEl.get(o.sty) : rowEl.get(after);
+      const row = src.cloneNode(true); row.setAttribute("r", r); row.removeAttribute("spans");
+      [...row.children].forEach(c => { c.setAttribute("r", c.getAttribute("r").replace(/\d+$/, r)); clear(c); });
+      const nx = [...rowEl.keys()].filter(n => n > r).sort((a, b) => a - b)[0];
+      sd.insertBefore(row, nx ? rowEl.get(nx) : null); rowEl.set(r, row);
+      setStr(r, 2, o.b);
+      if (o.menu){ setF(r, 5, `E${r - 1}`); setStr(r, 6, "включено"); return; }
+      setNum(r, 4, o.d); setNum(r, 5, o.e); setF(r, 6, `D${r}*E${r}`);
+    });
+  });
+
+  /* Пересчёт: + − * / %, SUM(диапазон); текст в SUM не считается */
+  const fcell = {};
+  [...doc.getElementsByTagName("f")].forEach(f => { if (f.parentNode.localName === "c") fcell[f.parentNode.getAttribute("r")] = f; });
+  const memo = {};
+  const val = ref => {
+    if (ref in memo) return memo[ref];
+    const f = fcell[ref]; memo[ref] = 0;
+    if (f) return memo[ref] = calc(f.textContent);
+    const [, c, r] = ref.match(/([A-Z]+)(\d+)/), t = get(+r, colN(c)), n = parseFloat(t);
+    return memo[ref] = isNaN(n) || !/^-?[\d.]+(e-?\d+)?$/i.test(t.trim()) ? 0 : n;
+  };
+  function calc(src){
+    const tk = src.replace(/\$/g, "").match(/[A-Z]+\d+:[A-Z]+\d+|[A-Z]+\d+|SUM|\d+(?:\.\d+)?%?|[-+*/()]/g) || []; let i = 0;
+    const atom = () => { const t = tk[i++];
+      if (t === "(") { const v = expr(); i++; return v; }
+      if (t === "-") return -atom();
+      if (t === "+") return atom();
+      if (t === "SUM"){ i++; let s = 0; const a = tk[i++]; const [p, q] = a.split(":"); const [, c1, r1] = p.match(/([A-Z]+)(\d+)/), [, c2, r2] = (q || p).match(/([A-Z]+)(\d+)/);
+        for (let r = +r1; r <= +r2; r++) for (let c = colN(c1); c <= colN(c2); c++) s += val(colS(c) + r); i++; return s; }
+      if (/^[A-Z]/.test(t)) return val(t);
+      return /%$/.test(t) ? parseFloat(t) / 100 : parseFloat(t); };
+    const term = () => { let v = atom(); while (tk[i] === "*" || tk[i] === "/"){ const o = tk[i++], b = atom(); v = o === "*" ? v * b : b ? v / b : 0; } return v; };
+    const expr = () => { let v = term(); while (tk[i] === "+" || tk[i] === "-"){ const o = tk[i++], b = term(); v = o === "+" ? v + b : v - b; } return v; };
+    return expr();
+  }
+  Object.entries(fcell).forEach(([ref, f]) => {
+    const c = f.parentNode; [...c.getElementsByTagName("v")].forEach(v => c.removeChild(v)); c.removeAttribute("t");
+    const v = doc.createElementNS(XNS, "v"); v.textContent = String(Math.round(val(ref) * 100) / 100); c.appendChild(v);
+  });
+  /* Лист открывается с начала, а не там, где шаблон сохранили */
+  [...doc.getElementsByTagName("sheetView")].forEach(v => { v.setAttribute("topLeftCell", "A1"); v.removeAttribute("tabSelected"); });
+  [...doc.getElementsByTagName("selection")].forEach(s => { s.setAttribute("activeCell", "E3"); s.setAttribute("sqref", "E3"); });
+  return {xml:new XMLSerializer().serializeToString(doc), shifts, total:val(`F${findLabel(/^Всего к оплате \(без НДС\)/)}`)};
+}
+
+async function xlBuild(){
+  await needZip();
+  const zip = await JSZip.loadAsync(await (await fetch(XL_TPL[ST.kind] + "?v=" + Date.now())).arrayBuffer());
+  const sstXml = zip.file("xl/sharedStrings.xml") ? await zip.file("xl/sharedStrings.xml").async("string") : "";
+  const sst = [...new DOMParser().parseFromString(sstXml || "<sst/>", "application/xml").getElementsByTagName("si")].map(si => [...si.getElementsByTagName("t")].map(t => t.textContent).join(""));
+  const base = await zip.file("xl/worksheets/sheet1.xml").async("string");
+  let wb = await zip.file("xl/workbook.xml").async("string");
+  const lang = ST.lang; ST.lang = "ru";   /* смета всегда по-русски, как шаблон */
+  try {
+    syncVar();
+    const n = Math.max(1, ST.vars.length), res = [];
+    for (let i = 0; i < n; i++) res.push(withVar(i, () => xlSheet(base, sst)));
+    /* Область печати сдвигаем вместе со строками */
+    const pa = (wb.match(/<definedName name="_xlnm\.Print_Area" localSheetId="0">([^<]*)<\/definedName>/) || [])[1];
+    const paFor = r => pa ? r.shifts.reduce((s, [at, k]) => xlShiftRefs(s, at, k), pa) : "";
+    zip.file("xl/worksheets/sheet1.xml", res[0].xml);
+    if (pa) wb = wb.replace(pa, paFor(res[0]));
+    if (n > 1){
+      /* Несколько вариантов — по листу на каждый (у листа своя копия рисунка с логотипом) */
+      let rels = await zip.file("xl/_rels/workbook.xml.rels").async("string"), ct = await zip.file("[Content_Types].xml").async("string");
+      const shRels = zip.file("xl/worksheets/_rels/sheet1.xml.rels") ? await zip.file("xl/worksheets/_rels/sheet1.xml.rels").async("string") : "";
+      const drw = zip.file("xl/drawings/drawing1.xml") ? await zip.file("xl/drawings/drawing1.xml").async("string") : "";
+      const drwRels = zip.file("xl/drawings/_rels/drawing1.xml.rels") ? await zip.file("xl/drawings/_rels/drawing1.xml.rels").async("string") : "";
+      const used = new Set(), nm = i => { let s = (vName(i) || `Вариант ${i + 1}`).replace(/[\[\]:*?\/\\]/g, " ").replace(/\s+/g, " ").slice(0, 31).trim() || `Вариант ${i + 1}`;
+        while (used.has(s.toLowerCase())) s = s.slice(0, 28) + " " + (i + 1); used.add(s.toLowerCase()); return s; };
+      const sheetTag = wb.match(/<sheet [^>]*\/>/)[0], first = nm(0);
+      let tags = sheetTag.replace(/name="[^"]*"/, `name="${esc(first)}"`), pas = "";
+      let maxId = Math.max(...[...wb.matchAll(/sheetId="(\d+)"/g)].map(m => +m[1]));
+      for (let i = 1; i < n; i++){
+        const k = i + 1, rid = `rIdXl${k}`;
+        zip.file(`xl/worksheets/sheet${k}.xml`, res[i].xml);
+        if (shRels) zip.file(`xl/worksheets/_rels/sheet${k}.xml.rels`, shRels.replace(/drawing1\.xml/g, `drawing${k}.xml`));
+        if (drw){ zip.file(`xl/drawings/drawing${k}.xml`, drw); zip.file(`xl/drawings/_rels/drawing${k}.xml.rels`, drwRels);
+          ct = ct.replace("</Types>", `<Override PartName="/xl/drawings/drawing${k}.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/></Types>`); }
+        ct = ct.replace("</Types>", `<Override PartName="/xl/worksheets/sheet${k}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>`);
+        rels = rels.replace("</Relationships>", `<Relationship Id="${rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${k}.xml"/></Relationships>`);
+        tags += `<sheet name="${esc(nm(i))}" sheetId="${++maxId}" state="visible" r:id="${rid}"/>`;
+        if (pa) pas += `<definedName name="_xlnm.Print_Area" localSheetId="${i}">${paFor(res[i]).replace(/^&apos;[^!]*&apos;!|^'[^!]*'!|^[^!]*!/, `&apos;${esc(nm(i)).replace(/'/g, "''")}&apos;!`)}</definedName>`;
+      }
+      wb = wb.replace(sheetTag, tags);
+      if (pa){ wb = wb.replace(/(<definedName name="_xlnm\.Print_Area" localSheetId="0">)&apos;[^<!]*&apos;!/, `$1&apos;${esc(first)}&apos;!`).replace("</definedNames>", pas + "</definedNames>"); }
+      zip.file("xl/_rels/workbook.xml.rels", rels); zip.file("[Content_Types].xml", ct);
+    } else if (vName(0) && ST.vars.length) wb = wb.replace(/(<sheet [^>]*name=")[^"]*"/, `$1${esc(vName(0).slice(0, 31))}"`);
+    /* Excel и LibreOffice пересчитают формулы при открытии */
+    wb = /<calcPr[^>]*\/>/.test(wb) ? wb.replace(/<calcPr([^>]*)\/>/, (m, a) => `<calcPr${a.replace(/\s*fullCalcOnLoad="[^"]*"/, "")} fullCalcOnLoad="1"/>`) : wb.replace("</workbook>", '<calcPr fullCalcOnLoad="1"/></workbook>');
+    zip.file("xl/workbook.xml", wb);
+    zip.remove("xl/calcChain.xml");
+    return {blob:await zip.generateAsync({type:"blob", mimeType:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", compression:"DEFLATE"}), res};
+  } finally { ST.lang = lang; }
+}
+$("#bXls").addEventListener("click", async () => {
+  if (!CAT) return;
+  if (!XL_TPL[ST.kind]) return alert("Шаблон сметы есть для взрослого, детского и новогоднего мастер-класса. Для казино его пока нет.");
+  const b = $("#bXls"); b.disabled = true; const old = b.textContent; b.textContent = "Собираю…";
+  try {
+    const {blob} = await xlBuild();
+    const nm = ["Novikov", `Смета${ST.no ? "-" + ST.no + (ST.ver > 1 ? "-v" + ST.ver : "") : ""}`, ST.client || "мероприятие", ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nm + ".xlsx"; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+  } catch(e){ alert("Не получилось собрать смету: " + e.message); console.error(e); }
+  finally { b.disabled = false; b.textContent = old; }
+});
 
 /* ---------- Мои КП ---------- */
 async function openState(st){
