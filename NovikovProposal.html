@@ -299,15 +299,40 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 /* ---------- Константы ---------- */
-/* Менеджер выбирается по адресу: /kp-generator — Максим, /kp-generator-darya, /kp-generator-ilya, /kp-generator-alina — коллеги.
+/* Менеджер выбирается по адресу: /kp-generator — Максим, /kp-generator-<ключ> — коллега (ключ — имя в MANAGERS).
+   На сервере deploy.sh сам копирует файл под каждый ключ — новому коллеге достаточно строки здесь.
    У коллег свой префикс номера КП и свой архив, чтобы не пересекаться. */
 const MANAGERS = {
   max:  {name:"Максим Бланк",   en:"Maxim Blanc",    phone:"+7 903 161-80-65", tel:"+79031618065", code:"",   ls:""},
   darya:{name:"Дарья Марушко",  en:"Daria Marushko", phone:"+7 915 089-18-18", tel:"+79150891818", code:"Д-", ls:"-darya"},
   ilya: {name:"Илья Васильев",  en:"Ilya Vasilyev",  phone:"+7 912 912-52-72", tel:"+79129125272", code:"И-", ls:"-ilya"},
   alina:{name:"Алина Стефи",    en:"Alina Stefi",    phone:"+7 968 906-62-79", tel:"+79689066279", code:"А-", ls:"-alina"},
+  gribacheva:{name:"Анастасия Грибачева", en:"Anastasia Gribacheva", phone:"+7 969 079-70-18", tel:"+79690797018", code:"АГ-", ls:"-gribacheva"},
+  irkha:{name:"Юлия Ирха", en:"Yulia Irkha", phone:"+7 967 199-38-39", tel:"+79671993839", code:"ЮИ-", ls:"-irkha"},
+  tefanova:{name:"Ксения Тефанова", en:"Ksenia Tefanova", phone:"+7 968 669-45-19", tel:"+79686694519", code:"КТ-", ls:"-tefanova"},
+  lineva:{name:"Светлана Линёва", en:"Svetlana Lineva", phone:"+7 967 199-38-25", tel:"+79671993825", code:"СЛ-", ls:"-lineva"},
+  myagkov:{name:"Антон Мягков", en:"Anton Myagkov", phone:"+7 903 555-53-57", tel:"+79035555357", code:"АМ-", ls:"-myagkov"},
+  krylova:{name:"Василиса Крылова", en:"Vasilisa Krylova", phone:"+7 903 161-07-37", tel:"+79031610737", code:"ВК-", ls:"-krylova"},
+  pashchenko:{name:"Евгения Пащенко", en:"Evgenia Pashchenko", phone:"+7 968 729-11-21", tel:"+79687291121", code:"ЕП-", ls:"-pashchenko"},
+  voskoboynikova:{name:"Ирина Воскобойникова", en:"Irina Voskoboynikova", phone:"+7 969 283-24-98", tel:"+79692832498", code:"ИВ-", ls:"-voskoboynikova"},
+  absolyamova:{name:"Лилия Абсолямова", en:"Liliya Absolyamova", phone:"+7 967 199-38-30", tel:"+79671993830", code:"ЛА-", ls:"-absolyamova"},
+  kombarova:{name:"Мария Комбарова", en:"Maria Kombarova", phone:"+7 968 906-62-73", tel:"+79689066273", code:"МК-", ls:"-kombarova"},
+  prokhorova:{name:"Дарья Прохорова", en:"Daria Prokhorova", phone:"+7 969 283-24-11", tel:"+79692832411", code:"ДП-", ls:"-prokhorova"},
+  cherevko:{name:"Дарья Черевко", en:"Daria Cherevko", phone:"+7 963 241-01-21", tel:"+79632410121", code:"ДЧ-", ls:"-cherevko"},
+  petrenko:{name:"Надежда Петренко", en:"Nadezhda Petrenko", phone:"+7 968 729-11-20", tel:"+79687291120", code:"НП-", ls:"-petrenko"},
+  shabashova:{name:"Виктория Шабашова", en:"Viktoria Shabashova", phone:"+7 968 558-98-43", tel:"+79685589843", code:"ВШ-", ls:"-shabashova"},
+  gordeeva:{name:"Надежда Гордеева", en:"Nadezhda Gordeeva", phone:"+7 967 199-38-04", tel:"+79671993804", code:"НГ-", ls:"-gordeeva"},
+  reznik:{name:"Екатерина Резник", en:"Ekaterina Reznik", phone:"+7 967 199-38-09", tel:"+79671993809", code:"ЕР-", ls:"-reznik"},
+  rusakova:{name:"Алина Русакова", en:"Alina Rusakova", phone:"+7 968 906-62-74", tel:"+79689066274", code:"АР-", ls:"-rusakova"},
+  fomintseva:{name:"Анна Фоминцева", en:"Anna Fomintseva", phone:"+7 969 283-26-21", tel:"+79692832621", code:"АФ-", ls:"-fomintseva"},
+  kurganova:{name:"Анна Курганова", en:"Anna Kurganova", phone:"+7 967 199-38-29", tel:"+79671993829", code:"АКу-", ls:"-kurganova"},
+  voroshko:{name:"Ольга Ворошко", en:"Olga Voroshko", phone:"+7 916 494-17-98", tel:"+79164941798", code:"ОВ-", ls:"-voroshko"},
+  katkova:{name:"Анна Каткова", en:"Anna Katkova", phone:"+7 915 046-74-53", tel:"+79150467453", code:"АКа-", ls:"-katkova"},
+  kukhelnaya:{name:"Наталья Кухельная", en:"Natalya Kukhelnaya", phone:"+7 926 552-29-36", tel:"+79265522936", code:"НК-", ls:"-kukhelnaya"},
+  alibekova:{name:"Ума Алибекова", en:"Uma Alibekova", phone:"+7 967 246-34-10", tel:"+79672463410", code:"УА-", ls:"-alibekova"},
+  kan:{name:"Инесса Кан", en:"Inessa Kan", phone:"+7 969 198-90-12", tel:"+79691989012", code:"ИК-", ls:"-kan"},
 };
-const MANAGER = MANAGERS[(location.pathname.match(/(darya|ilya|alina)/i) || [, "max"])[1].toLowerCase()];
+const MANAGER = MANAGERS[((location.pathname.match(/kp-generator-([a-z]+)/i) || [])[1] || "").toLowerCase()] || MANAGERS.max;
 document.getElementById("mgrName").textContent = " · " + MANAGER.name.toUpperCase();
 document.title += " — " + MANAGER.name;
 const ADDRESS = "Москва, Большая Якиманка, 22", ADDRESS_EN = "Moscow, Bolshaya Yakimanka 22";
