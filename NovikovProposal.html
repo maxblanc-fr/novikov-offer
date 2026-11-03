@@ -867,8 +867,10 @@ function buildCatalog(kind){
       const h = (grp ? grp + " · " : "") + L(b.h);
       if (b.list && b.price) C.buffet.push({h, items:[{key:`buf:set:${L(b.h)}`, title:L(b.h), sub:`${b.wt} на гостя`, price:b.price, per:"guest", unit:"гость",
         detail:b.list, imgs:b.list.map(imgOf).filter(Boolean)}]});
-      else if (b.rows) C.buffet.push({h, note:L(b.hnote), items:b.rows.map(r => { const g = /гост/.test(r.wt||""); return {key:`buf:r:${L(b.h)}:${r.ru}`,
-        title:r.ru, sub:[r.info, r.wt].filter(Boolean).join(" · "), price:r.price, per: g ? (grp ? "guest" : "kids") : "one", q0: g ? null : 1, unit: g ? "гость" : "шт.", imgs:r.img ? [r.img] : []}; })});
+      /* Одинаковые названия в блоке (вода 0,25 и 0,7 л) различаем по объёму; alt — прежний общий ключ из старых КП */
+      else if (b.rows) C.buffet.push({h, note:L(b.hnote), items:b.rows.map(r => { const g = /гост/.test(r.wt||""), k0 = `buf:r:${L(b.h)}:${r.ru}`, dup = b.rows.filter(x => x.ru === r.ru).length > 1;
+        return {key: dup ? `${k0}:${r.wt || r.price}` : k0, alt: dup ? k0 : undefined,
+        title: dup && r.wt ? `${r.ru}, ${r.wt}` : r.ru, sub:[r.info, r.wt].filter(Boolean).join(" · "), price:r.price, per: g ? (grp ? "guest" : "kids") : "one", q0: g ? null : 1, unit: g ? "гость" : "шт.", imgs:r.img ? [r.img] : []}; })});
     });
   }
 
@@ -989,9 +991,11 @@ const pkg = () => CAT.pkgs.find(p => p.key === ST.pkg);
 const defQty = it => it.per === "guest" ? (+ST.guests || 0) : it.per === "kids" ? (+ST.kids || 0) : it.per === "step" ? Math.ceil(Math.max(0, (+ST.guests || 0) - it.step.over) / it.step.per) : (it.q0 ?? 1);
 /* Сумма строки с учётом минимальной стоимости (игра: 2 200 ₽/гость, минимум 20 000 ₽) */
 const lineSum = (it, pr, q) => Math.max(pr * q, pr && q ? it.minSum || 0 : 0);
-const qtyOf = it => { const s = ST.sel[it.key]; return s && s.qty != null && s.qty !== "" ? +s.qty : defQty(it); };
-const priceOf = it => { const s = ST.sel[it.key]; return s && s.price != null && s.price !== "" ? +s.price : it.price; };
-const isOn = it => it.with ? !!(ST.sel[it.with] && ST.sel[it.with].on) && qtyOf(it) > 0 : !!(ST.sel[it.key] && ST.sel[it.key].on);
+const selAlt = k => { const it = CAT && allItems().find(i => i.key === k); return it && it.alt ? ST.sel[it.alt] : undefined; };
+const selOf = it => ST.sel[it.key] || (it.alt ? ST.sel[it.alt] : undefined);
+const qtyOf = it => { const s = selOf(it); return s && s.qty != null && s.qty !== "" ? +s.qty : defQty(it); };
+const priceOf = it => { const s = selOf(it); return s && s.price != null && s.price !== "" ? +s.price : it.price; };
+const isOn = it => it.with ? !!(ST.sel[it.with] && ST.sel[it.with].on) && qtyOf(it) > 0 : !!(selOf(it) && selOf(it).on);
 const ov = (v, d) => v != null && v !== "" ? +v : d;   /* ручная цена поверх цены лендинга */
 /* Сет меню с учётом замен */
 const curSet = () => pkg() && ST.setId ? SRC[ST.kind].SETS[ST.setId] || null : null;
@@ -1255,7 +1259,7 @@ F.addEventListener("change", e => {
     if (t.name === "pkg"){ ST.pkg = row.dataset.key; ST.setId = ""; ST.setDishes = null; ST.dishes = []; rerender(); return; }
     if (t.name === "ff"){ ST.ff = row.dataset.key; ST.ffHours = 0; ST.ffPrice = ""; ST.ffExt = ""; if (!ST.ff) ST.uff = false; rerender(); return; }
     if (row.dataset.uff){ ST.uff = t.checked; rerender(); return; }
-    const key = row.dataset.key; ST.sel[key] = {...(ST.sel[key] || {}), on:t.checked}; rerender(); return;
+    const key = row.dataset.key; ST.sel[key] = {...(ST.sel[key] || selAlt(key) || {}), on:t.checked}; rerender(); return;
   }
   if (t.id === "uffGuests"){ ST.uffGuests = t.value === "" ? "" : String(uffQ()); rerender(); return; }
   if (t.id === "guests" && uffOn()){ rerender(); return; }
@@ -1281,7 +1285,7 @@ F.addEventListener("input", e => {
   if (t.id === "barSearch"){ const q = t.value.toLowerCase().trim(); F.querySelectorAll(".baritem").forEach(r => r.style.display = !q || r.dataset.s.includes(q) ? "" : "none"); return; }
   const opt = t.closest(".opt");
   if (opt && t.closest(".edit")){
-    const key = opt.dataset.key, s = ST.sel[key] = {...(ST.sel[key] || {on:true})};
+    const key = opt.dataset.key, s = ST.sel[key] = {...(ST.sel[key] || selAlt(key) || {on:true})};
     if (t.classList.contains("p")) s.price = t.value; else s.qty = t.value;
     const it = allItems().find(i => i.key === key); if (it) opt.querySelector(".sum").textContent = rub(lineSum(it, priceOf(it), qtyOf(it)));
     softUpdate(); return;
