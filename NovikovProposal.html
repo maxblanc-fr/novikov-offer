@@ -172,7 +172,7 @@
   .lead{font-size:13px;color:var(--ink-soft);margin:0 0 10px}
   .card{background:#fff;border:1px solid var(--line);padding:14px 16px}
   .card h3{margin:0 0 4px;font-family:var(--head);font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink)}
-  .card .meta{font-family:var(--head);font-weight:700;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+  .card .meta, .setshead .meta{font-family:var(--head);font-weight:700;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
   .card p{margin:6px 0 0;color:var(--ink-soft)}
   .ph{background-size:cover;background-position:center;background-color:var(--bone-2)}
   .strip{display:grid;gap:6px;margin-top:10px}
@@ -181,6 +181,12 @@
   .strip.c4 .ph{height:118px}
   .ticks{list-style:none;margin:6px 0 0;padding:0;columns:2;column-gap:22px}
   .ticks.one{columns:1}
+  .setgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .setgrid .card{margin:0}
+  .setgrid h3{font-size:15px;margin-bottom:6px}
+  .setgrid .crs{display:flex;gap:10px;padding:3px 0;border-top:1px dashed #e6ddd2;font-size:12.5px;color:var(--ink-soft)}
+  .setgrid .crs:first-of-type{border-top:0}
+  .setgrid .crs span{flex:0 0 64px;font-family:var(--head);font-weight:700;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);padding-top:2px}
   .ticks li{break-inside:avoid;padding:2px 0 2px 20px;position:relative;color:var(--ink-soft)}
   .ticks li::before{content:"";position:absolute;left:2px;top:7px;width:9px;height:5px;border-left:2px solid var(--red);border-bottom:2px solid var(--red);transform:rotate(-45deg)}
   .incl{display:inline-block;font-family:var(--head);font-weight:700;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
@@ -934,7 +940,7 @@ function buildCatalog(kind){
 /* ---------- Состояние ---------- */
 function blank(){
   return {kind:"adult", client:"", contact:"", occasion:"", date:"", start:"19:00", guests:12, kids:10, halls:[], hallHours:0, pkg:"", setId:"", dishes:[],
-    setDishes:null, swapPrice:"", ff:"", ffHours:0, ffPrice:"", ffExt:"", uff:false, uffPrice:"", uffExt:"", uffGuests:"", sel:{}, bar:{}, custom:[], discount:0, discUnit:"%", showOld:true,
+    setDishes:null, swapPrice:"", ff:"", ffHours:0, ffPrice:"", ffExt:"", uff:false, uffPrice:"", uffExt:"", uffGuests:"", sel:{}, bar:{}, custom:[], discount:0, discUnit:"%", showOld:true, noPrice:false, setsFull:false,
     valid:"", note:"", vat:true, lang:"ru", tl:null, vname:"", vars:[], vi:0,
     prepay:50, prepayDays:3, deposit:0, depFill:true, wishes:"",
     id:Date.now().toString(36) + Math.random().toString(36).slice(2, 6), no:"", ver:0, verDate:"", sentHash:""};
@@ -1218,6 +1224,8 @@ function renderForm(){
     <label class="fld full">Комментарий для клиента<textarea id="note" placeholder="Например: меню согласовываем за 7 дней до мероприятия">${esc(ST.note)}</textarea></label>
     <label class="fld full" style="flex-direction:row;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="vat" ${ST.vat ? "checked" : ""} style="width:auto;accent-color:var(--red)"> Пометка «В стоимость не включён НДС 22%»</label>
     <label class="fld full" style="flex-direction:row;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="showOld" ${ST.showOld ? "checked" : ""} style="width:auto;accent-color:var(--red)"> Если цена снижена вручную — показывать в смете старую цену зачёркнутой</label>
+    <label class="fld full" style="flex-direction:row;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="noPrice" ${ST.noPrice ? "checked" : ""} style="width:auto;accent-color:var(--red)"> <b>Без цен</b> — в PDF нет цен, сметы, итога, депозита и НДС (только состав)</label>
+    <label class="fld full" style="flex-direction:row;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="setsFull" ${ST.setsFull ? "checked" : ""} style="width:auto;accent-color:var(--red)"> Сеты на выбор — подробно, с блюдами (закуска · горячее · десерт), как на лендинге</label>
   </div></details>
   <div class="totalbar">${totalbarHtml(T)}</div>`;
   showMiss();
@@ -1267,6 +1275,8 @@ F.addEventListener("change", e => {
   if (t.id === "setId"){ ST.setId = t.value; ST.setDishes = null; rerender(); return; }
   if (t.id === "discUnit"){ ST.discUnit = t.value; ST.discount = 0; rerender(); return; }
   if (t.id === "showOld"){ ST.showOld = t.checked; rerender(false); return; }
+  if (t.id === "noPrice"){ ST.noPrice = t.checked; rerender(false); return; }
+  if (t.id === "setsFull"){ ST.setsFull = t.checked; rerender(false); return; }
   if (t.dataset.sw != null){ rerender(); return; }
   if (t.dataset.hall != null){ ST.halls = t.checked ? [...ST.halls, t.dataset.hall] : ST.halls.filter(s => s !== t.dataset.hall); rerender(); return; }
   if (t.id === "vat"){ ST.vat = t.checked; rerender(false); return; }
@@ -1342,7 +1352,7 @@ function variantBody(H, B, blocks){
   /* Обзор */
   const ov = [], perG = X("на гостя", "per guest", "a persona");
   const bunit = (c, n) => RU() ? (c.kind === "cocktail" ? "порц." : "бут.") : unitFx(+n, c.kind === "cocktail" ? "порция" : "бут.");
-  if (p) ov.push([p.casino ? X("Программа", "Programme", "Programma") : X("Кулинария", "Cooking", "Cucina"), [tr(p.title) + ` — ${rub(p.price)} / ${unitWord(p.unit)}`, p.casino ? tr(p.casino) : "", set ? X(`Сет «${set.ru}»: ${setDishes().join(", ")}`, `Set “${tr(set.ru)}”: ${setDishes().map(tr).join(", ")}`, `Menu «${tr(set.ru)}»: ${setDishes().map(tr).join(", ")}`) : p.setIds ? X("Сет меню — выбираете из подборки уровня", "Set menu — you choose from the sets of this level", "Menu: lo scegliete tra quelli di questo livello") : "",
+  if (p) ov.push([p.casino ? X("Программа", "Programme", "Programma") : X("Кулинария", "Cooking", "Cucina"), [tr(p.title) + (ST.noPrice ? "" : ` — ${rub(p.price)} / ${unitWord(p.unit)}`), p.casino ? tr(p.casino) : "", set ? X(`Сет «${set.ru}»: ${setDishes().join(", ")}`, `Set “${tr(set.ru)}”: ${setDishes().map(tr).join(", ")}`, `Menu «${tr(set.ru)}»: ${setDishes().map(tr).join(", ")}`) : p.setIds ? (ST.setsFull ? (n => X(`Сет меню — выбираете один из ${n} ${plural(n, "сета", "сетов", "сетов")} (состав — в разделе «Кулинарная программа»)`, `Set menu — you choose one of ${n} sets (see the Culinary programme section)`, `Menu: ne scegliete uno tra ${n} (vedi la sezione Programma culinario)`))(p.setIds.filter(id => SRC[ST.kind].SETS[id]).length) : X("Сет меню — выбираете из подборки уровня", "Set menu — you choose from the sets of this level", "Menu: lo scegliete tra quelli di questo livello")) : "",
     p.menu ? (ST.dishes.length ? `${X("Блюда", "Dishes", "Piatti")}: ${ST.dishes.map(tr).join(", ")}` : X(`${p.dishes} блюда: ${p.what}`, `${p.dishes} dishes: ${tr(p.what)}`, `${p.dishes} piatti: ${tr(p.what)}`)) : "", p.game ? (g => `${X("Игра", "Game", "Gioco")}: ${g[0].toLowerCase() + g.slice(1)}`)(tr(p.game)) : "", p.casino ? X("Ведущий игры, шеф Novikov, все продукты и инвентарь", "Game host, a Novikov chef, all ingredients and equipment", "Conduttore del gioco, uno chef Novikov, tutti gli ingredienti e l'attrezzatura")
       : X("Профессиональный шеф Novikov, все продукты и инвентарь", "A professional Novikov chef, all ingredients and equipment", "Uno chef professionista Novikov, tutti gli ingredienti e l'attrezzatura")].filter(Boolean)]);
   const fb = []; if (ib) fb.push(`${tr(ib.title)}${ib.wt ? ` (${tr(ib.wt)} ${perG})` : ""} — ${X("входит в пакет", "included in the package", "incluso nel pacchetto")}`); bufOn.forEach(it => fb.push(`${tr(it.title)}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
@@ -1357,7 +1367,7 @@ function variantBody(H, B, blocks){
   ov.push([X("Площадка", "Venue", "Location"), [...hs.map(h => X(`Зал «${h.title}»${h.area ? `, ${h.area}` : ""}${+ST.hallHours && h.ext ? ` + продление ${ST.hallHours} ч` : ""}`,
     `Hall “${tr(h.title)}”${h.area ? `, ${tr(h.area)}` : ""}${+ST.hallHours && h.ext ? ` + ${ST.hallHours} h extension` : ""}`, `Sala «${tr(h.title)}»${h.area ? `, ${tr(h.area)}` : ""}${+ST.hallHours && h.ext ? ` + prolungamento di ${ST.hallHours} h` : ""}`)), wN ? X(`${wN} ${plural(wN,"официант","официанта","официантов")} — входит в стоимость`, `${wN} ${wN === 1 ? "waiter" : "waiters"} — included`, `${wN} ${wN === 1 ? "cameriere — incluso" : "camerieri — inclusi"} nel prezzo`) : "", ...inclTxt.split("·").map(s => s.trim()).filter(Boolean).map(s => s[0].toUpperCase() + s.slice(1))].filter(Boolean)]);
   H(X("Что входит", "What's included", "Cosa è incluso"), X("всё в одном месте", "all in one place", "tutto a colpo d'occhio"));
-  B(`<p class="lead">${X("Ниже — полный состав вашего мероприятия. Всё перечисленное уже учтено в стоимости.", "Below is everything your event includes. All of it is already reflected in the price.", "Qui di seguito trovate tutto ciò che comprende il vostro evento. Ogni voce è già inclusa nel prezzo.")}</p>`);
+  B(`<p class="lead">${ST.noPrice ? X("Ниже — полный состав вашего мероприятия.", "Below is everything your event includes.", "Qui di seguito trovate tutto ciò che comprende il vostro evento.") : X("Ниже — полный состав вашего мероприятия. Всё перечисленное уже учтено в стоимости.", "Below is everything your event includes. All of it is already reflected in the price.", "Qui di seguito trovate tutto ciò che comprende il vostro evento. Ogni voce è già inclusa nel prezzo.")}</p>`);
   ov.forEach(([k, arr]) => B(`<div class="ov-grp"><div class="k">${esc(k)}</div><ul class="ticks one">${arr.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>`));
 
   /* Тайминг */
@@ -1371,6 +1381,12 @@ function variantBody(H, B, blocks){
     B(`<div class="card"><div class="meta">${esc(tr(p.group))}</div><h3>${esc(tr(p.title))}</h3><p>${esc(tr(p.desc))}</p>${p.prem ? `<p><b>${esc(tr(p.prem))}</b></p>` : ""}
       <div class="strip c3">${p.imgs.map(u => `<div class="ph" ${bg(u)}></div>`).join("")}</div></div>`);
     if (set) B(`<div class="card"><div class="meta">${X("Ваш сет", "Your set", "Il vostro menu")}</div><h3>${X("«", "“", "«")}${esc(tr(set.ru))}${X("»", "”", "»")}</h3><ul class="ticks one">${setDishes().map(d => `<li>${esc(tr(d))}</li>`).join("")}</ul></div>`);
+    else if (p.setIds && ST.setsFull){
+      const ss = p.setIds.map(id => SRC[ST.kind].SETS[id]).filter(Boolean), cc = [X("Закуска", "Starter", "Antipasto"), X("Горячее", "Main", "Secondo"), X("Десерт", "Dessert", "Dolce")];
+      const card = s => `<div class="card"><h3>${esc(tr(s.ru))}</h3>${s.d.map((d, i) => `<div class="crs"><span>${s.d.length === 3 ? cc[i] : ""}</span><div>${esc(tr(d))}</div></div>`).join("")}</div>`;
+      blocks.push({kwn:true, html:`<div class="blk setshead"><div class="meta" style="margin-top:4px">${X("Сеты на выбор", "Sets to choose from", "Menu a scelta")} · ${esc(tr(p.short))} · ${ss.length}</div><p style="margin:4px 0 0">${X("Вы выбираете один сет — гости готовят его вместе с шефом, а затем ужинают приготовленными блюдами.", "You choose one set: guests cook it together with the chef and then dine on the dishes they made.", "Scegliete un menu: gli ospiti lo cucinano insieme allo chef e poi cenano con i piatti preparati.")}</p></div>`});
+      for (let i = 0; i < ss.length; i += 2) B(`<div class="setgrid">${ss.slice(i, i + 2).map(card).join("")}</div>`);
+    }
     else if (p.setIds) B(`<div class="card"><div class="meta">${X("Сеты на выбор", "Sets to choose from", "Menu a scelta")} · ${esc(tr(p.short))}</div><ul class="ticks">${p.setIds.map(id => SRC[ST.kind].SETS[id]).filter(Boolean).map(s => `<li><b>${esc(tr(s.ru))}</b></li>`).join("")}</ul></div>`);
     if (p.menu){
       if (ST.dishes.length) B(`<div class="card"><div class="meta">${X("Меню праздника", "Party menu", "Menu della festa")}</div><ul class="ticks one">${ST.dishes.map(d => `<li>${esc(tr(d))}</li>`).join("")}</ul></div>`);
@@ -1410,12 +1426,13 @@ function variantBody(H, B, blocks){
     const bySvc = {}; svcOn.forEach(it => (bySvc[it.svc] = bySvc[it.svc] || []).push(it));
     Object.entries(bySvc).forEach(([name, its]) => { const it = its[0];
       B(`<div class="card"><h3>${esc(tr(name))}</h3><div class="meta">${its.map(x => `${esc(tr(x.short || ""))}${x.unit === "гость" || qtyOf(x) === 1 ? "" : ` × ${qtyOf(x)}`}`).join(" · ")}</div>
-        ${it.generic ? "" : `<p>${esc(tr(it.desc))}</p>`}${it.imgs.length ? `<div class="strip c${Math.min(4, Math.max(2, it.imgs.length))}">${it.imgs.slice(0,4).map(u => `<div class="ph" ${bg(u)}></div>`).join("")}</div>` : ""}</div>`); });
+        ${it.generic ? "" : `<p>${esc(noPriceTxt(tr(it.desc)))}</p>`}${it.imgs.length ? `<div class="strip c${Math.min(4, Math.max(2, it.imgs.length))}">${it.imgs.slice(0,4).map(u => `<div class="ph" ${bg(u)}></div>`).join("")}</div>` : ""}</div>`); });
     const cu = ST.custom.filter(c => c.t);
     if (cu.length) B(`<div class="card"><ul class="ticks one">${cu.map(c => `<li><b>${esc(c.t)}</b>${+c.q > 1 ? ` × ${c.q}` : ""}</li>`).join("")}</ul></div>`);
   }
 
   /* Смета */
+  if (ST.noPrice) return T;
   const perW = ST.kind === "kids" ? X("на участника", "per participant", "a partecipante") : perG;
   H(multi() ? `${X("Стоимость", "Price", "Preventivo")} · ${vName(ST.vi)}` : X("Стоимость", "Price", "Preventivo"), ST.kind === "kids" ? "" : `${guestsLabel()}`);
   let g0 = "";
@@ -1426,6 +1443,9 @@ function variantBody(H, B, blocks){
     <div class="big"><span>${X("Итого", "Total", "Totale")}${multi() ? ` · ${esc(vName(ST.vi))}` : ""}</span><span>${rub(T.tot)}</span></div>${T.heads ? `<div class="pg">≈ ${rub(T.per)} ${perW}</div>` : ""}</div>`);
   return T;
 }
+
+/* Режим «Без цен»: убирает из описаний предложения с ценами («Цена = …», «… 2 200 ₽ …», «Пример стоимости …») */
+const noPriceTxt = t => !ST.noPrice || !t ? t : t.split(/(?<=[.!?])\s+/).filter(x => !/₽|€|\bруб|^Цена|^Price|^Prezzo|Пример стоимости|example price/i.test(x)).join(" ");
 
 const payText = T => { const p = Math.min(100, Math.max(0, +ST.prepay || 0)), d = +ST.prepayDays || 0;
   if (!p) return "";
@@ -1441,7 +1461,7 @@ function buildBlocks(){
   const B = (html, split) => blocks.push({html:`<div class="blk">${html}</div>`, split});
   const idx = multi() ? ST.vars.map((_, i) => i) : [ST.vi];
   const Ts = idx.map(i => withVar(i, () => {
-    if (multi()){ const t = totals(); blocks.push({kwn:true, html:`<div class="blk"><div class="vban"><div><div class="l">${X(`Вариант ${i + 1} из ${idx.length}`, `Option ${i + 1} of ${idx.length}`, `Opzione ${i + 1} di ${idx.length}`)}</div><div class="n">${esc(vName(i))}</div></div><div class="v">${rub(t.tot)}</div></div></div>`}); }
+    if (multi()){ const t = totals(); blocks.push({kwn:true, html:`<div class="blk"><div class="vban"><div><div class="l">${X(`Вариант ${i + 1} из ${idx.length}`, `Option ${i + 1} of ${idx.length}`, `Opzione ${i + 1} di ${idx.length}`)}</div><div class="n">${esc(vName(i))}</div></div>${ST.noPrice ? "" : `<div class="v">${rub(t.tot)}</div>`}</div></div>`}); }
     return variantBody(H, B, blocks);
   }));
 
@@ -1456,18 +1476,18 @@ function buildBlocks(){
 });
 
   /* Сравнение вариантов, условия, менеджер */
-  if (multi()){
+  if (multi() && !ST.noPrice){
     H(X("Сравнение вариантов", "Options compared", "Confronto delle opzioni"));
     B(`<table class="est"><thead><tr><th>${X("Вариант", "Option", "Opzione")}</th><th>${X("Программа", "Programme", "Programma")}</th><th class="n">${X("На гостя", "Per guest", "A persona")}</th><th class="n">${X("Итого", "Total", "Totale")}</th></tr></thead><tbody>${idx.map(i => withVar(i, () => { const t = Ts[i], p = pkg(), ff = C.ff.find(f => f.key === ST.ff);
       return `<tr><td><b>${esc(vName(i))}</b></td><td>${esc([p ? tr(p.title) : "", ff ? tr(ff.title) : "", uffOn() ? CAT.uff.title : ""].filter(Boolean).join(" · ") || X("Индивидуальная программа", "Custom programme", "Programma su misura"))}</td><td class="n">${t.heads ? rub(t.per) : ""}</td><td class="n"><b>${rub(t.tot)}</b></td></tr>`; })).join("")}</tbody></table>`);
   }
   const T1 = multi() ? null : Ts[0], dep = Math.max(0, +ST.deposit || 0);
-  const terms = [dep ? X(`Депозит — ${rub(dep)}: минимальная сумма заказа на мероприятие.`, `Deposit — ${rub(dep)}: the minimum order amount for the event.`, `Minimo di spesa per l'evento: ${rub(dep)}.`) : "", payText(T1)].filter(Boolean);
+  const terms = ST.noPrice ? [] : [dep ? X(`Депозит — ${rub(dep)}: минимальная сумма заказа на мероприятие.`, `Deposit — ${rub(dep)}: the minimum order amount for the event.`, `Minimo di spesa per l'evento: ${rub(dep)}.`) : "", payText(T1)].filter(Boolean);
   const validTxt = ST.valid ? (d => X(`Предложение действительно до ${d.toLocaleDateString("ru-RU", {day:"numeric", month:"long", year:"numeric"}).replace(/ г\.$/, "")} г.`, `This proposal is valid until ${d.toLocaleDateString("en-GB", {day:"numeric", month:"long", year:"numeric"})}.`, `La presente proposta è valida fino al ${d.toLocaleDateString("it-IT", {day:"numeric", month:"long", year:"numeric"})}.`))(new Date(ST.valid + "T12:00:00")) : "";
   B(`${ST.wishes ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Пожелания по меню и аллергии", "Menu requests and allergies", "Richieste sul menu e allergie")}</div><p>${esc(ST.wishes).replace(/\n/g,"<br>")}</p></div>` : ""}
     ${terms.length ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Условия", "Terms", "Condizioni")}</div><ul class="ticks one">${terms.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>` : ""}
     ${ST.note ? `<div class="card" style="margin-top:12px"><div class="meta">${X("Комментарий", "Comment", "Note")}</div><p>${esc(ST.note).replace(/\n/g,"<br>")}</p></div>` : ""}
-    <p class="fine">${[ST.vat ? X("В стоимость не включён НДС 22%.", "Prices exclude 22% VAT.", "I prezzi si intendono IVA 22% esclusa.") : "", validTxt].filter(Boolean).join(" ")}</p>
+    <p class="fine">${[ST.vat && !ST.noPrice ? X("В стоимость не включён НДС 22%.", "Prices exclude 22% VAT.", "I prezzi si intendono IVA 22% esclusa.") : "", validTxt].filter(Boolean).join(" ")}</p>
     <div class="mgr"><div><div class="l">${X("Ваш менеджер", "Your manager", "Il vostro referente")}</div><div class="n">${mgrName()}</div></div><div class="ph2">${MANAGER.phone}</div></div>`);
   return {blocks, Ts, hs};
 }
@@ -1498,10 +1518,10 @@ function coverPage(Ts, hs){
       <div><div class="l">${X("Гости", "Guests", "Ospiti")}</div><div class="v">${ST.kind === "kids" ? `${+ST.kids||0} ${plx(+ST.kids,"ребёнок","ребёнка","детей","child","children","bambino","bambini")}${+ST.guests ? `<small>+ ${ST.guests} ${plx(+ST.guests,"взрослый","взрослых","взрослых","adult","adults","adulto","adulti")}</small>` : ""}` : `${+ST.guests||0}<small>${plx(+ST.guests,"гость","гостя","гостей","guest","guests","ospite","ospiti")}</small>`}</div></div>
       <div><div class="l">${hs.length > 1 ? X("Залы", "Halls", "Sale") : hs.length ? X("Зал", "Hall", "Sala") : X("Площадка", "Venue", "Location")}</div><div class="v">${hs.length ? esc(hs.map(h => tr(h.title)).join(" + ")) + `<small>${esc(tr(hallArea(hs)))}</small>` : `Novikov School<small>${X("Б. Якиманка, 22", "Bolshaya Yakimanka 22", "Bolshaya Yakimanka 22")}</small>`}</div></div>
     </div>
-    ${multi() ? `<div class="vtots">${Ts.map((t, i) => withVar(i, () => { const q = pkg(), qf = CAT.ff.find(f => f.key === ST.ff); return `<div class="tot"><div class="l">${esc(vName(i))}</div><div class="v">${rub(t.tot)}</div>${t.heads ? `<small>≈ ${rub(t.per)} ${perW}</small>` : ""}<b>${esc([q ? tr(q.title) : X("Индивидуальная программа", "Custom programme", "Programma su misura"), qf ? tr(qf.title) : ""].filter(Boolean).join(" · "))}</b></div>`; })).join("")}</div>` : `
+    ${multi() ? `<div class="vtots">${Ts.map((t, i) => withVar(i, () => { const q = pkg(), qf = CAT.ff.find(f => f.key === ST.ff); return `<div class="tot"><div class="l">${esc(vName(i))}</div>${ST.noPrice ? "" : `<div class="v">${rub(t.tot)}</div>${t.heads ? `<small>≈ ${rub(t.per)} ${perW}</small>` : ""}`}<b>${esc([q ? tr(q.title) : X("Индивидуальная программа", "Custom programme", "Programma su misura"), qf ? tr(qf.title) : ""].filter(Boolean).join(" · "))}</b></div>`; })).join("")}</div>` : `
     <div class="pkgline"><div class="card"><div class="meta">${X("Ваш формат", "Your format", "Il vostro format")}</div><h3>${p ? esc(tr(p.title)) : X("Индивидуальная программа", "Custom programme", "Programma su misura")}</h3>
       <p>${esc([p && includedBuffet() ? ibShort(includedBuffet()) : "", ff ? tr(ff.title) : "", ...CAT.services.flatMap(g => g.items).filter(isOn).map(it => tr(it.svc))].filter((v, i, a) => v && a.indexOf(v) === i).join(" · ") || X("Полный состав — на следующих страницах", "Full details on the following pages", "Tutti i dettagli nelle pagine seguenti"))}</p></div>
-      <div class="tot"><div class="l">${T.disc ? X(`Стоимость со скидкой${T.d ? ` ${T.d}%` : ""}`, `Price after ${T.d ? `${T.d}% ` : ""}discount`, `Prezzo scontato${T.d ? ` del ${T.d}%` : ""}`) : X("Стоимость", "Price", "Prezzo")}</div><div class="v">${rub(T.tot)}</div>${T.heads ? `<small>≈ ${rub(T.per)} ${perW}</small>` : ""}</div></div>`}
+      ${ST.noPrice ? "" : `<div class="tot"><div class="l">${T.disc ? X(`Стоимость со скидкой${T.d ? ` ${T.d}%` : ""}`, `Price after ${T.d ? `${T.d}% ` : ""}discount`, `Prezzo scontato${T.d ? ` del ${T.d}%` : ""}`) : X("Стоимость", "Price", "Prezzo")}</div><div class="v">${rub(T.tot)}</div>${T.heads ? `<small>≈ ${rub(T.per)} ${perW}</small>` : ""}</div>`}</div>`}
     <div class="mgr"><div><div class="l">${X("Ваш менеджер", "Your manager", "Il vostro referente")}</div><div class="n">${mgrName()}</div></div><div class="ph2">${MANAGER.phone}</div></div>
     <div style="margin:auto 44px 18px;font-size:10px;color:var(--muted)">${[kpLabel() ? `${kpLabel()}${ST.verDate ? ` ${X("от", "of", "del")} ${new Date(ST.verDate).toLocaleDateString(LOC())}` : ""}` : "", addr(), "novikov-school.ru"].filter(Boolean).map(esc).join(" · ")}</div>`;
   d.style.display = "flex"; d.style.flexDirection = "column";
