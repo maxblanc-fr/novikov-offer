@@ -282,7 +282,8 @@
   <button class="btn ghost" id="bReset" type="button">Новое</button>
   <button class="btn ghost" id="bPrint" type="button">Печать</button>
   <button class="btn ghost" id="bInvite" type="button" title="PDF-приглашение для гостей: название, дата, тайминг и адрес — без цен">Приглашение</button>
-  <button class="btn ghost" id="bXls" type="button" title="Смета в Excel по шаблону отдела продаж: цены и количества из КП, остальные строки шаблона — с нулём">Смета Excel</button>
+  <button class="btn ghost" id="bXls" type="button" title="Смета в Excel по шаблону отдела продаж: цены и количества из КП, на доп. услуги начисляется НДС 22%">Смета с НДС</button>
+  <button class="btn ghost" id="bXlsNoVat" type="button" title="Та же смета, но без НДС на дополнительные услуги">Смета без НДС</button>
   <button class="btn main" id="bPdf" type="button">Сгенерировать PDF</button>
 </header>
 <div class="arch" id="arch" hidden><div class="in">
@@ -1104,7 +1105,7 @@ function optRow(it, type = "checkbox", name = "", checked = isOn(it), editable =
 
 function renderForm(){
   const C = CAT, p = pkg(), F = $("#form");
-  $("#bXls").hidden = !XL_TPL[ST.kind];
+  $("#bXls").hidden = $("#bXlsNoVat").hidden = !XL_TPL[ST.kind];
   const cnt = arr => { const n = arr.filter(Boolean).length; return n ? `<span class="cnt">${n}</span>` : ""; };
   const openState = {}; F.querySelectorAll("details.box").forEach(d => openState[d.dataset.id] = d.open);
   const op = (id, def) => (openState[id] ?? def) ? "open" : "";
@@ -1672,7 +1673,7 @@ const xlTok = s => String(s || "").toLowerCase().replace(/ё/g, "е").replace(/<
   .split(/[^a-zа-я0-9]+/).filter(w => w && !XL_STOP.has(w)).map(w => w.slice(0, 5));
 const xlCover = (a, b) => { const B = new Set(b); return a.length ? a.filter(w => B.has(w)).length / a.length : 0; };
 
-function xlSheet(xml, sst){
+function xlSheet(xml, sst, noVat){
   const doc = new DOMParser().parseFromString(xml, "application/xml");
   const sd = doc.getElementsByTagName("sheetData")[0];
   const rowEl = new Map([...sd.getElementsByTagName("row")].map(r => [+r.getAttribute("r"), r]));
@@ -1862,6 +1863,16 @@ function xlSheet(xml, sst){
   const rPre = findLabel(/^Предоплата/), rTot = findLabel(/^Всего к оплате \(включая НДС\)/), rMin = findLabel(/^Минимальная стоимость/);
   if (rPre && rTot && +ST.prepay){ setStr(rPre, 2, `Предоплата ${ST.prepay}%`); setF(rPre, 6, `F${rTot}*${+ST.prepay / 100}`); }
   if (rMin && T.dep) setNum(rMin, 6, T.dep);
+  /* Без НДС: доп. услуги без налога, итог = сумма без НДС */
+  if (noVat){
+    const rN1 = findLabel(/^Общая сумма за услуги, не облагаемые НДС \([^)]*\), после скидки$/), rN2 = findLabel(/^Общая сумма за услуги, облагаемые НДС \([^)]*\), после скидки$/);
+    const rNet = findLabel(/^Всего к оплате \(без НДС\)/), rVat = findLabel(/^НДС 22%/);
+    [[r1, "кулинарную программу, еду и напитки"], [r2, "дополнительные услуги"], [rN1, "кулинарную программу, еду и напитки"], [rN2, "дополнительные услуги"]]
+      .forEach(([r, w]) => { if (r) setStr(r, 2, get(r, 2).replace(/услуги, (не )?облагаемые НДС/, w)); });
+    if (rNet) setStr(rNet, 2, "Всего к оплате");
+    if (rVat){ setStr(rVat, 2, "НДС"); setStr(rVat, 6, "не облагается"); }
+    if (rTot && rNet){ setStr(rTot, 2, "Итого к оплате (НДС не облагается)"); setF(rTot, 6, `F${rNet}`); }
+  }
 
   /* Вставка строк — снизу вверх, чтобы номера выше не съезжали */
   const groups = {};
@@ -1927,7 +1938,7 @@ function xlSheet(xml, sst){
   return {xml:new XMLSerializer().serializeToString(doc), shifts, total:val(`F${findLabel(/^Всего к оплате \(без НДС\)/)}`)};
 }
 
-async function xlBuild(){
+async function xlBuild(noVat = false){
   await needZip();
   const zip = await JSZip.loadAsync(await (await fetch(XL_TPL[ST.kind] + "?v=" + Date.now())).arrayBuffer());
   const sstXml = zip.file("xl/sharedStrings.xml") ? await zip.file("xl/sharedStrings.xml").async("string") : "";
@@ -1938,7 +1949,7 @@ async function xlBuild(){
   try {
     syncVar();
     const n = Math.max(1, ST.vars.length), res = [];
-    for (let i = 0; i < n; i++) res.push(withVar(i, () => xlSheet(base, sst)));
+    for (let i = 0; i < n; i++) res.push(withVar(i, () => xlSheet(base, sst, noVat)));
     /* Область печати сдвигаем вместе со строками */
     const pa = (wb.match(/<definedName name="_xlnm\.Print_Area" localSheetId="0">([^<]*)<\/definedName>/) || [])[1];
     const paFor = r => pa ? r.shifts.reduce((s, [at, k]) => xlShiftRefs(s, at, k), pa) : "";
@@ -1977,18 +1988,20 @@ async function xlBuild(){
     return {blob:await zip.generateAsync({type:"blob", mimeType:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", compression:"DEFLATE"}), res};
   } finally { ST.lang = lang; }
 }
-$("#bXls").addEventListener("click", async () => {
+const xlDownload = noVat => async e => {
   if (!CAT) return;
   if (!XL_TPL[ST.kind]) return alert("Шаблон сметы есть для взрослого, детского и новогоднего мастер-класса. Для казино его пока нет.");
-  const b = $("#bXls"); b.disabled = true; const old = b.textContent; b.textContent = "Собираю…";
+  const b = e.currentTarget; b.disabled = true; const old = b.textContent; b.textContent = "Собираю…";
   try {
-    const {blob} = await xlBuild();
-    const nm = ["Novikov", `Смета${ST.no ? "-" + ST.no + (ST.ver > 1 ? "-v" + ST.ver : "") : ""}`, ST.client || "мероприятие", ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
+    const {blob} = await xlBuild(noVat);
+    const nm = ["Novikov", `Смета${ST.no ? "-" + ST.no + (ST.ver > 1 ? "-v" + ST.ver : "") : ""}${noVat ? "_без_НДС" : ""}`, ST.client || "мероприятие", ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nm + ".xlsx"; document.body.appendChild(a); a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
   } catch(e){ alert("Не получилось собрать смету: " + e.message); console.error(e); }
   finally { b.disabled = false; b.textContent = old; }
-});
+};
+$("#bXls").addEventListener("click", xlDownload(false));
+$("#bXlsNoVat").addEventListener("click", xlDownload(true));
 
 /* ---------- Мои КП ---------- */
 async function openState(st){
