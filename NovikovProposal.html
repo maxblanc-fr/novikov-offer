@@ -1840,7 +1840,8 @@ function xlSheet(xml, sst){
 
   /* Меню сета — вместо строк «Пример — …» */
   const menuRows = sec1 ? Array.from({length:sec1.end - sec1.r}, (_, i) => sec1.r + i).filter(r => /^Пример/.test(get(r, 2))) : [];
-  const dishes = setDishes();
+  const kp = pkg(), dishes = ST.kind === "kids" && kp ? [...(ST.dishes.length ? ST.dishes : kp.what ? [`${kp.dishes} ${plural(kp.dishes, "блюдо", "блюда", "блюд")}: ${kp.what}`] : []),
+    ...(kp.game ? [`Игра: ${kp.game[0].toLowerCase() + kp.game.slice(1)}`] : [])] : setDishes();
   if (menuRows.length && dishes.length){
     menuRows.forEach((r, i) => { if (dishes[i]) setStr(r, 2, dishes[i]); else { setStr(r, 2, ""); const c = cellOf(r, 5); clear(c); const f = cellOf(r, 6); clear(f); } });
     dishes.slice(menuRows.length).forEach(dn => ins.push({after:menuRows[menuRows.length - 1], b:dn, menu:true, sty:menuRows[menuRows.length - 1]}));
