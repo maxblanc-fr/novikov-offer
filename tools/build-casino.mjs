@@ -18,7 +18,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = f => fs.readFileSync(path.join(ROOT, f), "utf8");
@@ -28,7 +28,7 @@ const read = f => fs.readFileSync(path.join(ROOT, f), "utf8");
    × 1.25, вверх до сотни. Новый год (решение пользователя 2026-10-28): цена
    кулинарного НГ-пакета Новикова + 1 000 ₽ — у EventyOn НГ-казино ровно на 1 000
    дороже НГ-кулинарии. Одна цена, без разбивки по дням недели. */
-const SEASON = {
+export const SEASON = {
   adult: {src:"NovikovOffer.html",   prices:["13 000 ₽","14 300 ₽","15 500 ₽"]},
   ny:    {src:"NovikovNewYear.html", prices:["16 500 ₽","18 000 ₽","19 500 ₽"]}
 };
@@ -37,7 +37,7 @@ const FF_DISCOUNT = 1000;
 /* ---------- сеты (одни и те же для вина и коктейлей) ----------
    c — какие подписи курсов показывать (0 закуска, 1 горячее, 2 десерт). */
 const SORBET = "Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе";
-const CASINO_SETS = {
+export const CASINO_SETS = {
   cz_s1: {ru:"Мясная классика", en:"Meat Classic", c:[0,2], d:["Стейк-салат","Шоколадный брауни с ванильным мороженым"]},
   cz_s2: {ru:"Утка и ягоды", en:"Duck & Berries", c:[0,2], d:["Салат из утиной грудки с печёными овощами","Мильфей с воздушным кремом и ягодами"]},
   cz_s3: {ru:"Ростбиф и манго", en:"Roast Beef & Mango", c:[0,2], d:["Салат с ростбифом и медовой заправкой",SORBET]},
@@ -51,7 +51,7 @@ const CASINO_SETS = {
   cz_p3: {ru:"Перечный ужин", en:"Pepper Dinner", d:["Тёплый салат с говядиной и чёрно-перечным соусом","Запечённый цыплёнок с кукурузным кремом и соусом жу","Тирамису с манговым муссом и вафельной крошкой"]},
   cz_p4: {ru:"Мясо и море", en:"Meat & Sea", d:["Стейк-салат","Филе дикого сибаса с соусом из спаржи","Мильфей с воздушным кремом и ягодами"]}
 };
-const LEVEL_IDS = [
+export const LEVEL_IDS = [
   ["cz_s1","cz_s2","cz_s3","cz_s4"],
   ["cz_g1","cz_g2","cz_g3","cz_g4"],
   ["cz_p1","cz_p2","cz_p3","cz_p4"]
@@ -127,7 +127,7 @@ const KIND = {
   }
 };
 
-const LEVELS = [
+export const LEVELS = [
   {k:"std",    n:{ru:"Стандартный", en:"Standard"},    buffet:"Small Set",  bwt:"132 г", bru:"7 позиций, 132 г",  ben:"7 items, 132 g",
    dish:{ru:"2 блюда из сета: салат и десерт", en:"2 courses from the set: salad and dessert"}},
   {k:"author", n:{ru:"Авторский",   en:"Author’s"},    buffet:"Medium Set", bwt:"166 г", bru:"9 позиций, 166 г",  ben:"9 items, 166 g",
@@ -154,7 +154,7 @@ const q = s => JSON.stringify(s);
 const L = o => `{ru:${q(o.ru)}, en:${q(o.en)}}`;
 
 /* Конец JS-литерала, начинающегося с открывающей скобки на позиции i. */
-function matchBrace(src, i){
+export function matchBrace(src, i){
   const open = src[i], close = {"{":"}","[":"]"}[open];
   let depth = 0;
   for(let j=i; j<src.length; j++){
@@ -169,20 +169,20 @@ function matchBrace(src, i){
   }
   throw new Error("unbalanced at "+i);
 }
-function must(cond, msg){ if(!cond) throw new Error(msg); }
-function replaceOnce(src, from, to, what){
+export function must(cond, msg){ if(!cond) throw new Error(msg); }
+export function replaceOnce(src, from, to, what){
   const n = src.split(from).length-1;
   must(n===1, `${what}: ожидалось 1 совпадение, найдено ${n}`);
   return src.replace(from, () => to);
 }
 /* Объект секции DATA.sections с данным id: [start, end] (end включительно). */
-function sectionRange(src, id){
+export function sectionRange(src, id){
   const k = src.indexOf(`id:"${id}"`);
   must(k>0, "нет секции "+id);
   const start = src.lastIndexOf("{", k);
   return [start, matchBrace(src, start)];
 }
-function replaceSection(src, id, text){
+export function replaceSection(src, id, text){
   const [a,b] = sectionRange(src, id);
   return src.slice(0,a) + text + src.slice(b+1);
 }
@@ -194,8 +194,8 @@ function removeItem(src, head){
   const after = src.slice(b+1).match(/^\s*,\s*/);
   return src.slice(0,a) + src.slice(b+1+(after?after[0].length:0));
 }
-const rub = n => n.toLocaleString("ru-RU").replace(/\u00a0/g," ") + " ₽";
-const parseRub = s => +s.replace(/[^\d]/g,"");
+export const rub = n => n.toLocaleString("ru-RU").replace(/\u00a0/g," ") + " ₽";
+export const parseRub = s => +s.replace(/[^\d]/g,"");
 
 /* ---------- сборка ---------- */
 function build(kindKey, seasonKey){
@@ -348,4 +348,6 @@ ${levels}
   console.log("→", K.out[seasonKey]);
 }
 
-for(const k of Object.keys(KIND)) for(const s of Object.keys(SEASON)) build(k, s);
+// при import из другого сборщика ничего не собираем
+if(import.meta.url === pathToFileURL(process.argv[1]).href)
+  for(const k of Object.keys(KIND)) for(const s of Object.keys(SEASON)) build(k, s);

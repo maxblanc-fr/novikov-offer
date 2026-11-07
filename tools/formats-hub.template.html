@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Novikov School — все форматы мероприятий / All event formats</title>
+<style>
+/*@FONTS@*/
+:root{
+  --red:#D6122B; --red-deep:#8E0A1B; --maroon:#4A0E14; --night:#1B0306; --night-2:#24060A;
+  --bone:#F4F1EC; --bone-2:#E9E4DC; --line:rgba(244,241,236,.14); --mute:rgba(244,241,236,.62);
+  --display:'Anton',sans-serif; --head:'Archivo',sans-serif; --body:'Manrope',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--night); color:var(--bone); font-family:var(--body); -webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1280px; margin:0 auto; padding:0 clamp(18px,4vw,48px)}
+
+/* шапка */
+.top{position:sticky; top:0; z-index:20; background:rgba(27,3,6,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.top .wrap{display:flex; align-items:center; justify-content:space-between; gap:16px; height:64px}
+.logo{font-family:var(--head); font-weight:800; letter-spacing:.04em; font-size:19px; text-decoration:none}
+.logo small{display:block; font-size:9.5px; letter-spacing:.32em; color:var(--mute); font-weight:700; margin-top:2px}
+.lang{display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+.lang button{all:unset; cursor:pointer; padding:6px 13px; font:700 11px var(--head); letter-spacing:.12em; color:var(--mute)}
+.lang button.on{background:var(--bone); color:var(--night)}
+
+/* герой */
+.hero{position:relative; padding:clamp(56px,9vw,120px) 0 clamp(36px,5vw,56px); overflow:hidden}
+.hero::before{content:""; position:absolute; inset:-30% -10% auto auto; width:70vw; height:70vw; max-width:900px; max-height:900px;
+  background:radial-gradient(circle, rgba(214,18,43,.42), rgba(214,18,43,0) 62%); pointer-events:none}
+.kicker{font:700 11.5px var(--head); letter-spacing:.34em; text-transform:uppercase; color:var(--red)}
+.hero h1{font-family:var(--display); font-weight:400; text-transform:uppercase; line-height:.9; letter-spacing:.005em;
+  font-size:clamp(52px,10.5vw,148px); margin:18px 0 0; position:relative}
+.hero h1 em{font-style:normal; color:transparent; -webkit-text-stroke:1.5px var(--bone)}
+.hero p{max-width:58ch; color:var(--mute); font-size:clamp(15px,1.6vw,18px); line-height:1.6; margin:26px 0 0; position:relative}
+.facts{display:flex; flex-wrap:wrap; gap:10px; margin-top:30px; position:relative}
+.facts span{border:1px solid var(--line); border-radius:999px; padding:8px 15px; font:600 13px var(--body); color:var(--bone-2)}
+
+/* панель управления */
+.ctrl{position:sticky; top:64px; z-index:15; background:var(--night); border-bottom:1px solid var(--line); padding:14px 0}
+.ctrl .wrap{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px}
+.season{display:flex; background:var(--night-2); border:1px solid var(--line); border-radius:999px; padding:4px}
+.season button{all:unset; cursor:pointer; padding:9px 18px; border-radius:999px; font:700 12px var(--head); letter-spacing:.1em; text-transform:uppercase; color:var(--mute); transition:.2s}
+.season button.on{background:var(--red); color:#fff}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chips button{all:unset; cursor:pointer; padding:8px 14px; border-radius:999px; border:1px solid var(--line); font:600 13px var(--body); color:var(--bone-2); transition:.2s}
+.chips button:hover{border-color:var(--bone)}
+.chips button.on{background:var(--bone); color:var(--night); border-color:var(--bone)}
+
+/* карточки форматов */
+.grid{display:grid; grid-template-columns:repeat(12,1fr); gap:clamp(14px,1.8vw,22px); padding:clamp(28px,4vw,44px) 0 20px}
+.card{grid-column:span 4; position:relative; display:flex; flex-direction:column; min-height:540px; border-radius:22px; overflow:hidden;
+  text-decoration:none; background:var(--maroon); isolation:isolate; transition:transform .35s ease}
+.card.wide{grid-column:span 6}
+.card:hover{transform:translateY(-4px)}
+.card .ph{position:absolute; inset:0; z-index:-2; background-size:cover; background-position:center; transition:transform .7s ease}
+.card:hover .ph{transform:scale(1.05)}
+.card::after{content:""; position:absolute; inset:0; z-index:-1;
+  background:linear-gradient(180deg, rgba(27,3,6,.08) 0%, rgba(27,3,6,.45) 32%, rgba(27,3,6,.94) 60%, rgba(27,3,6,.98) 100%)}
+.card .tag{align-self:flex-start; margin:18px; padding:6px 12px; border-radius:999px; background:rgba(27,3,6,.62); backdrop-filter:blur(6px);
+  font:700 10.5px var(--head); letter-spacing:.16em; text-transform:uppercase}
+.card .num{position:absolute; top:14px; right:20px; font:400 46px/1 var(--display); color:rgba(244,241,236,.88)}
+.card .body{margin-top:auto; padding:0 24px 24px}
+.card h2{font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:clamp(32px,3.1vw,42px); line-height:.95; margin:0}
+.card .lead{color:var(--bone-2); font-size:14.5px; line-height:1.55; margin:12px 0 0}
+.card ul{list-style:none; padding:0; margin:14px 0 0; display:grid; gap:6px}
+.card li{font-size:13.5px; color:var(--mute); padding-left:18px; position:relative; line-height:1.45}
+.card li::before{content:""; position:absolute; left:0; top:.62em; width:8px; height:2px; background:var(--red)}
+.card .foot{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line)}
+.price small{display:block; font:700 10px var(--head); letter-spacing:.16em; text-transform:uppercase; color:var(--mute)}
+.price b{font:400 30px/1 var(--display); letter-spacing:.01em}
+.price i{font-style:normal; font-size:12px; color:var(--mute); margin-left:4px}
+.go{display:inline-flex; align-items:center; gap:8px; padding:11px 16px; border-radius:999px; background:var(--bone); color:var(--night);
+  font:700 11.5px var(--head); letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; transition:.2s}
+.card:hover .go{background:var(--red); color:#fff}
+.meta{display:flex; flex-wrap:wrap; gap:6px; margin-top:14px}
+.meta span{font:600 11.5px var(--body); color:var(--bone-2); background:rgba(244,241,236,.08); border-radius:6px; padding:4px 8px}
+.card[hidden]{display:none}
+.empty{grid-column:1/-1; color:var(--mute); padding:40px 0; text-align:center}
+
+/* как устроено */
+.how{border-top:1px solid var(--line); margin-top:30px; padding:clamp(44px,6vw,72px) 0}
+.h3{font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:clamp(34px,5vw,60px); line-height:.95; margin:0 0 28px}
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:0; counter-reset:s; border:1px solid var(--line); border-radius:20px; overflow:hidden}
+.step{padding:26px 24px 28px; border-right:1px solid var(--line); counter-increment:s}
+.step:last-child{border-right:0}
+.step::before{content:"0" counter(s); display:block; font:400 40px/1 var(--display); color:var(--red); margin-bottom:14px}
+.step b{display:block; font:700 14px var(--head); letter-spacing:.06em; text-transform:uppercase; margin-bottom:8px}
+.step p{margin:0; color:var(--mute); font-size:14px; line-height:1.55}
+
+/* ещё */
+.more{padding:0 0 clamp(48px,6vw,80px)}
+.links{display:grid; grid-template-columns:repeat(6,1fr); gap:14px}
+.lk{position:relative; aspect-ratio:3/4; border-radius:16px; overflow:hidden; text-decoration:none; display:flex; align-items:flex-end; isolation:isolate}
+.lk .ph{position:absolute; inset:0; z-index:-2; background-size:cover; background-position:center; transition:transform .6s}
+.lk:hover .ph{transform:scale(1.06)}
+.lk::after{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(27,3,6,0) 40%, rgba(27,3,6,.92))}
+.lk span{padding:14px; font:700 13px var(--head); letter-spacing:.08em; text-transform:uppercase}
+.lk span small{display:block; font:500 12px var(--body); letter-spacing:0; text-transform:none; color:var(--mute); margin-top:4px}
+
+.venue{display:grid; grid-template-columns:1.1fr 1fr; gap:clamp(20px,4vw,48px); align-items:center; border:1px solid var(--line); border-radius:22px; padding:clamp(22px,4vw,44px); margin-top:clamp(36px,5vw,56px);
+  background:linear-gradient(135deg, rgba(214,18,43,.16), rgba(214,18,43,0) 60%)}
+.venue .h3{margin-bottom:12px}
+.venue p{color:var(--mute); line-height:1.6; margin:0}
+.venue .addr{font:700 15px var(--head); color:var(--bone); margin-top:18px}
+.venue .pics{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.venue .pics div{aspect-ratio:1; border-radius:12px; background-size:cover; background-position:center}
+
+footer{border-top:1px solid var(--line); padding:26px 0 40px; color:var(--mute); font-size:12.5px; line-height:1.6}
+footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px}
+
+@media (max-width:1080px){
+  .card, .card.wide{grid-column:span 6}
+  .links{grid-template-columns:repeat(3,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .step:nth-child(2){border-right:0}
+  .step:nth-child(-n+2){border-bottom:1px solid var(--line)}
+}
+@media (max-width:700px){
+  .card, .card.wide{grid-column:1/-1; min-height:500px}
+  .links{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr}
+  .step{border-right:0; border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:0}
+  .venue{grid-template-columns:1fr}
+  .ctrl{top:64px}
+  .ctrl .wrap{flex-direction:column; align-items:stretch}
+  .season{justify-content:center}
+  .season button{flex:1; text-align:center}
+  .chips{flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; scrollbar-width:none}
+  .chips button{white-space:nowrap}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <a class="logo" href="#">NOVIKOVSCHOOL<small data-t="logoSub">ВСЕ ФОРМАТЫ МЕРОПРИЯТИЙ</small></a>
+  <div class="lang"><button data-lang="ru" class="on">RU</button><button data-lang="en">EN</button></div>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="kicker" data-t="kicker">Мероприятия в Novikov School</div>
+  <h1 data-t="h1" data-html>Выберите<br><em>свой</em> формат</h1>
+  <p data-t="lead">Кулинарные мастер-классы, винное и коктейльное казино, коктейльный баттл, арт-вечеринки и детские праздники — на одной площадке в центре Москвы. Откройте формат, чтобы увидеть пакеты, меню, залы и цены.</p>
+  <div class="facts" id="facts"></div>
+</div></section>
+
+<div class="ctrl"><div class="wrap">
+  <div class="season" id="season">
+    <button data-s="adult" class="on" data-t="sAdult">Осень–весна</button>
+    <button data-s="ny" data-t="sNy">Новый год 2026/27</button>
+  </div>
+  <div class="chips" id="chips"></div>
+</div></div>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+
+  <section class="how">
+    <h2 class="h3" data-t="howT">Как это устроено</h2>
+    <div class="steps">
+      <div class="step"><b data-t="st1">Формат</b><p data-t="st1d">Выберите, чем займутся гости: готовить, играть, рисовать или соревноваться за барной стойкой.</p></div>
+      <div class="step"><b data-t="st2">Уровень</b><p data-t="st2d">В каждом формате три уровня — Стандартный, Авторский и Эксклюзивный. От уровня зависят блюда шефа и фуршет.</p></div>
+      <div class="step"><b data-t="st3">Зал</b><p data-t="st3d">8 залов на одной площадке. Вместимость зависит от формата — она указана на странице каждого формата.</p></div>
+      <div class="step"><b data-t="st4">Дополнения</b><p data-t="st4d">Free-flow бар, барная карта, ведущий, торты, флористика и другие услуги — по желанию.</p></div>
+    </div>
+  </section>
+
+  <section class="more">
+    <h2 class="h3" data-t="moreT">Ещё о площадке</h2>
+    <div class="links" id="links"></div>
+
+    <div class="venue">
+      <div>
+        <h2 class="h3" data-t="venT">Одна площадка — 8 залов</h2>
+        <p data-t="venD">Кулинарные студии Остров, Prof, Гранатовый, Оливковый и Лимонный, творческие залы ART и бизнес-залы Томатный и Апельсиновый. Гардероб, ресепшн, уборка и менеджер на площадке включены.</p>
+        <div class="addr" data-t="addr">Москва, Большая Якиманка, 22, ТЦ «Гименей», 2 этаж</div>
+      </div>
+      <div class="pics">
+        <div style="background-image:url(images/halls-thumbs/cafe/2.jpg)"></div>
+        <div style="background-image:url(images/halls-thumbs/granat/1.jpg)"></div>
+        <div style="background-image:url(images/halls-thumbs/art/ceramics/2.jpg)"></div>
+        <div style="background-image:url(images/halls-thumbs/olive/2.jpg)"></div>
+        <div style="background-image:url(images/halls-thumbs/prof/1.jpg)"></div>
+        <div style="background-image:url(images/halls-thumbs/cafe/7.jpg)"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <span>Novikov School · novikovspace.com</span>
+  <span data-t="legal">Цены за гостя. Казино не является азартной игрой. 18+. Чрезмерное употребление алкоголя вредит вашему здоровью.</span>
+</div></footer>
+
+<script>
+/* Цены подставляет tools/build-formats-hub.mjs из самих лендингов — руками не править. */
+const PRICES = /*@PRICES@*/{};
+
+const CATS = [
+  {k:"all",     ru:"Все",           en:"All"},
+  {k:"cook",    ru:"Кулинарные",    en:"Culinary"},
+  {k:"bar",     ru:"Барные игры",   en:"Bar games"},
+  {k:"art",     ru:"Творческие",    en:"Creative"},
+  {k:"kids",    ru:"Для детей",     en:"For kids"}
+];
+
+const CARDS = [
+  {id:"cook", cat:"cook", wide:true, img:"images/halls-thumbs/cafe/6.jpg",
+   tag:{ru:"Кулинарный", en:"Culinary"},
+   n:{ru:"Кулинарный мастер-класс", en:"Cooking Masterclass"},
+   lead:{ru:"Гости готовят ужин вместе с шефом — командой или каждый свой сет — и сразу дегустируют.",
+         en:"Guests cook dinner with a chef — as a team or each their own set — and taste it right away."},
+   li:[{ru:"53 тематических сета от шефа", en:"53 themed chef’s sets"},
+       {ru:"Командный или индивидуальный формат", en:"Team or individual format"},
+       {ru:"Фуршет включён в каждый уровень", en:"Buffet included at every level"}],
+   meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 47 гостей", en:"up to 47 guests"}],
+   url:{adult:"https://novikov-school.ru", ny:"https://newyear.novikov-school.ru"}},
+  {id:"chefs", cat:"cook", wide:true, img:"uploads/menu/27893ead79.jpg",
+   tag:{ru:"Open kitchen", en:"Open kitchen"},
+   n:{ru:"Демо-ужин Chef’s table", en:"Chef’s Table Demo Dinner"},
+   lead:{ru:"Готовить не нужно: шеф готовит при гостях, рассказывает о каждом блюде и подаёт его к столу.",
+         en:"No cooking needed: the chef cooks in front of the guests, tells the story of every dish and serves it."},
+   li:[{ru:"6 авторских сетов из 3 блюд", en:"6 signature 3-course sets"},
+       {ru:"Фуршет Medium Set включён", en:"Medium Set buffet included"},
+       {ru:"Камерный ужин для команды или гостей", en:"An intimate dinner for a team or guests"}],
+   meta:[{ru:"4 часа", en:"4 hours"}],
+   url:{adult:"https://novikov-school.ru/#sets", ny:"https://newyear.novikov-school.ru/#sets"}},
+  {id:"wine", cat:"bar", img:"uploads/sommeliers/aleksandr-arhipov-3.webp", pos:"50% 25%",
+   tag:{ru:"Барная игра", en:"Bar game"},
+   n:{ru:"Винное казино", en:"Wine Casino"},
+   lead:{ru:"Дегустация вслепую с сомелье-крупье: угадываем сорт, страну и год и делаем ставки фишками.",
+         en:"A blind tasting with a sommelier-croupier: guess the grape, the country and the vintage and bet with chips."},
+   li:[{ru:"6–8 вин в игре по уровню", en:"6–8 wines per level"},
+       {ru:"Раунд Black Casino на старших уровнях", en:"Black Casino round on the upper levels"},
+       {ru:"Сеты от шефа между раундами", en:"Chef’s sets between rounds"}],
+   meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 40 гостей", en:"up to 40 guests"}],
+   url:{adult:"https://wine-casino.novikov-school.ru", ny:"https://newyear-wine-casino.novikov-school.ru"}},
+  {id:"cocktail", cat:"bar", img:"uploads/cocktails/negroni.webp",
+   tag:{ru:"Барная игра", en:"Bar game"},
+   n:{ru:"Коктейльное казино", en:"Cocktail Casino"},
+   lead:{ru:"Миксолог наливает коктейли вслепую, гости угадывают состав и делают ставки фишками.",
+         en:"The mixologist pours cocktails blind, guests guess what’s inside and bet with chips."},
+   li:[{ru:"6–8 коктейлей в игре по уровню", en:"6–8 cocktails per level"},
+       {ru:"Секреты миксологии от бармена", en:"Mixology secrets from the bartender"},
+       {ru:"Сеты от шефа между раундами", en:"Chef’s sets between rounds"}],
+   meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 40 гостей", en:"up to 40 guests"}],
+   url:{adult:"https://cocktail-casino.novikov-school.ru", ny:"https://newyear-cocktail-casino.novikov-school.ru"}},
+  {id:"battle", cat:"bar", img:"uploads/cocktails/pornstar-martini.webp",
+   tag:{ru:"Командная игра", en:"Team game"},
+   n:{ru:"Коктейльный баттл", en:"Cocktail Battle"},
+   lead:{ru:"Команды против команд за барной стойкой: классика с бартендером и свой авторский коктейль на оценку соперников.",
+         en:"Team against team behind the bar: a classic with the bartender and your own signature cocktail for the rivals to score."},
+   li:[{ru:"2 раунда и победитель баттла", en:"2 rounds and a battle winner"},
+       {ru:"Гости сами готовят коктейли", en:"Guests mix the cocktails themselves"},
+       {ru:"Сеты от шефа между раундами", en:"Chef’s sets between rounds"}],
+   meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 50 гостей", en:"up to 50 guests"}],
+   url:{adult:"https://cocktail-battle.novikov-school.ru", ny:"https://newyear-cocktail-battle.novikov-school.ru"}},
+  {id:"art", cat:"art", wide:true, img:"uploads/art/painting/acrylic/animals/04.jpg",
+   tag:{ru:"Творческий", en:"Creative"},
+   n:{ru:"Арт-вечеринка", en:"Art Party"},
+   lead:{adult:{ru:"Живопись с художником — каждый свою картину или одну большую вместе — или абстракция во флюид-арте.",
+                en:"Painting with an artist — each their own canvas or one big one together — or a fluid-art abstract."},
+         ny:{ru:"Новогодняя картина с художником, флюид-арт или рождественский венок из живой ели с декоратором.",
+             en:"A New Year painting with an artist, fluid art or a fresh-fir Christmas wreath with a decorator."}},
+   li:{adult:[{ru:"Живопись PaintOn или флюид-арт", en:"PaintOn painting or fluid art"},
+              {ru:"Холст и материалы включены", en:"Canvas and materials included"},
+              {ru:"Сеты от шефа и фуршет", en:"Chef’s sets and a buffet"}],
+       ny:[{ru:"Живопись, флюид-арт или венок", en:"Painting, fluid art or a wreath"},
+           {ru:"Материалы включены", en:"Materials included"},
+           {ru:"Сеты от шефа и фуршет", en:"Chef’s sets and a buffet"}]},
+   meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 50 гостей", en:"up to 50 guests"}],
+   url:{adult:"https://art.novikov-school.ru", ny:"https://newyear-art.novikov-school.ru"}},
+  {id:"kids", cat:"kids", wide:true, img:"uploads/balloons/01.jpg",
+   tag:{ru:"Для детей", en:"For kids"},
+   n:{ru:"Детские мастер-классы", en:"Kids’ Masterclasses"},
+   lead:{ru:"Дни рождения и детские праздники: дети готовят сами, играют и едят то, что приготовили.",
+         en:"Birthdays and kids’ parties: children cook, play and eat what they made."},
+   li:[{ru:"Программы по возрастам", en:"Programmes by age"},
+       {ru:"Детский фуршет и игры", en:"Kids’ buffet and games"},
+       {ru:"Торты и шары на заказ", en:"Custom cakes and balloons"}],
+   meta:[{ru:"по возрастам", en:"by age group"}],
+   url:{adult:"https://novikov-school.ru/deti", ny:"https://novikov-school.ru/deti"}}
+];
+
+const LINKS = [
+  {img:"images/halls-thumbs/granat/1.jpg", n:{ru:"Залы", en:"Halls"}, d:{ru:"фото всех залов", en:"photos of every hall"}, url:"https://novikov-school.ru/halls"},
+  {img:"uploads/menu/2de29a9a72.jpg", n:{ru:"Сеты МК", en:"Class sets"}, d:{ru:"меню мастер-классов", en:"masterclass menus"}, url:"https://novikov-school.ru/sets"},
+  {img:"uploads/menu/1501f2d3c2.jpg", n:{ru:"Меню блюд", en:"Dish menu"}, d:{ru:"банкет и блюда в стол", en:"banquet and shared plates"}, url:"https://menu.novikov-school.ru"},
+  {img:"uploads/cocktails/clover-club.webp", n:{ru:"Барная карта", en:"Bar card"}, d:{ru:"вино, коктейли, крепкое", en:"wine, cocktails, spirits"}, url:"https://bar.novikov-school.ru"},
+  {img:"uploads/chefs/anton-kochura.webp", n:{ru:"Шефы", en:"Chefs"}, d:{ru:"кто будет готовить", en:"who will cook"}, url:"https://novikov-school.ru/chefs"},
+  {img:"uploads/hosts/batrankov.webp", n:{ru:"Ведущие", en:"Hosts"}, d:{ru:"для игр и праздников", en:"for games and parties"}, url:"https://novikov-school.ru/hosts"}
+];
+
+const T = {
+  logoSub:{ru:"ВСЕ ФОРМАТЫ МЕРОПРИЯТИЙ", en:"ALL EVENT FORMATS"},
+  kicker:{ru:"Мероприятия в Novikov School", en:"Events at Novikov School"},
+  h1:{ru:"Выберите<br><em>свой</em> формат", en:"Choose<br><em>your</em> format"},
+  lead:{ru:"Кулинарные мастер-классы, винное и коктейльное казино, коктейльный баттл, арт-вечеринки и детские праздники — на одной площадке в центре Москвы. Откройте формат, чтобы увидеть пакеты, меню, залы и цены.",
+        en:"Cooking masterclasses, wine and cocktail casinos, a cocktail battle, art parties and kids’ celebrations — all at one venue in central Moscow. Open a format to see the packages, menus, halls and prices."},
+  sAdult:{ru:"Осень–весна", en:"Autumn–spring"},
+  sNy:{ru:"Новый год 2026/27", en:"New Year 2026/27"},
+  howT:{ru:"Как это устроено", en:"How it works"},
+  st1:{ru:"Формат", en:"Format"},
+  st1d:{ru:"Выберите, чем займутся гости: готовить, играть, рисовать или соревноваться за барной стойкой.", en:"Pick what your guests will do: cook, play, paint or compete behind the bar."},
+  st2:{ru:"Уровень", en:"Level"},
+  st2d:{ru:"В каждом формате три уровня — Стандартный, Авторский и Эксклюзивный. От уровня зависят блюда шефа и фуршет.", en:"Every format has three levels — Standard, Author’s and Exclusive. The level defines the chef’s dishes and the buffet."},
+  st3:{ru:"Зал", en:"Hall"},
+  st3d:{ru:"8 залов на одной площадке. Вместимость зависит от формата — она указана на странице каждого формата.", en:"8 halls at one venue. Capacity depends on the format and is listed on each format’s page."},
+  st4:{ru:"Дополнения", en:"Add-ons"},
+  st4d:{ru:"Free-flow бар, барная карта, ведущий, торты, флористика и другие услуги — по желанию.", en:"A free-flow bar, the bar card, a host, cakes, floristry and other services — as you wish."},
+  moreT:{ru:"Ещё о площадке", en:"More about the venue"},
+  venT:{ru:"Одна площадка — 8 залов", en:"One venue — 8 halls"},
+  venD:{ru:"Кулинарные студии Остров, Prof, Гранатовый, Оливковый и Лимонный, творческие залы ART и бизнес-залы Томатный и Апельсиновый. Гардероб, ресепшн, уборка и менеджер на площадке включены.",
+        en:"The Island, Prof, Pomegranate, Olive and Lemon cooking studios, the ART creative halls and the Tomato and Orange business halls. Cloakroom, reception, cleaning and an on-site manager are included."},
+  addr:{ru:"Москва, Большая Якиманка, 22, ТЦ «Гименей», 2 этаж", en:"Moscow, Bolshaya Yakimanka 22, Gimeney mall, 2nd floor"},
+  legal:{ru:"Цены за гостя. Казино не является азартной игрой. 18+. Чрезмерное употребление алкоголя вредит вашему здоровью.",
+         en:"Prices per guest. The casino is not gambling. 18+. Excessive drinking is harmful to your health."},
+  from:{ru:"от", en:"from"}, perGuest:{ru:"/гость", en:"/guest"}, open:{ru:"Смотреть", en:"Open"},
+  formats:{ru:"форматов", en:"formats"}, halls:{ru:"8 залов", en:"8 halls"}, center:{ru:"центр Москвы", en:"central Moscow"},
+  empty:{ru:"В этом сезоне нет форматов этого типа.", en:"No formats of this type this season."}
+};
+
+const qs = new URLSearchParams(location.search);
+let LANG = qs.get("lang")==="en" ? "en" : "ru";
+let SEASON = qs.get("season")==="ny" ? "ny" : "adult";
+let CAT = "all";
+const tx = o => o[LANG];
+const bySeason = v => (v && (v.adult||v.ny)) ? (v[SEASON]||v.adult) : v;
+
+function render(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-t]").forEach(el=>{
+    const v = T[el.dataset.t]; if(!v) return;
+    if(el.hasAttribute("data-html")) el.innerHTML = v[LANG]; else el.textContent = v[LANG];
+  });
+  document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on", b.dataset.lang===LANG));
+  document.querySelectorAll("#season button").forEach(b=>b.classList.toggle("on", b.dataset.s===SEASON));
+  document.getElementById("chips").innerHTML = CATS.map(c=>`<button data-c="${c.k}" class="${c.k===CAT?"on":""}">${tx(c)}</button>`).join("");
+
+  const shown = CARDS.filter(c=>CAT==="all" || c.cat===CAT);
+  document.getElementById("grid").innerHTML = shown.length ? shown.map((c,i)=>{
+    const p = (PRICES[c.id]||{})[SEASON];
+    const li = bySeason(c.li), lead = bySeason(c.lead);
+    return `<a class="card${c.wide && CAT==="all" ? " wide":""}" href="${c.url[SEASON]}" target="_blank" rel="noopener">
+      <div class="ph" style="background-image:url('${c.img}');${c.pos?`background-position:${c.pos}`:""}"></div>
+      <span class="tag">${tx(c.tag)}</span>
+      <span class="num">${String(i+1).padStart(2,"0")}</span>
+      <div class="body">
+        <h2>${tx(c.n)}</h2>
+        <p class="lead">${tx(lead)}</p>
+        <ul>${li.map(x=>`<li>${tx(x)}</li>`).join("")}</ul>
+        <div class="meta">${c.meta.map(m=>`<span>${tx(m)}</span>`).join("")}</div>
+        <div class="foot">
+          <div class="price">${p?`<small>${tx(T.from)}</small><b>${p}</b><i>${tx(T.perGuest)}</i>`:""}</div>
+          <span class="go">${tx(T.open)} →</span>
+        </div>
+      </div>
+    </a>`;
+  }).join("") : `<div class="empty">${tx(T.empty)}</div>`;
+
+  document.getElementById("links").innerHTML = LINKS.map(l=>
+    `<a class="lk" href="${l.url}" target="_blank" rel="noopener"><div class="ph" style="background-image:url('${l.img}')"></div><span>${tx(l.n)}<small>${tx(l.d)}</small></span></a>`).join("");
+
+  document.getElementById("facts").innerHTML =
+    [`${CARDS.length} ${tx(T.formats)}`, tx(T.halls), tx(T.center)].map(s=>`<span>${s}</span>`).join("");
+}
+
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  if(b.dataset.lang){ LANG = b.dataset.lang; }
+  else if(b.dataset.s){ SEASON = b.dataset.s; }
+  else if(b.dataset.c){ CAT = b.dataset.c; }
+  else return;
+  const u = new URL(location);
+  LANG==="en" ? u.searchParams.set("lang","en") : u.searchParams.delete("lang");
+  SEASON==="ny" ? u.searchParams.set("season","ny") : u.searchParams.delete("season");
+  history.replaceState(null,"",u);
+  render();
+});
+render();
+</script>
+</body>
+</html>
