@@ -55,6 +55,7 @@ a{color:inherit}
 .card{grid-column:span 4; position:relative; display:flex; flex-direction:column; min-height:540px; border-radius:22px; overflow:hidden;
   text-decoration:none; background:var(--maroon); isolation:isolate; transition:transform .35s ease}
 .card.wide{grid-column:span 6}
+.card.full{grid-column:1/-1; min-height:460px}
 .card:hover{transform:translateY(-4px)}
 .card .ph{position:absolute; inset:0; z-index:-2; background-size:cover; background-position:center; transition:transform .7s ease}
 .card:hover .ph{transform:scale(1.05)}
@@ -128,15 +129,44 @@ a{color:inherit}
 footer{border-top:1px solid var(--line); padding:26px 0 40px; color:var(--mute); font-size:12.5px; line-height:1.6}
 footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px}
 
+/* ---------- новогодний режим (MODE="ny") ---------- */
+body.ny{--gold:#E9C46A}
+body.ny .kicker{color:var(--gold)}
+body.ny .hero::before{background:radial-gradient(circle, rgba(214,18,43,.42), rgba(214,18,43,0) 62%)}
+body.ny .hero::after{content:""; position:absolute; left:-10%; bottom:-30%; width:60vw; height:60vw; max-width:760px; max-height:760px; pointer-events:none;
+  background:radial-gradient(circle, rgba(233,196,106,.16), rgba(233,196,106,0) 60%)}
+body.ny .hero h1 em{-webkit-text-stroke-color:var(--gold)}
+body.ny .top::after{content:""; position:absolute; left:0; right:0; bottom:-7px; height:12px; pointer-events:none;
+  background:radial-gradient(circle at 6px 6px, var(--gold) 2.4px, transparent 3px) 0 0/48px 12px,
+             radial-gradient(circle at 30px 6px, var(--red) 2.4px, transparent 3px) 0 0/48px 12px;
+  animation:twinkle 2.4s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.5} to{opacity:1}}
+body.ny .snow{position:absolute; inset:0; pointer-events:none; z-index:0;
+  background-image:radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.75), transparent 60%),
+    radial-gradient(1.5px 1.5px at 120px 80px, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(2.5px 2.5px at 200px 150px, rgba(255,255,255,.5), transparent 60%),
+    radial-gradient(1.5px 1.5px at 60px 190px, rgba(255,255,255,.65), transparent 60%),
+    radial-gradient(2px 2px at 170px 10px, rgba(255,255,255,.55), transparent 60%);
+  background-size:240px 220px; animation:snow 14s linear infinite; opacity:.7}
+body.ny .snow.s2{background-size:340px 300px; animation:snow2 22s linear infinite; opacity:.45; filter:blur(.6px)}
+@keyframes snow{from{background-position:0 0} to{background-position:40px 220px}}
+@keyframes snow2{from{background-position:0 0} to{background-position:-60px 300px}}
+body.ny .hero .wrap{position:relative; z-index:1}
+body.ny .card .tag{border:1px solid rgba(233,196,106,.45)}
+body.ny .step::before, body.ny .faces span{color:var(--gold)}
+body.ny .season{display:none}
+@media (prefers-reduced-motion:reduce){body.ny .snow, body.ny .top::after{animation:none}}
+
 @media (max-width:1080px){
   .card, .card.wide{grid-column:span 6}
+  .card.full{grid-column:1/-1}
   .links{grid-template-columns:repeat(2,1fr)}
   .steps{grid-template-columns:repeat(2,1fr)}
   .step:nth-child(2){border-right:0}
   .step:nth-child(-n+2){border-bottom:1px solid var(--line)}
 }
 @media (max-width:700px){
-  .card, .card.wide{grid-column:1/-1; min-height:500px}
+  .card, .card.wide, .card.full{grid-column:1/-1; min-height:500px}
   .links{grid-template-columns:repeat(2,1fr)}
   .steps{grid-template-columns:1fr}
   .step{border-right:0; border-bottom:1px solid var(--line)}
@@ -160,7 +190,7 @@ footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12
   <div class="lang"><button data-lang="ru" class="on">RU</button><button data-lang="en">EN</button></div>
 </div></header>
 
-<section class="hero"><div class="wrap">
+<section class="hero"><div class="snow" aria-hidden="true"></div><div class="snow s2" aria-hidden="true"></div><div class="wrap">
   <div class="kicker" data-t="kicker">Мероприятия в Novikov School</div>
   <h1 data-t="h1" data-html>Выберите<br><em>свой</em> формат</h1>
   <p data-t="lead">Кулинарные мастер-классы, винное и коктейльное казино, коктейльный баттл, арт-вечеринки и детские праздники — на одной площадке в центре Москвы. Откройте формат, чтобы увидеть пакеты, меню, залы и цены.</p>
@@ -251,6 +281,8 @@ footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12
 <script>
 /* Цены подставляет tools/build-formats-hub.mjs из самих лендингов — руками не править. */
 const PRICES = /*@PRICES@*/{};
+/* "all" — общая витрина с переключателем сезона, "ny" — только новогодние форматы. */
+const MODE = /*@MODE@*/"all";
 
 const CATS = [
   {k:"all",     ru:"Все",           en:"All"},
@@ -326,7 +358,7 @@ const CARDS = [
            {ru:"Сеты от шефа и фуршет", en:"Chef’s sets and a buffet"}]},
    meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 50 гостей", en:"up to 50 guests"}],
    url:{adult:"https://art.novikov-school.ru", ny:"https://newyear-art.novikov-school.ru"}},
-  {id:"kids", cat:"kids", wide:true, img:"uploads/balloons/01.jpg",
+  {id:"kids", cat:"kids", wide:true, noNY:true, img:"uploads/balloons/01.jpg",
    tag:{ru:"Для детей", en:"For kids"},
    n:{ru:"Детские мастер-классы", en:"Kids’ Masterclasses"},
    lead:{ru:"Дни рождения и детские праздники: дети готовят сами, играют и едят то, что приготовили.",
@@ -382,9 +414,23 @@ const T = {
   empty:{ru:"В этом сезоне нет форматов этого типа.", en:"No formats of this type this season."}
 };
 
+const T_NY = {
+  logoSub:{ru:"НОВЫЙ ГОД 2026/27 · ВСЕ ФОРМАТЫ", en:"NEW YEAR 2026/27 · ALL FORMATS"},
+  kicker:{ru:"Новый год 2026/27 в Novikov School", en:"New Year 2026/27 at Novikov School"},
+  h1:{ru:"Новогодние<br><em>форматы</em>", en:"New Year<br><em>formats</em>"},
+  lead:{ru:"Новогодний корпоратив в центре Москвы: кулинарный мастер-класс, демо-ужин, винное и коктейльное казино, коктейльный баттл и арт-вечеринка с рождественскими венками. Откройте формат — внутри пакеты, меню, залы и цены сезона.",
+        en:"A New Year party in central Moscow: a cooking masterclass, a demo dinner, wine and cocktail casinos, a cocktail battle and an art party with Christmas wreaths. Open a format to see the season’s packages, menus, halls and prices."},
+  season:{ru:"сезон 2026/27", en:"season 2026/27"}
+};
 const qs = new URLSearchParams(location.search);
 let LANG = qs.get("lang")==="en" ? "en" : "ru";
-let SEASON = qs.get("season")==="ny" ? "ny" : "adult";
+let SEASON = MODE==="ny" || qs.get("season")==="ny" ? "ny" : "adult";
+if(MODE==="ny"){
+  Object.assign(T, T_NY);
+  document.body.classList.add("ny");
+  document.getElementById("season").remove();
+}
+const POOL = CARDS.filter(c=>MODE!=="ny" || !c.noNY);
 let CAT = "all";
 const tx = o => o[LANG];
 const bySeason = v => (v && (v.adult||v.ny)) ? (v[SEASON]||v.adult) : v;
@@ -397,13 +443,14 @@ function render(){
   });
   document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on", b.dataset.lang===LANG));
   document.querySelectorAll("#season button").forEach(b=>b.classList.toggle("on", b.dataset.s===SEASON));
-  document.getElementById("chips").innerHTML = CATS.map(c=>`<button data-c="${c.k}" class="${c.k===CAT?"on":""}">${tx(c)}</button>`).join("");
+  document.getElementById("chips").innerHTML = CATS.filter(c=>c.k==="all" || POOL.some(x=>x.cat===c.k)).map(c=>`<button data-c="${c.k}" class="${c.k===CAT?"on":""}">${tx(c)}</button>`).join("");
 
-  const shown = CARDS.filter(c=>CAT==="all" || c.cat===CAT);
+  const shown = POOL.filter(c=>CAT==="all" || c.cat===CAT);
   document.getElementById("grid").innerHTML = shown.length ? shown.map((c,i)=>{
     const p = (PRICES[c.id]||{})[SEASON];
     const li = bySeason(c.li), lead = bySeason(c.lead);
-    return `<a class="card${c.wide && CAT==="all" ? " wide":""}" href="${c.url[SEASON]}" target="_blank" rel="noopener">
+    const wide = CAT==="all" && (MODE==="ny" && c.id==="art" ? "full" : c.wide);
+    return `<a class="card${wide==="full" ? " full" : wide ? " wide":""}" href="${c.url[SEASON]}" target="_blank" rel="noopener">
       <div class="ph" style="background-image:url('${c.img}');${c.pos?`background-position:${c.pos}`:""}"></div>
       <span class="tag">${tx(c.tag)}</span>
       <span class="num">${String(i+1).padStart(2,"0")}</span>
@@ -424,7 +471,7 @@ function render(){
     `<a class="lk" href="${l.url}" target="_blank" rel="noopener"><div class="ph" style="background-image:url('${l.img}')"></div><span>${tx(l.n)}<small>${tx(l.d)}</small></span></a>`).join("");
 
   document.getElementById("facts").innerHTML =
-    [`${CARDS.length} ${tx(T.formats)}`, tx(T.halls), tx(T.center)].map(s=>`<span>${s}</span>`).join("");
+    [`${POOL.length} ${tx(T.formats)}`, ...(MODE==="ny"?[tx(T.season)]:[]), tx(T.halls), tx(T.center)].map(s=>`<span>${s}</span>`).join("");
 }
 
 document.addEventListener("click", e=>{
@@ -435,7 +482,7 @@ document.addEventListener("click", e=>{
   else return;
   const u = new URL(location);
   LANG==="en" ? u.searchParams.set("lang","en") : u.searchParams.delete("lang");
-  SEASON==="ny" ? u.searchParams.set("season","ny") : u.searchParams.delete("season");
+  SEASON==="ny" && MODE!=="ny" ? u.searchParams.set("season","ny") : u.searchParams.delete("season");
   history.replaceState(null,"",u);
   render();
 });

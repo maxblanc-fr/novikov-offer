@@ -43,11 +43,18 @@ const offer = read("NovikovOffer.html");
 const fonts = [...offer.matchAll(/^@font-face\{[^\n]*\}$/gm)].map(m=>m[0]).join("\n");
 must(fonts.split("@font-face").length-1 === 5, "ожидалось 5 @font-face в NovikovOffer.html");
 
-let html = read("tools/formats-hub.template.html");
-html = html.replace("/*@FONTS@*/", () => fonts);
-html = html.replace("/*@PRICES@*/{}", () => JSON.stringify(PRICES, null, 1));
-html = html.replace(/(<!DOCTYPE html>\n?)/i, "$1<!-- СОБРАНО tools/build-formats-hub.mjs из tools/formats-hub.template.html — руками не править -->\n");
-must(!html.includes("@FONTS@") && !html.includes("@PRICES@"), "плейсхолдеры остались");
-
-fs.writeFileSync(path.join(ROOT, "NovikovFormats.html"), html);
-console.log("→ NovikovFormats.html", PRICES);
+const tpl = read("tools/formats-hub.template.html");
+function make(mode, out, title){
+  let html = tpl;
+  html = html.replace("/*@FONTS@*/", () => fonts);
+  html = html.replace("/*@PRICES@*/{}", () => JSON.stringify(PRICES, null, 1));
+  html = html.replace('/*@MODE@*/"all"', () => JSON.stringify(mode));
+  html = html.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
+  html = html.replace(/(<!DOCTYPE html>\n?)/i, "$1<!-- СОБРАНО tools/build-formats-hub.mjs из tools/formats-hub.template.html — руками не править -->\n");
+  must(!/@(FONTS|PRICES|MODE)@/.test(html), "плейсхолдеры остались");
+  fs.writeFileSync(path.join(ROOT, out), html);
+  console.log("→", out);
+}
+make("all", "NovikovFormats.html", "Novikov School — все форматы мероприятий / All event formats");
+make("ny",  "NovikovNewYearFormats.html", "Novikov School — новогодние форматы 2026/27 / New Year formats 2026/27");
+console.log(PRICES);
