@@ -18,6 +18,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { addHeroPics } from "./hero-pics.mjs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -344,6 +345,7 @@ ${levels}
   for(const bad of ["Демо-ужин","Индивидуальный мастер-класс (максимум","Дегустационные казино",'"Prof"','"Гранатовый"','"Лимонный"'])
     must(!data.includes(bad), `осталось «${bad}» в ${K.out[seasonKey]}`);
 
+  src = addHeroPics(src, kindKey);
   fs.writeFileSync(path.join(ROOT, K.out[seasonKey]), src);
   console.log("→", K.out[seasonKey]);
 }

@@ -18,6 +18,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { addHeroPics } from "./hero-pics.mjs";
 import { fileURLToPath } from "node:url";
 import { CASINO_SETS, LEVEL_IDS, LEVELS, SEASON, matchBrace, must, replaceOnce,
          sectionRange, replaceSection, rub, parseRub } from "./build-casino.mjs";
@@ -316,6 +317,7 @@ ${tabs}
   for(const bad of ["Демо-ужин","Индивидуальный мастер-класс (максимум",'"Prof"','"Лимонный"',"Кулинарная часть"])
     must(!data.includes(bad), `осталось «${bad}» в ${K.out[seasonKey]}`);
 
+  src = addHeroPics(src, kindKey === "art" && seasonKey === "ny" ? "art-ny" : kindKey);
   fs.writeFileSync(path.join(ROOT, K.out[seasonKey]), src);
   console.log("→", K.out[seasonKey]);
 }

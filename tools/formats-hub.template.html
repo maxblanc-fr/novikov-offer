@@ -59,6 +59,10 @@ a{color:inherit}
 .card:hover{transform:translateY(-4px)}
 .card .ph{position:absolute; inset:0; z-index:-2; background-size:cover; background-position:center; transition:transform .7s ease}
 .card:hover .ph{transform:scale(1.05)}
+.card .ph.sl{opacity:0; animation:cardfade 12s infinite}
+.card .ph.sl:first-child{opacity:1}
+@keyframes cardfade{0%{opacity:0} 4%{opacity:1} 33%{opacity:1} 38%{opacity:0} 100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.card .ph.sl{animation:none} .card .ph.sl:not(:first-child){display:none}}
 .card::after{content:""; position:absolute; inset:0; z-index:-1;
   background:linear-gradient(180deg, rgba(27,3,6,.08) 0%, rgba(27,3,6,.45) 32%, rgba(27,3,6,.94) 60%, rgba(27,3,6,.98) 100%)}
 .card .tag{align-self:flex-start; margin:18px; padding:6px 12px; border-radius:999px; background:rgba(27,3,6,.62); backdrop-filter:blur(6px);
@@ -313,7 +317,7 @@ const CARDS = [
        {ru:"Камерный ужин для команды или гостей", en:"An intimate dinner for a team or guests"}],
    meta:[{ru:"4 часа", en:"4 hours"}],
    url:{adult:"https://novikov-school.ru/#sets", ny:"https://newyear.novikov-school.ru/#sets"}},
-  {id:"wine", cat:"bar", img:"uploads/sommeliers/aleksandr-arhipov-3.webp", pos:"50% 25%",
+  {id:"wine", cat:"bar", img:"images/formats/wine/1.jpg", imgs:["images/formats/wine/1.jpg","images/formats/wine/3.jpg","images/formats/wine/2.jpg"],
    tag:{ru:"Барная игра", en:"Bar game"},
    n:{ru:"Винное казино", en:"Wine Casino"},
    lead:{ru:"Дегустация вслепую с сомелье-крупье: угадываем сорт, страну и год и делаем ставки фишками.",
@@ -323,7 +327,7 @@ const CARDS = [
        {ru:"Сеты от шефа между раундами", en:"Chef’s sets between rounds"}],
    meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 40 гостей", en:"up to 40 guests"}],
    url:{adult:"https://wine-casino.novikov-school.ru", ny:"https://newyear-wine-casino.novikov-school.ru"}},
-  {id:"cocktail", cat:"bar", img:"uploads/cocktails/negroni.webp",
+  {id:"cocktail", cat:"bar", img:"images/formats/cocktail/1.jpg", imgs:["images/formats/cocktail/1.jpg","images/formats/cocktail/3.jpg","uploads/cocktails/negroni.webp"],
    tag:{ru:"Барная игра", en:"Bar game"},
    n:{ru:"Коктейльное казино", en:"Cocktail Casino"},
    lead:{ru:"Миксолог наливает коктейли вслепую, гости угадывают состав и делают ставки фишками.",
@@ -333,7 +337,7 @@ const CARDS = [
        {ru:"Сеты от шефа между раундами", en:"Chef’s sets between rounds"}],
    meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 40 гостей", en:"up to 40 guests"}],
    url:{adult:"https://cocktail-casino.novikov-school.ru", ny:"https://newyear-cocktail-casino.novikov-school.ru"}},
-  {id:"battle", cat:"bar", img:"uploads/cocktails/pornstar-martini.webp",
+  {id:"battle", cat:"bar", img:"images/formats/battle/1.jpg", imgs:["images/formats/battle/1.jpg","images/formats/battle/2.jpg","uploads/cocktails/pornstar-martini.webp"],
    tag:{ru:"Командная игра", en:"Team game"},
    n:{ru:"Коктейльный баттл", en:"Cocktail Battle"},
    lead:{ru:"Команды против команд за барной стойкой: классика с бартендером и свой авторский коктейль на оценку соперников.",
@@ -343,7 +347,7 @@ const CARDS = [
        {ru:"Сеты от шефа между раундами", en:"Chef’s sets between rounds"}],
    meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 50 гостей", en:"up to 50 guests"}],
    url:{adult:"https://cocktail-battle.novikov-school.ru", ny:"https://newyear-cocktail-battle.novikov-school.ru"}},
-  {id:"art", cat:"art", wide:true, img:"uploads/art/painting/acrylic/animals/04.jpg",
+  {id:"art", cat:"art", wide:true, img:"images/formats/art/1.jpg", imgs:{adult:["images/formats/art/1.jpg","images/formats/art/3.jpg","images/formats/art/4.jpg"], ny:["images/formats/art-ny/1.jpg","images/formats/art-ny/2.jpg","images/formats/art-ny/5.jpg"]},
    tag:{ru:"Творческий", en:"Creative"},
    n:{ru:"Арт-вечеринка", en:"Art Party"},
    lead:{adult:{ru:"Живопись с художником — каждый свою картину или одну большую вместе — или абстракция во флюид-арте.",
@@ -451,7 +455,7 @@ function render(){
     const li = bySeason(c.li), lead = bySeason(c.lead);
     const wide = CAT==="all" && (MODE==="ny" && c.id==="art" ? "full" : c.wide);
     return `<a class="card${wide==="full" ? " full" : wide ? " wide":""}" href="${c.url[SEASON]}" target="_blank" rel="noopener">
-      <div class="ph" style="background-image:url('${c.img}');${c.pos?`background-position:${c.pos}`:""}"></div>
+      ${(c.imgs ? (Array.isArray(c.imgs) ? c.imgs : c.imgs[SEASON]) : [c.img]).map((u,k,a)=>`<div class="ph${a.length>1?" sl":""}" style="background-image:url('${u}');${c.pos?`background-position:${c.pos};`:""}${a.length>1?`animation-delay:${k*4-0.01}s`:""}"></div>`).join("")}
       <span class="tag">${tx(c.tag)}</span>
       <span class="num">${String(i+1).padStart(2,"0")}</span>
       <div class="body">
