@@ -93,13 +93,29 @@ a{color:inherit}
 
 /* ещё */
 .more{padding:0 0 clamp(48px,6vw,80px)}
-.links{display:grid; grid-template-columns:repeat(6,1fr); gap:14px}
-.lk{position:relative; aspect-ratio:3/4; border-radius:16px; overflow:hidden; text-decoration:none; display:flex; align-items:flex-end; isolation:isolate}
+.links{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.lk{position:relative; aspect-ratio:4/3; border-radius:16px; overflow:hidden; text-decoration:none; display:flex; align-items:flex-end; isolation:isolate}
 .lk .ph{position:absolute; inset:0; z-index:-2; background-size:cover; background-position:center; transition:transform .6s}
 .lk:hover .ph{transform:scale(1.06)}
 .lk::after{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(27,3,6,0) 40%, rgba(27,3,6,.92))}
 .lk span{padding:14px; font:700 13px var(--head); letter-spacing:.08em; text-transform:uppercase}
 .lk span small{display:block; font:500 12px var(--body); letter-spacing:0; text-transform:none; color:var(--mute); margin-top:4px}
+
+/* топ-шефы и ведущие */
+.team{padding:0 0 clamp(48px,6vw,80px)}
+.team .sub{color:var(--mute); font-size:clamp(15px,1.6vw,18px); margin:-14px 0 28px; max-width:60ch; line-height:1.55}
+.pros{display:grid; grid-template-columns:1fr 1fr; gap:clamp(14px,1.8vw,22px)}
+.pro{display:flex; flex-direction:column; text-decoration:none; border:1px solid var(--line); border-radius:22px; padding:clamp(20px,2.6vw,30px); background:var(--night-2); transition:.3s}
+.pro:hover{border-color:rgba(244,241,236,.4); transform:translateY(-3px)}
+.faces{display:flex; margin-bottom:22px}
+.faces div{width:clamp(64px,7vw,92px); aspect-ratio:1; border-radius:50%; background-size:cover; background-position:center 20%; border:3px solid var(--night-2); margin-left:-14px}
+.faces div:first-child{margin-left:0}
+.faces span{align-self:center; margin-left:14px; font:400 30px/1 var(--display); color:var(--red)}
+.pro h3{font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:clamp(30px,3.4vw,44px); line-height:.95; margin:0}
+.pro p{color:var(--mute); line-height:1.6; margin:12px 0 0; font-size:14.5px}
+.pro .go{align-self:flex-start; margin-top:auto; transform:translateY(0)}
+.pro .go{margin-top:22px}
+.pro:hover .go{background:var(--red); color:#fff}
 
 .venue{display:grid; grid-template-columns:1.1fr 1fr; gap:clamp(20px,4vw,48px); align-items:center; border:1px solid var(--line); border-radius:22px; padding:clamp(22px,4vw,44px); margin-top:clamp(36px,5vw,56px);
   background:linear-gradient(135deg, rgba(214,18,43,.16), rgba(214,18,43,0) 60%)}
@@ -114,7 +130,7 @@ footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12
 
 @media (max-width:1080px){
   .card, .card.wide{grid-column:span 6}
-  .links{grid-template-columns:repeat(3,1fr)}
+  .links{grid-template-columns:repeat(2,1fr)}
   .steps{grid-template-columns:repeat(2,1fr)}
   .step:nth-child(2){border-right:0}
   .step:nth-child(-n+2){border-bottom:1px solid var(--line)}
@@ -126,6 +142,7 @@ footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12
   .step{border-right:0; border-bottom:1px solid var(--line)}
   .step:last-child{border-bottom:0}
   .venue{grid-template-columns:1fr}
+  .pros{grid-template-columns:1fr}
   .ctrl{top:64px}
   .ctrl .wrap{flex-direction:column; align-items:stretch}
   .season{justify-content:center}
@@ -168,6 +185,39 @@ footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12
       <div class="step"><b data-t="st2">Уровень</b><p data-t="st2d">В каждом формате три уровня — Стандартный, Авторский и Эксклюзивный. От уровня зависят блюда шефа и фуршет.</p></div>
       <div class="step"><b data-t="st3">Зал</b><p data-t="st3d">8 залов на одной площадке. Вместимость зависит от формата — она указана на странице каждого формата.</p></div>
       <div class="step"><b data-t="st4">Дополнения</b><p data-t="st4d">Free-flow бар, барная карта, ведущий, торты, флористика и другие услуги — по желанию.</p></div>
+    </div>
+  </section>
+
+  <section class="team">
+    <h2 class="h3" data-t="teamT">Топ-шефы и ведущие</h2>
+    <p class="sub" data-t="teamD">которых можно заказать на ваше мероприятие</p>
+    <div class="pros">
+      <a class="pro" href="https://novikov-school.ru/chefs" target="_blank" rel="noopener">
+        <div class="faces">
+          <div style="background-image:url(uploads/chefs/pavel-shitikov.webp)"></div>
+          <div style="background-image:url(uploads/chefs/giovanni-filippone.webp)"></div>
+          <div style="background-image:url(uploads/chefs/dinar-saitov.webp)"></div>
+          <div style="background-image:url(uploads/chefs/marko-prazzoli.webp)"></div>
+          <div style="background-image:url(uploads/sommeliers/aleksandr-arhipov-1.webp)"></div>
+          <span>+7</span>
+        </div>
+        <h3 data-t="chefsT">Топ-шефы и сомелье</h3>
+        <p data-t="chefsD">10 шефов и 2 сомелье, которые проведут мастер-класс, демо-ужин или дегустацию на вашем мероприятии. Портфолио, кухни и регалии каждого.</p>
+        <span class="go" data-t="chefsGo">Смотреть шефов →</span>
+      </a>
+      <a class="pro" href="https://novikov-school.ru/hosts" target="_blank" rel="noopener">
+        <div class="faces">
+          <div style="background-image:url(uploads/hosts/ovsepyan.webp)"></div>
+          <div style="background-image:url(uploads/hosts/kostikova.webp)"></div>
+          <div style="background-image:url(uploads/hosts/rodionov.webp)"></div>
+          <div style="background-image:url(uploads/hosts/agaeva.webp)"></div>
+          <div style="background-image:url(uploads/hosts/batrankov.webp)"></div>
+          <span>+7</span>
+        </div>
+        <h3 data-t="hostsT">Ведущие</h3>
+        <p data-t="hostsD">12 ведущих для корпоративов, игр и праздников: подберём того, кто подойдёт по формату и настроению вашей компании.</p>
+        <span class="go" data-t="hostsGo">Смотреть ведущих →</span>
+      </a>
     </div>
   </section>
 
@@ -292,9 +342,7 @@ const LINKS = [
   {img:"images/halls-thumbs/granat/1.jpg", n:{ru:"Залы", en:"Halls"}, d:{ru:"фото всех залов", en:"photos of every hall"}, url:"https://novikov-school.ru/halls"},
   {img:"uploads/menu/2de29a9a72.jpg", n:{ru:"Сеты МК", en:"Class sets"}, d:{ru:"меню мастер-классов", en:"masterclass menus"}, url:"https://novikov-school.ru/sets"},
   {img:"uploads/menu/1501f2d3c2.jpg", n:{ru:"Меню блюд", en:"Dish menu"}, d:{ru:"банкет и блюда в стол", en:"banquet and shared plates"}, url:"https://menu.novikov-school.ru"},
-  {img:"uploads/cocktails/clover-club.webp", n:{ru:"Барная карта", en:"Bar card"}, d:{ru:"вино, коктейли, крепкое", en:"wine, cocktails, spirits"}, url:"https://bar.novikov-school.ru"},
-  {img:"uploads/chefs/anton-kochura.webp", n:{ru:"Шефы", en:"Chefs"}, d:{ru:"кто будет готовить", en:"who will cook"}, url:"https://novikov-school.ru/chefs"},
-  {img:"uploads/hosts/batrankov.webp", n:{ru:"Ведущие", en:"Hosts"}, d:{ru:"для игр и праздников", en:"for games and parties"}, url:"https://novikov-school.ru/hosts"}
+  {img:"uploads/cocktails/clover-club.webp", n:{ru:"Барная карта", en:"Bar card"}, d:{ru:"вино, коктейли, крепкое", en:"wine, cocktails, spirits"}, url:"https://bar.novikov-school.ru"}
 ];
 
 const T = {
@@ -315,6 +363,14 @@ const T = {
   st4:{ru:"Дополнения", en:"Add-ons"},
   st4d:{ru:"Free-flow бар, барная карта, ведущий, торты, флористика и другие услуги — по желанию.", en:"A free-flow bar, the bar card, a host, cakes, floristry and other services — as you wish."},
   moreT:{ru:"Ещё о площадке", en:"More about the venue"},
+  teamT:{ru:"Топ-шефы и ведущие", en:"Top chefs and hosts"},
+  teamD:{ru:"которых можно заказать на ваше мероприятие", en:"who you can book for your event"},
+  chefsT:{ru:"Топ-шефы и сомелье", en:"Top chefs and sommeliers"},
+  chefsD:{ru:"10 шефов и 2 сомелье, которые проведут мастер-класс, демо-ужин или дегустацию на вашем мероприятии. Портфолио, кухни и регалии каждого.", en:"10 chefs and 2 sommeliers to run a masterclass, a demo dinner or a tasting at your event. Each one’s portfolio, cuisines and credentials."},
+  chefsGo:{ru:"Смотреть шефов →", en:"View the chefs →"},
+  hostsT:{ru:"Ведущие", en:"Hosts"},
+  hostsD:{ru:"12 ведущих для корпоративов, игр и праздников: подберём того, кто подойдёт по формату и настроению вашей компании.", en:"12 hosts for corporate events, games and parties: we’ll match one to your format and your team’s mood."},
+  hostsGo:{ru:"Смотреть ведущих →", en:"View the hosts →"},
   venT:{ru:"Одна площадка — 8 залов", en:"One venue — 8 halls"},
   venD:{ru:"Кулинарные студии Остров, Prof, Гранатовый, Оливковый и Лимонный, творческие залы ART и бизнес-залы Томатный и Апельсиновый. Гардероб, ресепшн, уборка и менеджер на площадке включены.",
         en:"The Island, Prof, Pomegranate, Olive and Lemon cooking studios, the ART creative halls and the Tomato and Orange business halls. Cloakroom, reception, cleaning and an on-site manager are included."},
