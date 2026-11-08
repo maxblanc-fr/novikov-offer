@@ -431,6 +431,21 @@
   .hm-tab:hover{color:var(--ink);}
   .hm-tab.active{color:#fff; background:var(--red);}
   .svc-h .ii{color:var(--red)}
+  .games-modal .hm-card{width:min(820px,100%)}
+  .games-modal .hm-tab{font-size:11.5px; padding:12px 8px}
+  .game-body[hidden]{display:none}
+  .game-facts{margin:10px 0 0}
+  .um-eds{display:grid; gap:8px}
+  .um-ed{border:1px solid var(--line); background:#fff}
+  .um-ed summary{cursor:pointer; list-style:none; padding:11px 14px; font-family:var(--head); font-weight:800; font-size:13.5px; color:var(--ink); display:flex; justify-content:space-between; align-items:center}
+  .um-ed summary::-webkit-details-marker{display:none}
+  .um-ed summary::after{content:"+"; font-size:20px; line-height:1; color:var(--red); font-weight:400}
+  .um-ed[open] summary::after{content:"–"}
+  .um-ed[open] summary{border-bottom:1px solid var(--line)}
+  .um-rounds{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; padding:12px 14px 14px}
+  .um-rounds b{display:block; font-family:var(--head); font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--red-deep); margin-bottom:6px}
+  .um-rounds ul{margin:0; padding:0; list-style:none; display:grid; gap:5px; font-size:13px; line-height:1.4}
+  .um-rounds i{font-style:normal; font-weight:700; color:var(--ink)}
   .game-modal .hm-card{width:min(720px,100%)}
   .game-body{flex:1 1 auto; overflow-y:auto; padding:20px 24px 8px; font-size:14.5px; line-height:1.55; color:var(--ink-soft)}
   .game-intro{margin:0 0 6px; color:var(--ink); font-size:15px}
@@ -914,7 +929,7 @@ const DATA = {
           desc:{ru:"Творческие мастер-классы — рисование и свечеварение. До 8 человек в одном зале. Холст 30 × 40 см. В каталоге 114 авторских работ: акрил, вино, кофе.",
                 en:"Creative masterclasses — painting and candle making. Up to 8 guests per hall. Canvas 30 × 40 cm. 114 works in the catalogue: acrylic, wine, coffee."},
           price:{ru:"Рисование 6 000 ₽ · свечеварение 5 500 ₽ / гость", en:"Painting 6 000 ₽ · candle making 5 500 ₽ / guest"}},
-        {ic:"🎲", name:{ru:"Интерактивные игры", en:"Interactive Games"},
+        {ic:"🎲", modal:"games", modalLabel:{ru:"Описание игр", en:"About the games"}, name:{ru:"Интерактивные игры", en:"Interactive Games"},
           desc:{ru:"Игры для гостей с профессиональным ведущим: час игры, игру выбираете из списка. Можно заказать разработку квиза на выбранную вами тематику или с вашими вопросами и ответами. Отдельно можно заказать караоке на 2 часа.",
                 en:"Guest games hosted by a professional MC: one hour of the game; pick the game from the list. We can also develop a quiz on a theme of your choice or with your own questions and answers. Karaoke for 2 hours can be booked separately."},
           tags:["Музыкальное бинго","Квиз","Угадай мелодию","Игра 100 к 1"],
@@ -1990,7 +2005,7 @@ function renderSection(s, i){
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
         ${grouped ? `<div class="svc-foot">${visual}${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : (it.price?`<div class="svc-price">${it.price[LANG]}</div>`:"")}
       </div>`;}).join("")+`</div>`
-    + cakeModal() + floralModal() + cocktailModal() + artModal() + gameModals();
+    + cakeModal() + floralModal() + cocktailModal() + artModal() + gameModals() + gamesModal();
   }
   else if(s.type==="bar"){
     body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="bar-grid">`+ s.cats.map(cat=> cat.kind ? barCat2(cat) : `
@@ -2267,6 +2282,100 @@ const GAMES = {
         {t:{ru:"Количество участников не ограничено. Оптимально до 10 человек в команде.", en:"Any number of guests. Ideally up to 10 people per team."}}]}
     ]}
 };
+/* ---------- «Интерактивные игры»: описание каждой игры (окно с вкладками) ----------
+   Угадай мелодию — описание раундов от Квизли (PDF «Описание УМ»); квизы — текст от
+   менеджеров (без подросткового и английского); бинго и 100 к 1 —
+   business.eventyon.ru/activity-noindex. */
+const GAMESET = [
+  {k:"um", n:{ru:"Угадай мелодию", en:"Guess the Melody"},
+    intro:{ru:"Музыкальная игра: гости делятся на команды, слушают песни и пытаются их угадать. Но есть важный нюанс: нужно не только назвать песню или исполнителя, но и успеть первыми нажать на кнопку! Игра проверяет не только знание песен, но и скорость, реакцию и, конечно, командный дух.",
+           en:"A music game: guests split into teams, listen to songs and try to guess them. The catch: you must not only name the song or the artist but also be the first to hit the button! It tests not just your knowledge of songs but speed, reflexes and, of course, team spirit."},
+    facts:[{ru:"3 раунда, в каждом — 4 музыкальные категории", en:"3 rounds, 4 music categories in each"},
+           {ru:"Выбираете одну из тематических версий игры", en:"Choose one of the themed editions"}],
+    eds:[{"n":{"ru":"90-е 2.0","en":"90s 2.0"},"r":[[{"ru":["Залётный гастролёр","популярные зарубежные композиции"],"en":["Touring Star","popular foreign songs"]},{"ru":["Кафе «Зелёная роща»","песни, которые звучали в придорожных кафе"],"en":["“Green Grove” Café","songs you heard in roadside cafés"]},{"ru":["Шлягеры","хиты 90-х"],"en":["Smash Hits","hits of the 90s"]},{"ru":["Вещай, телевидение","песни из телепередач"],"en":["On Air","songs from TV shows"]}],[{"ru":["Песни из сериалов","угадываем сериал по саундтреку"],"en":["TV Series Songs","guess the series by its soundtrack"]},{"ru":["Шальная императрица","девичьи песни про девушек"],"en":["Wild Empress","girls’ songs about girls"]},{"ru":["Малиновый пиджак","классика шансона"],"en":["Crimson Jacket","chanson classics"]},{"ru":["Радио «РОКс»","хиты рок-музыки"],"en":["Radio “ROCKs”","rock hits"]}],[{"ru":["Фильмография","угадываем фильм по саундтреку"],"en":["Filmography","guess the film by its soundtrack"]},{"ru":["Мужчины едут в баню","мужские песни, которые все знают"],"en":["Men Go to the Banya","men’s songs everyone knows"]},{"ru":["Баунти","песни про любовь"],"en":["Bounty","love songs"]},{"ru":["Чисто поржать","смешные и весёлые песни"],"en":["Just for Laughs","funny, cheerful songs"]}]]},{"n":{"ru":"90-е","en":"90s"},"r":[[{"ru":["Древнерусский рок 90-х","русский рок"],"en":["Ancient Russian Rock of the 90s","Russian rock"]},{"ru":["CDR-V (фирмовая музыка)","популярные иностранные хиты"],"en":["CD-R-V (imported music)","popular foreign hits"]},{"ru":["Кино и сериалы 90-х","угадываем фильмы и сериалы по саундтрекам"],"en":["90s Films & Series","guess films and series by their soundtracks"]},{"ru":["Магнитола на плече","русская попса"],"en":["Boombox on the Shoulder","Russian pop"]}],[{"ru":["Мужчины едут в караоке","популярные мужские песни, которые часто пели в караоке"],"en":["Men Go to Karaoke","popular men’s karaoke songs"]},{"ru":["Малиновый пиджак","классика шансона"],"en":["Crimson Jacket","chanson classics"]},{"ru":["Девушки хотят танцевать","весёлые танцевальные песни"],"en":["Girls Want to Dance","cheerful dance songs"]},{"ru":["Медляки 90-х","медленные белые танцы"],"en":["90s Slow Dances","ladies’-choice slow dances"]}],[{"ru":["Дети 90-х","песни, под которые росли дети, рождённые в 90-х"],"en":["90s Kids","songs 90s-born kids grew up with"]},{"ru":["Радио Монте-Карло","иностранные радиохиты"],"en":["Radio Monte Carlo","foreign radio hits"]},{"ru":["Наши секс-символы","любимые исполнители-мужчины"],"en":["Our Sex Symbols","favourite male singers"]},{"ru":["Чисто поржать","смешные и весёлые песни"],"en":["Just for Laughs","funny, cheerful songs"]}]]},{"n":{"ru":"Гендер-пати","en":"Gender Party"},"r":[[{"ru":["Имя любимое её","песни с женскими именами"],"en":["Her Beloved Name","songs with women’s names"]},{"ru":["Работает профессионал","песни про профессии"],"en":["A Pro at Work","songs about professions"]},{"ru":["Сила и опора","песни про мужчин"],"en":["Strength and Support","songs about men"]},{"ru":["Песни про семью","песни о родственниках"],"en":["Family Songs","songs about relatives"]}],[{"ru":["Имя любое его","песни с мужскими именами"],"en":["Any Name of His","songs with men’s names"]},{"ru":["За милых дам","песни про девочек"],"en":["To the Ladies","songs about girls"]},{"ru":["Мультиклассика","саундтреки к старым мультикам"],"en":["Cartoon Classics","soundtracks of old cartoons"]},{"ru":["Будущее ретро","топ-чарты"],"en":["Future Retro","top charts"]}],[{"ru":["Песни о любви","песни про любовь"],"en":["Love Songs","songs about love"]},{"ru":["Загадай желание","песни, где поётся про пожелания"],"en":["Make a Wish","songs about wishes"]},{"ru":["Телесемья","песни из сериалов про семью"],"en":["TV Family","songs from family sitcoms"]},{"ru":["Мультикварка","песни из современных мультиков"],"en":["Cartoon Quark","songs from modern cartoons"]}]]},{"n":{"ru":"Barbie Party","en":"Barbie Party"},"r":[[{"ru":["Жизнь в розовом цвете","песни, где поётся о чём-то розовом"],"en":["Life in Pink","songs about something pink"]},{"ru":["Barbie","песни про девочек"],"en":["Barbie","songs about girls"]},{"ru":["Ken","песни про мальчиков"],"en":["Ken","songs about boys"]},{"ru":["Love","песни про любовь"],"en":["Love","love songs"]}],[{"ru":["Вы в танцах","песни о танцах"],"en":["You’re Dancing","songs about dancing"]},{"ru":["Цветочная лавка","песни о цветах"],"en":["Flower Shop","songs about flowers"]},{"ru":["Подпевай","всеми любимые русские хиты"],"en":["Sing Along","everyone’s favourite Russian hits"]},{"ru":["Реверс","песни в обратной перемотке"],"en":["Reverse","songs played backwards"]}],[{"ru":["Медляки","медленные белые танцы"],"en":["Slow Dances","ladies’-choice slow dances"]},{"ru":["Драгоценности","песни об украшениях и драгоценностях"],"en":["Jewels","songs about jewellery"]},{"ru":["Переключая каналы","песни из телепередач"],"en":["Channel Surfing","songs from TV shows"]},{"ru":["Эмодзи","песню нужно угадать по смайликам"],"en":["Emoji","guess the song from emojis"]}]]},{"n":{"ru":"3.0","en":"3.0"},"r":[[{"ru":["Билетик в кино","саундтреки к фильмам"],"en":["Movie Ticket","film soundtracks"]},{"ru":["Патимейкер","песни про тусовки и вечеринки"],"en":["Partymaker","songs about parties"]},{"ru":["Дорогу покажешь?","песни о транспорте и поездках"],"en":["Show Me the Way?","songs about transport and trips"]},{"ru":["Зоопарк какой-то","песни о животных"],"en":["Some Kind of Zoo","songs about animals"]}],[{"ru":["Мультикварка","песни из мультиков"],"en":["Cartoon Quark","cartoon songs"]},{"ru":["Бабки, бабки, бабки","песни про деньги"],"en":["Money, Money, Money","songs about money"]},{"ru":["Ю ма ха, ю ма со","ретро-песни"],"en":["Yu Ma Ha, Yu Ma So","retro songs"]},{"ru":["Вивальди","песни про времена года"],"en":["Vivaldi","songs about the seasons"]}],[{"ru":["Ещё серию и точно спать","саундтреки к сериалам"],"en":["One More Episode","TV series soundtracks"]},{"ru":["Фабрика звёзд","песни из одноимённой передачи"],"en":["Star Factory","songs from the TV show"]},{"ru":["Географ глобус пропил","песни о местах и путешествиях"],"en":["The Geographer Drank His Globe Away","songs about places and travel"]},{"ru":["Доминик Торетто","песни про семью и родственников"],"en":["Dominic Toretto","songs about family"]}]]},{"n":{"ru":"Свадебная 2.0","en":"Wedding 2.0"},"r":[[{"ru":["Букет невесты","песни про цветы"],"en":["Bridal Bouquet","songs about flowers"]},{"ru":["Клятвы у алтаря","песни про обещания"],"en":["Vows at the Altar","songs about promises"]},{"ru":["Жемчужная свадьба","песни 90-х годов"],"en":["Pearl Wedding","songs of the 90s"]},{"ru":["В платье белом","песни про невесту"],"en":["In a White Dress","songs about the bride"]}],[{"ru":["Застольные хиты","популярные песни для посиделок"],"en":["Table Hits","popular songs for get-togethers"]},{"ru":["Горько!","песни о поцелуях"],"en":["Gorko!","songs about kisses"]},{"ru":["О ней","песни про неё, самую лучшую"],"en":["About Her","songs about her, the best one"]},{"ru":["О нём","песни про него, самого лучшего"],"en":["About Him","songs about him, the best one"]}],[{"ru":["Для подружек невесты","популярные женские вокальные группы"],"en":["For the Bridesmaids","popular girl groups"]},{"ru":["Пустите меня на танцпол","популярные танцевальные треки"],"en":["Let Me on the Dance Floor","popular dance tracks"]},{"ru":["Ща спою!","популярные песни для караоке"],"en":["I’m Gonna Sing!","popular karaoke songs"]},{"ru":["Долго и счастливо","жизненные песни и песни о жизни"],"en":["Happily Ever After","songs about life"]}]]},{"n":{"ru":"40+","en":"40+"},"r":[[{"ru":["Радио «Дача»","песни с этой радиостанции"],"en":["Radio “Dacha”","songs from this radio station"]},{"ru":["Неслабый пол","песни про женщин"],"en":["The Not-So-Weak Sex","songs about women"]},{"ru":["Где-то я это слышал","популярные иностранные композиции"],"en":["I’ve Heard This Somewhere","popular foreign songs"]},{"ru":["Медлячки","медленные белые танцы"],"en":["Slow Ones","ladies’-choice slow dances"]}],[{"ru":["Про любовь","песни о любви"],"en":["About Love","love songs"]},{"ru":["Русский рок","песни жанра русский рок"],"en":["Russian Rock","Russian rock songs"]},{"ru":["OST","саундтреки к фильмам"],"en":["OST","film soundtracks"]},{"ru":["Королевская подборка","короли эстрады"],"en":["Royal Selection","kings of Russian pop"]}],[{"ru":["Europop","популярные иностранные композиции"],"en":["Europop","popular foreign songs"]},{"ru":["Реверс","песни в обратной перемотке"],"en":["Reverse","songs played backwards"]},{"ru":["Изгиб гитары жёлтой","песни под гитару"],"en":["The Curve of a Yellow Guitar","guitar songs"]},{"ru":["Хиты караоке","популярные песни для караоке"],"en":["Karaoke Hits","popular karaoke songs"]}]]},{"n":{"ru":"Дети + взрослые 2.0","en":"Kids + adults 2.0"},"r":[[{"ru":["OST фильмы","саундтреки из фильмов"],"en":["OST Films","film soundtracks"]},{"ru":["Плачу и танцую","песни про слёзы и танцы"],"en":["Crying and Dancing","songs about tears and dancing"]},{"ru":["Где-то я это слышал","популярные песни из топ-чартов"],"en":["I’ve Heard This Somewhere","chart hits"]},{"ru":["Мультикварка","песни из мультфильмов"],"en":["Cartoon Quark","cartoon songs"]}],[{"ru":["Девочки приглашают мальчиков","медленные танцы"],"en":["Girls Ask Boys","slow dances"]},{"ru":["Будущее ретро","популярные сейчас песни"],"en":["Future Retro","songs popular right now"]},{"ru":["Песни про семью","песни о членах семьи"],"en":["Family Songs","songs about family members"]},{"ru":["Юные хиты","детские песни блогеров"],"en":["Young Hits","kids’ songs by bloggers"]}]]},{"n":{"ru":"2.0","en":"2.0"},"r":[[{"ru":["OST фильмы","саундтреки из фильмов"],"en":["OST Films","film soundtracks"]},{"ru":["Плачу и танцую","песни про слёзы и танцы"],"en":["Crying and Dancing","songs about tears and dancing"]},{"ru":["Йошкар-Ола","песни про города"],"en":["Yoshkar-Ola","songs about cities"]},{"ru":["Эмодзи","песни зашифрованы смайликами"],"en":["Emoji","songs encoded in emojis"]}],[{"ru":["OST мультфильмы","саундтреки мультфильмов"],"en":["OST Cartoons","cartoon soundtracks"]},{"ru":["Деревенская дискотека","популярные танцевальные песни"],"en":["Village Disco","popular dance songs"]},{"ru":["Йошкар-Оля","песни с женскими именами"],"en":["Yoshkar-Olya","songs with women’s names"]},{"ru":["Наши 00-е","попса 2000-х годов"],"en":["Our 2000s","2000s pop"]}],[{"ru":["OST сериалы","саундтреки к сериалам"],"en":["OST Series","TV series soundtracks"]},{"ru":["Девочки приглашают мальчиков","медленные танцы"],"en":["Girls Ask Boys","slow dances"]},{"ru":["Йошкар-Олег","песни с мужскими именами"],"en":["Yoshkar-Oleg","songs with men’s names"]},{"ru":["Сорин","песни с извинениями"],"en":["Sorry","songs with apologies"]}]]},{"n":{"ru":"Подростки 2.0","en":"Teens 2.0"},"r":[[{"ru":["Топ-чарты","песни, которые есть и долго были в топ-чартах"],"en":["Top Charts","songs that are or long were in the charts"]},{"ru":["Угадай блогера","песни поющих блогеров"],"en":["Guess the Blogger","songs by singing bloggers"]},{"ru":["Это K-pop, детка","популярные песни жанра K-pop"],"en":["This Is K-pop, Baby","popular K-pop songs"]},{"ru":["Мультиленд","песни из мультиков"],"en":["Cartoonland","cartoon songs"]}],[{"ru":["Олд мани, олд стайл","старые песни, которые вновь стали популярными"],"en":["Old Money, Old Style","old songs that became popular again"]},{"ru":["Зверопой","песни о животных"],"en":["Beast Songs","songs about animals"]},{"ru":["Кринж","уже немного кринжовые песни"],"en":["Cringe","slightly cringey songs by now"]},{"ru":["Бегу к экрану с бутербродом","песни из мультсериалов"],"en":["Running to the Screen with a Sandwich","songs from animated series"]}]]}]},
+  {k:"quiz", n:{ru:"Квиз", en:"Quiz"},
+    intro:{ru:"Играется на специальной интерактивной платформе. Гости играют командами, отвечает «капитан» команды со своего мобильного устройства. В среднем 6–7 раундов, механики разные.",
+           en:"Played on a special interactive platform. Guests play in teams; the team “captain” answers from their phone. 6–7 rounds on average, with different mechanics."},
+    lists:[
+      {h:{ru:"Виды квизов", en:"Quiz types"}, items:[
+        {b:{ru:"Новогодний", en:"New Year"}, t:{ru:"обновляется к декабрю каждый год", en:"refreshed every December"}},
+        {b:{ru:"Сложный", en:"Hard"}, t:{ru:"развлекательный формат, не слишком сложный", en:"an entertaining format, not too hard"}},
+        {b:{ru:"Несложный", en:"Easy"}},
+        {b:{ru:"Кино и сериалы", en:"Films & series"}},
+        {b:{ru:"Музыкальный", en:"Music"}, t:{ru:"7 раундов — см. ниже", en:"7 rounds — see below"}}]},
+      {h:{ru:"Музыкальный квиз — 7 раундов", en:"Music quiz — 7 rounds"}, num:true, items:[
+        {b:{ru:"Ритм-разминка", en:"Rhythm warm-up"}, t:{ru:"общие вопросы на музыкальные темы", en:"general questions on music"}},
+        {b:{ru:"Каверы", en:"Covers"}, t:{ru:"отгадываем исполнителя по каверу", en:"guess the artist from a cover"}},
+        {b:{ru:"Нейропесни", en:"Neuro-songs"}, t:{ru:"отгадываем исполнителя, перепетого нейросетью", en:"guess the artist re-sung by a neural network"}},
+        {b:{ru:"Обратный отсчёт", en:"Countdown"}, t:{ru:"по подсказкам отгадываем исполнителя или группу", en:"guess the artist or band from clues"}},
+        {b:{ru:"Киномузыка", en:"Film music"}, t:{ru:"отгадываем фильм или сериал по саундтреку", en:"guess the film or series from its soundtrack"}},
+        {b:{ru:"Реверс", en:"Reverse"}, t:{ru:"отгадываем название или исполнителя по песне, проигранной задом наперёд", en:"guess the title or artist from a song played backwards"}},
+        {b:{ru:"Музыкальное казино", en:"Music casino"}, t:{ru:"игра на заработанные очки: делаем ставки на тему вопроса — верный ответ прибавляет ставку к счёту, неверный вычитает", en:"play with the points you earned: bet on the question’s topic — a right answer adds the bet, a wrong one subtracts it"}}]},
+      {h:{ru:"Короткие квизы", en:"Short quizzes"}, items:[
+        {b:{ru:"Квиз 90-е", en:"90s quiz"}},
+        {b:{ru:"Квиз «Мужское / женское»", en:"“Men vs women” quiz"}}]}
+    ]},
+  {k:"bingo", n:{ru:"Музыкальное бинго", en:"Music Bingo"},
+    intro:{ru:"Музыкальная игра, в которой сочетаются лото, дискотека и караоке: вы слушаете фрагменты известных композиций и зачёркиваете их на бланках. Здесь невозможно усидеть на месте — танцуйте и пойте, ведь победит тот, кому улыбнётся удача!",
+           en:"A music game that mixes lotto, disco and karaoke: you listen to snippets of well-known songs and cross them off your card. Impossible to stay seated — dance and sing, the luckiest one wins!"},
+    lists:[
+      {h:{ru:"Ход игры", en:"How it goes"}, items:[
+        {t:{ru:"Игроки получают бланк для игры и маркеры. По очереди звучат композиции: игроки подпевают любимым хитам и зачёркивают услышанные песни в карточке.", en:"Players get a game card and markers. Songs play one by one: players sing along and cross off the songs they hear."}},
+        {t:{ru:"Собрав комбинацию — ряд песен по горизонтали, вертикали или диагонали, — игрок кричит «Бинго!».", en:"Whoever completes a line — horizontal, vertical or diagonal — shouts “Bingo!”."}},
+        {t:{ru:"Песню знать необязательно: можно пользоваться Шазамом, спрашивать у других гостей и даже у ведущего :)", en:"You don’t have to know the song: use Shazam, ask other guests or even the host :)"}}]},
+      {h:{ru:"3 победителя", en:"3 winners"}, num:true, items:[
+        {t:{ru:"кто первым закроет одну линию", en:"first to complete one line"}},
+        {t:{ru:"кто первым закроет три линии", en:"first to complete three lines"}},
+        {t:{ru:"кто первым закроет весь бланк", en:"first to complete the whole card"}}]}
+    ]},
+  {k:"100", n:{ru:"Игра 100 к 1", en:"100 to 1"},
+    intro:{ru:"Наша версия командного соревнования на базе самых ярких телешоу — микс челленджей для любого формата вечеринки. От 6 до 60 участников.",
+           en:"Our take on a team contest based on the most popular TV shows — a mix of challenges for any party format. 6 to 60 players."},
+    lists:[
+      {h:{ru:"5 раундов", en:"5 rounds"}, num:true, items:[
+        {b:{ru:"Классический 100 к 1", en:"Classic 100 to 1"}, t:{ru:"угадайте, как чаще всего отвечали на вопрос другие люди; чем реже ответ, тем больше баллов", en:"guess how most people answered; the rarer the answer, the more points"}},
+        {b:{ru:"Один раз — не Костюшкин Стас", en:"Finish the line"}, t:{ru:"звучит музыкальный фрагмент, команды выбирают продолжение строчки", en:"a music snippet plays, teams pick how the line continues"}},
+        {b:{ru:"Кто это наделал?", en:"Who did this?"}, t:{ru:"вопросы с видео: какая композиция на самом деле звучит в клипе и кто исполнитель оригинала", en:"video questions: which song really plays in the clip and who sang the original"}},
+        {b:{ru:"Нет слов — одни эмодзи", en:"No words, just emoji"}, t:{ru:"пословицы, поговорки, фильмы и книги, загаданные эмодзи", en:"proverbs, sayings, films and books encoded in emoji"}},
+        {b:{ru:"Что будет дальше?", en:"What happens next?"}, t:{ru:"команды угадывают, что произойдёт дальше на видео, — затем показывают продолжение", en:"teams guess what happens next in a video — then the ending is shown"}}]},
+      {h:{ru:"Ход игры", en:"How it goes"}, items:[
+        {t:{ru:"Участники делятся на команды, придумывают название и подключаются к игровой платформе по QR-коду.", en:"Guests split into teams, pick a name and join the game platform via a QR code."}},
+        {t:{ru:"В каждом раунде 5–10 вопросов на экране. После ответов ведущий оглашает правильные, команды получают очки.", en:"Each round has 5–10 questions on screen. After the answers the host reveals the right ones and teams score."}},
+        {t:{ru:"Во время раунда нельзя пользоваться смартфонами для поиска ответов — иначе очки за раунд аннулируются.", en:"No searching on phones during a round — otherwise the team loses that round’s points."}}]}
+    ]}
+];
+function gsList(bl){ const tag = bl.num ? "ol" : "ul";
+  return `<h4>${bl.h[LANG]}</h4><${tag} class="game-list">${bl.items.map(x=>`<li>${x.b?`<b>${x.b[LANG]}</b>${x.t?" — ":""}`:""}${x.t?x.t[LANG]:""}</li>`).join("")}</${tag}>`; }
+function gsPane(g){
+  let h = `<p class="game-intro">${g.intro[LANG]}</p>`;
+  if(g.facts) h += `<ul class="game-list game-facts">${g.facts.map(f=>`<li>${f[LANG]}</li>`).join("")}</ul>`;
+  if(g.eds){
+    const R = LANG==="ru" ? ["1-й раунд","2-й раунд","3-й раунд"] : ["Round 1","Round 2","Round 3"];
+    h += `<h4>${LANG==="ru"?"Версии игры и категории раундов":"Editions and round categories"}</h4><div class="um-eds">` + g.eds.map((e,i)=>`<details class="um-ed"${i?"":" open"}><summary>${LANG==="ru"?"Угадай мелодию":"Guess the Melody"} ${e.n[LANG]}</summary><div class="um-rounds">${e.r.map((r,j)=>`<div><b>${R[j]}</b><ul>${r.map(c=>`<li><i>${c[LANG][0]}</i> — ${c[LANG][1]}</li>`).join("")}</ul></div>`).join("")}</div></details>`).join("") + `</div>`;
+  }
+  if(g.lists) h += g.lists.map(gsList).join("");
+  return h;
+}
+function gamesModal(){
+  const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
+  return `<div class="hall-modal game-modal games-modal" id="hm-games" hidden role="dialog" aria-modal="true" aria-label="${LANG==="ru"?"Интерактивные игры":"Interactive games"}">
+    <div class="hm-card">
+      <div class="hm-head">
+        <div class="hm-title"><b>${LANG==="ru"?"Интерактивные игры":"Interactive Games"}</b></div>
+        <span class="hm-cap">${LANG==="ru"?"Час игры с профессиональным ведущим · игру выбираете из списка":"One hour with a professional host · pick the game from the list"}</span>
+      </div>
+      <div class="hm-tabs">${GAMESET.map((g,i)=>`<button type="button" class="hm-tab${i?"":" active"}" data-gs-tab="${g.k}">${g.n[LANG]}</button>`).join("")}</div>
+      ${GAMESET.map((g,i)=>`<div class="game-body" data-gs-pane="${g.k}"${i?" hidden":""}>${gsPane(g)}</div>`).join("")}
+      <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
+    </div>
+  </div>`;
+}
+function switchGamesTab(tab){
+  const m = tab.closest(".hall-modal");
+  m.querySelectorAll("[data-gs-tab]").forEach(b=>b.classList.toggle("active", b===tab));
+  m.querySelectorAll("[data-gs-pane]").forEach(p=>{ p.hidden = p.dataset.gsPane !== tab.dataset.gsTab; if(!p.hidden) p.scrollTop = 0; });
+}
+
 function gameModals(){
   const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
   return Object.entries(GAMES).map(([k,g])=>`<div class="hall-modal game-modal" id="hm-${k}" hidden role="dialog" aria-modal="true" aria-label="${g.n[LANG]}">
@@ -2689,10 +2798,11 @@ function wireModals(){
     if(svc && svc.dataset.modal === "floral"){ openFloralModal(); return; }
     if(svc && svc.dataset.modal === "cocktails"){ openCocktailModal(); return; }
     if(svc && svc.dataset.modal === "art"){ openArtModal(); return; }
-    if(svc && GAMES[svc.dataset.modal]){ openGameModal(svc.dataset.modal); return; }
+    if(svc && (GAMES[svc.dataset.modal] || svc.dataset.modal === "games")){ openGameModal(svc.dataset.modal); return; }
     const tab = e.target.closest(".hm-tab");
     if(tab){
-      if(tab.dataset.ckCat !== undefined) switchCocktailCat(tab);
+      if(tab.dataset.gsTab !== undefined) switchGamesTab(tab);
+      else if(tab.dataset.ckCat !== undefined) switchCocktailCat(tab);
       else if(tab.dataset.cakeTab !== undefined) switchCakeTab(tab);
       else if(tab.dataset.artTab !== undefined) switchArtTab(tab);
       else switchHallTab(tab);
@@ -2716,7 +2826,7 @@ function wireModals(){
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "floral"){ e.preventDefault(); openFloralModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "cocktails"){ e.preventDefault(); openCocktailModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "art"){ e.preventDefault(); openArtModal(); }
-      else if(el.classList && el.classList.contains("svc-clickable") && GAMES[el.dataset.modal]){ e.preventDefault(); openGameModal(el.dataset.modal); }
+      else if(el.classList && el.classList.contains("svc-clickable") && (GAMES[el.dataset.modal] || el.dataset.modal === "games")){ e.preventDefault(); openGameModal(el.dataset.modal); }
     }
   });
 }
