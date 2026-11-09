@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Ежедневная сверка витрины курсов с сайтом школы.
-// Обходит https://novikovspace.com/school/direction/professional и страницу каждого
-// курса, собирает цены, повышения цены, группы и места, пишет courses-live.json и
-// дописывает в него журнал изменений относительно прошлого прогона.
+// Обходит страницы направлений novikovspace.com/school/direction/{professional,amateur,kids}
+// и страницу каждого курса, собирает цены, повышения цены, группы и места, пишет
+// courses-live.json и дописывает в него журнал изменений относительно прошлого прогона.
+// Направление курса на витрине (prof / amateur / kids / theme) берётся из раздела
+// страницы направления, в котором курс стоит на сайте («Тематические…» → theme).
 //
 //   node tools/sync-courses.mjs <out.json> [<copy-to.json> ...]
 //
@@ -14,7 +16,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execFile } from 'node:child_process'
 
-const LISTING = 'https://novikovspace.com/school/direction/professional'
+const LISTINGS = [
+  { url: 'https://novikovspace.com/school/direction/professional', dir: 'prof' },
+  { url: 'https://novikovspace.com/school/direction/amateur', dir: 'amateur' },
+  { url: 'https://novikovspace.com/school/direction/kids', dir: 'kids' },
+]
+// Раздел страницы → направление витрины. «Все курсы» и «Отзывы» — дубли и архив, их пропускаем.
+const sectionDir = (heading, def) =>
+  /все курсы|отзыв/i.test(heading) ? null : /тематич|сезонн/i.test(heading) ? 'theme' : /дет|подрост/i.test(heading) ? 'kids' : def
 const COURSE = slug => `https://novikovspace.com/school/course/${slug}`
 const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
 const KEEP_CHANGES = 200
@@ -102,27 +111,45 @@ function parseRange(raw, hintIso) {
   return { start: iso(start), end: iso(end) }
 }
 
-function parseListing(html) {
-  const out = new Map()
+function parseListing(html, def, out = new Map()) {
+  html = html.replace(/<script[\s\S]*?<\/script>/gi, '')
+  const parts = html.split(/(<h2[^>]*>[\s\S]*?<\/h2>)/i)
+  let dir = def
+  for (const part of parts) {
+    if (/^<h2/i.test(part)) {
+      dir = sectionDir(text(part), def)
+      continue
+    }
+    if (dir) parseCards(part, dir, out)
+  }
+  return out
+}
+
+function parseCards(html, dir, out) {
   const chunks = html.split(/<div class="b-school-slider__course-profesional\b/).slice(1)
   for (const c of chunks) {
     const slug = first(c, /href="https:\/\/novikovspace\.com\/school\/course\/([^"/?#]+)"/)
-    if (!slug || out.has(slug)) continue
+    if (!slug) continue
+    if (out.has(slug)) {
+      const dirs = out.get(slug).dirs
+      if (!dirs.includes(dir)) dirs.push(dir)
+      continue
+    }
     const nearest = first(c, /b-school-slider__group-info">([\s\S]*?)<\/div>/)
     const nd = nearest && text(nearest).match(/(\d{2})\.(\d{2})\.(\d{2})/)
     out.set(slug, {
       slug,
+      dirs: [dir],
       url: COURSE(slug),
       title: text(first(c, /b-school-slider__title-text">([\s\S]*?)<\/span>/)),
       img: first(c, /data-src="([^"]+)"/) || first(c, /<img[^>]+src="([^"]+)"/) || null,
       short: text(first(c, /b-school-slider__text-hidden"[^>]*>([\s\S]*?)<\/p>/)),
       level: text(first(c, /b-school-slider__level">([\s\S]*?)<\/span>/)) || null,
       lessons: text(first(c, /b-school-slider__lesson">([\s\S]*?)<\/span>/)) || null,
-      listPrice: money(first(c, /b-school-slider__price">([\s\S]*?)<\/span>\s*<\/span>/) || ''),
+      listPrice: money(first(c, /<div class="price">([\s\S]*?)<\/div>/) || first(c, /b-school-slider__price">([\s\S]*?)<\/span>\s*<\/span>/) || ''),
       nearest: nd ? { date: `20${nd[3]}-${nd[2]}-${nd[1]}`, note: text(nearest).replace(/^.*?\d{2}\.\d{2}\.\d{2}\s*/, '') || null } : null,
     })
   }
-  return [...out.values()]
 }
 
 function parseCourse(html, base) {
@@ -166,6 +193,7 @@ function parseCourse(html, base) {
   }
 }
 
+const DIR_NAMES = { prof: 'профессиональные', amateur: 'любительские', kids: 'детские', theme: 'тематические' }
 const rub = n => (n == null ? '—' : n.toLocaleString('ru-RU').replace(/ /g, ' ') + ' ₽')
 const day = s => {
   const d = new Date(s)
@@ -178,13 +206,17 @@ function diff(prev, next) {
   const was = new Map((prev?.courses || []).map(c => [c.slug, c]))
   const add = (c, kind, text) => out.push({ date: iso(today), slug: c.slug, title: c.title, kind, text })
   if (!prev) return out
+  // Прошлый прогон старого формата (только проф., без dirs) — любительские и детские курсы
+  // для него «новые», но в журнал их не пишем: это расширение витрины, а не новость сайта.
+  const wide = (prev.courses || []).some(c => c.dirs)
   for (const c of next) {
     const p = was.get(c.slug)
     was.delete(c.slug)
     if (!p) {
-      add(c, 'new', `Новый курс на сайте · ${rub(c.price.now)}`)
+      if (wide || c.dirs.includes('prof')) add(c, 'new', `Новый курс на сайте · ${rub(c.price.now)}`)
       continue
     }
+    if (p.dirs && String(p.dirs) !== String(c.dirs)) add(c, 'dir', `Перенесён на сайте в раздел: ${c.dirs.map(k => DIR_NAMES[k]).join(', ')}`)
     if (p.price?.now !== c.price.now) add(c, 'price', `Цена: ${rub(p.price?.now)} → ${rub(c.price.now)}`)
     const pr = p.price?.raise, cr = c.price.raise
     if (cr && (!pr || pr.from !== cr.from || pr.price !== cr.price)) add(c, 'raise', `С ${day(cr.from)} цена станет ${rub(cr.price)}`)
@@ -198,7 +230,7 @@ function diff(prev, next) {
     }
     for (const g of pg.values()) add(c, 'gone', `Группа снята с сайта: ${g.start ? `${day(g.start)} – ${day(g.end)}` : g.dates}`)
   }
-  for (const p of was.values()) add(p, 'removed', 'Курс пропал со страницы проф. направления')
+  for (const p of was.values()) add(p, 'removed', 'Курс пропал с сайта школы')
   return out
 }
 
@@ -229,14 +261,18 @@ async function pool(items, n, fn) {
 const prev = fs.existsSync(out) ? JSON.parse(fs.readFileSync(out, 'utf8')) : null
 const errors = []
 
-let listing
-try {
-  listing = parseListing(await get(LISTING))
-} catch (e) {
-  listing = []
-  errors.push(e.message)
+const found = new Map()
+for (const l of LISTINGS) {
+  try {
+    parseListing(await get(l.url), l.dir, found)
+  } catch (e) {
+    errors.push(e.message)
+  }
 }
-if (!listing.length) {
+const listing = [...found.values()]
+// Если хоть одна страница направления не открылась — не пишем файл: иначе её курсы
+// «пропадут» с витрины и в журнал попадут ложные «Курс пропал с сайта».
+if (!listing.length || errors.length) {
   console.error(`sync-courses: список курсов не получен (${errors.join('; ') || 'пусто'}), ${out} не тронут`)
   process.exit(1)
 }
@@ -256,7 +292,7 @@ const courses = await pool(listing, 3, async base => {
 const changes = [...diff(prev, courses), ...(prev?.changes || [])].slice(0, KEEP_CHANGES)
 const data = {
   updated: new Date().toISOString(),
-  source: LISTING,
+  source: LISTINGS.map(l => l.url),
   errors,
   courses: courses.map(({ listPrice, ...c }) => c),
   changes,
