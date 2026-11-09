@@ -62,6 +62,7 @@
   .set li:first-child{border-top:0}
   .set li::before{content:"›"; position:absolute; left:2px; top:7px; color:var(--red); font-family:var(--display); font-size:15px; line-height:1}
   .set .course{font-family:var(--head); font-weight:700; font-size:9.5px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:1px}
+  .lvl-lead{margin:-6px 0 16px; color:var(--ink-soft); font-size:15px; max-width:70ch}
   .bq{margin-top:16px; background:var(--card); border:1px solid var(--line); border-left:3px solid var(--red); padding:16px 20px; box-shadow:var(--card-shadow)}
   .bq h3{margin:0 0 4px; font-family:var(--head); font-weight:900; font-size:15px; text-transform:uppercase}
   .bq .inc{font-family:var(--head); font-weight:700; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--red-deep)}
@@ -98,10 +99,10 @@ const I18N = {
   brandsub:{ru:"МЕНЮ МАСТЕР-КЛАССОВ", en:"MASTERCLASS MENUS"},
   kicker:{ru:"Кулинарный мастер-класс", en:"Culinary masterclass"},
   h1:{ru:'Меню <span>мастер-классов</span>', en:'Masterclass <span>menus</span>'},
-  lead:{ru:"Сеты, которые гости готовят вместе с шефом. Выберите уровень — стандартный, авторский или эксклюзивный — и один сет из трёх блюд: закуска, горячее и десерт.",
-        en:"The sets guests cook together with the chef. Choose a level — standard, author’s or exclusive — and one three-course set: a starter, a main and a dessert."},
+  lead:{ru:"Сеты, которые гости готовят вместе с шефом. Выберите уровень — стандартный, авторский или эксклюзивный — и один сет из трёх блюд: закуска, горячее и десерт. А в формате Open kitchen шеф сам готовит сет при гостях.",
+        en:"The sets guests cook together with the chef. Choose a level — standard, author’s or exclusive — and one three-course set: a starter, a main and a dessert. In the Open kitchen format the chef cooks the set in front of the guests."},
   bq:{ru:"Фуршет", en:"Buffet"},
-  bqInc:{ru:"входит в мастер-класс", en:"included in the masterclass"},
+  bqInc:{ru:"входит в программу", en:"included in the programme"},
   courses:{ru:["Закуска","Горячее","Десерт"], en:["Starter","Main","Dessert"]},
   foot:{ru:"Замена блюда в сете — по согласованию с менеджером. Москва, Большая Якиманка, 22.",
         en:"Swapping a dish within a set is agreed with your manager. Moscow, Bolshaya Yakimanka 22."},
@@ -161,10 +162,14 @@ function render(){
   };
   const card = it => `<div class="set"><h3>${esc(it[LANG] || it.ru)}</h3><ul>${it.d.map((d,i) =>
     `<li><span class="course">${it.d.length===3 ? cc[i] : ""}</span>${esc(T(d))}</li>`).join("")}</ul></div>`;
-  document.getElementById("nav").innerHTML = team.levels.map(l => `<a href="#${l.k}">${esc(l.n[LANG])}</a>`).join("");
-  document.getElementById("main").innerHTML = team.levels.map(l => `
+  const ok = sec.tabs.find(t => t.k === "chefs");
+  const levels = team.levels.concat(ok ? ok.levels.map(l => ({...l, k:"openkitchen",
+    n:{ru:"Open kitchen · Chef’s table", en:"Open kitchen · Chef’s table"}, nav:{ru:"Open kitchen", en:"Open kitchen"}, lead:ok.d})) : []);
+  document.getElementById("nav").innerHTML = levels.map(l => `<a href="#${l.k}">${esc((l.nav || l.n)[LANG])}</a>`).join("");
+  document.getElementById("main").innerHTML = levels.map(l => `
     <section id="${l.k}">
       <div class="sec-head"><h2>${esc(l.n[LANG])}</h2><span class="cnt">${nSets(l.ids.length)}</span></div>
+      ${l.lead ? `<p class="lvl-lead">${esc(l.lead[LANG])}</p>` : ""}
       ${l.prem && sec.premNote ? `<div class="prem">${esc(sec.premNote[LANG])}</div>` : ""}
       <div class="grid">${l.ids.filter(id => SRC.SETS[id]).map(id => card(SRC.SETS[id])).join("")}</div>
       ${bq(l)}
