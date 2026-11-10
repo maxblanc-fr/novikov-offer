@@ -286,6 +286,9 @@
   .btn.ghost:hover{background:rgba(255,255,255,.12);border-color:#fff}
   .btn.main{box-shadow:0 2px 0 rgba(0,0,0,.15)}
   details.more{position:relative}
+  details.more[hidden]{display:none}
+  header.top .btn{white-space:nowrap}
+  #status{max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.75}
   details.more>summary{list-style:none}
   details.more>summary::-webkit-details-marker{display:none}
   details.more .menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--red-deep);padding:6px;display:flex;flex-direction:column;gap:4px;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:30}
@@ -309,6 +312,8 @@
   .season button{border:0;background:transparent;padding:6px 14px;font:700 11.5px var(--head);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer}
   .season button.on{background:var(--maroon);color:#fff}
   .season button:disabled{opacity:.35;cursor:not-allowed}
+  .vfmt{font-size:12px;color:var(--red-deep);background:#FFF6F5;border-left:3px solid var(--red);padding:6px 10px;margin-bottom:8px}
+  .vars button small{display:block;font-weight:600;font-size:9.5px;letter-spacing:.04em;opacity:.8;text-transform:none}
   .frow{display:flex;justify-content:space-between;align-items:center;gap:8px}
   .season.lang::before{content:"Язык КП";align-self:center;font:600 11px var(--body);color:var(--muted);padding:0 4px 0 6px}
   .season.lang button{padding:6px 10px}
@@ -352,8 +357,10 @@
     <button class="btn ghost" id="bPrint" type="button">Печать</button>
   </div></details>
   <button class="btn ghost" id="bInvite" type="button" title="PDF-приглашение для гостей: название, дата, тайминг и адрес — без цен">Приглашение</button>
-  <button class="btn ghost" id="bXls" type="button" title="Смета в Excel по шаблону отдела продаж: цены и количества из КП, на доп. услуги начисляется НДС 22%">Смета с НДС</button>
-  <button class="btn ghost" id="bXlsNoVat" type="button" title="Та же смета, но без НДС на дополнительные услуги">Смета без НДС</button>
+  <details class="more" id="xlMenu"><summary class="btn ghost">Смета ▾</summary><div class="menu">
+    <button class="btn ghost" id="bXls" type="button" title="Смета в Excel по шаблону отдела продаж: только выбранные позиции, на доп. услуги начисляется НДС 22%">С НДС</button>
+    <button class="btn ghost" id="bXlsNoVat" type="button" title="Та же смета, но без НДС на дополнительные услуги">Без НДС</button>
+  </div></details>
   <button class="btn main" id="bPdf" type="button" title="Ctrl/⌘ + Enter">Сгенерировать PDF</button>
 </header>
 <div class="arch" id="arch" hidden><div class="in">
@@ -1040,8 +1047,9 @@ function blank(){
 }
 let ST = blank(), CAT = null;
 /* Раньше зал был один (ST.hall) — старые КП из архива и PDF переводим в список */
-const fixHalls = s => { if (!Array.isArray(s.halls)) s.halls = []; if (s.hall && !s.halls.length) s.halls = [s.hall]; delete s.hall;
+const fixHalls = s => { if (Array.isArray(s.vars)) s.vars.forEach(v => { if (!v.kind) v.kind = s.kind; }); if (!Array.isArray(s.halls)) s.halls = []; if (s.hall && !s.halls.length) s.halls = [s.hall]; delete s.hall;
   s.halls = s.halls.flatMap(h => h === "art" ? ["art-floristry","art-painting","art-ceramics"] : [h]); return s; };
+const hallExtP = h => { const v = (ST.hallExtP || {})[h.slug]; return v !== undefined && v !== "" ? +v : (h.ext || 0); };
 const selHalls = () => ST.halls.map(slug => CAT.halls.find(h => h.slug === slug)).filter(Boolean);
 const hallArea = hs => { if (hs.length === 1) return hs[0].area; if (hs.some(h => !h.area)) return ""; return `${hs.reduce((s, h) => s + (parseInt(h.area) || 0), 0)} м²`; };
 const hallNames = hs => hs.map(h => `«${h.title}»`).join(", ");
@@ -1049,11 +1057,23 @@ try { const s = JSON.parse(localStorage.getItem(LS_KEY)); if (s && s.kind) ST = 
 const save = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(ST)); } catch(e){} clearTimeout(aT); aT = setTimeout(archPut, 700); };
 
 /* ---------- Варианты: поля, которые у каждого варианта свои ---------- */
-const VKEYS = ["vname","pkg","setId","dishes","setDishes","swapPrice","ff","ffHours","ffPrice","ffExt","uff","uffPrice","uffExt","uffGuests","sel","bar","custom","discount","discUnit","tl"];
+const VKEYS = ["kind","vname","pkg","setId","dishes","setDishes","swapPrice","ff","ffHours","ffPrice","ffExt","uff","uffPrice","uffExt","uffGuests","sel","bar","custom","discount","discUnit","tl"];
 const clone = o => JSON.parse(JSON.stringify(o));
 const pickVar = () => clone(Object.fromEntries(VKEYS.map(k => [k, ST[k]])));
 const syncVar = () => { if (ST.vars.length) ST.vars[ST.vi] = pickVar(); };
-const loadVar = i => { const b = blank(); Object.assign(ST, Object.fromEntries(VKEYS.map(k => [k, b[k]])), clone(ST.vars[i])); ST.vi = i; };
+const loadVar = i => { const b = blank(), k0 = ST.kind; Object.assign(ST, Object.fromEntries(VKEYS.map(k => [k, b[k]])), clone(ST.vars[i])); ST.vi = i;
+  if (!ST.vars[i].kind) ST.kind = k0;
+  if (SRC[ST.kind] && (!CAT || CAT.kind !== ST.kind)) CAT = catFor(ST.kind); };
+/* Каталог по формату — у вариантов могут быть разные форматы */
+const CATS = {};
+const catFor = k => { if (!CATS[k]){ CATS[k] = buildCatalog(k); CATS[k].kind = k; } return CATS[k]; };
+const varKinds = () => ST.vars.length ? [...new Set(ST.vars.map(v => v.kind || ST.kind))] : [ST.kind];
+const mixedKinds = () => varKinds().length > 1;
+/* Название формата для подписей: у кулинарных kicker общий («Предложение на мероприятие»), поэтому свои */
+const FMT_NAME = {adult:["Кулинарный мастер-класс","Culinary masterclass","Masterclass di cucina"], ny:["Новогодний кулинарный мастер-класс","New Year culinary masterclass","Masterclass di cucina di Capodanno"]};
+const kindLabel = k => FMT_NAME[k] ? X(...FMT_NAME[k]) : X(KINDS[k].kicker, KINDS[k].kickerEn, KINDS[k].kickerIt);
+const kindFile = k => fmtOf(k).n + (KINDS[k].ny ? " НГ" : "");
+async function loadKinds(s){ for (const k of new Set([s.kind, ...(s.vars || []).map(v => v.kind).filter(Boolean)])) await load(k); }
 const multi = () => ST.vars.length > 1;
 const vName = i => (multi() ? (ST.vars[i] || {}).vname : ST.vname) || X(`Вариант ${i + 1}`, `Option ${i + 1}`, `Opzione ${i + 1}`);
 function withVar(i, fn){
@@ -1135,7 +1155,7 @@ function lines(){
     const ib = includedBuffet();
     if (ib) out.push({g:"Кулинарная программа", t:esc(ibShort(ib)), incl:true, x:{k:"incl", ib, q}});
   }
-  if (+ST.hallHours) selHalls().forEach(hl => { if (hl.ext) out.push({g:"Площадка", t:X(`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, `Hall extension “${esc(tr(hl.title))}”, +${ST.hallHours} h`, `Prolungamento sala «${esc(tr(hl.title))}», +${ST.hallHours} h`), q:+ST.hallHours, u:"час", pr:hl.ext, x:{k:"hall", hl}}); });
+  if (+ST.hallHours) selHalls().forEach(hl => { if (hallExtP(hl)) out.push({g:"Площадка", t:X(`Продление зала «${esc(hl.title)}», +${ST.hallHours} ч`, `Hall extension “${esc(tr(hl.title))}”, +${ST.hallHours} h`, `Prolungamento sala «${esc(tr(hl.title))}», +${ST.hallHours} h`), q:+ST.hallHours, u:"час", pr:hallExtP(hl), pr0:hl.ext, x:{k:"hall", hl}}); });
   const ff = CAT.ff.find(f => f.key === ST.ff);
   if (ff){
     out.push({g:"Напитки", t:`${esc(tr(ff.title))}, ${X("4 часа", "4 hours", "4 ore")}`, q:+ST.guests, u:"гость", pr:ffPrice(ff), pr0:ff.price, x:{k:"ff", ff}});
@@ -1204,10 +1224,20 @@ function optRow(it, type = "checkbox", name = "", checked = isOn(it), editable =
   </div>`;
 }
 
+const coverKind = () => ST.vars.length ? (ST.vars[0].kind || ST.kind) : ST.kind;
+const coverKicker = () => { const ks = varKinds(); if (ks.length === 1) return X(KINDS[ks[0]].kicker, KINDS[ks[0]].kickerEn, KINDS[ks[0]].kickerIt); return ks.length > 3 ? X("Предложение на мероприятие", "Event proposal", "Proposta per il vostro evento") : ks.map(kindLabel).join(" · "); };
+/* Имя PDF: дата, клиент, количество человек, формат — «2026-11-20 ООО Ромашка 25 чел Винное казино» */
+function pdfName(){
+  const ppl = ST.kind === "kids" ? (+ST.kids || 0) + (+ST.guests || 0) : +ST.guests || 0;
+  const fm = varKinds().map(kindFile).join(" + ");
+  return [ST.date, ST.client || "Без названия", ppl ? `${ppl} чел` : "", fm].filter(Boolean).join(" ")
+    .replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, " ").trim();
+}
 function fmtHtml(){
   const ny = !!KINDS[ST.kind].ny, cur = fmtOf(ST.kind);
   const sKind = want => want ? cur.ny : cur.au;
-  return `<div class="fmt">
+  const vhint = multi() ? `<div class="vfmt">Формат для <b>${esc(vName(ST.vi))}</b> — у каждого варианта может быть свой формат и сезон</div>` : "";
+  return `<div class="fmt">${vhint}
     <div class="frow"><div class="season">${[[false,"Осень"],[true,"Новый год"]].map(([v, n]) => { const k = sKind(v);
       return `<button type="button" ${k ? `data-kind="${k}"` : "disabled title=\"У этого формата нет новогодней версии\""} class="${ny === v ? "on" : ""}">${v ? "❄ " : ""}${n}</button>`; }).join("")}</div>
     <div class="season lang" title="Язык КП">${[["ru","RU"],["en","EN"],["it","IT"]].map(([k, v]) => `<button type="button" data-lang="${k}" class="${(ST.lang || "ru") === k ? "on" : ""}">${v}</button>`).join("")}</div></div>
@@ -1217,7 +1247,7 @@ function fmtHtml(){
 }
 function renderForm(){
   const C = CAT, p = pkg(), F = $("#form");
-  $("#bXls").hidden = $("#bXlsNoVat").hidden = !XL_TPL[ST.kind];
+  $("#bXls").hidden = $("#bXlsNoVat").hidden = $("#xlMenu").hidden = !XL_TPL[ST.kind];
   const cnt = arr => { const n = arr.filter(Boolean).length; return n ? `<span class="cnt">${n}</span>` : ""; };
   const openState = {}; F.querySelectorAll("details.box").forEach(d => openState[d.dataset.id] = d.open);
   const op = (id, def) => (openState[id] ?? def) ? "open" : "";
@@ -1295,11 +1325,12 @@ function renderForm(){
     <label class="fld">Взрослых<input type="number" id="guests" min="0" value="${ST.guests}"></label>` :
     `<label class="fld">Гостей<input type="number" id="guests" min="1" value="${ST.guests}"></label><span></span>`}
     <div class="fld full">Залы (необязательно, можно несколько)<div class="hallpick">${hallOpts}</div></div>
-    ${(hs => hs.length ? `<label class="fld">Продление ${hs.length > 1 ? "залов" : "зала"}, часов<input type="number" id="hallHours" min="0" value="${ST.hallHours || 0}"></label><div class="hint" style="align-self:end">${rub(hs.reduce((s, h) => s + h.ext, 0))} за час${hs.length > 1 ? ` (${hs.map(h => rub(h.ext)).join(" + ")})` : ""}</div>` : "")(selHalls().filter(h => h.ext))}
+    ${(hs => hs.length ? `<label class="fld">Продление ${hs.length > 1 ? "залов" : "зала"}, часов<input type="number" id="hallHours" min="0" value="${ST.hallHours || 0}"></label><div class="hint" style="align-self:end">${rub(hs.reduce((s, h) => s + hallExtP(h), 0))} за час</div>
+      ${hs.map(h => `<label class="fld">«${esc(h.title)}», ₽ за час продления <small>(по лендингу ${h.ext ? rub(h.ext) : "—"})</small><input type="number" min="0" step="500" data-hext="${esc(h.slug)}" value="${hallExtP(h) || ""}" placeholder="цена за час"></label>`).join("")}${hs.length % 2 ? "<span></span>" : ""}` : "")(selHalls())}
     <div class="hint full" style="grid-column:1/-1">Окончание: <b>${endTime()}</b> — считается по таймингу</div>
     <label class="fld full">Пожелания по меню и аллергии<textarea id="wishes" placeholder="Например: 2 вегетарианца, у одного гостя аллергия на орехи">${esc(ST.wishes)}</textarea></label>
   </div></details>
-  <div class="vars">${(multi() ? ST.vars : [0]).map((_, i) => `<button type="button" data-vsel="${i}" class="${i === ST.vi ? "on" : ""}">${esc(vName(i))}</button>`).join("")}
+  <div class="vars">${(multi() ? ST.vars : [0]).map((_, i) => `<button type="button" data-vsel="${i}" class="${i === ST.vi ? "on" : ""}">${esc(vName(i))}${mixedKinds() ? `<small>${esc(KINDS[(ST.vars[i] || {}).kind || ST.kind].label)}</small>` : ""}</button>`).join("")}
     <button type="button" data-vadd="1" title="Копия текущего варианта — поменяйте пакет, бар и т.д.">+ вариант</button>
     ${multi() ? `<div class="vn"><input id="vname" value="${esc(ST.vname)}" placeholder="${esc(vName(ST.vi))} — название, например «Премиум»"><button type="button" class="btn sm" data-vdel="1">Удалить вариант</button></div>
     <div class="hint" style="margin:0">Пакет, фуршет, напитки, услуги, тайминг и скидка — свои у каждого варианта. Клиент, дата, гости и зал — общие.</div>` : ""}</div>
@@ -1440,6 +1471,7 @@ F.addEventListener("input", e => {
   if (["prepay","prepayDays","deposit"].includes(t.id)){ ST[t.id] = t.value === "" ? 0 : +t.value; softUpdate(); return; }
   if (["guests","kids","discount","ffHours","hallHours"].includes(t.id)){ ST[t.id] = t.value === "" ? 0 : +t.value; softUpdate(); return; }
   if (t.id === "uffGuests"){ ST.uffGuests = t.value; softUpdate(); return; }
+  if (t.dataset.hext != null){ ST.hallExtP = {...(ST.hallExtP || {}), [t.dataset.hext]: t.value}; softUpdate(); return; }
   if (["ffPrice","ffExt","uffPrice","uffExt","swapPrice"].includes(t.id)){ ST[t.id] = t.value; softUpdate(); return; }
   if (t.dataset.sw != null){ const s = curSet(); ST.setDishes = ST.setDishes || s.d.map(() => ""); ST.setDishes[+t.dataset.sw] = t.value === s.d[+t.dataset.sw] ? "" : t.value;
     t.closest(".sw-row").classList.toggle("chg", !!t.value.trim() && t.value.trim() !== s.d[+t.dataset.sw]); softUpdate(); return; }
@@ -1475,9 +1507,11 @@ async function switchKind(k){
   try { await load(k); } catch(e){ $("#status").textContent = "Не удалось загрузить: " + KINDS[k].files.join(" / "); return; }
   const same = KINDS[k].fmt && KINDS[k].fmt === KINDS[ST.kind].fmt;
   const keep = same ? JSON.parse(JSON.stringify({pkg:ST.pkg, setId:ST.setId, sel:ST.sel, ff:ST.ff, ffHours:ST.ffHours, uff:ST.uff, bar:ST.bar, halls:ST.halls, dishes:ST.dishes})) : null;
-  ST.vars = []; ST.vi = 0; ST.vname = "";
+  const m = multi(), hallsShared = ST.halls, vn = ST.vname;
+  if (!m){ ST.vars = []; ST.vi = 0; ST.vname = ""; }
   ST.kind = k; ST.pkg = ""; ST.setId = ""; ST.setDishes = null; ST.ffPrice = ""; ST.ffExt = ""; ST.swapPrice = ""; ST.dishes = []; ST.sel = {}; ST.ff = ""; ST.ffHours = 0; ST.uff = false; ST.uffPrice = ""; ST.uffExt = ""; ST.uffGuests = ""; ST.bar = {}; ST.tl = null; ST.halls = [];
-  CAT = buildCatalog(k); $("#status").textContent = "Цены: " + KINDS[k].file;
+  CAT = catFor(k); $("#status").textContent = "Цены: " + KINDS[k].file;
+  if (m){ ST.halls = hallsShared; ST.vname = vn; }
   if (keep){
     const p = CAT.pkgs.find(x => x.key === keep.pkg);
     if (p){ ST.pkg = keep.pkg; if (p.setIds && p.setIds.includes(keep.setId)) ST.setId = keep.setId; ST.dishes = keep.dishes || []; }
@@ -1486,8 +1520,9 @@ async function switchKind(k){
     if (CAT.ff.some(f => f.key === keep.ff)){ ST.ff = keep.ff; ST.ffHours = keep.ffHours; ST.uff = keep.uff && !!CAT.uff; }
     const bk = new Set(CAT.bar.flatMap(c => c.items.map(it => `${c.h}|${it.name}`)));
     ST.bar = Object.fromEntries(Object.entries(keep.bar || {}).filter(([key]) => bk.has(key)));
-    ST.halls = (keep.halls || []).filter(h => CAT.halls.some(x => x.slug === h));
+    if (!m) ST.halls = (keep.halls || []).filter(h => CAT.halls.some(x => x.slug === h));
   }
+  if (m) syncVar();
   rerender();
 }
 
@@ -1623,7 +1658,7 @@ function buildBlocks(){
   const B = (html, split) => blocks.push({html:`<div class="blk">${html}</div>`, split});
   const idx = multi() ? ST.vars.map((_, i) => i) : [ST.vi];
   const Ts = idx.map(i => withVar(i, () => {
-    if (multi()){ const t = totals(); blocks.push({kwn:true, html:`<div class="blk"><div class="vban"><div><div class="l">${X(`Вариант ${i + 1} из ${idx.length}`, `Option ${i + 1} of ${idx.length}`, `Opzione ${i + 1} di ${idx.length}`)}</div><div class="n">${esc(vName(i))}</div></div>${ST.noPrice ? "" : `<div class="v">${rub(t.tot)}</div>`}</div></div>`}); }
+    if (multi()){ const t = totals(); blocks.push({kwn:true, html:`<div class="blk"><div class="vban"><div><div class="l">${X(`Вариант ${i + 1} из ${idx.length}`, `Option ${i + 1} of ${idx.length}`, `Opzione ${i + 1} di ${idx.length}`)}</div><div class="n">${esc(vName(i))}</div>${mixedKinds() ? `<div class="l" style="margin-top:4px">${esc(kindLabel(ST.kind))}</div>` : ""}</div>${ST.noPrice ? "" : `<div class="v">${rub(t.tot)}</div>`}</div></div>`}); }
     return variantBody(H, B, blocks);
   }));
 
@@ -1671,9 +1706,9 @@ function coverPage(Ts, hs){
   const d = document.createElement("div"); d.className = "page cover";
   const title = ST.client || X("Ваше мероприятие", "Your event", "Il vostro evento");
   const perW = ST.kind === "kids" ? X("на участника", "per participant", "a partecipante") : X("на гостя", "per guest", "a persona");
-  d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[ST.kind])}></div><div class="in">
+  d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[coverKind()])}></div><div class="in">
       <div class="plate"><img class="logo" src="${LOGO}" alt="Novikov School"></div>
-      <div class="kick">${esc(X(KINDS[ST.kind].kicker, KINDS[ST.kind].kickerEn, KINDS[ST.kind].kickerIt))}</div><h1>${esc(title)}</h1>${ST.occasion ? `<div class="occ">${esc(ST.occasion)}</div>` : ""}</div></div>
+      <div class="kick">${esc(coverKicker())}</div><h1>${esc(title)}</h1>${ST.occasion ? `<div class="occ">${esc(ST.occasion)}</div>` : ""}</div></div>
     <div class="facts">
       <div><div class="l">${X("Дата", "Date", "Data")}</div><div class="v">${ST.date ? dateBig(new Date(ST.date + "T12:00:00")) : X("по согласованию", "to be agreed", "da concordare")}</div></div>
       <div><div class="l">${X("Время", "Time", "Orario")}</div><div class="v">${ST.start} — ${endTime()}<small>${Math.round(timeline().reduce((s, r) => s + (+r.m||0), 0) / 6) / 10} ${X("ч", "h", "h")}</small></div></div>
@@ -1700,7 +1735,7 @@ function invitePage(){
   const d = document.createElement("div"); d.className = "page cover invite";
   d.style.display = "flex"; d.style.flexDirection = "column";
   let t0 = ST.start;
-  d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[ST.kind])}></div><div class="in">
+  d.innerHTML = `<div class="hero"><div class="ph" ${bg(COVER_IMG[coverKind()])}></div><div class="in">
       <div class="plate"><img class="logo" src="${LOGO}" alt="Novikov School"></div>
       <h1 style="margin-top:auto">${esc(ST.occasion || ST.client || X("Мероприятие", "Event", "Evento"))}</h1>${from ? `<div class="from">${X("Приглашение от", "Invitation from", "Invito da parte di")}: ${esc(from)}</div>` : ""}</div></div>
     <div class="facts">
@@ -1796,7 +1831,7 @@ $("#bPdf").addEventListener("click", async () => {
     syncVar();
     pdf.setProperties({title:`Novikov School · ${kpLabel()} · ${ST.client || X("предложение", "proposal", "proposta")}`, author:mgrName(),
       keywords:"NVKP1:" + btoa(unescape(encodeURIComponent(JSON.stringify(ST))))});
-    const nm = ["Novikov", `${X("КП", "Proposal", "Proposta")}-${ST.no}${ST.ver > 1 ? `-v${ST.ver}` : ""}`, ST.client || X("предложение", "proposal", "proposta"), ST.date].filter(Boolean).join("_").replace(/[\\/:*?"<>|«»]+/g, "").replace(/\s+/g, "_");
+    const nm = pdfName();
     pdf.save(nm + ".pdf");
   } catch(e){ alert("Не получилось собрать PDF: " + e.message); console.error(e); }
   finally { b.disabled = false; b.textContent = old; fitPreview(); }
@@ -1823,7 +1858,7 @@ $("#bInvite").addEventListener("click", async () => {
   finally { box.remove(); b.disabled = false; b.textContent = old; }
 });
 $("#bPrint").addEventListener("click", () => { renderPages(); waitImages($("#pages")).then(() => print()); });
-$("#bReset").addEventListener("click", async () => { if (!confirm("Начать новое предложение? Текущее сохранено в «Мои КП».")) return; archPut(); const k = ST.kind; ST = blank(); ST.kind = k; CAT = buildCatalog(k); rerender(); });
+$("#bReset").addEventListener("click", async () => { if (!confirm("Начать новое предложение? Текущее сохранено в «Мои КП».")) return; archPut(); const k = ST.kind; ST = blank(); ST.kind = k; CAT = catFor(k); rerender(); });
 
 /* ---------- Смета Excel по шаблону ----------
    Шаблоны отдела продаж (uploads/smeta/*.xlsx) заполняются как вручную: в строку шаблона
@@ -1849,6 +1884,17 @@ function xlShiftRefs(t, at, k){
     return one ? `${d1}${c1}${d2}${a}` : `${d1}${c1}${d2}${a}:${d3}${c2}${d4}${b}`;
   });
 }
+/* Сдвиг ссылок при удалении строки r: всё ниже поднимается на 1, диапазоны через r укорачиваются */
+function xlDelRefs(t, r){
+  return t.replace(XL_REF, (m, d1, c1, d2, r1, d3, c2, d4, r2) => {
+    let a = +r1; const one = r2 === undefined; let b = one ? a : +r2;
+    if (a > r) a--; if (!one && b >= r) b--; if (b < a) b = a;
+    return one ? `${d1}${c1}${d2}${a}` : `${d1}${c1}${d2}${a}:${d3}${c2}${d4}${b}`;
+  });
+}
+/* То же для области (объединение, sqref): область целиком на удалённой строке исчезает */
+const xlDelRange = (x, r) => { const m = x.match(/^\$?[A-Z]+\$?(\d+)(?::\$?[A-Z]+\$?(\d+))?$/); if (!m) return x;
+  const a = +m[1], b = m[2] ? +m[2] : a; if (a === r && b === r) return ""; return xlDelRefs(x, r); };
 /* Нормализация названий для сопоставления: основы слов по 5 букв, без предлогов */
 const XL_STOP = new Set("в с и на по для из от или цена the de del della di du des la le".split(" "));
 const xlTok = s => String(s || "").toLowerCase().replace(/ё/g, "е").replace(/<[^>]+>/g, " ").replace(/[-‑–](?=[a-zа-я])/g, "")
@@ -2056,6 +2102,20 @@ function xlSheet(xml, sst, noVat){
     if (rTot && rNet){ setStr(rTot, 2, "Итого к оплате (НДС не облагается)"); setF(rTot, 6, `F${rNet}`); }
   }
 
+  /* Что убрать: в разделе пакетов — цены невыбранных пакетов (в тех же строках пункты «что входит»),
+     в остальных разделах — невыбранные позиции с описаниями; подзаголовки без позиций уберём после вставки */
+  const delEls = new Set(), headEls = new Set(), endEls = new Set();
+  secs.forEach((sc, si) => {
+    if (sc.end && rowEl.get(sc.end)) endEls.add(rowEl.get(sc.end));
+    sc.items.forEach(it => {
+      if (fills[it.r]) return;
+      if (si === 0){ [3, 4, 5, 6].forEach(c => { const x = cellOf(it.r, c, false); if (x && !fOf(x)) clear(x); }); const fx = cellOf(it.r, 6, false); if (fx && fOf(fx)) setF(it.r, 6, `D${it.r}*E${it.r}`); return; }
+      delEls.add(rowEl.get(it.r)); if (it.desc) delEls.add(rowEl.get(it.desc));
+    });
+    if (si > 0) sc.heads.forEach(h => headEls.add(rowEl.get(h.r)));
+  });
+  menuRows.forEach(r => { if (!get(r, 2).trim()) delEls.add(rowEl.get(r)); });
+
   /* Вставка строк — снизу вверх, чтобы номера выше не съезжали */
   const groups = {};
   ins.forEach(o => (groups[o.after] = groups[o.after] || []).push(o));
@@ -2084,6 +2144,33 @@ function xlSheet(xml, sst, noVat){
       setNum(r, 4, o.d); setNum(r, 5, o.e); setF(r, 6, `D${r}*E${r}`);
     });
   });
+
+  /* Подзаголовок остаётся, только если под ним (до следующего подзаголовка или «Всего») есть позиция */
+  const ordered = [...rowEl.keys()].sort((a, b) => a - b);
+  let hd = null, hdKeep = false;
+  const closeHead = () => { if (hd && !hdKeep) delEls.add(hd); hd = null; };
+  ordered.forEach(n => { const el = rowEl.get(n);
+    if (headEls.has(el)){ closeHead(); hd = el; hdKeep = false; return; }
+    if (endEls.has(el)){ closeHead(); return; }
+    if (hd && !delEls.has(el) && (get(n, 2).trim() || get(n, 4).trim())) hdKeep = true; });
+  closeHead();
+  /* Удаление строк — снизу вверх, со сдвигом ссылок, объединений и условного форматирования */
+  const dels = [];
+  [...rowEl.entries()].filter(([, el]) => delEls.has(el)).map(([n]) => n).sort((a, b) => b - a).forEach(r => {
+    const row = rowEl.get(r); sd.removeChild(row); rowEl.delete(r);
+    [...rowEl.keys()].filter(n => n > r).sort((a, b) => a - b).forEach(n => {
+      const el = rowEl.get(n); rowEl.delete(n); el.setAttribute("r", n - 1); rowEl.set(n - 1, el);
+      [...el.children].forEach(c => c.setAttribute("r", c.getAttribute("r").replace(/\d+$/, n - 1)));
+    });
+    [...doc.getElementsByTagName("f")].forEach(f => { f.textContent = xlDelRefs(f.textContent, r); });
+    [...doc.getElementsByTagName("mergeCell")].forEach(m => { const v = xlDelRange(m.getAttribute("ref"), r); if (v) m.setAttribute("ref", v); else m.parentNode.removeChild(m); });
+    [...doc.getElementsByTagName("xm:sqref")].forEach(q => { q.textContent = q.textContent.split(" ").map(x => xlDelRange(x, r)).filter(Boolean).join(" "); });
+    [...doc.getElementsByTagName("xm:f")].forEach(q => { q.textContent = xlDelRefs(q.textContent, r); });
+    ["conditionalFormatting", "dataValidation"].forEach(t => [...doc.getElementsByTagName(t)].forEach(e => e.setAttribute("sqref", e.getAttribute("sqref").split(" ").map(x => xlDelRange(x, r)).filter(Boolean).join(" "))));
+    dels.push(r);
+  });
+  const mc = doc.getElementsByTagName("mergeCells")[0]; if (mc) mc.setAttribute("count", mc.getElementsByTagName("mergeCell").length);
+  const dim = doc.getElementsByTagName("dimension")[0]; if (dim && dels.length) dim.setAttribute("ref", dim.getAttribute("ref").replace(/\d+$/, n => Math.max(1, +n - dels.length)));
 
   /* Пересчёт: + − * / %, SUM(диапазон); текст в SUM не считается */
   const fcell = {};
@@ -2117,12 +2204,13 @@ function xlSheet(xml, sst, noVat){
   /* Лист открывается с начала, а не там, где шаблон сохранили */
   [...doc.getElementsByTagName("sheetView")].forEach(v => { v.setAttribute("topLeftCell", "A1"); v.removeAttribute("tabSelected"); });
   [...doc.getElementsByTagName("selection")].forEach(s => { s.setAttribute("activeCell", "E3"); s.setAttribute("sqref", "E3"); });
-  return {xml:new XMLSerializer().serializeToString(doc), shifts, total:val(`F${findLabel(/^Всего к оплате \(без НДС\)/)}`)};
+  return {xml:new XMLSerializer().serializeToString(doc), shifts, dels, total:val(`F${findLabel(/^Всего к оплате \(без НДС\)/)}`)};
 }
 
 async function xlBuild(noVat = false){
   await needZip();
   const zip = await JSZip.loadAsync(await (await fetch(XL_TPL[ST.kind] + "?v=" + Date.now())).arrayBuffer());
+  if (mixedKinds()) console.warn("Смета: у вариантов разные форматы, шаблон —", ST.kind);
   const sstXml = zip.file("xl/sharedStrings.xml") ? await zip.file("xl/sharedStrings.xml").async("string") : "";
   const sst = [...new DOMParser().parseFromString(sstXml || "<sst/>", "application/xml").getElementsByTagName("si")].map(si => [...si.getElementsByTagName("t")].map(t => t.textContent).join(""));
   const base = await zip.file("xl/worksheets/sheet1.xml").async("string");
@@ -2134,7 +2222,7 @@ async function xlBuild(noVat = false){
     for (let i = 0; i < n; i++) res.push(withVar(i, () => xlSheet(base, sst, noVat)));
     /* Область печати сдвигаем вместе со строками */
     const pa = (wb.match(/<definedName name="_xlnm\.Print_Area" localSheetId="0">([^<]*)<\/definedName>/) || [])[1];
-    const paFor = r => pa ? r.shifts.reduce((s, [at, k]) => xlShiftRefs(s, at, k), pa) : "";
+    const paFor = r => pa ? r.dels.reduce((s, d) => xlDelRefs(s, d), r.shifts.reduce((s, [at, k]) => xlShiftRefs(s, at, k), pa)) : "";
     zip.file("xl/worksheets/sheet1.xml", res[0].xml);
     if (pa) wb = wb.replace(pa, paFor(res[0]));
     if (n > 1){
@@ -2189,8 +2277,8 @@ $("#bXlsNoVat").addEventListener("click", xlDownload(true));
 async function openState(st){
   archPut();
   const s = fixHalls(Object.assign(blank(), st));
-  try { await load(s.kind); } catch(e){ alert("Не удалось загрузить цены: " + KINDS[s.kind].files.join(" / ")); return; }
-  ST = s; CAT = buildCatalog(ST.kind); $("#status").textContent = "Цены: " + KINDS[ST.kind].file;
+  try { await loadKinds(s); } catch(e){ alert("Не удалось загрузить цены: " + KINDS[s.kind].files.join(" / ")); return; }
+  ST = s; CAT = catFor(ST.kind); $("#status").textContent = "Цены: " + KINDS[ST.kind].file;
   $("#arch").hidden = true; rerender();
 }
 function renderArch(){
@@ -2224,7 +2312,7 @@ $("#pdfIn").addEventListener("change", async e => {
   try { await openState(JSON.parse(decodeURIComponent(escape(atob(m[1]))))); } catch(err){ alert("Не удалось прочитать данные из PDF: " + err.message); }
 });
 $("#bExample").addEventListener("click", async () => {
-  await load("adult"); ST = blank(); CAT = buildCatalog("adult");
+  await load("adult"); ST = blank(); CAT = catFor("adult");
   const d = new Date(Date.now() + 21*864e5); ST.date = d.toISOString().slice(0,10);
   Object.assign(ST, {client:"ООО «Пример»", occasion:"Корпоративный вечер", guests:16, start:"19:00", halls:["cafe"], pkg:"pkg:team:std", ff:"ff:FF1"});
   CAT.services.flatMap(g => g.items).forEach(it => { if (/Официант/.test(it.short) || (/Интерактивные/.test(it.svc) && it.lab === "Игра")) ST.sel[it.key] = {on:true}; });
@@ -2235,9 +2323,9 @@ $("#bExample").addEventListener("click", async () => {
 (async () => {
   try {
     await load("adult");
-    if (ST.kind !== "adult") await load(ST.kind);
+    await loadKinds(ST);
     MANIFEST = await fetch("images/halls/manifest.json").then(r => r.json()).catch(() => ({}));
-    CAT = buildCatalog(ST.kind);
+    CAT = catFor(ST.kind);
     $("#status").textContent = "Цены: " + KINDS[ST.kind].file;
     renderForm(); renderPages();
   } catch(e){
