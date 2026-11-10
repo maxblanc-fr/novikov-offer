@@ -811,6 +811,9 @@ const IT_DICT = {
     "I ragazzi preparano i menu per adulti delle nostre masterclass: antipasto, piatto principale e dolce. I tre pacchetti si differenziano solo per il livello dei piatti; i prezzi sono quelli delle masterclass per adulti.",
 
   /* Новогодний лендинг */
+  "Мастер-класс по декорированию имбирных пряников":"Masterclass di decorazione di biscotti di pan di zenzero", "Декорирование пряников":"Decorazione dei biscotti",
+  "Украсим ароматные имбирные пряники глазурью и праздничными узорами. Добавим немного фантазии — и создадим своё новогоднее угощение! На каждого гостя — 2 пряника разных форм (снеговик и ёлочка или варежка и пряничный человечек), 4 пакетика с разноцветной глазурью, посыпки и упаковка, чтобы забрать пряники с собой.":"Decoriamo profumati biscotti di pan di zenzero con glassa e motivi festivi. Un po' di fantasia e create il vostro dolce di Capodanno! Per ogni ospite: 2 biscotti di forme diverse (pupazzo di neve e abete, oppure guanto e omino di pan di zenzero), 4 sac à poche di glassa colorata, codette e una confezione per portarli a casa.",
+  "+25–40 минут мероприятия":"+25–40 minuti all'evento", "+25–40 мин":"+25–40 min",
   "Мастер-класс по новогодней композиции из еловых веток":"Masterclass di composizioni natalizie con rami d'abete",
   "Новогодний венок":"Ghirlanda natalizia", "Еловый букет":"Bouquet di rami d'abete",
   "Будем создавать украшение из свежих еловых веток, веселиться и встречать Новый год! На мастер-классе мы предоставим всё необходимое для создания композиции: основу, живые ветки лапника, украшения. Два варианта на выбор.":
@@ -893,6 +896,7 @@ let MANIFEST = {};
 /* Позиция: {key, sec, title, sub, price, per:'guest'|'kids'|'one', q0, unit, img[], detail[], from, req} */
 function svcImgs(it){
   if (it.cardImgs) return it.cardImgs.slice(0,4);
+  if (it.cardImg) return [it.cardImg];
   const n = L(it.name);
   if (/Торт/.test(n)) return ["uploads/cake-designs-v2/cd01.jpg","uploads/cake-designs-v2/cd02.jpg","uploads/cake-designs-v2/cd03.jpg","uploads/cake-designs-v2/cd04.jpg"];
   if (/Фартук/.test(n)) return ["uploads/aprons/branded.jpg","uploads/aprons/birthday.jpg"];
