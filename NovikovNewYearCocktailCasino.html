@@ -322,6 +322,9 @@
   .svc-price{margin-top:auto; background:linear-gradient(135deg,var(--red),var(--red-deep)); color:#fff; border-radius:0; padding:10px 14px; font-family:var(--head); font-weight:700; font-size:13px; line-height:1.45; text-align:center; letter-spacing:.02em}
 
   /* ---------- Notecard ---------- */
+  .cater-card{display:flex; align-items:center; justify-content:space-between; gap:14px 20px; flex-wrap:wrap; margin:22px 0 6px; padding:18px 22px; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--red); font-size:16px; font-weight:600}
+  .cater-card a{display:inline-flex; align-items:center; padding:11px 18px; background:var(--red); color:#fff; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:13px; text-decoration:none; white-space:nowrap}
+  .cater-card a:hover{background:var(--red-deep)}
   .notecard{background:var(--card); border:1px solid var(--line); border-radius:0; padding:20px 24px; font-size:15px}
   .notecard p{margin:0 0 12px}
   .notecard ul{margin:8px 0 0; padding-left:20px}
@@ -950,18 +953,8 @@ const DATA = {
         {ru:"Ассорти солений", en:"Pickles platter", info:"огурцы солёные, томаты зелёные солёные, патиссоны, чеснок маринованный, перец острый, маринованные черри", wt:"700 г", price:2000, img:"uploads/buffet/platter-pickles.webp?v=2"},
         {ru:"Хлебная корзина", en:"Bread basket", info:"багет французский и ржаной, сливочное масло с травами", wt:"640 г", price:1200, img:"uploads/buffet/platter-bread.webp?v=2"}
       ],
-      groups:[
-        {ru:"Блюда в стол", en:"Shared plates", note:{ru:"минимум 6 порций", en:"minimum 6 portions"}, rows:[
-          {ru:"Салат с креветками", en:"Prawn salad", price:1800},
-          {ru:"Греческий салат", en:"Greek salad", price:1800},
-          {ru:"Салат с пастрами", en:"Pastrami salad", price:1800},
-          {ru:"Овощи гриль", en:"Grilled vegetables", price:1800},
-          {ru:"Паста болоньезе", en:"Pasta bolognese", price:1800},
-          {ru:"Филе угольной рыбы в соусе унаги с микс-салатом", en:"Black cod fillet in unagi sauce with mixed salad", price:2500},
-          {ru:"Телячьи щёчки с овощным пюре", en:"Veal cheeks with vegetable purée", price:2500},
-          {ru:"Стейк из лосося с цукини и мятой", en:"Salmon steak with zucchini & mint", price:2500}
-        ]}
-      ]
+      catering:{ru:"Добавить блюда в стол — можно выбрать из нашего кейтеринга", en:"Add shared dishes — choose from our catering menu",
+                btn:{ru:"Меню кейтеринга", en:"Catering menu"}, url:"https://space.novikovschool.com/catering"},
     },
     {
       id:"services", icon:"✨", type:"services",
@@ -2072,7 +2065,9 @@ function renderSection(s, i){
     /* Детский фуршет — последним в секции: взрослые наборы, тарелки и
        закуски идут подряд, детское не разрывает их и стоит вплотную к
        «Дополнительным услугам». */
-    body = `<div class="rows">${setsHtml}<div class="subhead">${platHead}<span class="wt">· ${LANG==="ru"?"ассорти на 6 человек":"serves 6"}</span></div>${platHtml}${restSetsHtml}${groupsHtml}${kidsHtml}</div>`;
+    /* Блюда в стол больше не перечисляем — плашка со ссылкой на кейтеринг (2026-11-12, как на взрослом) */
+    const caterHtml = s.catering ? `<div class="cater-card"><span>${s.catering[LANG]}</span><a href="${s.catering.url}" target="_blank" rel="noopener">${s.catering.btn[LANG]} →</a></div>` : "";
+    body = `<div class="rows">${setsHtml}<div class="subhead">${platHead}<span class="wt">· ${LANG==="ru"?"ассорти на 6 человек":"serves 6"}</span></div>${platHtml}${restSetsHtml}${caterHtml}${groupsHtml}${kidsHtml}</div>`;
   }
   else if(s.type==="note"){
     body = `<div class="notecard">${s.html[LANG]}</div>`;
