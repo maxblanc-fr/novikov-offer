@@ -2818,6 +2818,7 @@ function lbGo(dir){
 function tlDur(m){
   if(LANG !== "ru") return m < 60 ? `${m} min` : (m % 60 ? `${Math.floor(m/60)} h ${m%60} min` : `${m/60} h`);
   if(m < 60) return `${m} мин`;
+  if(m % 60) return `${Math.floor(m/60)} ч ${m%60} мин`;
   const h = m / 60;
   return `${h} ${h === 1 ? "час" : (h < 5 ? "часа" : "часов")}`;
 }
