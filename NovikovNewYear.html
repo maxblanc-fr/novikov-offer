@@ -2067,13 +2067,17 @@ function renderSection(s, i){
     `).join("")+`</div>`;
   }
   else if(s.type==="buffet"){
-    const setsHtml = s.canape.map(cp=>{
+    /* Наборы с фото идут первыми, сразу за ними тарелки (тоже с фото), наборы без фото (вегетарианский) — после тарелок */
+    const cpHtml = cp=>{
       const items = cp.d.map(x=>({name:T(x), plain:T(x), img:BUFFET_IMG[x]||""}));
       const list = showcase(items) || `<div class="set-list">${cp.d.map(x=>`<div>${T(x)}</div>`).join("")}</div>`;
       return `
       <div class="subhead">${T(cp.name)}${cp.badge?` <span class="badge">${cp.badge}</span>`:""}<span class="wt">· ${T(cp.wt)}</span><span class="price">${fmt(cp.price)} ₽</span></div>
       ${list}`;
-    }).join("");
+    };
+    const cpPhoto = s.canape.filter(cp=>cp.d.some(x=>BUFFET_IMG[x]));
+    const setsHtml = cpPhoto.map(cpHtml).join("");
+    const restSetsHtml = s.canape.filter(cp=>!cpPhoto.includes(cp)).map(cpHtml).join("");
     const bRow = p=>`
       <div class="row">
         <span class="name">${p[LANG]}${p.badge?` <span class="badge">${p.badge}</span>`:""}${p.info?` <em>— ${T(p.info)}</em>`:""}</span>
@@ -2093,7 +2097,7 @@ function renderSection(s, i){
     /* Детский фуршет — последним в секции: взрослые наборы, тарелки и
        закуски идут подряд, детское не разрывает их и стоит вплотную к
        «Дополнительным услугам». */
-    body = `<div class="rows">${setsHtml}<div class="subhead">${platHead}<span class="wt">· ${LANG==="ru"?"ассорти на 6 человек":"serves 6"}</span></div>${platHtml}${groupsHtml}${kidsHtml}</div>`;
+    body = `<div class="rows">${setsHtml}<div class="subhead">${platHead}<span class="wt">· ${LANG==="ru"?"ассорти на 6 человек":"serves 6"}</span></div>${platHtml}${restSetsHtml}${groupsHtml}${kidsHtml}</div>`;
   }
   else if(s.type==="note"){
     body = `<div class="notecard">${s.html[LANG]}</div>`;
