@@ -652,6 +652,21 @@
   @media (prefers-reduced-motion:reduce){
     .ny-snow i, header.top::after{animation:none}
   }
+  /* --- Дед Мороз: окно с программой и ценами ------------------------ */
+  .santa-modal h4{margin:4px 0 8px; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.03em; font-size:14px; color:var(--red-deep)}
+  .santa-cols{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:16px}
+  .santa-cols ul{margin:0; padding-left:18px}
+  @media(max-width:600px){ .santa-cols{grid-template-columns:1fr} }
+  .santa-tw{overflow-x:auto; margin-bottom:16px}
+  .santa-tbl{width:100%; border-collapse:collapse; font-size:14px; white-space:nowrap}
+  .santa-tbl th,.santa-tbl td{padding:8px 10px; border-bottom:1px solid var(--line); text-align:right}
+  .santa-tbl tbody th,.santa-tbl thead tr:first-child th:first-child,.santa-eve thead th:first-child{text-align:left; font-weight:700}
+  .santa-tbl thead th{font-family:var(--head); font-weight:900; text-transform:uppercase; font-size:12px; letter-spacing:.04em; color:var(--red-deep)}
+  .santa-tbl thead th[colspan]{text-align:center}
+  .santa-tbl thead tr.sub th{font-family:inherit; font-weight:600; text-transform:none; letter-spacing:0; color:var(--muted)}
+  .santa-tbl tbody tr:nth-child(odd){background:var(--bone-2)}
+  .santa-photos{margin:6px 0 10px}
+  .santa-photos .design-item{aspect-ratio:3/4}
   /* ---------- Hero photo mosaic (tools/hero-pics.mjs) ---------- */
   .hero-pics{position:relative; z-index:1; display:grid; gap:8px; margin-top:clamp(28px,4vw,44px);
     grid-template-columns:1.35fr 1fr 1fr; grid-template-rows:repeat(2,clamp(150px,17vw,230px))}
@@ -825,6 +840,7 @@ const SETS = {
 
 /* ---------- OFFER DATA ---------- */
 const DATA = {
+  hideCap:true, /* НГ: вместимость залов не показываем (решение 2026-11-12) */
   stats:[
     {n:"12", ru:"готовых сетов", en:"ready-made sets"},
     {n:"2",  ru:"раунда баттла", en:"battle rounds"},
@@ -1024,6 +1040,49 @@ const DATA = {
                 en:"We decorate fragrant gingerbread cookies with icing and festive patterns. Add a little imagination and create your own New Year treat! For each guest: 2 gingerbread cookies of different shapes (a snowman and a fir tree, or a mitten and a gingerbread man), 4 piping bags of coloured icing, sprinkles and a box to take the cookies home."},
           tiers:[
             {l:{ru:"Декорирование пряников", en:"Gingerbread decorating"}, p:"2 300 ₽/гость", n:"+25–40 мин"}
+          ]},
+        {ic:"🎅", modal:"santa", modalLabel:{ru:"Программа, все цены и фото", en:"Programme, all prices & photos"},
+          cardImgs:["uploads/santa/3.jpg","uploads/santa/4.jpg","uploads/santa/5.jpg","uploads/santa/2.jpg"], cardMore:1,
+          name:{ru:"Новогодняя программа с Дедом Морозом", en:"New Year Show with Ded Moroz"},
+          min:{ru:"30 минут или 1 час", en:"30 minutes or 1 hour"},
+          desc:{ru:"Дед Мороз и Снегурочка поздравляют гостей: профессиональные актёры, новогодний реквизит и музыкальное сопровождение. Два уровня — Классика и VIP (премиум Дед Мороз с натуральной бородой, фокусы). Цена зависит от даты и длительности.",
+                en:"Ded Moroz and Snegurochka greet your guests: professional actors, festive props and music. Two levels — Classic and VIP (a premium Ded Moroz with a natural beard, magic tricks). The price depends on the date and duration."},
+          cardTiers:[
+            {l:{ru:"Классика, 30 мин", en:"Classic, 30 min"}, p:"от 17 600 ₽", n:"до 14 декабря"},
+            {l:{ru:"Классика, 1 час", en:"Classic, 1 hour"}, p:"от 25 600 ₽", n:"до 14 декабря"},
+            {l:{ru:"VIP, 30 мин", en:"VIP, 30 min"}, p:"от 25 600 ₽", n:"до 14 декабря"},
+            {l:{ru:"VIP, 1 час", en:"VIP, 1 hour"}, p:"от 33 600 ₽", n:"до 14 декабря"},
+            {l:{ru:"31 декабря, 30 мин", en:"31 December, 30 min"}, p:"от 38 400 ₽", n:"до 15:00"}
+          ],
+          tiers:[
+            {l:{ru:"Классика, 30 мин · до 14 декабря", en:"Classic, 30 min · until 14 December"}, p:"17 600 ₽", n:"", sd:0, sc:0},
+            {l:{ru:"Классика, 1 час · до 14 декабря", en:"Classic, 1 hour · until 14 December"}, p:"25 600 ₽", n:"", sd:0, sc:1},
+            {l:{ru:"VIP, 30 мин · до 14 декабря", en:"VIP, 30 min · until 14 December"}, p:"25 600 ₽", n:"", sd:0, sc:2},
+            {l:{ru:"VIP, 1 час · до 14 декабря", en:"VIP, 1 hour · until 14 December"}, p:"33 600 ₽", n:"", sd:0, sc:3},
+            {l:{ru:"Классика, 30 мин · 15–20 декабря", en:"Classic, 30 min · 15–20 December"}, p:"20 800 ₽", n:"", sd:1, sc:0},
+            {l:{ru:"Классика, 1 час · 15–20 декабря", en:"Classic, 1 hour · 15–20 December"}, p:"30 400 ₽", n:"", sd:1, sc:1},
+            {l:{ru:"VIP, 30 мин · 15–20 декабря", en:"VIP, 30 min · 15–20 December"}, p:"30 400 ₽", n:"", sd:1, sc:2},
+            {l:{ru:"VIP, 1 час · 15–20 декабря", en:"VIP, 1 hour · 15–20 December"}, p:"38 400 ₽", n:"", sd:1, sc:3},
+            {l:{ru:"Классика, 30 мин · 21–26 декабря", en:"Classic, 30 min · 21–26 December"}, p:"25 600 ₽", n:"", sd:2, sc:0},
+            {l:{ru:"Классика, 1 час · 21–26 декабря", en:"Classic, 1 hour · 21–26 December"}, p:"33 600 ₽", n:"", sd:2, sc:1},
+            {l:{ru:"VIP, 30 мин · 21–26 декабря", en:"VIP, 30 min · 21–26 December"}, p:"33 600 ₽", n:"", sd:2, sc:2},
+            {l:{ru:"VIP, 1 час · 21–26 декабря", en:"VIP, 1 hour · 21–26 December"}, p:"41 600 ₽", n:"", sd:2, sc:3},
+            {l:{ru:"Классика, 30 мин · 27–29 декабря", en:"Classic, 30 min · 27–29 December"}, p:"30 400 ₽", n:"", sd:3, sc:0},
+            {l:{ru:"Классика, 1 час · 27–29 декабря", en:"Classic, 1 hour · 27–29 December"}, p:"38 400 ₽", n:"", sd:3, sc:1},
+            {l:{ru:"VIP, 30 мин · 27–29 декабря", en:"VIP, 30 min · 27–29 December"}, p:"38 400 ₽", n:"", sd:3, sc:2},
+            {l:{ru:"VIP, 1 час · 27–29 декабря", en:"VIP, 1 hour · 27–29 December"}, p:"46 400 ₽", n:"", sd:3, sc:3},
+            {l:{ru:"Классика, 30 мин · 30 декабря", en:"Classic, 30 min · 30 December"}, p:"33 600 ₽", n:"", sd:4, sc:0},
+            {l:{ru:"Классика, 1 час · 30 декабря", en:"Classic, 1 hour · 30 December"}, p:"41 600 ₽", n:"", sd:4, sc:1},
+            {l:{ru:"VIP, 30 мин · 30 декабря", en:"VIP, 30 min · 30 December"}, p:"41 600 ₽", n:"", sd:4, sc:2},
+            {l:{ru:"VIP, 1 час · 30 декабря", en:"VIP, 1 hour · 30 December"}, p:"51 200 ₽", n:"", sd:4, sc:3},
+            {l:{ru:"Классика, 30 мин · 31 декабря до 15:00", en:"Classic, 30 min · 31 December before 15:00"}, p:"38 400 ₽", n:"", st:0, sc:0},
+            {l:{ru:"VIP, 30 мин · 31 декабря до 15:00", en:"VIP, 30 min · 31 December before 15:00"}, p:"46 400 ₽", n:"", st:0, sc:2},
+            {l:{ru:"Классика, 30 мин · 31 декабря 15:00–19:00", en:"Classic, 30 min · 31 December 15:00–19:00"}, p:"46 400 ₽", n:"", st:1, sc:0},
+            {l:{ru:"VIP, 30 мин · 31 декабря 15:00–19:00", en:"VIP, 30 min · 31 December 15:00–19:00"}, p:"54 400 ₽", n:"", st:1, sc:2},
+            {l:{ru:"Классика, 30 мин · 31 декабря 19:00–22:00", en:"Classic, 30 min · 31 December 19:00–22:00"}, p:"54 400 ₽", n:"", st:2, sc:0},
+            {l:{ru:"VIP, 30 мин · 31 декабря 19:00–22:00", en:"VIP, 30 min · 31 December 19:00–22:00"}, p:"62 400 ₽", n:"", st:2, sc:2},
+            {l:{ru:"Классика, 30 мин · 31 декабря 22:00–03:00", en:"Classic, 30 min · 31 December 22:00–03:00"}, p:"73 600 ₽", n:"", st:3, sc:0},
+            {l:{ru:"VIP, 30 мин · 31 декабря 22:00–03:00", en:"VIP, 30 min · 31 December 22:00–03:00"}, p:"83 200 ₽", n:"", st:3, sc:2}
           ]},
         {ic:"🎲", modal:"games", modalLabel:{ru:"Описание игр", en:"About the games"}, name:{ru:"Интерактивные игры", en:"Interactive Games"},
           desc:{ru:"Игры для гостей с профессиональным ведущим: час игры, игру выбираете из списка. Можно заказать разработку квиза на выбранную вами тематику или с вашими вопросами и ответами. Отдельно можно заказать караоке на 2 часа.",
@@ -1457,7 +1516,7 @@ function head(s, i){
   const right = (s.price||s.note) ? `<div class="sec-right">${s.price?`<div class="sec-price-badge">${s.price[LANG]}</div>`:""}${s.note?`<div class="note">${s.note[LANG]}</div>`:""}</div>` : "";
   return `<div class="sec-head">
     <div class="ico">${String(i+1).padStart(2,"0")}</div>
-    <div><h2>${s.title[LANG]}</h2><span class="en">${s.sub[LANG]}</span></div>
+    <div><h2>${s.title[LANG]}</h2><span class="en">${DATA.hideCap && s.id==="venues" ? s.sub[LANG].split(" — ")[0].replace(/,\s*$/,"") : s.sub[LANG]}</span></div>
     ${right}
   </div>`;
 }
@@ -1824,6 +1883,12 @@ const TR={
 "6 900 ₽/гость":"6 900 ₽/guest",
 "1 час":"1 hour",
 "+25–40 мин":"+25–40 min",
+"от 17 600 ₽":"from 17 600 ₽",
+"от 25 600 ₽":"from 25 600 ₽",
+"от 33 600 ₽":"from 33 600 ₽",
+"от 38 400 ₽":"from 38 400 ₽",
+"до 14 декабря":"until 14 December",
+"до 15:00":"before 15:00",
 "1 час · минимум 20 000 ₽":"1 hour · minimum 20 000 ₽",
 "2 200 ₽/гость":"2 200 ₽/guest",
 "2 часа":"2 hours",
@@ -2042,13 +2107,13 @@ function renderSection(s, i){
     body = `<div class="ven-grid">`+ s.halls.map(h=>`
       <div class="ven-card ven-clickable" data-hall="${h.slug}" role="button" tabindex="0">
         <div class="ven-h"><b>${h.n[LANG]}</b><span class="ven-a">${T(h.area)}</span></div>
-        <span class="ven-c">${h.cap[LANG]}</span>
+        ${DATA.hideCap ? "" : `<span class="ven-c">${h.cap[LANG]}</span>`}
         <span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${LANG==="ru"?"Смотреть фото":"View photos"}</span>
       </div>
     `).join("")+`</div>
     <div class="ven-hint"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 3c4.97 0 9 3.36 9 7.5 0 4.14-4.03 7.5-9 7.5-1.02 0-2-.14-2.92-.4L5 19.5l.9-3.3C4.1 14.9 3 12.8 3 10.5 3 6.36 7.03 3 12 3z"/></svg>${LANG==="ru"?"Ваш менеджер подскажет, какой зал свободен и подойдёт для выбранной программы.":"Your manager will advise which hall is available and best suits your programme."}</div>
     <div class="ven-ext"><b>${LANG==="ru"?"Продление зала, за 1 час":"Hall extension, per hour"}</b>${s.ext.map(e=>`<div><span>${e.s.map(k=>s.halls.find(h=>h.slug===k).n[LANG]).join(LANG==="ru"?" и ":" and ")}</span><b>${e.p}</b></div>`).join("")}</div>
-    <div class="ven-note">${s.combos[LANG]}</div>
+    ${DATA.hideCap ? "" : `<div class="ven-note">${s.combos[LANG]}</div>`}
     <div class="ven-incl">
       <div><b>${LANG==="ru"?"Что входит · кулинарные залы":"Included · culinary halls"}</b><p>${s.incl.culinary[LANG]}</p></div>
       <div><b>${LANG==="ru"?"Что входит · бизнес-залы":"Included · business halls"}</b><p>${s.incl.business[LANG]}</p></div>
@@ -2072,11 +2137,11 @@ function renderSection(s, i){
         <p class="svc-d">${it.desc[LANG]}</p>
         ${grouped ? "" : visual}
         ${it.modal && !grouped ? venMore : ""}
-        ${it.tiers?`<div class="svc-tiers">${it.tiers.map(t=>`<div><span>${t.l[LANG]}</span><b>${T(t.p)}</b><em>${T(t.n)}</em></div>`).join("")}</div>`:""}
+        ${(it.cardTiers||it.tiers)?`<div class="svc-tiers">${(it.cardTiers||it.tiers).map(t=>`<div><span>${t.l[LANG]}</span><b>${T(t.p)}</b><em>${T(t.n)}</em></div>`).join("")}</div>`:""}
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
         ${grouped ? `<div class="svc-foot">${visual}${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : (it.price?`<div class="svc-price">${it.price[LANG]}</div>`:"")}
       </div>`;}).join("")+`</div>`
-    + cakeModal() + floralModal() + cocktailModal() + artModal() + gamesModal();
+    + cakeModal() + floralModal() + cocktailModal() + artModal() + gamesModal() + santaModal();
   }
   else if(s.type==="bar"){
     body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="bar-grid">`+ s.cats.map(cat=> cat.kind ? barCat2(cat) : `
@@ -2161,7 +2226,7 @@ function hallModal(h){
     <div class="hm-card" role="document">
       <div class="hm-head">
         <div class="hm-title"><b>${title}</b><span class="hm-area">${T(h.area)}</span></div>
-        <span class="hm-cap">${h.cap[LANG]}</span>
+        ${DATA.hideCap ? "" : `<span class="hm-cap">${h.cap[LANG]}</span>`}
       </div>
       ${inner}
       <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
@@ -2406,6 +2471,48 @@ function switchGamesTab(tab){
   const m = tab.closest(".hall-modal");
   m.querySelectorAll("[data-gs-tab]").forEach(b=>b.classList.toggle("active", b===tab));
   m.querySelectorAll("[data-gs-pane]").forEach(p=>{ p.hidden = p.dataset.gsPane !== tab.dataset.gsTab; if(!p.hidden) p.scrollTop = 0; });
+}
+/* ---------- Новогодняя программа с Дедом Морозом (каталог подрядчика «Каталог нг.pdf», цены +60%) ----------
+   Таблица цен строится из tiers услуги: sd — строка даты, st — интервал 31 декабря, sc — колонка. */
+const SANTA_IMGS = [1,2,3,4,5].map(k=>`uploads/santa/${k}.jpg`);
+function santaModal(){
+  const it = (DATA.sections.find(x=>x.type==="services")||{items:[]}).items.find(x=>x.modal==="santa");
+  if(!it) return "";
+  const ru = LANG==="ru", closeLbl = ru ? "Закрыть" : "Close";
+  const cell = (key,i,c)=>{ const t = it.tiers.find(x=>x[key]===i && x.sc===c); return t ? T(t.p) : ""; };
+  const D = ru ? ["до 14 декабря","15–20 декабря","21–26 декабря","27–29 декабря","30 декабря"] : ["until 14 Dec","15–20 Dec","21–26 Dec","27–29 Dec","30 Dec"];
+  const H = ["до 15:00","15:00–19:00","19:00–22:00","22:00–03:00"].map(x=> ru ? x : x.replace("до","before"));
+  const m30 = ru ? "30 мин" : "30 min", h1 = ru ? "1 час" : "1 hour";
+  const classic = ru ? ["прекрасные костюмы","новогодний реквизит","море радости и веселья","музыкальное сопровождение","профессиональные актёры"]
+                     : ["beautiful costumes","festive props","lots of joy and fun","music","professional actors"];
+  const vip = ru ? ["новогодний реквизит","премиум Дед Мороз с натуральной бородой","костюмы, продуманные до самых мелких деталей","профессиональные актёры","музыкальное сопровождение","фокусы от Деда Мороза и Снегурочки"]
+                 : ["festive props","a premium Ded Moroz with a natural beard","costumes perfected down to the smallest detail","professional actors","music","magic tricks by Ded Moroz and Snegurochka"];
+  return `<div class="hall-modal game-modal santa-modal" id="hm-santa" hidden role="dialog" aria-modal="true" aria-label="${it.name[LANG]}">
+    <div class="hm-card">
+      <div class="hm-head">
+        <div class="hm-title"><b>${it.name[LANG]}</b></div>
+        <span class="hm-cap">${ru?"Профессиональные актёры · 30 минут или 1 час · цена за программу, зависит от даты":"Professional actors · 30 minutes or 1 hour · price per show, depends on the date"}</span>
+      </div>
+      <div class="game-body">
+        <div class="santa-cols">
+          <div><h4>${ru?"Классика":"Classic"}</h4><ul>${classic.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+          <div><h4>VIP</h4><ul>${vip.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+        </div>
+        <h4>${ru?"Даты и цены":"Dates & prices"}</h4>
+        <div class="santa-tw"><table class="santa-tbl">
+          <thead><tr><th></th><th colspan="2">${ru?"Классика":"Classic"}</th><th colspan="2">VIP</th></tr>
+                 <tr class="sub"><th></th><th>${m30}</th><th>${h1}</th><th>${m30}</th><th>${h1}</th></tr></thead>
+          <tbody>${D.map((d,i)=>`<tr><th>${d}</th>${[0,1,2,3].map(c=>`<td>${cell("sd",i,c)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table></div>
+        <div class="santa-tw"><table class="santa-tbl santa-eve">
+          <thead><tr><th>${ru?"31 декабря":"31 December"} · ${m30}</th><th>${ru?"Классика":"Classic"}</th><th>VIP</th></tr></thead>
+          <tbody>${H.map((h,i)=>`<tr><th>${h}</th><td>${cell("st",i,0)}</td><td>${cell("st",i,2)}</td></tr>`).join("")}</tbody>
+        </table></div>
+        <div class="design-grid santa-photos">${SANTA_IMGS.map((u,k)=>`<div class="design-item" data-santa="${k}"><img loading="lazy" src="${u}" alt=""></div>`).join("")}</div>
+      </div>
+      <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
+    </div>
+  </div>`;
 }
 function openGameModal(k){
   const m = document.getElementById("hm-"+k); if(!m) return;
@@ -2803,6 +2910,7 @@ function wireModals(){
     if(di){
       if(di.dataset.artGroup !== undefined) openLightbox(artUrls(di.dataset.artGroup), +di.dataset.art || 0, artTitles(di.dataset.artGroup));
       else if(di.dataset.floral !== undefined) openLightbox(floralUrls(), +di.dataset.floral);
+      else if(di.dataset.santa !== undefined) openLightbox(SANTA_IMGS, +di.dataset.santa);
       else openLightbox(cakeDesignUrls(), +di.dataset.design || 0);
       return;
     }
@@ -2814,6 +2922,7 @@ function wireModals(){
     if(svc && svc.dataset.modal === "cocktails"){ openCocktailModal(); return; }
     if(svc && svc.dataset.modal === "art"){ openArtModal(); return; }
     if(svc && svc.dataset.modal === "games"){ openGameModal("games"); return; }
+    if(svc && svc.dataset.modal === "santa"){ openGameModal("santa"); return; }
     const tab = e.target.closest(".hm-tab");
     if(tab){
       if(tab.dataset.gsTab !== undefined) switchGamesTab(tab);
@@ -2842,6 +2951,7 @@ function wireModals(){
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "cocktails"){ e.preventDefault(); openCocktailModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "art"){ e.preventDefault(); openArtModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "games"){ e.preventDefault(); openGameModal("games"); }
+      else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "santa"){ e.preventDefault(); openGameModal("santa"); }
     }
   });
 }

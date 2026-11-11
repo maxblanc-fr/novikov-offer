@@ -395,6 +395,7 @@ const T = {
   st2:{ru:"Уровень", en:"Level"},
   st2d:{ru:"В каждом формате три уровня — Стандартный, Авторский и Эксклюзивный. От уровня зависят блюда шефа и фуршет.", en:"Every format has three levels — Standard, Author’s and Exclusive. The level defines the chef’s dishes and the buffet."},
   st3:{ru:"Зал", en:"Hall"},
+  st3dNy:{ru:"8 залов на одной площадке в центре Москвы — менеджер подберёт зал под ваш формат.", en:"8 halls at one venue in central Moscow — your manager will pick the right one for your format."},
   st3d:{ru:"8 залов на одной площадке. Вместимость зависит от формата — она указана на странице каждого формата.", en:"8 halls at one venue. Capacity depends on the format and is listed on each format’s page."},
   st4:{ru:"Дополнения", en:"Add-ons"},
   st4d:{ru:"Free-flow бар, барная карта, ведущий, торты, флористика и другие услуги — по желанию.", en:"A free-flow bar, the bar card, a host, cakes, floristry and other services — as you wish."},
@@ -442,7 +443,8 @@ const bySeason = v => (v && (v.adult||v.ny)) ? (v[SEASON]||v.adult) : v;
 function render(){
   document.documentElement.lang = LANG;
   document.querySelectorAll("[data-t]").forEach(el=>{
-    const v = T[el.dataset.t]; if(!v) return;
+    /* НГ: вместимость залов не показываем (2026-11-12) */
+    const v = SEASON==="ny" && el.dataset.t==="st3d" ? T.st3dNy : T[el.dataset.t]; if(!v) return;
     if(el.hasAttribute("data-html")) el.innerHTML = v[LANG]; else el.textContent = v[LANG];
   });
   document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on", b.dataset.lang===LANG));
@@ -462,7 +464,7 @@ function render(){
         <h2>${tx(c.n)}</h2>
         <p class="lead">${tx(lead)}</p>
         <ul>${li.map(x=>`<li>${tx(x)}</li>`).join("")}</ul>
-        <div class="meta">${c.meta.map(m=>`<span>${tx(m)}</span>`).join("")}</div>
+        <div class="meta">${c.meta.filter(m=>SEASON!=="ny" || !/гост/.test(m.ru)).map(m=>`<span>${tx(m)}</span>`).join("")}</div>
         <div class="foot">
           <div class="price">${p?`<small>${tx(T.from)}</small><b>${p}</b><i>${tx(T.perGuest)}</i>`:""}</div>
           <span class="go">${tx(T.open)} →</span>

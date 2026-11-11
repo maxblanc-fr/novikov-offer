@@ -812,6 +812,14 @@ const IT_DICT = {
     "I ragazzi preparano i menu per adulti delle nostre masterclass: antipasto, piatto principale e dolce. I tre pacchetti si differenziano solo per il livello dei piatti; i prezzi sono quelli delle masterclass per adulti.",
 
   /* Новогодний лендинг */
+  "Новогодняя программа с Дедом Морозом":"Spettacolo di Capodanno con Ded Moroz (Babbo Natale russo)", "30 минут или 1 час":"30 minuti o 1 ora",
+  "Дед Мороз и Снегурочка поздравляют гостей: профессиональные актёры, новогодний реквизит и музыкальное сопровождение. Два уровня — Классика и VIP (премиум Дед Мороз с натуральной бородой, фокусы). Цена зависит от даты и длительности.":"Ded Moroz e la Fanciulla di Neve fanno gli auguri agli ospiti: attori professionisti, oggetti di scena festivi e accompagnamento musicale. Due livelli — Classico e VIP (un Ded Moroz premium con barba naturale, giochi di prestigio). Il prezzo dipende dalla data e dalla durata.",
+  "30 мин":"30 min", "1 час":"1 ora", "VIP":"VIP",
+  "до 14 декабря":"fino al 14 dicembre", "15–20 декабря":"15–20 dicembre", "21–26 декабря":"21–26 dicembre", "27–29 декабря":"27–29 dicembre", "30 декабря":"30 dicembre",
+  "31 декабря до 15:00":"31 dicembre, prima delle 15:00", "31 декабря 15:00–19:00":"31 dicembre, 15:00–19:00", "31 декабря 19:00–22:00":"31 dicembre, 19:00–22:00", "31 декабря 22:00–03:00":"31 dicembre, 22:00–03:00",
+  "Детские блюда в стол":"Piatti per bambini da condividere", "минимальный заказ — от 4 позиций":"ordine minimo — 4 porzioni",
+  "Котлеты из индейки с картофельным пюре":"Polpette di tacchino con purè di patate", "Шашлычки из индейки с овощным салатом":"Spiedini di tacchino con insalata di verdure",
+  "Пицца Маргарита":"Pizza Margherita", "Пицца с ветчиной":"Pizza al prosciutto cotto", "Картофель фри с кетчупом":"Patatine fritte con ketchup",
   "Мастер-класс по декорированию имбирных пряников":"Masterclass di decorazione di biscotti di pan di zenzero", "Декорирование пряников":"Decorazione dei biscotti",
   "Украсим ароматные имбирные пряники глазурью и праздничными узорами. Добавим немного фантазии — и создадим своё новогоднее угощение! На каждого гостя — 2 пряника разных форм (снеговик и ёлочка или варежка и пряничный человечек), 4 пакетика с разноцветной глазурью, посыпки и упаковка, чтобы забрать пряники с собой.":"Decoriamo profumati biscotti di pan di zenzero con glassa e motivi festivi. Un po' di fantasia e create il vostro dolce di Capodanno! Per ogni ospite: 2 biscotti di forme diverse (pupazzo di neve e abete, oppure guanto e omino di pan di zenzero), 4 sac à poche di glassa colorata, codette e una confezione per portarli a casa.",
   "+25–40 минут мероприятия":"+25–40 minuti all'evento", "+25–40 мин":"+25–40 min",
@@ -967,7 +975,7 @@ function buildCatalog(kind){
     if (bf.platters) C.buffet.push({h:"Тарелки и ассорти", items: bf.platters.map(p => ({key:`buf:pl:${p.ru}`, title:p.ru, sub:[p.info, p.wt].filter(Boolean).join(" · "),
       price:p.price, per:"one", q0:1, unit:"шт.", imgs:p.img ? [p.img] : []}))});
     (bf.groups || []).forEach(g => C.buffet.push({h:L(g), note:L(g.note), items: g.rows.map(r => ({key:`buf:r:${r.ru}`, title:r.ru,
-      price:r.price, per:"one", q0:6, unit:"порция"}))}));
+      price:r.price, per:"one", q0:+((L(g.note) || "").match(/\d+/) || [6])[0], unit:"порция"}))}));
     if (bf.kids && bf.kids.d) C.buffet.push({h:"Детский фуршет", items:[{key:"buf:k:Kid Set", title:L(bf.kids.title), sub:L(bf.kids.wt),
       price:bf.kids.price, per:"one", q0:1, unit:"реб.", detail:bf.kids.d, imgs:[]}]});
   } else if (bf.blocks){
@@ -1037,6 +1045,8 @@ function buildCatalog(kind){
     const cap = L(h.cap).split("·")[0].replace(/\s*(каждый|в каждом зале)/, "").trim();
     return h.tabs.map(t => ({slug:`${h.slug}-${t.k}`, img:h.slug, tab:t.k, title:`ART · ${L(t.l)}`, area:"", cap, biz:false, ext}));
   });
+  /* НГ-лендинги прячут вместимость (DATA.hideCap) — в КП её тоже не пишем */
+  if (D.hideCap) C.halls.forEach(h => { h.cap = ""; });
   C.hallIncl = (vn.incl || va.incl);
   return C;
 }
