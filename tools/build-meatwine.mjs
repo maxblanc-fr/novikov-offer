@@ -154,9 +154,9 @@ const THEME = `
   @media(max-width:820px){ .mw-in{grid-template-columns:1fr} .mw-facts{grid-template-columns:1fr 1fr; row-gap:6px} .mw-facts li:nth-child(3){padding-left:0; border-left:0} }
   @media(max-width:420px){ .mw-facts{grid-template-columns:1fr} .mw-facts li + li{padding-left:0; border-left:0} }
   /* Апельсиновый зал — главная карточка с фото */
-  .ven-card.ven-game{grid-column:1 / -1; position:relative; overflow:hidden; min-height:clamp(240px,30vw,320px); display:flex; flex-direction:column; justify-content:flex-end; gap:6px;
+  .ven-card.ven-game{grid-column:1 / -1; position:relative; overflow:hidden; min-height:clamp(340px,46vw,560px); display:flex; flex-direction:column; justify-content:flex-end; gap:6px;
      padding:clamp(20px,3vw,32px); color:#fff; border:1px solid var(--gold);
-     background:linear-gradient(90deg,rgba(14,5,8,.88) 0%,rgba(14,5,8,.55) 42%,rgba(14,5,8,0) 75%), url(images/formats/meatwine/orange.jpg) center 60%/cover no-repeat, #140608}
+     background:linear-gradient(90deg,rgba(14,5,8,.88) 0%,rgba(14,5,8,.55) 42%,rgba(14,5,8,0) 75%), url(images/formats/meatwine/orange.jpg) center 58%/cover no-repeat, #140608}
   .ven-card.ven-game .ven-h{display:block}
   .ven-card.ven-game .ven-h b{display:block; font-family:"Cormorant Garamond","Playfair Display",Georgia,serif; font-weight:500; font-size:clamp(28px,3.6vw,40px); line-height:1.05; color:#fff; text-transform:none; letter-spacing:0}
   .ven-card.ven-game .ven-a{display:inline-block; margin-top:6px; color:var(--gold-lite); font-size:14px}
@@ -397,6 +397,16 @@ ${levels}
     '      </div>\n    `).join("")+`</div>\n    <div class="ven-hint">',
     '      </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие площадки для брони":"Other spaces available to book"}</div>`:""}\n    `).join("")+`</div>\n    <div class="ven-hint">',
     "ven-sub");
+
+  // окно зала игры: то же фото, что на карточке
+  src = replaceOnce(src,
+    '    inner = `<div class="hm-gallery" data-base="images/halls/${h.slug}"></div>`;',
+    '    inner = h.game ? `<div class="hm-gallery" data-imgs="images/formats/meatwine/orange.jpg"></div>` : `<div class="hm-gallery" data-base="images/halls/${h.slug}"></div>`;',
+    "hallModal game");
+  src = replaceOnce(src,
+    '  g.dataset.loaded = "1";\n  const base = g.dataset.base,',
+    '  g.dataset.loaded = "1";\n  if(g.dataset.imgs){ g.innerHTML = galleryCarouselHTML(g.dataset.imgs.split(",")); wireOneCarousel(g.querySelector(".carousel")); return; }\n  const base = g.dataset.base,',
+    "loadGallery imgs");
 
   const data = src.slice(src.indexOf("const DATA"), src.indexOf("const TR"));
   for(const bad of ["Демо-ужин","Индивидуальный мастер-класс (максимум","Дегустационные казино",'slug:"art"','Официант'])
