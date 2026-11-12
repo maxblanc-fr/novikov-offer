@@ -38,7 +38,7 @@ const SEASON = {
           h1:{ru:'Винно-мясное казино <span>Novikov School</span>', en:'<span>Novikov School</span> Meat &amp; Wine Casino'},
           lead:{ru:"Гастрономическая игра для ценителей: вино и мясные деликатесы вслепую, ставки фишками, шеф и сомелье за одним столом с гостями.",
                 en:"A gastronomic game for connoisseurs: wine and prime meat tasted blind, chip bets, and a chef and a sommelier at the table with your guests."}},
-  ny:    {src:"NovikovNewYear.html", out:"NovikovNewYearMeatWineCasino.html", prices:["18 300 ₽","19 800 ₽","20 700 ₽"], bottles:["10 200","13 800","17 400"],
+  ny:    {src:"NovikovNewYear.html", out:"NovikovNewYearMeatWineCasino.html", prices:["18 300 ₽","19 800 ₽","20 700 ₽"], bottles:["10 200","13 800","17 400"], only:"author",  /* на НГ — только Авторский (решение 2026-11-12) */
           title:"Novikov School — Винно-мясное казино · Новый год 2027 / New Year Meat & Wine Casino 2027",
           h1:{ru:'Винно-мясное казино на Новый год в <span>Novikov School</span>', en:'New Year Meat &amp; Wine Casino at <span>Novikov School</span>'},
           lead:{ru:"Новогодний вечер для тех, кто ценит хорошее мясо и вино: дегустация вслепую, ставки фишками, шеф и сомелье за одним столом с гостями.",
@@ -46,7 +46,7 @@ const SEASON = {
 };
 const FF_DISCOUNT = 1000;
 
-const INTRO = {
+const INTRO_T = {
   kick:{ru:"О формате", en:"The format"},
   h:{ru:"Вино и мясо вслепую.<em>Ставки — фишками.</em>", en:"Wine and meat, tasted blind.<em>Bets in chips.</em>"},
   p1:{ru:"Гастрономическая игра для тех, кто ценит хорошее мясо и вино. Гости вслепую дегустируют вино и мясные деликатесы, угадывают и делают ставки фишками.",
@@ -218,7 +218,23 @@ const THEME = `
   .mw-lv-c li::before{content:""; position:absolute; left:2px; top:13px; width:7px; height:7px; transform:rotate(45deg); border:1px solid var(--gold)}
   .mw-lv-f{font-size:12px; line-height:1.45; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
   .mw-lv-c.top .mw-lv-f{color:rgba(237,230,218,.55); border-top-color:rgba(201,164,106,.3)}
-  @media(max-width:860px){ .mw-lv{grid-template-columns:1fr} }
+  .mw-lv.solo{grid-template-columns:1fr}
+  .mw-lv.solo .mw-lv-c{display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); padding:0; overflow:hidden;
+     background:linear-gradient(90deg,rgba(20,6,8,.97) 0%,rgba(42,10,16,.93) 100%), url(images/formats/meatwine/orange.jpg) center/cover no-repeat}
+  .mw-lv.solo .mw-lv-a{padding:clamp(28px,3.4vw,44px); border-right:1px solid rgba(201,164,106,.3); display:flex; flex-direction:column; justify-content:center}
+  .mw-lv.solo .mw-lv-a::before{content:"Новогодний пакет"; font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.16em; font-size:11px; color:var(--gold); margin-bottom:12px}
+  html[lang="en"] .mw-lv.solo .mw-lv-a::before{content:"New Year package"}
+  .mw-lv.solo .mw-lv-n{font-size:clamp(34px,4vw,48px)}
+  .mw-lv.solo .mw-lv-p{font-size:clamp(46px,5.4vw,66px); margin-top:16px}
+  .mw-lv.solo .mw-lv-h{border-bottom:0; padding-bottom:0; font-size:15px}
+  .mw-lv.solo .mw-lv-b{padding:clamp(24px,3vw,40px) clamp(24px,3.4vw,44px); display:flex; flex-direction:column}
+  .mw-lv-k{font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--gold)}
+  .mw-lv.solo ul{display:grid; grid-template-columns:1fr 1fr; gap:4px 26px; margin:14px 0 18px; flex:none}
+  .mw-lv.solo li{font-size:15.5px; color:#EDE6DA; border-bottom:1px solid rgba(201,164,106,.18); padding:10px 0 10px 22px}
+  .mw-lv.solo li::before{top:17px}
+  .mw-lv.solo .mw-lv-f{margin-top:auto; border-top:0; padding-top:0}
+  @media(max-width:860px){ .mw-lv{grid-template-columns:1fr} .mw-lv.solo .mw-lv-c{grid-template-columns:1fr} .mw-lv.solo .mw-lv-a{border-right:0; border-bottom:1px solid rgba(201,164,106,.3)} }
+  @media(max-width:520px){ .mw-lv.solo ul{grid-template-columns:1fr} }
   .lvl-cnt{color:var(--red-deep)}
 `;
 
@@ -235,12 +251,14 @@ function build(seasonKey){
   const S = SEASON[seasonKey];
   /* Цена бутылки — как в «Винном казино» Новикова (Классика / Авторский / Эксклюзив) этого сезона */
   const sub = (x,i) => JSON.parse(JSON.stringify(x).replace(/@B@/g, S.bottles[i]));
-  const LEVELS = LEVELS_T.map((l,i)=>sub(l,i));
+  const LEVELS = LEVELS_T.map((l,i)=>({...sub(l,i), price:S.prices[i]})).filter(l=>!S.only || l.k===S.only);
+  const ONE = LEVELS.length===1 ? LEVELS[0] : null;
   const DISH_EN = Object.fromEntries(Object.entries(DISH_EN_T).map(([k,v])=>{
     const i = /^3 /.test(k) ? 0 : /^4 вина/.test(k) ? 1 : /^5 /.test(k) ? 2 : -1;
     return i<0 ? [k,v] : [sub(k,i), sub(v,i)];
   }));
   let src = read(S.src);
+  const INTRO = JSON.parse(JSON.stringify(INTRO_T));
 
   src = src.replace(/<title>[^<]*<\/title>/, `<title>${S.title}</title>`);
   src = src.replace(/(<!DOCTYPE html>\n?)/i, `$1<!-- СОБРАНО tools/build-meatwine.mjs из ${S.src} — руками не править -->\n`);
@@ -258,6 +276,12 @@ function build(seasonKey){
 
   // описание формата сразу под шапкой
   {
+    if(ONE){
+      INTRO.p2 = {ru:INTRO.p2.ru.replace(/Стандартный и Авторский уровни[^.]*\./, `Вечер длится ${ONE.hours.ru}, с приветствием гостей и фуршетом.`),
+                  en:INTRO.p2.en.replace(/The Standard and Author’s levels[^.]*\./, `The evening runs ${ONE.hours.en}, including the guest welcome and the buffet.`)};
+      INTRO.facts[0] = {...INTRO.facts[0], b:{ru:"4 вина", en:"4 wines"}};
+      INTRO.facts[1] = {...INTRO.facts[1], b:{ru:"4 отруба", en:"4 cuts"}};
+    }
     const facts = INTRO.facts.map((f,i)=>`<li><svg viewBox="0 0 24 24" aria-hidden="true">${FACT_IC[f.ic]}</svg><div><b data-i18n="mwF${i}b">${f.b.ru}</b><span data-i18n="mwF${i}s">${f.s.ru}</span></div></li>`).join("");
     const intro = `<section class="mw-intro" data-mw-intro><div class="mw-in"><div><div class="mw-kick" data-i18n="mwKick">${INTRO.kick.ru}</div><h2 class="mw-h" data-i18n="mwH">${INTRO.h.ru}</h2></div><div class="mw-txt"><p data-i18n="mwP1">${INTRO.p1.ru}</p><p data-i18n="mwP2">${INTRO.p2.ru}</p></div></div><ul class="mw-facts">${facts}</ul></section>\n`;
     const m = src.match(/<div class="hero">/);
@@ -287,11 +311,15 @@ function build(seasonKey){
     const a = src.indexOf("stats:["), b = matchBrace(src, a+6);
     const old = src.slice(a, b+1);
     src = src.slice(0,a) + `stats:[
-    {n:"3",  ru:"уровня игры", en:"game levels"},
+${ONE ? `    {n:"4",  ru:"вина вслепую", en:"wines tasted blind"},
+    {n:"4",  ru:"мясных отруба", en:"meat cuts"},
+    {n:"9",  ru:"позиций фуршета", en:"buffet items"},
+    {n:"4",  ru:"часа вечера", en:"hours of evening"}
+` : `    {n:"3",  ru:"уровня игры", en:"game levels"},
     {n:"3–5",  ru:"вин вслепую", en:"wines tasted blind"},
     {n:"3–4",  ru:"мясных отруба", en:"meat cuts"},
     {n:"4–5", ru:"часов вечера", en:"hours of evening"}
-  ]` + src.slice(b+1);
+`}  ]` + src.slice(b+1);
   }
 
   // форматы
@@ -301,17 +329,18 @@ function build(seasonKey){
     const sub = old.match(/sub:(\{ru:[^\n]*\})/)[1];
     const items = LEVELS.map((l,i)=>`          {n:${L(l.n)},
             d:{ru:${q(`${l.game.ru} · фуршет «${l.buffet}» (${l.bru}) · итальянское домашнее мороженое · вода, чай и кофе · ${l.hours.ru}.`)},
-               en:${q(`${l.game.en} · «${l.buffet}» buffet (${l.ben}) · Italian homemade ice cream · water, tea and coffee · ${l.hours.en}.`)}}, p:"${S.prices[i]}",
+               en:${q(`${l.game.en} · «${l.buffet}» buffet (${l.ben}) · Italian homemade ice cream · water, tea and coffee · ${l.hours.en}.`)}}, p:"${l.price}",
             game:${L(l.game)}, hours:${L(l.hours)}, card:${JSON.stringify(l.card)}, fine:${L(l.fine)}${l.k==="excl"?", top:true":""}}`).join(",\n");
     src = replaceSection(src, "formats", `{
       id:"formats", icon:"💼", type:"formats", mw:true,
       title:{ru:"Форматы и цены", en:"Formats & Pricing"},
       sub:${sub},
       note:{ru:"Цены за гостя", en:"Prices per guest"},
-      intro:{ru:"Игра проходит в Апельсиновом зале. Стандартный и Авторский — 4 часа, Эксклюзивный — 5 часов, с приветствием гостей и фуршетом.",
-             en:"The game is played in the Orange hall. Standard and Author’s run 4 hours, Exclusive 5 hours, including the guest welcome and the buffet."},
+      intro:${ONE ? `{ru:"Новогодний пакет — Авторский уровень игры. Игра проходит в Апельсиновом зале, вечер длится 4 часа, с приветствием гостей и фуршетом.",
+             en:"The New Year package is the Author’s game level. The game is played in the Orange hall; the evening runs 4 hours, including the guest welcome and the buffet."}` : `{ru:"Игра проходит в Апельсиновом зале. Стандартный и Авторский — 4 часа, Эксклюзивный — 5 часов, с приветствием гостей и фуршетом.",
+             en:"The game is played in the Orange hall. Standard and Author’s run 4 hours, Exclusive 5 hours, including the guest welcome and the buffet."}`},
       groups:[
-        {head:{ru:"Винно-мясное казино — 3 уровня", en:"Meat & Wine Casino — 3 levels"}, items:[
+        {head:${ONE ? `{ru:"Винно-мясное казино — Авторский", en:"Meat & Wine Casino — Author’s"}` : `{ru:"Винно-мясное казино — 3 уровня", en:"Meat & Wine Casino — 3 levels"}`}, items:[
 ${items}
         ]}
       ],
@@ -351,7 +380,7 @@ ${halls}
 
   // программа уровней (вместо «Кулинарной части»)
   {
-    const levels = LEVELS.map((l,i)=>`           {k:"${l.k}", n:${L(l.n)}, price:"${S.prices[i]}", buffet:"${l.buffet}", bwt:"${l.bwt}", hours:${L(l.hours)},
+    const levels = LEVELS.map((l,i)=>`           {k:"${l.k}", n:${L(l.n)}, price:"${l.price}", buffet:"${l.buffet}", bwt:"${l.bwt}", hours:${L(l.hours)},
             ids:${q([l.set.id])},
             tl:[
 ${l.tl.map(([m,ru,en,hi])=>`              {m:${m}, ru:${q(ru)}, en:${q(en)}${hi?", hi:true":""}}`).join(",\n")}
@@ -359,10 +388,10 @@ ${l.tl.map(([m,ru,en,hi])=>`              {m:${m}, ru:${q(ru)}, en:${q(en)}${hi?
     src = replaceSection(src, "sets", `{
       id:"sets", type:"sets",
       title:{ru:"Программа", en:"Programme"},
-      sub:{ru:"Три уровня игры · вино и мясо вслепую", en:"Three game levels · wine and meat tasted blind"},
+      sub:${ONE ? `{ru:"Авторский уровень · вино и мясо вслепую", en:"Author’s level · wine and meat tasted blind"}` : `{ru:"Три уровня игры · вино и мясо вслепую", en:"Three game levels · wine and meat tasted blind"}`},
       note:{ru:"Фуршет и десерт включены в стоимость", en:"Buffet and dessert included"},
-      intro:{ru:"Выберите уровень — от него зависят вина и мясные отрубы в игре, включённый фуршет, длительность и цена за гостя.",
-             en:"Choose the level — it defines the wines and meat cuts in the game, the included buffet, the duration and the price per guest."},
+      ${ONE ? "" : `intro:{ru:"Выберите уровень — от него зависят вина и мясные отрубы в игре, включённый фуршет, длительность и цена за гостя.",
+             en:"Choose the level — it defines the wines and meat cuts in the game, the included buffet, the duration and the price per guest."},`}
       tabs:[
         {k:"meatwine", ic:"🥩",
          n:${L(NAME)},
@@ -425,6 +454,15 @@ ${levels}
     '${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${grid(l.ids)}</div>',
     '${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${l.tl?`<div class="mc-top">${mcTimeline(l.tl)}</div>`:""}${l.ids.length===1?mwCard(SETS[l.ids[0]], l):grid(l.ids)}</div>',
     "level timeline");
+  // один уровень: без переключателя уровней, панель сразу открыта
+  src = replaceOnce(src,
+    '<div class="lvl-cards" role="tablist" aria-label="${LANG==="ru"?"Уровень":"Level"}">${t.levels.map(l=>lvlCard(t,l)).join("")}</div>',
+    '${t.levels.length>1?`<div class="lvl-cards" role="tablist" aria-label="${LANG==="ru"?"Уровень":"Level"}">${t.levels.map(l=>lvlCard(t,l)).join("")}</div>`:""}',
+    "lvl-cards one");
+  src = replaceOnce(src,
+    'data-mclvl="${l.k}"${l.k==="std"?"":" hidden"}>',
+    'data-mclvl="${l.k}"${(l.k==="std"||t.levels.length===1)?"":" hidden"}>',
+    "lvl-panel one");
   // зал игры: выделенная карточка
   src = replaceOnce(src,
     '<div class="ven-card ven-clickable" data-hall="${h.slug}" role="button" tabindex="0">',
@@ -444,7 +482,7 @@ ${levels}
     '  else if(s.type==="formats"){',
     '  else if(s.type==="formats" && s.mw){\n'
     + '    const it = s.groups[0].items;\n'
-    + '    body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="mw-lv">` + it.map(x=>`<div class="mw-lv-c${x.top?" top":""}">${x.top?`<span class="mw-lv-rib">Black Casino</span>`:""}<div class="mw-lv-n">${x.n[LANG]}</div><div class="mw-lv-p">${T(x.p)}<small>${LANG==="ru"?"за гостя":"per guest"}</small></div><div class="mw-lv-h">⏱ ${x.hours[LANG]}</div><ul>${x.card[LANG].map(li=>`<li>${li}</li>`).join("")}</ul><div class="mw-lv-f">${x.fine[LANG]}</div></div>`).join("") + `</div>` + (s.foot?`<p class="fmt-foot">${s.foot[LANG]}</p>`:"");\n'
+    + '    body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="mw-lv${it.length===1?" solo":""}">` + it.map(x=>`<div class="mw-lv-c${x.top||it.length===1?" top":""}">${it.length===1?`<div class="mw-lv-a">`:""}${x.top?`<span class="mw-lv-rib">Black Casino</span>`:""}<div class="mw-lv-n">${x.n[LANG]}</div><div class="mw-lv-p">${T(x.p)}<small>${LANG==="ru"?"за гостя":"per guest"}</small></div><div class="mw-lv-h">⏱ ${x.hours[LANG]}</div>${it.length===1?`</div><div class="mw-lv-b"><div class="mw-lv-k">${LANG==="ru"?"В пакет входит":"The package includes"}</div>`:""}<ul>${x.card[LANG].map(li=>`<li>${li}</li>`).join("")}</ul><div class="mw-lv-f">${x.fine[LANG]}</div>${it.length===1?"</div>":""}</div>`).join("") + `</div>` + (s.foot?`<p class="fmt-foot">${s.foot[LANG]}</p>`:"");\n'
     + '  }\n  else if(s.type==="formats"){',
     "formats mw");
   // продление залов не показываем (решение 2026-11-12)

@@ -757,7 +757,23 @@
   .mw-lv-c li::before{content:""; position:absolute; left:2px; top:13px; width:7px; height:7px; transform:rotate(45deg); border:1px solid var(--gold)}
   .mw-lv-f{font-size:12px; line-height:1.45; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
   .mw-lv-c.top .mw-lv-f{color:rgba(237,230,218,.55); border-top-color:rgba(201,164,106,.3)}
-  @media(max-width:860px){ .mw-lv{grid-template-columns:1fr} }
+  .mw-lv.solo{grid-template-columns:1fr}
+  .mw-lv.solo .mw-lv-c{display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); padding:0; overflow:hidden;
+     background:linear-gradient(90deg,rgba(20,6,8,.97) 0%,rgba(42,10,16,.93) 100%), url(images/formats/meatwine/orange.jpg) center/cover no-repeat}
+  .mw-lv.solo .mw-lv-a{padding:clamp(28px,3.4vw,44px); border-right:1px solid rgba(201,164,106,.3); display:flex; flex-direction:column; justify-content:center}
+  .mw-lv.solo .mw-lv-a::before{content:"Новогодний пакет"; font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.16em; font-size:11px; color:var(--gold); margin-bottom:12px}
+  html[lang="en"] .mw-lv.solo .mw-lv-a::before{content:"New Year package"}
+  .mw-lv.solo .mw-lv-n{font-size:clamp(34px,4vw,48px)}
+  .mw-lv.solo .mw-lv-p{font-size:clamp(46px,5.4vw,66px); margin-top:16px}
+  .mw-lv.solo .mw-lv-h{border-bottom:0; padding-bottom:0; font-size:15px}
+  .mw-lv.solo .mw-lv-b{padding:clamp(24px,3vw,40px) clamp(24px,3.4vw,44px); display:flex; flex-direction:column}
+  .mw-lv-k{font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--gold)}
+  .mw-lv.solo ul{display:grid; grid-template-columns:1fr 1fr; gap:4px 26px; margin:14px 0 18px; flex:none}
+  .mw-lv.solo li{font-size:15.5px; color:#EDE6DA; border-bottom:1px solid rgba(201,164,106,.18); padding:10px 0 10px 22px}
+  .mw-lv.solo li::before{top:17px}
+  .mw-lv.solo .mw-lv-f{margin-top:auto; border-top:0; padding-top:0}
+  @media(max-width:860px){ .mw-lv{grid-template-columns:1fr} .mw-lv.solo .mw-lv-c{grid-template-columns:1fr} .mw-lv.solo .mw-lv-a{border-right:0; border-bottom:1px solid rgba(201,164,106,.3)} }
+  @media(max-width:520px){ .mw-lv.solo ul{grid-template-columns:1fr} }
   .lvl-cnt{color:var(--red-deep)}
 </style>
 </head>
@@ -787,7 +803,7 @@
   <div class="stats" id="stats"></div>
   <svg class="ny-drift" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true"><path d="M0 48 L0 27 C120 13 240 35 360 25 C480 15 560 33 700 29 C840 25 920 9 1060 19 C1180 28 1300 41 1440 23 L1440 48 Z"/></svg>
 </div>
-<section class="mw-intro" data-mw-intro><div class="mw-in"><div><div class="mw-kick" data-i18n="mwKick">О формате</div><h2 class="mw-h" data-i18n="mwH">Вино и мясо вслепую.<em>Ставки — фишками.</em></h2></div><div class="mw-txt"><p data-i18n="mwP1">Гастрономическая игра для тех, кто ценит хорошее мясо и вино. Гости вслепую дегустируют вино и мясные деликатесы, угадывают и делают ставки фишками.</p><p data-i18n="mwP2">Весь вечер рядом шеф и сомелье: расскажут, какое мясо прощает ошибки, какие маринады уместны к тому или иному блюду и какое вино станет лучшей парой. Стандартный и Авторский уровни — 4 часа, Эксклюзивный — 5 часов, с приветствием гостей и фуршетом.</p></div></div><ul class="mw-facts"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8l-.6 6a3.4 3.4 0 0 1-6.8 0L8 3zM12 12.5V20M8.5 20h7"/></svg><div><b data-i18n="mwF0b">До 5 вин</b><span data-i18n="mwF0s">вслепую, от сомелье</span></div></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5c3 0 5 2.2 5 5 0 4.5-5 9.5-10 9.5-2.6 0-4.5-1.8-4.5-4.2 0-3.3 3-4.3 4.6-6.3 1.4-1.8 2.4-4 4.9-4z"/><circle cx="14" cy="10" r="1.6"/></svg><div><b data-i18n="mwF1b">До 4 отрубов</b><span data-i18n="mwF1s">готовит и подаёт шеф</span></div></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.2"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg><div><b data-i18n="mwF2b">Ставки фишками</b><span data-i18n="mwF2s">на вина и мясные отрубы</span></div></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><div><b data-i18n="mwF3b">Апельсиновый зал</b><span data-i18n="mwF3s">игра проходит только здесь</span></div></li></ul></section>
+<section class="mw-intro" data-mw-intro><div class="mw-in"><div><div class="mw-kick" data-i18n="mwKick">О формате</div><h2 class="mw-h" data-i18n="mwH">Вино и мясо вслепую.<em>Ставки — фишками.</em></h2></div><div class="mw-txt"><p data-i18n="mwP1">Гастрономическая игра для тех, кто ценит хорошее мясо и вино. Гости вслепую дегустируют вино и мясные деликатесы, угадывают и делают ставки фишками.</p><p data-i18n="mwP2">Весь вечер рядом шеф и сомелье: расскажут, какое мясо прощает ошибки, какие маринады уместны к тому или иному блюду и какое вино станет лучшей парой. Вечер длится 4 часа, с приветствием гостей и фуршетом.</p></div></div><ul class="mw-facts"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8l-.6 6a3.4 3.4 0 0 1-6.8 0L8 3zM12 12.5V20M8.5 20h7"/></svg><div><b data-i18n="mwF0b">4 вина</b><span data-i18n="mwF0s">вслепую, от сомелье</span></div></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5c3 0 5 2.2 5 5 0 4.5-5 9.5-10 9.5-2.6 0-4.5-1.8-4.5-4.2 0-3.3 3-4.3 4.6-6.3 1.4-1.8 2.4-4 4.9-4z"/><circle cx="14" cy="10" r="1.6"/></svg><div><b data-i18n="mwF1b">4 отруба</b><span data-i18n="mwF1s">готовит и подаёт шеф</span></div></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.2"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg><div><b data-i18n="mwF2b">Ставки фишками</b><span data-i18n="mwF2s">на вина и мясные отрубы</span></div></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><div><b data-i18n="mwF3b">Апельсиновый зал</b><span data-i18n="mwF3s">игра проходит только здесь</span></div></li></ul></section>
 
 
 <main id="main"></main>
@@ -815,8 +831,8 @@ const I18N = {
   brandsub:{ru:"НОВЫЙ ГОД · 2027", en:"NEW YEAR · 2027"},
   kicker:{ru:"❄ Новогоднее предложение · 2027", en:"❄ New Year Offer · 2027"},
   h1:{ru:'Винно-мясное казино на Новый год в <span>Novikov School</span>', en:'New Year Meat &amp; Wine Casino at <span>Novikov School</span>'},
-  mwKick:{ru:"О формате", en:"The format"}, mwH:{ru:"Вино и мясо вслепую.<em>Ставки — фишками.</em>", en:"Wine and meat, tasted blind.<em>Bets in chips.</em>"}, mwP1:{ru:"Гастрономическая игра для тех, кто ценит хорошее мясо и вино. Гости вслепую дегустируют вино и мясные деликатесы, угадывают и делают ставки фишками.", en:"A gastronomic game for those who love good meat and wine. Guests taste wine and meat delicacies blind, guess and place chip bets."}, mwP2:{ru:"Весь вечер рядом шеф и сомелье: расскажут, какое мясо прощает ошибки, какие маринады уместны к тому или иному блюду и какое вино станет лучшей парой. Стандартный и Авторский уровни — 4 часа, Эксклюзивный — 5 часов, с приветствием гостей и фуршетом.", en:"The chef and the sommelier stay with you all evening: they explain which meat forgives mistakes, which marinades suit which dish and which wine makes the perfect pairing. The Standard and Author’s levels run 4 hours, the Exclusive level 5 hours, including the guest welcome and the buffet."},
-  mwF0b:{ru:"До 5 вин", en:"Up to 5 wines"}, mwF0s:{ru:"вслепую, от сомелье", en:"blind, poured by the sommelier"}, mwF1b:{ru:"До 4 отрубов", en:"Up to 4 cuts"}, mwF1s:{ru:"готовит и подаёт шеф", en:"cooked and served by the chef"}, mwF2b:{ru:"Ставки фишками", en:"Chip bets"}, mwF2s:{ru:"на вина и мясные отрубы", en:"on the wines and meat cuts"}, mwF3b:{ru:"Апельсиновый зал", en:"Orange hall"}, mwF3s:{ru:"игра проходит только здесь", en:"the only hall for the game"},
+  mwKick:{ru:"О формате", en:"The format"}, mwH:{ru:"Вино и мясо вслепую.<em>Ставки — фишками.</em>", en:"Wine and meat, tasted blind.<em>Bets in chips.</em>"}, mwP1:{ru:"Гастрономическая игра для тех, кто ценит хорошее мясо и вино. Гости вслепую дегустируют вино и мясные деликатесы, угадывают и делают ставки фишками.", en:"A gastronomic game for those who love good meat and wine. Guests taste wine and meat delicacies blind, guess and place chip bets."}, mwP2:{ru:"Весь вечер рядом шеф и сомелье: расскажут, какое мясо прощает ошибки, какие маринады уместны к тому или иному блюду и какое вино станет лучшей парой. Вечер длится 4 часа, с приветствием гостей и фуршетом.", en:"The chef and the sommelier stay with you all evening: they explain which meat forgives mistakes, which marinades suit which dish and which wine makes the perfect pairing. The evening runs 4 hours, including the guest welcome and the buffet."},
+  mwF0b:{ru:"4 вина", en:"4 wines"}, mwF0s:{ru:"вслепую, от сомелье", en:"blind, poured by the sommelier"}, mwF1b:{ru:"4 отруба", en:"4 cuts"}, mwF1s:{ru:"готовит и подаёт шеф", en:"cooked and served by the chef"}, mwF2b:{ru:"Ставки фишками", en:"Chip bets"}, mwF2s:{ru:"на вина и мясные отрубы", en:"on the wines and meat cuts"}, mwF3b:{ru:"Апельсиновый зал", en:"Orange hall"}, mwF3s:{ru:"игра проходит только здесь", en:"the only hall for the game"},
   lead:{ru:"Новогодний вечер для тех, кто ценит хорошее мясо и вино: дегустация вслепую, ставки фишками, шеф и сомелье за одним столом с гостями.", en:"A New Year evening for lovers of fine meat and wine: blind tasting, chip bets, and a chef and a sommelier at the table with your guests."},
   f_contacts:{ru:"Контакты", en:"Contacts"},
   f_about:{ru:"Novikov School", en:"Novikov School"},
@@ -891,19 +907,17 @@ const SETS = {
   ct5:          {ru:"Перечный контраст", en:"Pepper Contrast", d:["Тёплый салат с говядиной и чёрно-перечным соусом","Запечённый цыплёнок с кукурузным кремом и соусом жу","Тирамису с манговым муссом и вафельной крошкой"]},
   ct6:          {ru:"Цитрусы и Италия", en:"Citrus & Italy", d:["Севиче из тунца с цитрусами","Утиная грудка с сельдереем и черникой","Сицилийские канноли с рикоттой и цедрой апельсина"]},
   /* винно-мясное казино — tools/build-meatwine.mjs */
-  mw_std: {ru:"3 вина и 3 отруба", en:"3 wines & 3 cuts", c:[], d:["3 вина стандартной категории (10 200 ₽/бут.) вслепую, порция 50 мл","3 отборных мясных отруба стандартной категории с овощами","Итальянское домашнее мороженое"]},
-  mw_author: {ru:"4 вина и 4 отруба", en:"4 wines & 4 cuts", c:[], d:["4 вина авторской категории (13 800 ₽/бут.) вслепую, порция 50 мл","4 отборных мясных отруба авторской категории с овощами","Итальянское домашнее мороженое"]},
-  mw_excl: {ru:"5 вин, 4 отруба и Black Casino", en:"5 wines, 4 cuts & Black Casino", c:[], d:["5 вин эксклюзивной категории (17 400 ₽/бут.) вслепую, порция 50 мл, и раунд Black Casino","4 отборных мясных отруба эксклюзивной категории с овощами","Салат на выбор","Итальянское домашнее мороженое"]}
+  mw_author: {ru:"4 вина и 4 отруба", en:"4 wines & 4 cuts", c:[], d:["4 вина авторской категории (13 800 ₽/бут.) вслепую, порция 50 мл","4 отборных мясных отруба авторской категории с овощами","Итальянское домашнее мороженое"]}
 };
 
 /* ---------- OFFER DATA ---------- */
 const DATA = {
   hideCap:true, /* винно-мясное казино: вместимость не пишем */
   stats:[
-    {n:"3",  ru:"уровня игры", en:"game levels"},
-    {n:"3–5",  ru:"вин вслепую", en:"wines tasted blind"},
-    {n:"3–4",  ru:"мясных отруба", en:"meat cuts"},
-    {n:"4–5", ru:"часов вечера", en:"hours of evening"}
+    {n:"4",  ru:"вина вслепую", en:"wines tasted blind"},
+    {n:"4",  ru:"мясных отруба", en:"meat cuts"},
+    {n:"9",  ru:"позиций фуршета", en:"buffet items"},
+    {n:"4",  ru:"часа вечера", en:"hours of evening"}
   ],
   sections:[
     {
@@ -911,22 +925,14 @@ const DATA = {
       title:{ru:"Форматы и цены", en:"Formats & Pricing"},
       sub:{ru:"Выберите формат мероприятия — цены за человека, новогодний сезон 2026/27", en:"Choose your event format — prices per person, 2026/27 holiday season"},
       note:{ru:"Цены за гостя", en:"Prices per guest"},
-      intro:{ru:"Игра проходит в Апельсиновом зале. Стандартный и Авторский — 4 часа, Эксклюзивный — 5 часов, с приветствием гостей и фуршетом.",
-             en:"The game is played in the Orange hall. Standard and Author’s run 4 hours, Exclusive 5 hours, including the guest welcome and the buffet."},
+      intro:{ru:"Новогодний пакет — Авторский уровень игры. Игра проходит в Апельсиновом зале, вечер длится 4 часа, с приветствием гостей и фуршетом.",
+             en:"The New Year package is the Author’s game level. The game is played in the Orange hall; the evening runs 4 hours, including the guest welcome and the buffet."},
       groups:[
-        {head:{ru:"Винно-мясное казино — 3 уровня", en:"Meat & Wine Casino — 3 levels"}, items:[
-          {n:{ru:"Стандартный", en:"Standard"},
-            d:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (10 200 ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами · фуршет «Small Set» (7 позиций, 132 г) · итальянское домашнее мороженое · вода, чай и кофе · 4 часа.",
-               en:"«Meat & Wine Casino» game · 3 wines of the standard category (10 200 ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables · «Small Set» buffet (7 items, 132 g) · Italian homemade ice cream · water, tea and coffee · 4 hours."}, p:"18 300 ₽",
-            game:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (10 200 ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами", en:"«Meat & Wine Casino» game · 3 wines of the standard category (10 200 ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables"}, hours:{ru:"4 часа", en:"4 hours"}, card:{"ru":["3 вина стандартной категории вслепую","3 отборных мясных отруба с овощами","Фуршет Small Set · 7 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],"en":["3 standard-category wines, tasted blind","3 prime meat cuts with vegetables","Small Set buffet · 7 items","Italian homemade ice cream","Water, tea and coffee"]}, fine:{ru:"Вино 10 200 ₽/бут., порция 50 мл · фуршет 132 г на гостя", en:"Wine 10 200 ₽/bottle, 50 ml pour · buffet 132 g per guest"}},
+        {head:{ru:"Винно-мясное казино — Авторский", en:"Meat & Wine Casino — Author’s"}, items:[
           {n:{ru:"Авторский", en:"Author’s"},
             d:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (13 800 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами · фуршет «Medium Set» (9 позиций, 166 г) · итальянское домашнее мороженое · вода, чай и кофе · 4 часа.",
                en:"«Meat & Wine Casino» game · 4 wines of the signature category (13 800 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables · «Medium Set» buffet (9 items, 166 g) · Italian homemade ice cream · water, tea and coffee · 4 hours."}, p:"19 800 ₽",
-            game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (13 800 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами", en:"«Meat & Wine Casino» game · 4 wines of the signature category (13 800 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"}, hours:{ru:"4 часа", en:"4 hours"}, card:{"ru":["4 вина авторской категории вслепую","4 отборных мясных отруба с овощами","Фуршет Medium Set · 9 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],"en":["4 signature-category wines, tasted blind","4 prime meat cuts with vegetables","Medium Set buffet · 9 items","Italian homemade ice cream","Water, tea and coffee"]}, fine:{ru:"Вино 13 800 ₽/бут., порция 50 мл · фуршет 166 г на гостя", en:"Wine 13 800 ₽/bottle, 50 ml pour · buffet 166 g per guest"}},
-          {n:{ru:"Эксклюзивный", en:"Exclusive"},
-            d:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (17 400 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор · фуршет «Large Set» (11 позиций, 205 г) · итальянское домашнее мороженое · вода, чай и кофе · 5 часов.",
-               en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (17 400 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice · «Large Set» buffet (11 items, 205 g) · Italian homemade ice cream · water, tea and coffee · 5 hours."}, p:"20 700 ₽",
-            game:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (17 400 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор", en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (17 400 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice"}, hours:{ru:"5 часов", en:"5 hours"}, card:{"ru":["5 вин эксклюзивной категории вслепую","Раунд Black Casino","4 отборных мясных отруба с овощами","Салат на выбор","Фуршет Large Set · 11 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],"en":["5 exclusive-category wines, tasted blind","Black Casino round","4 prime meat cuts with vegetables","Salad of your choice","Large Set buffet · 11 items","Italian homemade ice cream","Water, tea and coffee"]}, fine:{ru:"Вино 17 400 ₽/бут., порция 50 мл · фуршет 205 г на гостя", en:"Wine 17 400 ₽/bottle, 50 ml pour · buffet 205 g per guest"}, top:true}
+            game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (13 800 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами", en:"«Meat & Wine Casino» game · 4 wines of the signature category (13 800 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"}, hours:{ru:"4 часа", en:"4 hours"}, card:{"ru":["4 вина авторской категории вслепую","4 отборных мясных отруба с овощами","Фуршет Medium Set · 9 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],"en":["4 signature-category wines, tasted blind","4 prime meat cuts with vegetables","Medium Set buffet · 9 items","Italian homemade ice cream","Water, tea and coffee"]}, fine:{ru:"Вино 13 800 ₽/бут., порция 50 мл · фуршет 166 г на гостя", en:"Wine 13 800 ₽/bottle, 50 ml pour · buffet 166 g per guest"}}
         ]}
       ],
       foot:{ru:"Казино не является азартной игрой: участники не делают денежных ставок. 18+. Чрезмерное употребление алкоголя вредит вашему здоровью.",
@@ -956,10 +962,9 @@ const DATA = {
     {
       id:"sets", type:"sets",
       title:{ru:"Программа", en:"Programme"},
-      sub:{ru:"Три уровня игры · вино и мясо вслепую", en:"Three game levels · wine and meat tasted blind"},
+      sub:{ru:"Авторский уровень · вино и мясо вслепую", en:"Author’s level · wine and meat tasted blind"},
       note:{ru:"Фуршет и десерт включены в стоимость", en:"Buffet and dessert included"},
-      intro:{ru:"Выберите уровень — от него зависят вина и мясные отрубы в игре, включённый фуршет, длительность и цена за гостя.",
-             en:"Choose the level — it defines the wines and meat cuts in the game, the included buffet, the duration and the price per guest."},
+      
       tabs:[
         {k:"meatwine", ic:"🥩",
          n:{ru:"Винно-мясное казино", en:"Meat & Wine Casino"},
@@ -967,16 +972,6 @@ const DATA = {
          d:{ru:"Сомелье ведёт игру и наливает вино вслепую, шеф готовит и подаёт мясные отрубы — гости угадывают и делают ставки фишками. Игра проходит в Апельсиновом зале.",
             en:"The sommelier runs the game and pours the wine blind, the chef cooks and serves the meat cuts — guests guess and place chip bets. The game is played in the Orange hall."},
          levels:[
-           {k:"std", n:{ru:"Стандартный", en:"Standard"}, price:"18 300 ₽", buffet:"Small Set", bwt:"132 г", hours:{ru:"4 часа", en:"4 hours"},
-            ids:["mw_std"],
-            tl:[
-              {m:30, ru:"Сбор гостей, фуршет и приветственные напитки", en:"Guest welcome, buffet and welcome drinks"},
-              {m:80, ru:"Играем: 2 раунда винного и 2 раунда мясного казино", en:"Game: 2 wine rounds and 2 meat rounds", hi:true},
-              {m:20, ru:"Перерыв", en:"Break"},
-              {m:50, ru:"Продолжаем: ещё 1 раунд вина и 1 раунд мяса", en:"The game continues: 1 more wine round and 1 meat round", hi:true},
-              {m:30, ru:"Десерт и итоги игры", en:"Dessert and game results"},
-              {m:30, ru:"Свободное время: общение", en:"Free time: mingling"}
-            ]},
            {k:"author", n:{ru:"Авторский", en:"Author’s"}, price:"19 800 ₽", buffet:"Medium Set", bwt:"166 г", hours:{ru:"4 часа", en:"4 hours"},
             ids:["mw_author"],
             tl:[
@@ -986,16 +981,6 @@ const DATA = {
               {m:70, ru:"Продолжаем: ещё 2 раунда вина и 2 раунда мяса", en:"The game continues: 2 more wine rounds and 2 meat rounds", hi:true},
               {m:25, ru:"Десерт и итоги игры", en:"Dessert and game results"},
               {m:30, ru:"Свободное время: общение", en:"Free time: mingling"}
-            ]},
-           {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, price:"20 700 ₽", buffet:"Large Set", bwt:"205 г", hours:{ru:"5 часов", en:"5 hours"},
-            ids:["mw_excl"],
-            tl:[
-              {m:30, ru:"Сбор гостей, фуршет и приветственные напитки", en:"Guest welcome, buffet and welcome drinks"},
-              {m:70, ru:"Играем: 2 раунда винного и 2 раунда мясного казино", en:"Game: 2 wine rounds and 2 meat rounds", hi:true},
-              {m:30, ru:"Перерыв и салат", en:"Break and salad"},
-              {m:80, ru:"Продолжаем: ещё 3 раунда вина, включая Black Casino, и 2 раунда мяса", en:"The game continues: 3 more wine rounds including Black Casino, and 2 meat rounds", hi:true},
-              {m:30, ru:"Десерт и итоги игры", en:"Dessert and game results"},
-              {m:60, ru:"Свободное время: общение", en:"Free time: mingling"}
             ]}
          ]}
       ]
@@ -2103,8 +2088,8 @@ function renderSection(s, i){
     const panels = s.tabs.map(t=>`
       <div class="mc-panel" data-mcfmt="${t.k}"${t.k===first?"":" hidden"}>
         <div class="mc-top"><p class="mc-panel-d">${t.d[LANG]}</p>${t.tl?mcTimeline(t.tl):""}</div>
-        <div class="lvl-cards" role="tablist" aria-label="${LANG==="ru"?"Уровень":"Level"}">${t.levels.map(l=>lvlCard(t,l)).join("")}</div>
-        ${t.levels.map(l=>`<div class="lvl-panel" data-mcfmt="${t.k}" data-mclvl="${l.k}"${l.k==="std"?"":" hidden"}>${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${l.tl?`<div class="mc-top">${mcTimeline(l.tl)}</div>`:""}${l.ids.length===1?mwCard(SETS[l.ids[0]], l):grid(l.ids)}</div>`).join("")}
+        ${t.levels.length>1?`<div class="lvl-cards" role="tablist" aria-label="${LANG==="ru"?"Уровень":"Level"}">${t.levels.map(l=>lvlCard(t,l)).join("")}</div>`:""}
+        ${t.levels.map(l=>`<div class="lvl-panel" data-mcfmt="${t.k}" data-mclvl="${l.k}"${(l.k==="std"||t.levels.length===1)?"":" hidden"}>${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${l.tl?`<div class="mc-top">${mcTimeline(l.tl)}</div>`:""}${l.ids.length===1?mwCard(SETS[l.ids[0]], l):grid(l.ids)}</div>`).join("")}
       </div>`).join("");
     body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + (s.tabs.length>1?tabBar:"") + panels;
   }
@@ -2154,7 +2139,7 @@ function renderSection(s, i){
   }
   else if(s.type==="formats" && s.mw){
     const it = s.groups[0].items;
-    body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="mw-lv">` + it.map(x=>`<div class="mw-lv-c${x.top?" top":""}">${x.top?`<span class="mw-lv-rib">Black Casino</span>`:""}<div class="mw-lv-n">${x.n[LANG]}</div><div class="mw-lv-p">${T(x.p)}<small>${LANG==="ru"?"за гостя":"per guest"}</small></div><div class="mw-lv-h">⏱ ${x.hours[LANG]}</div><ul>${x.card[LANG].map(li=>`<li>${li}</li>`).join("")}</ul><div class="mw-lv-f">${x.fine[LANG]}</div></div>`).join("") + `</div>` + (s.foot?`<p class="fmt-foot">${s.foot[LANG]}</p>`:"");
+    body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="mw-lv${it.length===1?" solo":""}">` + it.map(x=>`<div class="mw-lv-c${x.top||it.length===1?" top":""}">${it.length===1?`<div class="mw-lv-a">`:""}${x.top?`<span class="mw-lv-rib">Black Casino</span>`:""}<div class="mw-lv-n">${x.n[LANG]}</div><div class="mw-lv-p">${T(x.p)}<small>${LANG==="ru"?"за гостя":"per guest"}</small></div><div class="mw-lv-h">⏱ ${x.hours[LANG]}</div>${it.length===1?`</div><div class="mw-lv-b"><div class="mw-lv-k">${LANG==="ru"?"В пакет входит":"The package includes"}</div>`:""}<ul>${x.card[LANG].map(li=>`<li>${li}</li>`).join("")}</ul><div class="mw-lv-f">${x.fine[LANG]}</div>${it.length===1?"</div>":""}</div>`).join("") + `</div>` + (s.foot?`<p class="fmt-foot">${s.foot[LANG]}</p>`:"");
   }
   else if(s.type==="formats"){
     body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="rows">`+ s.groups.map(g=>`
