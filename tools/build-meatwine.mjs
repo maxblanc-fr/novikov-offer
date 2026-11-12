@@ -47,8 +47,25 @@ const SEASON = {
 const FF_DISCOUNT = 1000;
 
 const INTRO = {
-  ru:"Винно-мясное казино — гастрономическая игра для тех, кто ценит хорошее мясо и вино. Гости вслепую дегустируют вино и мясные деликатесы и делают ставки фишками. Весь вечер рядом шеф и сомелье: расскажут, какое мясо прощает ошибки, какие маринады уместны к тому или иному блюду и какое вино станет лучшей парой. Игра проходит в Апельсиновом зале. Стандартный и Авторский уровни длятся 4 часа, Эксклюзивный — 5 часов, с приветствием гостей и фуршетом.",
-  en:"The meat & wine casino is a gastronomic game for those who love good meat and wine. Guests taste wine and meat delicacies blind and place chip bets. The chef and the sommelier stay with you all evening: they explain which meat forgives mistakes, which marinades suit which dish and which wine makes the perfect pairing. The game is played in the Orange hall. The Standard and Author’s levels run 4 hours, the Exclusive level 5 hours, including the guest welcome and the buffet."
+  kick:{ru:"О формате", en:"The format"},
+  h:{ru:"Вино и мясо вслепую.<em>Ставки — фишками.</em>", en:"Wine and meat, tasted blind.<em>Bets in chips.</em>"},
+  p1:{ru:"Гастрономическая игра для тех, кто ценит хорошее мясо и вино. Гости вслепую дегустируют вино и мясные деликатесы, угадывают и делают ставки фишками.",
+      en:"A gastronomic game for those who love good meat and wine. Guests taste wine and meat delicacies blind, guess and place chip bets."},
+  p2:{ru:"Весь вечер рядом шеф и сомелье: расскажут, какое мясо прощает ошибки, какие маринады уместны к тому или иному блюду и какое вино станет лучшей парой. Стандартный и Авторский уровни — 4 часа, Эксклюзивный — 5 часов, с приветствием гостей и фуршетом.",
+      en:"The chef and the sommelier stay with you all evening: they explain which meat forgives mistakes, which marinades suit which dish and which wine makes the perfect pairing. The Standard and Author’s levels run 4 hours, the Exclusive level 5 hours, including the guest welcome and the buffet."},
+  facts:[
+    {ic:"glass", b:{ru:"До 5 вин", en:"Up to 5 wines"}, s:{ru:"вслепую, от сомелье", en:"blind, poured by the sommelier"}},
+    {ic:"meat",  b:{ru:"До 4 отрубов", en:"Up to 4 cuts"}, s:{ru:"готовит и подаёт шеф", en:"cooked and served by the chef"}},
+    {ic:"chip",  b:{ru:"Ставки фишками", en:"Chip bets"}, s:{ru:"на вина и мясные отрубы", en:"on the wines and meat cuts"}},
+    {ic:"pin",   b:{ru:"Апельсиновый зал", en:"Orange hall"}, s:{ru:"игра проходит только здесь", en:"the only hall for the game"}}
+  ]
+};
+/* тонкие золотые иконки фактов */
+const FACT_IC = {
+  glass:'<path d="M8 3h8l-.6 6a3.4 3.4 0 0 1-6.8 0L8 3zM12 12.5V20M8.5 20h7"/>',
+  meat:'<path d="M14.5 4.5c3 0 5 2.2 5 5 0 4.5-5 9.5-10 9.5-2.6 0-4.5-1.8-4.5-4.2 0-3.3 3-4.3 4.6-6.3 1.4-1.8 2.4-4 4.9-4z"/><circle cx="14" cy="10" r="1.6"/>',
+  chip:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.2"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/>',
+  pin:'<path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>'
 };
 const NAME = {ru:"Винно-мясное казино", en:"Meat & Wine Casino"};
 
@@ -119,14 +136,36 @@ const THEME = `
   .hero .stat b{color:var(--gold-lite)}
   .sec-head{border-bottom-color:var(--gold)}
   .sec-head .ico{color:var(--red)}
-  .mw-intro{max-width:880px; margin:0 auto; padding:clamp(28px,4vw,44px) clamp(16px,5vw,48px) 0; font-size:clamp(16px,1.9vw,19px); line-height:1.6; color:var(--ink-soft)}
-  .mw-intro b{color:var(--red-deep)}
-  .mw-intro .mw-sign{display:block; width:64px; height:3px; background:var(--gold); margin-bottom:16px}
-  .ven-card.ven-game{grid-column:1 / -1; background:linear-gradient(135deg,#1A0A0E 0%,#3A0E18 100%); color:#fff; border:1px solid var(--gold); padding:20px 22px}
-  .ven-card.ven-game .ven-h b{color:var(--gold-lite); font-size:20px}
-  .ven-card.ven-game .ven-a,.ven-card.ven-game .ven-more{color:var(--gold-lite)}
-  .ven-game-badge{display:inline-block; margin-top:10px; padding:6px 12px; background:var(--gold); color:#1A0A0E; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.06em; font-size:12px}
-  .ven-game-d{display:block; margin-top:8px; font-size:14px; color:rgba(255,255,255,.85)}
+  /* описание формата — продолжение тёмной шапки */
+  .mw-intro{background:linear-gradient(180deg,#140608 0%,#1E0A10 100%); color:#EDE6DA; border-top:1px solid rgba(201,164,106,.25); border-bottom:1px solid rgba(201,164,106,.35)}
+  .mw-in{max-width:1080px; margin:0 auto; padding:clamp(34px,5vw,64px) clamp(16px,5vw,48px) clamp(26px,3.5vw,40px); display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:clamp(22px,4vw,56px); align-items:start}
+  .mw-kick{display:flex; align-items:center; gap:12px; font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.18em; font-size:12px; color:var(--gold); margin-bottom:14px}
+  .mw-kick::before{content:""; width:40px; height:1px; background:var(--gold)}
+  .mw-h{margin:0; font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif; font-weight:500; font-size:clamp(30px,4.2vw,48px); line-height:1.08; color:#fff; letter-spacing:-.005em}
+  .mw-h em{display:block; font-style:italic; color:var(--gold-lite)}
+  .mw-txt p{margin:0 0 14px; font-size:clamp(15px,1.6vw,17px); line-height:1.65; color:rgba(237,230,218,.86)}
+  .mw-txt p:first-child{color:#fff; font-size:clamp(16px,1.8vw,19px)}
+  .mw-facts{list-style:none; margin:0 auto; padding:0 clamp(16px,5vw,48px) clamp(30px,4vw,48px); max-width:1080px; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0}
+  .mw-facts li{display:flex; gap:12px; align-items:flex-start; padding:18px 18px 4px 0; border-top:1px solid rgba(201,164,106,.4)}
+  .mw-facts li + li{padding-left:18px; border-left:1px solid rgba(201,164,106,.18)}
+  .mw-facts svg{flex:none; width:30px; height:30px; fill:none; stroke:var(--gold); stroke-width:1.3; stroke-linecap:round; stroke-linejoin:round}
+  .mw-facts b{display:block; font-family:var(--head); font-weight:800; font-size:15px; color:#fff}
+  .mw-facts span{display:block; font-size:13px; line-height:1.4; color:rgba(237,230,218,.65); margin-top:2px}
+  @media(max-width:820px){ .mw-in{grid-template-columns:1fr} .mw-facts{grid-template-columns:1fr 1fr; row-gap:6px} .mw-facts li:nth-child(3){padding-left:0; border-left:0} }
+  @media(max-width:420px){ .mw-facts{grid-template-columns:1fr} .mw-facts li + li{padding-left:0; border-left:0} }
+  /* Апельсиновый зал — главная карточка с фото */
+  .ven-card.ven-game{grid-column:1 / -1; position:relative; overflow:hidden; min-height:clamp(240px,30vw,320px); display:flex; flex-direction:column; justify-content:flex-end; gap:6px;
+     padding:clamp(20px,3vw,32px); color:#fff; border:1px solid var(--gold);
+     background:linear-gradient(90deg,rgba(14,5,8,.92) 0%,rgba(14,5,8,.7) 45%,rgba(14,5,8,.15) 100%), url(images/halls/orange/1.jpg) center 55%/cover no-repeat, #140608}
+  .ven-card.ven-game .ven-h{display:block}
+  .ven-card.ven-game .ven-h b{display:block; font-family:"Cormorant Garamond","Playfair Display",Georgia,serif; font-weight:500; font-size:clamp(28px,3.6vw,40px); line-height:1.05; color:#fff; text-transform:none; letter-spacing:0}
+  .ven-card.ven-game .ven-a{display:inline-block; margin-top:6px; color:var(--gold-lite); font-size:14px}
+  .ven-card.ven-game .ven-more{align-self:flex-start; width:auto; color:var(--gold-lite); border-color:var(--gold); background:rgba(14,5,8,.35); margin-top:8px}
+  .ven-game-badge{position:absolute; top:clamp(16px,2.4vw,24px); left:clamp(20px,3vw,32px); display:inline-flex; align-items:center; gap:8px; padding:7px 14px; background:var(--gold); color:#1A0A0E; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.1em; font-size:11px}
+  .ven-game-badge::before{content:""; width:7px; height:7px; border-radius:50%; background:#7E1A2C}
+  .ven-game-d{display:block; max-width:460px; font-size:15px; line-height:1.5; color:rgba(255,255,255,.88)}
+  .ven-sub{grid-column:1 / -1; display:flex; align-items:center; gap:14px; margin:14px 0 2px; font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.14em; font-size:12px; color:var(--ink-soft)}
+  .ven-sub::after{content:""; flex:1; height:1px; background:var(--line)}
   .lvl-cnt{color:var(--red-deep)}
 `;
 
@@ -166,7 +205,8 @@ function build(seasonKey){
 
   // описание формата сразу под шапкой
   {
-    const intro = `<div class="mw-intro" data-mw-intro><span class="mw-sign"></span><p data-i18n="mwIntro">${INTRO.ru}</p></div>\n`;
+    const facts = INTRO.facts.map((f,i)=>`<li><svg viewBox="0 0 24 24" aria-hidden="true">${FACT_IC[f.ic]}</svg><div><b data-i18n="mwF${i}b">${f.b.ru}</b><span data-i18n="mwF${i}s">${f.s.ru}</span></div></li>`).join("");
+    const intro = `<section class="mw-intro" data-mw-intro><div class="mw-in"><div><div class="mw-kick" data-i18n="mwKick">${INTRO.kick.ru}</div><h2 class="mw-h" data-i18n="mwH">${INTRO.h.ru}</h2></div><div class="mw-txt"><p data-i18n="mwP1">${INTRO.p1.ru}</p><p data-i18n="mwP2">${INTRO.p2.ru}</p></div></div><ul class="mw-facts">${facts}</ul></section>\n`;
     const m = src.match(/<div class="hero">/);
     must(m, "нет .hero");
     const a = m.index, b = (()=>{ // конец div.hero
@@ -175,7 +215,7 @@ function build(seasonKey){
       throw new Error("hero не закрыт");
     })();
     src = src.slice(0,b) + "\n" + intro + src.slice(b);
-    src = src.replace(/^  lead:\{ru:/m, `  mwIntro:${L(INTRO)},\n  lead:{ru:`);
+    src = src.replace(/^  lead:\{ru:/m, `  mwKick:${L(INTRO.kick)}, mwH:${L(INTRO.h)}, mwP1:${L(INTRO.p1)}, mwP2:${L(INTRO.p2)},\n  ${INTRO.facts.map((f,i)=>`mwF${i}b:${L(f.b)}, mwF${i}s:${L(f.s)}`).join(", ")},\n  lead:{ru:`);
   }
 
   // сеты-«программы» уровней в общий справочник
@@ -240,7 +280,7 @@ ${items}
       const at = old.indexOf(`{slug:"${slug}"`);
       must(at>0, "нет зала "+slug);
       let h = old.slice(at, matchBrace(old, at)+1);
-      if(slug===GAME_HALL) h = h.replace(/^\{slug:"orange",/, `{slug:"orange", game:true,`);
+      if(slug===GAME_HALL) h = h.replace(/^\{slug:"orange",/, `{slug:"orange", game:true,`).replace(/n:\{ru:"Апельсиновый \(бизнес\)", en:"Orange \(business\)"\}/, `n:{ru:"Апельсиновый зал", en:"Orange hall"}`);
       return "        " + h;
     }).join(",\n");
     src = replaceSection(src, "venues", `{
@@ -319,8 +359,12 @@ ${levels}
     "ven-card");
   src = replaceOnce(src,
     '        ${DATA.hideCap ? "" : `<span class="ven-c">${h.cap[LANG]}</span>`}\n',
-    '        ${DATA.hideCap ? "" : `<span class="ven-c">${h.cap[LANG]}</span>`}\n        ${h.game ? `<span class="ven-game-badge">${LANG==="ru"?"Здесь проходит игра":"The game is played here"}</span><span class="ven-game-d">${LANG==="ru"?"Винно-мясное казино проводим только в Апельсиновом зале.":"We host the meat & wine casino in the Orange hall only."}</span>` : ""}\n',
+    '        ${DATA.hideCap ? "" : `<span class="ven-c">${h.cap[LANG]}</span>`}\n        ${h.game ? `<span class="ven-game-badge">${LANG==="ru"?"Здесь проходит игра":"The game is played here"}</span><span class="ven-game-d">${LANG==="ru"?"Винно-мясное казино проводим только в Апельсиновом зале: здесь накрываем игровой стол для гостей, шефа и сомелье.":"We host the meat & wine casino in the Orange hall only: this is where the game table for guests, the chef and the sommelier is set."}</span>` : ""}\n',
     "ven-game badge");
+  src = replaceOnce(src,
+    '      </div>\n    `).join("")+`</div>\n    <div class="ven-hint">',
+    '      </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие залы площадки":"Other halls of the venue"}</div>`:""}\n    `).join("")+`</div>\n    <div class="ven-hint">',
+    "ven-sub");
 
   const data = src.slice(src.indexOf("const DATA"), src.indexOf("const TR"));
   for(const bad of ["Демо-ужин","Индивидуальный мастер-класс (максимум","Дегустационные казино",'slug:"art"','Официант'])
