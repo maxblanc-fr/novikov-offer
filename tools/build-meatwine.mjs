@@ -72,6 +72,9 @@ const NAME = {ru:"Винно-мясное казино", en:"Meat & Wine Casino"
 /* Уровни. Состав — из пакетов EventyOn silver / gold / platinum. */
 const LEVELS_T = [
   {k:"std", n:{ru:"Стандартный", en:"Standard"}, hours:{ru:"4 часа", en:"4 hours"}, buffet:"Small Set", bwt:"132 г", bru:"7 позиций, 132 г", ben:"7 items, 132 g",
+   card:{ru:["3 вина стандартной категории вслепую","3 отборных мясных отруба с овощами","Фуршет Small Set · 7 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],
+         en:["3 standard-category wines, tasted blind","3 prime meat cuts with vegetables","Small Set buffet · 7 items","Italian homemade ice cream","Water, tea and coffee"]},
+   fine:{ru:"Вино @B@ ₽/бут., порция 50 мл · фуршет 132 г на гостя", en:"Wine @B@ ₽/bottle, 50 ml pour · buffet 132 g per guest"},
    game:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (@B@ ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами",
          en:"«Meat & Wine Casino» game · 3 wines of the standard category (@B@ ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables"},
    set:{id:"mw_std", ru:"3 вина и 3 отруба", en:"3 wines & 3 cuts",
@@ -83,6 +86,9 @@ const LEVELS_T = [
        [30,"Десерт и итоги игры","Dessert and game results"],
        [30,"Свободное время: общение","Free time: mingling"]]},
   {k:"author", n:{ru:"Авторский", en:"Author’s"}, hours:{ru:"4 часа", en:"4 hours"}, buffet:"Medium Set", bwt:"166 г", bru:"9 позиций, 166 г", ben:"9 items, 166 g",
+   card:{ru:["4 вина авторской категории вслепую","4 отборных мясных отруба с овощами","Фуршет Medium Set · 9 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],
+         en:["4 signature-category wines, tasted blind","4 prime meat cuts with vegetables","Medium Set buffet · 9 items","Italian homemade ice cream","Water, tea and coffee"]},
+   fine:{ru:"Вино @B@ ₽/бут., порция 50 мл · фуршет 166 г на гостя", en:"Wine @B@ ₽/bottle, 50 ml pour · buffet 166 g per guest"},
    game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (@B@ ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами",
          en:"«Meat & Wine Casino» game · 4 wines of the signature category (@B@ ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"},
    set:{id:"mw_author", ru:"4 вина и 4 отруба", en:"4 wines & 4 cuts",
@@ -94,6 +100,9 @@ const LEVELS_T = [
        [25,"Десерт и итоги игры","Dessert and game results"],
        [30,"Свободное время: общение","Free time: mingling"]]},
   {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, hours:{ru:"5 часов", en:"5 hours"}, buffet:"Large Set", bwt:"205 г", bru:"11 позиций, 205 г", ben:"11 items, 205 g",
+   card:{ru:["5 вин эксклюзивной категории вслепую","Раунд Black Casino","4 отборных мясных отруба с овощами","Салат на выбор","Фуршет Large Set · 11 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],
+         en:["5 exclusive-category wines, tasted blind","Black Casino round","4 prime meat cuts with vegetables","Salad of your choice","Large Set buffet · 11 items","Italian homemade ice cream","Water, tea and coffee"]},
+   fine:{ru:"Вино @B@ ₽/бут., порция 50 мл · фуршет 205 г на гостя", en:"Wine @B@ ₽/bottle, 50 ml pour · buffet 205 g per guest"},
    game:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (@B@ ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор",
          en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (@B@ ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice"},
    set:{id:"mw_excl", ru:"5 вин, 4 отруба и Black Casino", en:"5 wines, 4 cuts & Black Casino",
@@ -176,6 +185,40 @@ const THEME = `
   .mw-set-l li{counter-increment:mw; display:flex; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--line); font-size:15px; line-height:1.5; color:var(--ink)}
   .mw-set-l li::before{content:counter(mw,decimal-leading-zero); flex:none; font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-size:22px; line-height:1; color:var(--gold)}
   @media(max-width:760px){ .mw-set{grid-template-columns:1fr} }
+  /* шапка: фото зала с игровыми столами, заголовок с засечками */
+  .hero{background:linear-gradient(90deg,rgba(14,5,8,.95) 0%,rgba(14,5,8,.8) 40%,rgba(14,5,8,.25) 100%),
+                   url(images/formats/meatwine/orange.jpg) center 60%/cover no-repeat, #140608 !important}
+  .hero h1{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif !important; font-weight:500 !important; text-transform:none !important; letter-spacing:-.01em !important; line-height:1 !important; font-size:clamp(40px,6.4vw,80px) !important; max-width:17ch}
+  .hero h1 span{display:block; font-style:italic; color:var(--gold-lite) !important}
+  .hero .stat b{color:var(--gold-lite)}
+  /* заголовки разделов */
+  .sec-head{border-bottom:1px solid var(--gold) !important}
+  .sec-head .ico{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif; font-style:italic; font-weight:500; color:var(--gold) !important}
+  .sec-head h2{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif; font-weight:500; text-transform:none; letter-spacing:-.005em; line-height:1}
+  /* золотые акценты вместо красных полосок */
+  .lvl-prem,.ven-hint{border-left-color:var(--gold) !important}
+  .uff,.cater-card{border-top-color:var(--gold) !important}
+  .set-group{border-bottom-color:var(--gold) !important}
+  .lvl-card.active,.lvl-card:hover{border-top-color:var(--gold) !important}
+  /* карточки уровней */
+  .mw-lv{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; align-items:stretch}
+  .mw-lv-c{position:relative; display:flex; flex-direction:column; background:var(--card); border:1px solid var(--line); border-top:3px solid var(--gold); box-shadow:var(--card-shadow); padding:26px 24px 20px}
+  .mw-lv-c.top{background:linear-gradient(160deg,#1A0A0E 0%,#3A0E18 100%); border-color:var(--gold); color:#EDE6DA}
+  .mw-lv-rib{position:absolute; top:-1px; right:20px; transform:translateY(-50%); background:var(--gold); color:#1A0A0E; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.12em; font-size:10.5px; padding:6px 12px}
+  .mw-lv-n{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif; font-weight:500; font-size:30px; line-height:1.05; color:var(--ink)}
+  .mw-lv-c.top .mw-lv-n{color:#fff}
+  .mw-lv-p{margin-top:12px; font-family:var(--display); font-weight:400; letter-spacing:.01em; font-size:clamp(36px,3.8vw,46px); line-height:1; color:var(--red-deep)}
+  .mw-lv-c.top .mw-lv-p{color:var(--gold-lite)}
+  .mw-lv-p small{display:block; margin-top:6px; font-family:var(--head); font-weight:700; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .mw-lv-c.top .mw-lv-p small{color:rgba(237,230,218,.6)}
+  .mw-lv-h{margin-top:12px; padding-bottom:14px; border-bottom:1px solid var(--line); font-size:13px; font-weight:700; color:var(--ink-soft)}
+  .mw-lv-c.top .mw-lv-h{color:var(--gold-lite); border-bottom-color:rgba(201,164,106,.3)}
+  .mw-lv-c ul{list-style:none; margin:12px 0 16px; padding:0; flex:1}
+  .mw-lv-c li{position:relative; padding:6px 0 6px 20px; font-size:14.5px; line-height:1.45}
+  .mw-lv-c li::before{content:""; position:absolute; left:2px; top:13px; width:7px; height:7px; transform:rotate(45deg); border:1px solid var(--gold)}
+  .mw-lv-f{font-size:12px; line-height:1.45; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+  .mw-lv-c.top .mw-lv-f{color:rgba(237,230,218,.55); border-top-color:rgba(201,164,106,.3)}
+  @media(max-width:860px){ .mw-lv{grid-template-columns:1fr} }
   .lvl-cnt{color:var(--red-deep)}
 `;
 
@@ -243,13 +286,11 @@ function build(seasonKey){
   {
     const a = src.indexOf("stats:["), b = matchBrace(src, a+6);
     const old = src.slice(a, b+1);
-    const svc = +old.match(/\{n:"(\d+)", ru:"доп\. услуг"/)[1] - 2;
     src = src.slice(0,a) + `stats:[
     {n:"3",  ru:"уровня игры", en:"game levels"},
-    {n:"5",  ru:"вин в Эксклюзивном", en:"wines in Exclusive"},
-    {n:"4",  ru:"мясных отруба", en:"meat cuts"},
-    {n:"100+", ru:"позиций в барной карте", en:"drinks on the bar card"},
-    {n:"${svc}", ru:"доп. услуг", en:"add-on services"}
+    {n:"3–5",  ru:"вин вслепую", en:"wines tasted blind"},
+    {n:"3–4",  ru:"мясных отруба", en:"meat cuts"},
+    {n:"4–5", ru:"часов вечера", en:"hours of evening"}
   ]` + src.slice(b+1);
   }
 
@@ -261,9 +302,9 @@ function build(seasonKey){
     const items = LEVELS.map((l,i)=>`          {n:${L(l.n)},
             d:{ru:${q(`${l.game.ru} · фуршет «${l.buffet}» (${l.bru}) · итальянское домашнее мороженое · вода, чай и кофе · ${l.hours.ru}.`)},
                en:${q(`${l.game.en} · «${l.buffet}» buffet (${l.ben}) · Italian homemade ice cream · water, tea and coffee · ${l.hours.en}.`)}}, p:"${S.prices[i]}",
-            game:${L(l.game)}}`).join(",\n");
+            game:${L(l.game)}, hours:${L(l.hours)}, card:${JSON.stringify(l.card)}, fine:${L(l.fine)}${l.k==="excl"?", top:true":""}}`).join(",\n");
     src = replaceSection(src, "formats", `{
-      id:"formats", icon:"💼", type:"formats",
+      id:"formats", icon:"💼", type:"formats", mw:true,
       title:{ru:"Форматы и цены", en:"Formats & Pricing"},
       sub:${sub},
       note:{ru:"Цены за гостя", en:"Prices per guest"},
@@ -398,6 +439,14 @@ ${levels}
     '      </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие площадки для брони":"Other spaces available to book"}</div>`:""}\n    `).join("")+`</div>\n    <div class="ven-hint">',
     "ven-sub");
 
+  // «Форматы и цены»: три премиальные карточки уровней
+  src = replaceOnce(src,
+    '  else if(s.type==="formats"){',
+    '  else if(s.type==="formats" && s.mw){\n'
+    + '    const it = s.groups[0].items;\n'
+    + '    body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="mw-lv">` + it.map(x=>`<div class="mw-lv-c${x.top?" top":""}">${x.top?`<span class="mw-lv-rib">Black Casino</span>`:""}<div class="mw-lv-n">${x.n[LANG]}</div><div class="mw-lv-p">${T(x.p)}<small>${LANG==="ru"?"за гостя":"per guest"}</small></div><div class="mw-lv-h">⏱ ${x.hours[LANG]}</div><ul>${x.card[LANG].map(li=>`<li>${li}</li>`).join("")}</ul><div class="mw-lv-f">${x.fine[LANG]}</div></div>`).join("") + `</div>` + (s.foot?`<p class="fmt-foot">${s.foot[LANG]}</p>`:"");\n'
+    + '  }\n  else if(s.type==="formats"){',
+    "formats mw");
   // продление залов не показываем (решение 2026-11-12)
   {
     const re = /\n    <div class="ven-ext">[^\n]*<\/div>(?=\n)/;

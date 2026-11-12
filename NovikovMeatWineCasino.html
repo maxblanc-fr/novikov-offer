@@ -611,6 +611,40 @@
   .mw-set-l li{counter-increment:mw; display:flex; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--line); font-size:15px; line-height:1.5; color:var(--ink)}
   .mw-set-l li::before{content:counter(mw,decimal-leading-zero); flex:none; font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-size:22px; line-height:1; color:var(--gold)}
   @media(max-width:760px){ .mw-set{grid-template-columns:1fr} }
+  /* шапка: фото зала с игровыми столами, заголовок с засечками */
+  .hero{background:linear-gradient(90deg,rgba(14,5,8,.95) 0%,rgba(14,5,8,.8) 40%,rgba(14,5,8,.25) 100%),
+                   url(images/formats/meatwine/orange.jpg) center 60%/cover no-repeat, #140608 !important}
+  .hero h1{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif !important; font-weight:500 !important; text-transform:none !important; letter-spacing:-.01em !important; line-height:1 !important; font-size:clamp(40px,6.4vw,80px) !important; max-width:17ch}
+  .hero h1 span{display:block; font-style:italic; color:var(--gold-lite) !important}
+  .hero .stat b{color:var(--gold-lite)}
+  /* заголовки разделов */
+  .sec-head{border-bottom:1px solid var(--gold) !important}
+  .sec-head .ico{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif; font-style:italic; font-weight:500; color:var(--gold) !important}
+  .sec-head h2{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif; font-weight:500; text-transform:none; letter-spacing:-.005em; line-height:1}
+  /* золотые акценты вместо красных полосок */
+  .lvl-prem,.ven-hint{border-left-color:var(--gold) !important}
+  .uff,.cater-card{border-top-color:var(--gold) !important}
+  .set-group{border-bottom-color:var(--gold) !important}
+  .lvl-card.active,.lvl-card:hover{border-top-color:var(--gold) !important}
+  /* карточки уровней */
+  .mw-lv{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; align-items:stretch}
+  .mw-lv-c{position:relative; display:flex; flex-direction:column; background:var(--card); border:1px solid var(--line); border-top:3px solid var(--gold); box-shadow:var(--card-shadow); padding:26px 24px 20px}
+  .mw-lv-c.top{background:linear-gradient(160deg,#1A0A0E 0%,#3A0E18 100%); border-color:var(--gold); color:#EDE6DA}
+  .mw-lv-rib{position:absolute; top:-1px; right:20px; transform:translateY(-50%); background:var(--gold); color:#1A0A0E; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.12em; font-size:10.5px; padding:6px 12px}
+  .mw-lv-n{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif; font-weight:500; font-size:30px; line-height:1.05; color:var(--ink)}
+  .mw-lv-c.top .mw-lv-n{color:#fff}
+  .mw-lv-p{margin-top:12px; font-family:var(--display); font-weight:400; letter-spacing:.01em; font-size:clamp(36px,3.8vw,46px); line-height:1; color:var(--red-deep)}
+  .mw-lv-c.top .mw-lv-p{color:var(--gold-lite)}
+  .mw-lv-p small{display:block; margin-top:6px; font-family:var(--head); font-weight:700; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .mw-lv-c.top .mw-lv-p small{color:rgba(237,230,218,.6)}
+  .mw-lv-h{margin-top:12px; padding-bottom:14px; border-bottom:1px solid var(--line); font-size:13px; font-weight:700; color:var(--ink-soft)}
+  .mw-lv-c.top .mw-lv-h{color:var(--gold-lite); border-bottom-color:rgba(201,164,106,.3)}
+  .mw-lv-c ul{list-style:none; margin:12px 0 16px; padding:0; flex:1}
+  .mw-lv-c li{position:relative; padding:6px 0 6px 20px; font-size:14.5px; line-height:1.45}
+  .mw-lv-c li::before{content:""; position:absolute; left:2px; top:13px; width:7px; height:7px; transform:rotate(45deg); border:1px solid var(--gold)}
+  .mw-lv-f{font-size:12px; line-height:1.45; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+  .mw-lv-c.top .mw-lv-f{color:rgba(237,230,218,.55); border-top-color:rgba(201,164,106,.3)}
+  @media(max-width:860px){ .mw-lv{grid-template-columns:1fr} }
   .lvl-cnt{color:var(--red-deep)}
 </style>
 </head>
@@ -750,14 +784,13 @@ const DATA = {
   hideCap:true, /* винно-мясное казино: вместимость не пишем */
   stats:[
     {n:"3",  ru:"уровня игры", en:"game levels"},
-    {n:"5",  ru:"вин в Эксклюзивном", en:"wines in Exclusive"},
-    {n:"4",  ru:"мясных отруба", en:"meat cuts"},
-    {n:"100+", ru:"позиций в барной карте", en:"drinks on the bar card"},
-    {n:"15", ru:"доп. услуг", en:"add-on services"}
+    {n:"3–5",  ru:"вин вслепую", en:"wines tasted blind"},
+    {n:"3–4",  ru:"мясных отруба", en:"meat cuts"},
+    {n:"4–5", ru:"часов вечера", en:"hours of evening"}
   ],
   sections:[
     {
-      id:"formats", icon:"💼", type:"formats",
+      id:"formats", icon:"💼", type:"formats", mw:true,
       title:{ru:"Форматы и цены", en:"Formats & Pricing"},
       sub:{ru:"Выберите формат мероприятия — цены за человека, действуют с апреля 2026", en:"Choose your event format — prices per person, valid from April 2026"},
       note:{ru:"Цены за гостя", en:"Prices per guest"},
@@ -768,15 +801,15 @@ const DATA = {
           {n:{ru:"Стандартный", en:"Standard"},
             d:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (8 500 ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами · фуршет «Small Set» (7 позиций, 132 г) · итальянское домашнее мороженое · вода, чай и кофе · 4 часа.",
                en:"«Meat & Wine Casino» game · 3 wines of the standard category (8 500 ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables · «Small Set» buffet (7 items, 132 g) · Italian homemade ice cream · water, tea and coffee · 4 hours."}, p:"15 200 ₽",
-            game:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (8 500 ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами", en:"«Meat & Wine Casino» game · 3 wines of the standard category (8 500 ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables"}},
+            game:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (8 500 ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами", en:"«Meat & Wine Casino» game · 3 wines of the standard category (8 500 ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables"}, hours:{ru:"4 часа", en:"4 hours"}, card:{"ru":["3 вина стандартной категории вслепую","3 отборных мясных отруба с овощами","Фуршет Small Set · 7 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],"en":["3 standard-category wines, tasted blind","3 prime meat cuts with vegetables","Small Set buffet · 7 items","Italian homemade ice cream","Water, tea and coffee"]}, fine:{ru:"Вино 8 500 ₽/бут., порция 50 мл · фуршет 132 г на гостя", en:"Wine 8 500 ₽/bottle, 50 ml pour · buffet 132 g per guest"}},
           {n:{ru:"Авторский", en:"Author’s"},
             d:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (11 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами · фуршет «Medium Set» (9 позиций, 166 г) · итальянское домашнее мороженое · вода, чай и кофе · 4 часа.",
                en:"«Meat & Wine Casino» game · 4 wines of the signature category (11 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables · «Medium Set» buffet (9 items, 166 g) · Italian homemade ice cream · water, tea and coffee · 4 hours."}, p:"16 400 ₽",
-            game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (11 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами", en:"«Meat & Wine Casino» game · 4 wines of the signature category (11 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"}},
+            game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (11 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами", en:"«Meat & Wine Casino» game · 4 wines of the signature category (11 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"}, hours:{ru:"4 часа", en:"4 hours"}, card:{"ru":["4 вина авторской категории вслепую","4 отборных мясных отруба с овощами","Фуршет Medium Set · 9 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],"en":["4 signature-category wines, tasted blind","4 prime meat cuts with vegetables","Medium Set buffet · 9 items","Italian homemade ice cream","Water, tea and coffee"]}, fine:{ru:"Вино 11 500 ₽/бут., порция 50 мл · фуршет 166 г на гостя", en:"Wine 11 500 ₽/bottle, 50 ml pour · buffet 166 g per guest"}},
           {n:{ru:"Эксклюзивный", en:"Exclusive"},
             d:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (14 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор · фуршет «Large Set» (11 позиций, 205 г) · итальянское домашнее мороженое · вода, чай и кофе · 5 часов.",
                en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (14 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice · «Large Set» buffet (11 items, 205 g) · Italian homemade ice cream · water, tea and coffee · 5 hours."}, p:"17 700 ₽",
-            game:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (14 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор", en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (14 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice"}}
+            game:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (14 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор", en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (14 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice"}, hours:{ru:"5 часов", en:"5 hours"}, card:{"ru":["5 вин эксклюзивной категории вслепую","Раунд Black Casino","4 отборных мясных отруба с овощами","Салат на выбор","Фуршет Large Set · 11 позиций","Итальянское домашнее мороженое","Вода, чай и кофе"],"en":["5 exclusive-category wines, tasted blind","Black Casino round","4 prime meat cuts with vegetables","Salad of your choice","Large Set buffet · 11 items","Italian homemade ice cream","Water, tea and coffee"]}, fine:{ru:"Вино 14 500 ₽/бут., порция 50 мл · фуршет 205 г на гостя", en:"Wine 14 500 ₽/bottle, 50 ml pour · buffet 205 g per guest"}, top:true}
         ]}
       ],
       foot:{ru:"Казино не является азартной игрой: участники не делают денежных ставок. 18+. Чрезмерное употребление алкоголя вредит вашему здоровью.",
@@ -1962,6 +1995,10 @@ function renderSection(s, i){
   }
   else if(s.type==="note"){
     body = `<div class="notecard">${s.html[LANG]}</div>`;
+  }
+  else if(s.type==="formats" && s.mw){
+    const it = s.groups[0].items;
+    body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="mw-lv">` + it.map(x=>`<div class="mw-lv-c${x.top?" top":""}">${x.top?`<span class="mw-lv-rib">Black Casino</span>`:""}<div class="mw-lv-n">${x.n[LANG]}</div><div class="mw-lv-p">${T(x.p)}<small>${LANG==="ru"?"за гостя":"per guest"}</small></div><div class="mw-lv-h">⏱ ${x.hours[LANG]}</div><ul>${x.card[LANG].map(li=>`<li>${li}</li>`).join("")}</ul><div class="mw-lv-f">${x.fine[LANG]}</div></div>`).join("") + `</div>` + (s.foot?`<p class="fmt-foot">${s.foot[LANG]}</p>`:"");
   }
   else if(s.type==="formats"){
     body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="rows">`+ s.groups.map(g=>`
