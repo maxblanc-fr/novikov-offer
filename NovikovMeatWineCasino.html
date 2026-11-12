@@ -707,9 +707,9 @@ const SETS = {
   ct5:          {ru:"Перечный контраст", en:"Pepper Contrast", d:["Тёплый салат с говядиной и чёрно-перечным соусом","Запечённый цыплёнок с кукурузным кремом и соусом жу","Тирамису с манговым муссом и вафельной крошкой"]},
   ct6:          {ru:"Цитрусы и Италия", en:"Citrus & Italy", d:["Севиче из тунца с цитрусами","Утиная грудка с сельдереем и черникой","Сицилийские канноли с рикоттой и цедрой апельсина"]},
   /* винно-мясное казино — tools/build-meatwine.mjs */
-  mw_std: {ru:"3 вина и 3 отруба", en:"3 wines & 3 cuts", c:[], d:["3 вина стандартной категории вслепую, порция 50 мл","3 отборных мясных отруба стандартной категории с овощами","Итальянское домашнее мороженое"]},
-  mw_author: {ru:"4 вина и 4 отруба", en:"4 wines & 4 cuts", c:[], d:["4 вина авторской категории вслепую, порция 50 мл","4 отборных мясных отруба авторской категории с овощами","Итальянское домашнее мороженое"]},
-  mw_excl: {ru:"5 вин, 4 отруба и Black Casino", en:"5 wines, 4 cuts & Black Casino", c:[], d:["5 вин эксклюзивной категории вслепую, порция 50 мл, и раунд Black Casino","4 отборных мясных отруба эксклюзивной категории с овощами","Салат на выбор","Итальянское домашнее мороженое"]}
+  mw_std: {ru:"3 вина и 3 отруба", en:"3 wines & 3 cuts", c:[], d:["3 вина стандартной категории (8 500 ₽/бут.) вслепую, порция 50 мл","3 отборных мясных отруба стандартной категории с овощами","Итальянское домашнее мороженое"]},
+  mw_author: {ru:"4 вина и 4 отруба", en:"4 wines & 4 cuts", c:[], d:["4 вина авторской категории (11 500 ₽/бут.) вслепую, порция 50 мл","4 отборных мясных отруба авторской категории с овощами","Итальянское домашнее мороженое"]},
+  mw_excl: {ru:"5 вин, 4 отруба и Black Casino", en:"5 wines, 4 cuts & Black Casino", c:[], d:["5 вин эксклюзивной категории (14 500 ₽/бут.) вслепую, порция 50 мл, и раунд Black Casino","4 отборных мясных отруба эксклюзивной категории с овощами","Салат на выбор","Итальянское домашнее мороженое"]}
 };
 
 /* ---------- OFFER DATA ---------- */
@@ -733,17 +733,17 @@ const DATA = {
       groups:[
         {head:{ru:"Винно-мясное казино — 3 уровня", en:"Meat & Wine Casino — 3 levels"}, items:[
           {n:{ru:"Стандартный", en:"Standard"},
-            d:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами · фуршет «Small Set» (7 позиций, 132 г) · итальянское домашнее мороженое · вода, чай и кофе · 4 часа.",
-               en:"«Meat & Wine Casino» game · 3 wines of the standard category (50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables · «Small Set» buffet (7 items, 132 g) · Italian homemade ice cream · water, tea and coffee · 4 hours."}, p:"15 200 ₽",
-            game:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами", en:"«Meat & Wine Casino» game · 3 wines of the standard category (50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables"}},
+            d:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (8 500 ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами · фуршет «Small Set» (7 позиций, 132 г) · итальянское домашнее мороженое · вода, чай и кофе · 4 часа.",
+               en:"«Meat & Wine Casino» game · 3 wines of the standard category (8 500 ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables · «Small Set» buffet (7 items, 132 g) · Italian homemade ice cream · water, tea and coffee · 4 hours."}, p:"15 200 ₽",
+            game:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (8 500 ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами", en:"«Meat & Wine Casino» game · 3 wines of the standard category (8 500 ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables"}},
           {n:{ru:"Авторский", en:"Author’s"},
-            d:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами · фуршет «Medium Set» (9 позиций, 166 г) · итальянское домашнее мороженое · вода, чай и кофе · 4 часа.",
-               en:"«Meat & Wine Casino» game · 4 wines of the signature category (50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables · «Medium Set» buffet (9 items, 166 g) · Italian homemade ice cream · water, tea and coffee · 4 hours."}, p:"16 400 ₽",
-            game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами", en:"«Meat & Wine Casino» game · 4 wines of the signature category (50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"}},
+            d:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (11 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами · фуршет «Medium Set» (9 позиций, 166 г) · итальянское домашнее мороженое · вода, чай и кофе · 4 часа.",
+               en:"«Meat & Wine Casino» game · 4 wines of the signature category (11 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables · «Medium Set» buffet (9 items, 166 g) · Italian homemade ice cream · water, tea and coffee · 4 hours."}, p:"16 400 ₽",
+            game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (11 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами", en:"«Meat & Wine Casino» game · 4 wines of the signature category (11 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"}},
           {n:{ru:"Эксклюзивный", en:"Exclusive"},
-            d:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор · фуршет «Large Set» (11 позиций, 205 г) · итальянское домашнее мороженое · вода, чай и кофе · 5 часов.",
-               en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice · «Large Set» buffet (11 items, 205 g) · Italian homemade ice cream · water, tea and coffee · 5 hours."}, p:"17 700 ₽",
-            game:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор", en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice"}}
+            d:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (14 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор · фуршет «Large Set» (11 позиций, 205 г) · итальянское домашнее мороженое · вода, чай и кофе · 5 часов.",
+               en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (14 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice · «Large Set» buffet (11 items, 205 g) · Italian homemade ice cream · water, tea and coffee · 5 hours."}, p:"17 700 ₽",
+            game:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (14 500 ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор", en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (14 500 ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice"}}
         ]}
       ],
       foot:{ru:"Казино не является азартной игрой: участники не делают денежных ставок. 18+. Чрезмерное употребление алкоголя вредит вашему здоровью.",
@@ -1362,11 +1362,11 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
-"3 вина стандартной категории вслепую, порция 50 мл":"3 standard-category wines tasted blind, 50 ml pour",
+"3 вина стандартной категории (8 500 ₽/бут.) вслепую, порция 50 мл":"3 standard-category wines (8 500 ₽/bottle) tasted blind, 50 ml pour",
 "3 отборных мясных отруба стандартной категории с овощами":"3 prime meat cuts of the standard category with vegetables",
-"4 вина авторской категории вслепую, порция 50 мл":"4 signature-category wines tasted blind, 50 ml pour",
+"4 вина авторской категории (11 500 ₽/бут.) вслепую, порция 50 мл":"4 signature-category wines (11 500 ₽/bottle) tasted blind, 50 ml pour",
 "4 отборных мясных отруба авторской категории с овощами":"4 prime meat cuts of the signature category with vegetables",
-"5 вин эксклюзивной категории вслепую, порция 50 мл, и раунд Black Casino":"5 exclusive-category wines tasted blind, 50 ml pour, and a Black Casino round",
+"5 вин эксклюзивной категории (14 500 ₽/бут.) вслепую, порция 50 мл, и раунд Black Casino":"5 exclusive-category wines (14 500 ₽/bottle) tasted blind, 50 ml pour, and a Black Casino round",
 "4 отборных мясных отруба эксклюзивной категории с овощами":"4 prime meat cuts of the exclusive category with vegetables",
 "Салат на выбор":"Salad of your choice",
 "Итальянское домашнее мороженое":"Italian homemade ice cream",

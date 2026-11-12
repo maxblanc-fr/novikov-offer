@@ -33,12 +33,12 @@ const L = o => `{ru:${q(o.ru)}, en:${q(o.en)}}`;
    на которую у EventyOn НГ винно-мясное дороже НГ-кулинарии (17 300 / 18 300 / 19 300 против
    14 500 / 15 500 / 17 100 чт–сб): +2 800 / +2 800 / +2 200. */
 const SEASON = {
-  adult: {src:"NovikovOffer.html",   out:"NovikovMeatWineCasino.html",        prices:["15 200 ₽","16 400 ₽","17 700 ₽"],
+  adult: {src:"NovikovOffer.html",   out:"NovikovMeatWineCasino.html",        prices:["15 200 ₽","16 400 ₽","17 700 ₽"], bottles:["8 500","11 500","14 500"],
           title:"Novikov School — Винно-мясное казино 2026 / Meat & Wine Casino 2026",
           h1:{ru:'Винно-мясное казино <span>Novikov School</span>', en:'<span>Novikov School</span> Meat &amp; Wine Casino'},
           lead:{ru:"Гастрономическая игра для ценителей: вино и мясные деликатесы вслепую, ставки фишками, шеф и сомелье за одним столом с гостями.",
                 en:"A gastronomic game for connoisseurs: wine and prime meat tasted blind, chip bets, and a chef and a sommelier at the table with your guests."}},
-  ny:    {src:"NovikovNewYear.html", out:"NovikovNewYearMeatWineCasino.html", prices:["18 300 ₽","19 800 ₽","20 700 ₽"],
+  ny:    {src:"NovikovNewYear.html", out:"NovikovNewYearMeatWineCasino.html", prices:["18 300 ₽","19 800 ₽","20 700 ₽"], bottles:["10 200","13 800","17 400"],
           title:"Novikov School — Винно-мясное казино · Новый год 2027 / New Year Meat & Wine Casino 2027",
           h1:{ru:'Винно-мясное казино на Новый год в <span>Novikov School</span>', en:'New Year Meat &amp; Wine Casino at <span>Novikov School</span>'},
           lead:{ru:"Новогодний вечер для тех, кто ценит хорошее мясо и вино: дегустация вслепую, ставки фишками, шеф и сомелье за одним столом с гостями.",
@@ -53,12 +53,12 @@ const INTRO = {
 const NAME = {ru:"Винно-мясное казино", en:"Meat & Wine Casino"};
 
 /* Уровни. Состав — из пакетов EventyOn silver / gold / platinum. */
-const LEVELS = [
+const LEVELS_T = [
   {k:"std", n:{ru:"Стандартный", en:"Standard"}, hours:{ru:"4 часа", en:"4 hours"}, buffet:"Small Set", bwt:"132 г", bru:"7 позиций, 132 г", ben:"7 items, 132 g",
-   game:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами",
-         en:"«Meat & Wine Casino» game · 3 wines of the standard category (50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables"},
+   game:{ru:"Игра «Винно-мясное казино» · 3 вина стандартной категории (@B@ ₽/бут., дегустационная порция 50 мл) · 3 отборных мясных отруба стандартной категории с овощами",
+         en:"«Meat & Wine Casino» game · 3 wines of the standard category (@B@ ₽/bottle, 50 ml tasting pour) · 3 prime meat cuts of the standard category with vegetables"},
    set:{id:"mw_std", ru:"3 вина и 3 отруба", en:"3 wines & 3 cuts",
-        d:["3 вина стандартной категории вслепую, порция 50 мл","3 отборных мясных отруба стандартной категории с овощами","Итальянское домашнее мороженое"]},
+        d:["3 вина стандартной категории (@B@ ₽/бут.) вслепую, порция 50 мл","3 отборных мясных отруба стандартной категории с овощами","Итальянское домашнее мороженое"]},
    tl:[[30,"Сбор гостей, фуршет и приветственные напитки","Guest welcome, buffet and welcome drinks"],
        [80,"Играем: 2 раунда винного и 2 раунда мясного казино","Game: 2 wine rounds and 2 meat rounds",true],
        [20,"Перерыв","Break"],
@@ -66,10 +66,10 @@ const LEVELS = [
        [30,"Десерт и итоги игры","Dessert and game results"],
        [30,"Свободное время: общение","Free time: mingling"]]},
   {k:"author", n:{ru:"Авторский", en:"Author’s"}, hours:{ru:"4 часа", en:"4 hours"}, buffet:"Medium Set", bwt:"166 г", bru:"9 позиций, 166 г", ben:"9 items, 166 g",
-   game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами",
-         en:"«Meat & Wine Casino» game · 4 wines of the signature category (50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"},
+   game:{ru:"Игра «Винно-мясное казино» · 4 вина авторской категории (@B@ ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба авторской категории с овощами",
+         en:"«Meat & Wine Casino» game · 4 wines of the signature category (@B@ ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the signature category with vegetables"},
    set:{id:"mw_author", ru:"4 вина и 4 отруба", en:"4 wines & 4 cuts",
-        d:["4 вина авторской категории вслепую, порция 50 мл","4 отборных мясных отруба авторской категории с овощами","Итальянское домашнее мороженое"]},
+        d:["4 вина авторской категории (@B@ ₽/бут.) вслепую, порция 50 мл","4 отборных мясных отруба авторской категории с овощами","Итальянское домашнее мороженое"]},
    tl:[[30,"Сбор гостей, фуршет и приветственные напитки","Guest welcome, buffet and welcome drinks"],
        [70,"Играем: 2 раунда винного и 2 раунда мясного казино","Game: 2 wine rounds and 2 meat rounds",true],
        [15,"Перерыв","Break"],
@@ -77,10 +77,10 @@ const LEVELS = [
        [25,"Десерт и итоги игры","Dessert and game results"],
        [30,"Свободное время: общение","Free time: mingling"]]},
   {k:"excl", n:{ru:"Эксклюзивный", en:"Exclusive"}, hours:{ru:"5 часов", en:"5 hours"}, buffet:"Large Set", bwt:"205 г", bru:"11 позиций, 205 г", ben:"11 items, 205 g",
-   game:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор",
-         en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice"},
+   game:{ru:"Игра «Винно-мясное казино» + раунд Black Casino · 5 вин эксклюзивной категории (@B@ ₽/бут., дегустационная порция 50 мл) · 4 отборных мясных отруба эксклюзивной категории с овощами · салат на выбор",
+         en:"«Meat & Wine Casino» game + Black Casino round · 5 wines of the exclusive category (@B@ ₽/bottle, 50 ml tasting pour) · 4 prime meat cuts of the exclusive category with vegetables · salad of your choice"},
    set:{id:"mw_excl", ru:"5 вин, 4 отруба и Black Casino", en:"5 wines, 4 cuts & Black Casino",
-        d:["5 вин эксклюзивной категории вслепую, порция 50 мл, и раунд Black Casino","4 отборных мясных отруба эксклюзивной категории с овощами","Салат на выбор","Итальянское домашнее мороженое"]},
+        d:["5 вин эксклюзивной категории (@B@ ₽/бут.) вслепую, порция 50 мл, и раунд Black Casino","4 отборных мясных отруба эксклюзивной категории с овощами","Салат на выбор","Итальянское домашнее мороженое"]},
    tl:[[30,"Сбор гостей, фуршет и приветственные напитки","Guest welcome, buffet and welcome drinks"],
        [70,"Играем: 2 раунда винного и 2 раунда мясного казино","Game: 2 wine rounds and 2 meat rounds",true],
        [30,"Перерыв и салат","Break and salad"],
@@ -88,12 +88,12 @@ const LEVELS = [
        [30,"Десерт и итоги игры","Dessert and game results"],
        [60,"Свободное время: общение","Free time: mingling"]]}
 ];
-const DISH_EN = {
-  "3 вина стандартной категории вслепую, порция 50 мл":"3 standard-category wines tasted blind, 50 ml pour",
+const DISH_EN_T = {
+  "3 вина стандартной категории (@B@ ₽/бут.) вслепую, порция 50 мл":"3 standard-category wines (@B@ ₽/bottle) tasted blind, 50 ml pour",
   "3 отборных мясных отруба стандартной категории с овощами":"3 prime meat cuts of the standard category with vegetables",
-  "4 вина авторской категории вслепую, порция 50 мл":"4 signature-category wines tasted blind, 50 ml pour",
+  "4 вина авторской категории (@B@ ₽/бут.) вслепую, порция 50 мл":"4 signature-category wines (@B@ ₽/bottle) tasted blind, 50 ml pour",
   "4 отборных мясных отруба авторской категории с овощами":"4 prime meat cuts of the signature category with vegetables",
-  "5 вин эксклюзивной категории вслепую, порция 50 мл, и раунд Black Casino":"5 exclusive-category wines tasted blind, 50 ml pour, and a Black Casino round",
+  "5 вин эксклюзивной категории (@B@ ₽/бут.) вслепую, порция 50 мл, и раунд Black Casino":"5 exclusive-category wines (@B@ ₽/bottle) tasted blind, 50 ml pour, and a Black Casino round",
   "4 отборных мясных отруба эксклюзивной категории с овощами":"4 prime meat cuts of the exclusive category with vegetables",
   "Салат на выбор":"Salad of your choice",
   "Итальянское домашнее мороженое":"Italian homemade ice cream",
@@ -141,6 +141,13 @@ function removeItem(src, head){
 
 function build(seasonKey){
   const S = SEASON[seasonKey];
+  /* Цена бутылки — как в «Винном казино» Новикова (Классика / Авторский / Эксклюзив) этого сезона */
+  const sub = (x,i) => JSON.parse(JSON.stringify(x).replace(/@B@/g, S.bottles[i]));
+  const LEVELS = LEVELS_T.map((l,i)=>sub(l,i));
+  const DISH_EN = Object.fromEntries(Object.entries(DISH_EN_T).map(([k,v])=>{
+    const i = /^3 /.test(k) ? 0 : /^4 вина/.test(k) ? 1 : /^5 /.test(k) ? 2 : -1;
+    return i<0 ? [k,v] : [sub(k,i), sub(v,i)];
+  }));
   let src = read(S.src);
 
   src = src.replace(/<title>[^<]*<\/title>/, `<title>${S.title}</title>`);
