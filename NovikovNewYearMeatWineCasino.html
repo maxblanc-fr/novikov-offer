@@ -714,6 +714,16 @@
   .ven-game-d{display:block; max-width:460px; font-size:15px; line-height:1.5; color:rgba(255,255,255,.88)}
   .ven-sub{grid-column:1 / -1; display:flex; align-items:center; gap:14px; margin:14px 0 2px; font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.14em; font-size:12px; color:var(--ink-soft)}
   .ven-sub::after{content:""; flex:1; height:1px; background:var(--line)}
+  /* «Программа»: один сет на уровень — широкая карточка под таймингом */
+  .mw-set{display:grid; grid-template-columns:minmax(0,4fr) minmax(0,7fr); background:var(--card); border:1px solid var(--line); border-top:3px solid var(--gold); box-shadow:var(--card-shadow)}
+  .mw-set-h{padding:clamp(20px,2.6vw,30px); background:linear-gradient(160deg,#1A0A0E 0%,#3A0E18 100%); color:#fff; display:flex; flex-direction:column; gap:10px}
+  .mw-set-k{font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--gold)}
+  .mw-set-h h3{margin:0; font-family:"Cormorant Garamond","Playfair Display",Georgia,serif; font-weight:500; font-size:clamp(26px,3vw,36px); line-height:1.1; text-transform:none; letter-spacing:0; color:#fff}
+  .mw-set-t{margin-top:auto; font-size:13px; color:var(--gold-lite)}
+  .mw-set-l{list-style:none; counter-reset:mw; margin:0; padding:clamp(14px,2vw,22px) clamp(18px,2.6vw,30px); display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:0 26px; align-content:center}
+  .mw-set-l li{counter-increment:mw; display:flex; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--line); font-size:15px; line-height:1.5; color:var(--ink)}
+  .mw-set-l li::before{content:counter(mw,decimal-leading-zero); flex:none; font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-size:22px; line-height:1; color:var(--gold)}
+  @media(max-width:760px){ .mw-set{grid-template-columns:1fr} }
   .lvl-cnt{color:var(--red-deep)}
 </style>
 </head>
@@ -891,17 +901,15 @@ const DATA = {
     },
     {
       id:"venues", icon:"🏛️", type:"venues",
-      ext:[{s:["lemon"], p:"20 000 ₽"}, {s:["olive","granat"], p:"30 000 ₽"}, {s:["cafe"], p:"40 000 ₽"}],
+      ext:[{s:["olive","granat"],p:"30 000 ₽"},{s:["cafe"],p:"40 000 ₽"}],
       title:{ru:"Залы", en:"Venues"},
       sub:{ru:"Игра проходит в Апельсиновом зале", en:"The game is played in the Orange hall"},
       note:{ru:"Москва, Большая Якиманка, 22", en:"Moscow, Bolshaya Yakimanka 22"},
       halls:[
         {slug:"orange", game:true, n:{ru:"Апельсиновый зал", en:"Orange hall"}, area:"66 м²", cap:{ru:"до 30 (театр) / 24 со столами", en:"up to 30 (theatre) / 24 with tables"}},
         {slug:"cafe", n:{ru:"Остров", en:"Island"}, area:"150 м²", cap:{ru:"до 45 гостей · 25 рабочих мест", en:"up to 45 guests · 25 workstations"}},
-        {slug:"prof", n:{ru:"Prof", en:"Prof"}, area:"50 м²", cap:{ru:"проф. кухня · до 18 (групповой МК)", en:"pro kitchen · up to 18 (group MC)"}},
         {slug:"granat", n:{ru:"Гранатовый", en:"Pomegranate"}, area:"104 м²", cap:{ru:"до 20 гостей · 18 групп. / 12 инд. МК", en:"up to 20 guests · 18 group / 12 individual MC"}},
         {slug:"olive", n:{ru:"Оливковый", en:"Olive"}, area:"105 м²", cap:{ru:"до 20 гостей · 18 групп. / 12 инд. МК", en:"up to 20 guests · 18 group / 12 individual MC"}},
-        {slug:"lemon", n:{ru:"Лимонный", en:"Lemon"}, area:"82 м²", cap:{ru:"до 10 гостей · 10 групп. / 12 инд. МК", en:"up to 10 guests · 10 group / 12 individual MC"}},
         {slug:"tomato", n:{ru:"Томатный (бизнес)", en:"Tomato (business)"}, area:"52 м²", cap:{ru:"до 30 (театр) / 24 со столами", en:"up to 30 (theatre) / 24 with tables"}}
       ],
       combos:{ru:"", en:""},
@@ -982,7 +990,7 @@ const DATA = {
         {ru:"Хлебная корзина", en:"Bread basket", info:"багет французский и ржаной, сливочное масло с травами", wt:"640 г", price:1200, img:"uploads/buffet/platter-bread.webp?v=2"}
       ],
       catering:{ru:"Добавить блюда в стол — можно выбрать из нашего кейтеринга", en:"Add shared dishes — choose from our catering menu",
-                btn:{ru:"Меню кейтеринга", en:"Catering menu"}, url:"https://space.novikovschool.com/catering"},
+                btn:{ru:"Меню кейтеринга", en:"Catering menu"}, url:"https://space.novikovschool.com/catering"}
     },
     {
       id:"services", icon:"✨", type:"services",
@@ -2038,6 +2046,7 @@ function renderSection(s, i){
         <ul>${it.d.map((dish,i)=>`<li><span class="course">${cc[i]||""}</span>${T(dish)}</li>`).join("")}</ul>
       </div>`; };
     const grid = ids => `<div class="grid sets">`+ ids.map(id=>setCard(SETS[id])).join("") + `</div>`;
+    const mwCard = (it,l) => `<div class="mw-set"><div class="mw-set-h"><span class="mw-set-k">${LANG==="ru"?"В программе уровня":"Included at this level"} · ${l.n[LANG]}</span><h3>${it[LANG]}</h3><span class="mw-set-t">⏱ ${l.hours[LANG]}</span></div><ol class="mw-set-l">${it.d.map(d=>`<li>${T(d)}</li>`).join("")}</ol></div>`;
     const nSets = n => {
       if(LANG!=="ru") return `${n} ${n===1?"set":"sets"}`;
       const t = n%10, h = n%100;
@@ -2062,7 +2071,7 @@ function renderSection(s, i){
       <div class="mc-panel" data-mcfmt="${t.k}"${t.k===first?"":" hidden"}>
         <div class="mc-top"><p class="mc-panel-d">${t.d[LANG]}</p>${t.tl?mcTimeline(t.tl):""}</div>
         <div class="lvl-cards" role="tablist" aria-label="${LANG==="ru"?"Уровень":"Level"}">${t.levels.map(l=>lvlCard(t,l)).join("")}</div>
-        ${t.levels.map(l=>`<div class="lvl-panel" data-mcfmt="${t.k}" data-mclvl="${l.k}"${l.k==="std"?"":" hidden"}>${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${l.tl?`<div class="mc-top">${mcTimeline(l.tl)}</div>`:""}${grid(l.ids)}</div>`).join("")}
+        ${t.levels.map(l=>`<div class="lvl-panel" data-mcfmt="${t.k}" data-mclvl="${l.k}"${l.k==="std"?"":" hidden"}>${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${l.tl?`<div class="mc-top">${mcTimeline(l.tl)}</div>`:""}${l.ids.length===1?mwCard(SETS[l.ids[0]], l):grid(l.ids)}</div>`).join("")}
       </div>`).join("");
     body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + (s.tabs.length>1?tabBar:"") + panels;
   }
@@ -2124,7 +2133,7 @@ function renderSection(s, i){
         ${DATA.hideCap ? "" : `<span class="ven-c">${h.cap[LANG]}</span>`}
         ${h.game ? `<span class="ven-game-badge">${LANG==="ru"?"Здесь проходит игра":"The game is played here"}</span><span class="ven-game-d">${LANG==="ru"?"Винно-мясное казино проводим только в Апельсиновом зале: здесь накрываем игровой стол для гостей, шефа и сомелье.":"We host the meat & wine casino in the Orange hall only: this is where the game table for guests, the chef and the sommelier is set."}</span>` : ""}
         <span class="ven-more"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8.6l3.3-3.3 2.2 2.2 4-4L19 15.6V7H5zM9 9.5A1.5 1.5 0 1 1 6 9.5a1.5 1.5 0 0 1 3 0z"/></svg>${LANG==="ru"?"Смотреть фото":"View photos"}</span>
-      </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие залы площадки":"Other halls of the venue"}</div>`:""}
+      </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие площадки для брони":"Other spaces available to book"}</div>`:""}
     `).join("")+`</div>
     <div class="ven-hint"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 3c4.97 0 9 3.36 9 7.5 0 4.14-4.03 7.5-9 7.5-1.02 0-2-.14-2.92-.4L5 19.5l.9-3.3C4.1 14.9 3 12.8 3 10.5 3 6.36 7.03 3 12 3z"/></svg>${LANG==="ru"?"Ваш менеджер подскажет, какой зал свободен и подойдёт для выбранной программы.":"Your manager will advise which hall is available and best suits your programme."}</div>
     <div class="ven-ext"><b>${LANG==="ru"?"Продление зала, за 1 час":"Hall extension, per hour"}</b>${s.ext.map(e=>`<div><span>${e.s.map(k=>s.halls.find(h=>h.slug===k).n[LANG]).join(LANG==="ru"?" и ":" and ")}</span><b>${e.p}</b></div>`).join("")}</div>

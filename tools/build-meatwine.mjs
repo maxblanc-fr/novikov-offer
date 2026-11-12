@@ -118,7 +118,7 @@ const DISH_EN_T = {
 };
 
 /* Залы: все, кроме ART. Апельсиновый — первым: игра проходит только в нём. */
-const HALL_ORDER = ["orange","cafe","prof","granat","olive","lemon","tomato"];
+const HALL_ORDER = ["orange","cafe","granat","olive","tomato"];  /* без ART, PROF и Лимонного (решение 2026-11-12) */
 const GAME_HALL = "orange";
 
 /* «Премиальная» тема: графит, бордо и золото, фото стола фоном в шапке */
@@ -166,6 +166,16 @@ const THEME = `
   .ven-game-d{display:block; max-width:460px; font-size:15px; line-height:1.5; color:rgba(255,255,255,.88)}
   .ven-sub{grid-column:1 / -1; display:flex; align-items:center; gap:14px; margin:14px 0 2px; font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.14em; font-size:12px; color:var(--ink-soft)}
   .ven-sub::after{content:""; flex:1; height:1px; background:var(--line)}
+  /* «Программа»: один сет на уровень — широкая карточка под таймингом */
+  .mw-set{display:grid; grid-template-columns:minmax(0,4fr) minmax(0,7fr); background:var(--card); border:1px solid var(--line); border-top:3px solid var(--gold); box-shadow:var(--card-shadow)}
+  .mw-set-h{padding:clamp(20px,2.6vw,30px); background:linear-gradient(160deg,#1A0A0E 0%,#3A0E18 100%); color:#fff; display:flex; flex-direction:column; gap:10px}
+  .mw-set-k{font-family:var(--head); font-weight:800; text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--gold)}
+  .mw-set-h h3{margin:0; font-family:"Cormorant Garamond","Playfair Display",Georgia,serif; font-weight:500; font-size:clamp(26px,3vw,36px); line-height:1.1; text-transform:none; letter-spacing:0; color:#fff}
+  .mw-set-t{margin-top:auto; font-size:13px; color:var(--gold-lite)}
+  .mw-set-l{list-style:none; counter-reset:mw; margin:0; padding:clamp(14px,2vw,22px) clamp(18px,2.6vw,30px); display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:0 26px; align-content:center}
+  .mw-set-l li{counter-increment:mw; display:flex; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--line); font-size:15px; line-height:1.5; color:var(--ink)}
+  .mw-set-l li::before{content:counter(mw,decimal-leading-zero); flex:none; font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-size:22px; line-height:1; color:var(--gold)}
+  @media(max-width:760px){ .mw-set{grid-template-columns:1fr} }
   .lvl-cnt{color:var(--red-deep)}
 `;
 
@@ -274,7 +284,8 @@ ${items}
     const [a,b] = sectionRange(src, "venues");
     const old = src.slice(a,b+1);
     const note = old.match(/note:(\{ru:[^\n]*\})/)[1];
-    const ext = old.match(/ext:\[[^\n]*\]/)[0];
+    const ext = "ext:" + JSON.stringify(eval(old.match(/ext:(\[[^\n]*\])/)[1].replace(/(\w+):/g,'"$1":'))
+      .map(e=>({...e, s:e.s.filter(k=>HALL_ORDER.includes(k))})).filter(e=>e.s.length)).replace(/"(\w+)":/g,"$1:");
     const incl = old.slice(old.indexOf("incl:{"), matchBrace(old, old.indexOf("incl:{")+5)+1);
     const halls = HALL_ORDER.map(slug=>{
       const at = old.indexOf(`{slug:"${slug}"`);
@@ -324,6 +335,22 @@ ${levels}
     }`);
   }
 
+  // фуршет: без детских блюд в стол и детского фуршета
+  {
+    let [a,b] = sectionRange(src, "buffet");
+    let sec = src.slice(a,b+1);
+    for(const key of ["kids:{","groups:["]){
+      const i = sec.indexOf("\n      "+key);
+      if(i<0) continue;
+      const j = matchBrace(sec, i+7+key.length-1);
+      const after = sec.slice(j+1).match(/^,?/)[0];
+      sec = sec.slice(0,i) + sec.slice(j+1+after.length);
+    }
+    sec = sec.replace(/,(\s*)\}$/, "$1}");
+    must(!/Kid Set|Детские блюда/.test(sec), "детское осталось в фуршете");
+    src = src.slice(0,a) + sec + src.slice(b+1);
+  }
+
   // доп. услуги: без казино
   src = removeItem(src, `{ic:"🍷", name:{ru:"Винное казино"`);
   src = removeItem(src, `{ic:"🎰", name:{ru:"Дегустационные казино"`);
@@ -336,6 +363,11 @@ ${levels}
   }
 
   // рендер: одна вкладка; тайминг у каждого уровня; на карточке уровня — длительность
+  src = replaceOnce(src,
+    "    const grid = ids => `<div class=\"grid sets\">`+ ids.map(id=>setCard(SETS[id])).join(\"\") + `</div>`;\n",
+    "    const grid = ids => `<div class=\"grid sets\">`+ ids.map(id=>setCard(SETS[id])).join(\"\") + `</div>`;\n"
+    + "    const mwCard = (it,l) => `<div class=\"mw-set\"><div class=\"mw-set-h\"><span class=\"mw-set-k\">${LANG===\"ru\"?\"В программе уровня\":\"Included at this level\"} · ${l.n[LANG]}</span><h3>${it[LANG]}</h3><span class=\"mw-set-t\">⏱ ${l.hours[LANG]}</span></div><ol class=\"mw-set-l\">${it.d.map(d=>`<li>${T(d)}</li>`).join(\"\")}</ol></div>`;\n",
+    "mwCard");
   src = replaceOnce(src,
     "body = (s.intro?`<p class=\"sec-intro\">${s.intro[LANG]}</p>`:\"\") + tabBar + panels;",
     "body = (s.intro?`<p class=\"sec-intro\">${s.intro[LANG]}</p>`:\"\") + (s.tabs.length>1?tabBar:\"\") + panels;",
@@ -350,7 +382,7 @@ ${levels}
     "lvl-cnt");
   src = replaceOnce(src,
     '${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${grid(l.ids)}</div>',
-    '${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${l.tl?`<div class="mc-top">${mcTimeline(l.tl)}</div>`:""}${grid(l.ids)}</div>',
+    '${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${l.tl?`<div class="mc-top">${mcTimeline(l.tl)}</div>`:""}${l.ids.length===1?mwCard(SETS[l.ids[0]], l):grid(l.ids)}</div>',
     "level timeline");
   // зал игры: выделенная карточка
   src = replaceOnce(src,
@@ -363,7 +395,7 @@ ${levels}
     "ven-game badge");
   src = replaceOnce(src,
     '      </div>\n    `).join("")+`</div>\n    <div class="ven-hint">',
-    '      </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие залы площадки":"Other halls of the venue"}</div>`:""}\n    `).join("")+`</div>\n    <div class="ven-hint">',
+    '      </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие площадки для брони":"Other spaces available to book"}</div>`:""}\n    `).join("")+`</div>\n    <div class="ven-hint">',
     "ven-sub");
 
   const data = src.slice(src.indexOf("const DATA"), src.indexOf("const TR"));
