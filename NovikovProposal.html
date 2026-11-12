@@ -981,6 +981,7 @@ function buildCatalog(kind){
     let grp = "";
     bf.blocks.forEach(b => {
       if (b.gh){ grp = L(b.gh); return; }
+      if (b.catering) return;
       if (b.badge){ C.included = {title:L(b.h), list:b.list, imgs:b.list.map(imgOf).filter(Boolean)}; return; }
       const h = (grp ? grp + " · " : "") + L(b.h);
       if (b.list && b.price) C.buffet.push({h, items:[{key:`buf:set:${L(b.h)}`, title:L(b.h), sub:`${b.wt} на гостя`, price:b.price, per:"guest", unit:"гость",

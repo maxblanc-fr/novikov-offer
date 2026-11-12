@@ -182,6 +182,9 @@
 
   /* ---------- Priced rows / tables ---------- */
   .rows{background:var(--card); border:1px solid var(--line); border-radius:0; overflow:hidden}
+  .cater-card{display:flex; align-items:center; justify-content:space-between; gap:14px 20px; flex-wrap:wrap; margin:22px 0 6px; padding:18px 22px; background:var(--card); border-top:1px solid var(--line); border-left:4px solid var(--red); font-size:16px; font-weight:600}
+  .cater-card a{display:inline-flex; align-items:center; padding:11px 18px; background:var(--red); color:#fff; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:13px; text-decoration:none; white-space:nowrap}
+  .cater-card a:hover{background:var(--red-deep)}
   .subhead{
     background:var(--bone-2); padding:12px 20px; font-family:var(--head); font-weight:900; text-transform:uppercase; letter-spacing:.03em;
     color:var(--red-deep); font-size:14px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; border-top:1px solid var(--line)
@@ -941,16 +944,9 @@ const DATA = {
           {ru:"Ассорти солений", en:"Pickles platter", info:"огурцы солёные, томаты зелёные солёные, патиссоны, чеснок маринованный, перец острый, маринованные черри", wt:"700 г", price:1900, img:"uploads/buffet/platter-pickles.webp?v=2"},
           {ru:"Хлебная корзина", en:"Bread basket", info:"багет французский и ржаной, сливочное масло с травами", wt:"640 г", price:1100, img:"uploads/buffet/platter-bread.webp?v=2"}
         ]},
-        {h:{ru:"Блюда в стол", en:"Shared plates"}, hnote:{ru:"минимум 6 порций", en:"minimum 6 portions"}, rows:[
-          {ru:"Салат с креветками", en:"Prawn salad", price:1500},
-          {ru:"Греческий салат", en:"Greek salad", price:1500},
-          {ru:"Салат с пастрами", en:"Pastrami salad", price:1500},
-          {ru:"Овощи гриль", en:"Grilled vegetables", price:1500},
-          {ru:"Паста болоньезе", en:"Pasta bolognese", price:1500},
-          {ru:"Филе угольной рыбы в соусе унаги с микс-салатом", en:"Black cod fillet in unagi sauce with mixed salad", price:2300},
-          {ru:"Телячьи щёчки с овощным пюре", en:"Veal cheeks with vegetable purée", price:2300},
-          {ru:"Стейк из лосося с цукини и мятой", en:"Salmon steak with zucchini & mint", price:2300}
-        ]}
+        /* Блюда в стол для взрослых больше не перечисляем — плашка со ссылкой на кейтеринг, как на взрослом (2026-11-12) */
+        {catering:{ru:"Добавить блюда в стол — можно выбрать из нашего кейтеринга", en:"Add shared dishes — choose from our catering menu",
+                   btn:{ru:"Меню кейтеринга", en:"Catering menu"}, url:"https://space.novikovschool.com/catering"}}
       ],
       foot:{ru:"<b>Алкоголь для взрослых.</b> На детском празднике доступна полная барная карта Novikov School — игристое, вина, крепкий алкоголь и коктейли. Сообщите менеджеру — он направит вам барную карту с ценами. Алкоголь с собой строго запрещён.<br><a class=\"bar-link\" href=\"https://bar.novikov-school.ru/\" target=\"_blank\" rel=\"noopener\">Барная карта с ценами →</a>",
             en:"<b>Alcohol for the adults.</b> The full Novikov School bar card — sparkling, wines, spirits and cocktails — is available at a kids party. Let your manager know and they will send you the bar card with prices. Bringing your own alcohol is strictly prohibited.<br><a class=\"bar-link\" href=\"https://bar.novikov-school.ru/\" target=\"_blank\" rel=\"noopener\">Bar card with prices →</a>"}
@@ -1490,6 +1486,7 @@ function renderSection(s, i){
         <span class="wt">${p.wt?T(p.wt):""}</span><span class="price">${fmt(p.price)} ₽</span>
       </div>`;
     const block = b=>{
+      if(b.catering) return `<div class="cater-card"><span>${b.catering[LANG]}</span><a href="${b.catering.url}" target="_blank" rel="noopener">${b.catering.btn[LANG]} →</a></div>`;
       const title = typeof b.h === "string" ? b.h : b.h[LANG];
       const bits = [
         b.badge ? ` <span class="badge">${typeof b.badge==="string"?b.badge:b.badge[LANG]}</span>` : "",
