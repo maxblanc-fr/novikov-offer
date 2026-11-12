@@ -2136,7 +2136,6 @@ function renderSection(s, i){
       </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие площадки для брони":"Other spaces available to book"}</div>`:""}
     `).join("")+`</div>
     <div class="ven-hint"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 3c4.97 0 9 3.36 9 7.5 0 4.14-4.03 7.5-9 7.5-1.02 0-2-.14-2.92-.4L5 19.5l.9-3.3C4.1 14.9 3 12.8 3 10.5 3 6.36 7.03 3 12 3z"/></svg>${LANG==="ru"?"Ваш менеджер подскажет, какой зал свободен и подойдёт для выбранной программы.":"Your manager will advise which hall is available and best suits your programme."}</div>
-    <div class="ven-ext"><b>${LANG==="ru"?"Продление зала, за 1 час":"Hall extension, per hour"}</b>${s.ext.map(e=>`<div><span>${e.s.map(k=>s.halls.find(h=>h.slug===k).n[LANG]).join(LANG==="ru"?" и ":" and ")}</span><b>${e.p}</b></div>`).join("")}</div>
     ${DATA.hideCap ? "" : `<div class="ven-note">${s.combos[LANG]}</div>`}
     <div class="ven-incl">
       <div><b>${LANG==="ru"?"Что входит · кулинарные залы":"Included · culinary halls"}</b><p>${s.incl.culinary[LANG]}</p></div>

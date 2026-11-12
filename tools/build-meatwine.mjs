@@ -398,6 +398,12 @@ ${levels}
     '      </div>${h.game?`<div class="ven-sub">${LANG==="ru"?"Другие площадки для брони":"Other spaces available to book"}</div>`:""}\n    `).join("")+`</div>\n    <div class="ven-hint">',
     "ven-sub");
 
+  // продление залов не показываем (решение 2026-11-12)
+  {
+    const re = /\n    <div class="ven-ext">[^\n]*<\/div>(?=\n)/;
+    must(re.test(src), "нет ven-ext");
+    src = src.replace(re, "");
+  }
   // окно зала игры: то же фото, что на карточке
   src = replaceOnce(src,
     '    inner = `<div class="hm-gallery" data-base="images/halls/${h.slug}"></div>`;',
