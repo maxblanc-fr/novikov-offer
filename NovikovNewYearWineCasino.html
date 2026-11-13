@@ -1065,6 +1065,20 @@ const DATA = {
           ],
           note:{ru:"<b>Игра — 2 200 ₽ за гостя, минимум 20 000 ₽</b>: до 9 гостей — 20 000 ₽, с 10 гостей — 2 200 ₽ × число гостей. <b>Разработка квиза и караоке — цена за мероприятие</b>, не зависит от числа гостей.",
                 en:"<b>The game is 2 200 ₽ per guest, minimum 20 000 ₽</b>: up to 9 guests — 20 000 ₽, from 10 guests — 2 200 ₽ × guests. <b>Quiz development and karaoke are priced per event</b> — the guest count does not change it."}},
+        {ic:"🎵", modal:"game-saper", modalLabel:{ru:"Как проходит игра", en:"How it works"},
+          name:{ru:"Музыкальный сапёр", en:"Musical Minesweeper"},
+          min:{ru:"Продолжительность: 50 минут", en:"Duration: 50 minutes"},
+          desc:{ru:"Открывайте клетки музыкального поля и выполняйте задания всей командой: пойте знакомые песни, танцуйте и показывайте музыкальные пантомимы. За успешное выполнение получайте очки и открывайте новые клетки!",
+                en:"Open the cells of the musical board and complete the tasks as a team: sing familiar songs, dance and act out musical charades. Score points for every task and unlock new cells!"},
+          tags:["Пропой","Танцуй","Сыграй"],
+          tiers:[{l:{ru:"Игра", en:"The game"}, p:"2 200 ₽/гость", n:"50 минут · минимум 20 000 ₽"}]},
+        {ic:"🤖", modal:"game-ai", modalLabel:{ru:"Как проходит игра", en:"How it works"},
+          name:{ru:"ИИдентификация", en:"AI-dentification"}, nameHtml:{ru:'<span class="ii">ИИ</span>дентификация', en:'<span class="ii">AI</span>-dentification'},
+          min:{ru:"Продолжительность: 60 минут", en:"Duration: 60 minutes"},
+          desc:{ru:"Узнайте знакомые фильмы, песни и пословицы в неожиданной интерпретации искусственного интеллекта. Обсуждайте необычные картинки, расшифровывайте описания и находите ответы всей командой!",
+                en:"Recognise familiar films, songs and proverbs in an unexpected interpretation by artificial intelligence. Discuss strange pictures, decode descriptions and find the answers as a team!"},
+          tags:["6 раундов","Фильмы","Песни","Пословицы"],
+          tiers:[{l:{ru:"Игра", en:"The game"}, p:"2 200 ₽/гость", n:"1 час · минимум 20 000 ₽"}]},
         {ic:"👥", name:{ru:"Дополнительный персонал", en:"Additional Staff"},
           desc:{ru:"Ведущий, шеф, официант, диджей и фотограф на ваше мероприятие.",
                 en:"A host, chef, waiter, DJ and photographer for your event."},
@@ -1506,6 +1520,7 @@ const SUMMER_ORN = `<svg class="summer-orn" viewBox="0 0 560 120" xmlns="http://
 const SEASON_TAG = `<div class="season-tag"><span>Сезонное</span></div>`;
 /* ---------- EN translation map (ru-only content) ---------- */
 const TR={
+"Пропой":"Sing","Танцуй":"Dance","Сыграй":"Act","6 раундов":"6 rounds","Фильмы":"Films","Песни":"Songs","Пословицы":"Proverbs",
 "Фланк-стейк с соусом чимичурри и пюре из батата":"Flank steak with chimichurri and sweet potato purée",
 "Сорбет из манго с клубникой, базиликом, конфитюром из маракуйи и лаймовым безе":"Mango sorbet with strawberry, basil, passion fruit confiture and lime meringue",
 "Филе палтуса с соусом из горгонзолы и бланшированными овощами":"Halibut fillet with gorgonzola sauce and blanched vegetables",
@@ -1860,6 +1875,7 @@ const TR={
 "до 14 декабря":"until 14 December",
 "до 15:00":"before 15:00",
 "1 час · минимум 20 000 ₽":"1 hour · minimum 20 000 ₽",
+"50 минут · минимум 20 000 ₽":"50 minutes · minimum 20 000 ₽",
 "2 200 ₽/гость":"2 200 ₽/guest",
 "2 часа":"2 hours",
 "ваша тема или ваши вопросы":"your theme or your questions",
@@ -2108,7 +2124,7 @@ function renderSection(s, i){
       const grouped = !!(it.modal && it.price);
       return `
       <div class="svc-card${it.modal?" svc-clickable":""}"${it.modal?` data-modal="${it.modal}" role="button" tabindex="0"`:""}>
-        <div class="svc-h"><span class="svc-ic">${it.ic}</span><div><b>${it.name[LANG]}</b></div></div>
+        <div class="svc-h"><span class="svc-ic">${it.ic}</span><div><b>${(it.nameHtml||it.name)[LANG]}</b></div></div>
         ${it.min?`<div class="svc-min">${it.min[LANG]}</div>`:""}
         <p class="svc-d">${it.desc[LANG]}</p>
         ${grouped ? "" : visual}
@@ -2117,7 +2133,7 @@ function renderSection(s, i){
         ${it.note?`<div class="svc-note">${it.note[LANG]}</div>`:""}
         ${grouped ? `<div class="svc-foot">${visual}${venMore}<div class="svc-price">${it.price[LANG]}</div></div>` : (it.price?`<div class="svc-price">${it.price[LANG]}</div>`:"")}
       </div>`;}).join("")+`</div>`
-    + cakeModal() + floralModal() + cocktailModal() + artModal() + gamesModal() + santaModal();
+    + cakeModal() + floralModal() + cocktailModal() + artModal() + gamesModal() + santaModal() + gameModals();
   }
   else if(s.type==="bar"){
     body = (s.intro?`<p class="sec-intro">${s.intro[LANG]}</p>`:"") + `<div class="bar-grid">`+ s.cats.map(cat=> cat.kind ? barCat2(cat) : `
@@ -2489,6 +2505,65 @@ function santaModal(){
       <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
     </div>
   </div>`;
+}
+/* ---------- Game rules modals (Музыкальный сапёр, ИИдентификация) ----------
+   Описание и ход игры — со страницы business.eventyon.ru/activity-noindex. */
+const GAMES = {
+  "game-saper":{
+    n:{ru:"Музыкальный сапёр", en:"Musical Minesweeper"},
+    cap:{ru:"50 минут · количество участников не ограничено", en:"50 minutes · any number of guests"},
+    intro:{ru:"Командная музыкальная игра с тремя типами ячеек.", en:"A team music game with three types of cells."},
+    blocks:[
+      {h:{ru:"Типы ячеек", en:"Cell types"}, items:[
+        {b:{ru:"Пропой", en:"Sing"}, t:{ru:"продолжите или исполните известную песню. Например, ведущий включает начало, а команда пропевает следующий фрагмент.", en:"continue or perform a well-known song — e.g. the host plays the opening and the team sings the next part."}},
+        {b:{ru:"Танцуй", en:"Dance"}, t:{ru:"повторите танец из клипа, станцуйте в заданном стиле, угадайте песню по танцу или придумайте движение под трек.", en:"repeat a dance from a music video, dance in a given style, guess a song from a dance or invent a move for a track."}},
+        {b:{ru:"Сыграй", en:"Act"}, t:{ru:"покажите песню без слов, изобразите исполнителя или исполните знакомую композицию в неожиданной манере.", en:"show a song without words, impersonate a singer or perform a familiar tune in an unexpected way."}}]},
+      {h:{ru:"Ход игры", en:"How the game goes"}, items:[
+        {t:{ru:"На экране появляется игровое поле. На старте у каждой команды одинаковое количество ходов и очков.", en:"The game board appears on the screen. At the start every team has the same number of moves and points."}},
+        {t:{ru:"Команды по очереди выбирают любую доступную ячейку, и на экране появляется задание.", en:"Teams take turns choosing any available cell, and a task appears on the screen."}},
+        {t:{ru:"Если команда справляется, она получает очки, клетка становится занятой этой командой и открываются новые клетки.", en:"If the team succeeds, it scores points, the cell becomes theirs and new cells open up."}}]},
+      {h:{ru:"Продолжительность", en:"Duration"}, items:[
+        {t:{ru:"1 раунд, 50 минут. Можно играть в два захода: 30 и 20 минут.", en:"1 round, 50 minutes. Can be played in two parts: 30 and 20 minutes."}},
+        {t:{ru:"Количество участников не ограничено.", en:"Any number of guests."}}]}
+    ]},
+  "game-ai":{
+    n:{ru:"ИИдентификация", en:"AI-dentification"},
+    cap:{ru:"60 минут · 6 раундов · оптимально до 10 человек в команде", en:"60 minutes · 6 rounds · ideally up to 10 per team"},
+    intro:{ru:"Гостям показывают, как искусственный интеллект представил, описал или переиначил знакомые фильмы, песни, пословицы, персонажей и ситуации. Задача команды — понять, что скрывается за нейросетевой интерпретацией.",
+           en:"Guests see how artificial intelligence imagined, described or twisted familiar films, songs, proverbs, characters and situations. The team’s task is to work out what hides behind the neural-network interpretation."},
+    blocks:[
+      {h:{ru:"6 раундов", en:"6 rounds"}, num:true, items:[
+        {b:{ru:"Фильм глазами ИИ", en:"A film through AI’s eyes"}, t:{ru:"узнайте известный фильм по картинке, которую ИИ создал по его описанию.", en:"recognise a famous film from a picture AI generated from its description."}},
+        {b:{ru:"Что это вообще такое?", en:"What on earth is this?"}, t:{ru:"разгадайте пословицу, поговорку или фразеологизм, которые ИИ изобразил буквально.", en:"solve a proverb, saying or idiom that AI drew literally."}},
+        {b:{ru:"ИИ пересказал", en:"AI retold it"}, t:{ru:"определите фильм, песню, сказку или сюжет по сухому пересказу без ключевых слов.", en:"name a film, song, fairy tale or plot from a dry retelling with no key words."}},
+        {b:{ru:"ИИ испортил фразу", en:"AI ruined the quote"}, t:{ru:"восстановите известную цитату, перефразированную до неузнаваемости.", en:"restore a famous quote paraphrased beyond recognition."}},
+        {b:{ru:"Кто это по версии ИИ?", en:"Who is it, according to AI?"}, t:{ru:"узнайте персонажа по странным характеристикам без упоминания имени.", en:"recognise a character from odd traits without the name."}},
+        {b:{ru:"НейроШифр", en:"NeuroCipher"}, t:{ru:"найдите скрытую тему, объединяющую несколько ИИ-изображений или фраз.", en:"find the hidden theme linking several AI images or phrases."}}]},
+      {h:{ru:"Порядок проведения", en:"Format"}, items:[
+        {t:{ru:"Игра проходит в два захода: раунды 1–3 — 20 минут, раунды 4–6 — 40 минут.", en:"The game is played in two parts: rounds 1–3 take 20 minutes, rounds 4–6 take 40 minutes."}},
+        {t:{ru:"При необходимости можно сократить программу или провести два блока по 30 минут.", en:"If needed, the programme can be shortened or run as two 30-minute blocks."}},
+        {t:{ru:"Количество участников не ограничено. Оптимально до 10 человек в команде.", en:"Any number of guests. Ideally up to 10 people per team."}}]}
+    ]}
+};
+/* ---------- «Интерактивные игры»: описание каждой игры (окно с вкладками) ----------
+   Угадай мелодию — описание раундов от Квизли (PDF «Описание УМ»); квизы — текст от
+   менеджеров (без подросткового и английского); бинго и 100 к 1 —
+   business.eventyon.ru/activity-noindex. */
+function gameModals(){
+  const closeLbl = LANG==="ru" ? "Закрыть" : "Close";
+  return Object.entries(GAMES).map(([k,g])=>`<div class="hall-modal game-modal" id="hm-${k}" hidden role="dialog" aria-modal="true" aria-label="${g.n[LANG]}">
+    <div class="hm-card">
+      <div class="hm-head">
+        <div class="hm-title"><b>${g.n[LANG]}</b></div>
+        <span class="hm-cap">${g.cap[LANG]}</span>
+      </div>
+      <div class="game-body">
+        <p class="game-intro">${g.intro[LANG]}</p>
+        ${g.blocks.map(bl=>`<h4>${bl.h[LANG]}</h4><${bl.num?"ol":"ul"} class="game-list">${bl.items.map(x=>`<li>${x.b?`<b>${x.b[LANG]}</b> — `:""}${x.t[LANG]}</li>`).join("")}</${bl.num?"ol":"ul"}>`).join("")}
+      </div>
+      <div class="hm-foot"><button type="button" class="hm-close" aria-label="${closeLbl}"><span>${closeLbl}</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg></button></div>
+    </div>
+  </div>`).join("");
 }
 function openGameModal(k){
   const m = document.getElementById("hm-"+k); if(!m) return;
@@ -2900,6 +2975,7 @@ function wireModals(){
     if(svc && svc.dataset.modal === "art"){ openArtModal(); return; }
     if(svc && svc.dataset.modal === "games"){ openGameModal("games"); return; }
     if(svc && svc.dataset.modal === "santa"){ openGameModal("santa"); return; }
+    if(svc && GAMES[svc.dataset.modal]){ openGameModal(svc.dataset.modal); return; }
     const tab = e.target.closest(".hm-tab");
     if(tab){
       if(tab.dataset.gsTab !== undefined) switchGamesTab(tab);
@@ -2929,6 +3005,7 @@ function wireModals(){
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "art"){ e.preventDefault(); openArtModal(); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "games"){ e.preventDefault(); openGameModal("games"); }
       else if(el.classList && el.classList.contains("svc-clickable") && el.dataset.modal === "santa"){ e.preventDefault(); openGameModal("santa"); }
+      else if(el.classList && el.classList.contains("svc-clickable") && GAMES[el.dataset.modal]){ e.preventDefault(); openGameModal(el.dataset.modal); }
     }
   });
 }
