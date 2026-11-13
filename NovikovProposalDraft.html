@@ -1054,7 +1054,7 @@ function buildCatalog(kind){
 /* ---------- Состояние ---------- */
 function blank(){
   return {kind:"adult", client:"", contact:"", occasion:"", date:"", start:"19:00", guests:12, kids:10, halls:[], hallHours:0, pkg:"", setId:"", dishes:[],
-    setDishes:null, swapPrice:"", ff:"", ffHours:0, ffPrice:"", ffExt:"", uff:false, uffPrice:"", uffExt:"", uffGuests:"", sel:{}, bar:{}, custom:[], discount:0, discUnit:"%", showOld:true, noPrice:false, setsFull:false,
+    setDishes:null, swapPrice:"", ff:"", ffHours:0, ffPrice:"", ffExt:"", uff:false, uffPrice:"", uffExt:"", uffGuests:"", uffHours:0, sel:{}, bar:{}, custom:[], discount:0, discUnit:"%", showOld:true, noPrice:false, setsFull:false,
     valid:"", note:"", vat:true, lang:"ru", tl:null, vname:"", vars:[], vi:0,
     prepay:50, prepayDays:3, deposit:0, depFill:true, wishes:"",
     id:Date.now().toString(36) + Math.random().toString(36).slice(2, 6), no:"", ver:0, verDate:"", sentHash:""};
@@ -1071,7 +1071,7 @@ try { const s = JSON.parse(localStorage.getItem(LS_KEY)); if (s && s.kind) ST = 
 const save = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(ST)); } catch(e){} clearTimeout(aT); aT = setTimeout(archPut, 700); };
 
 /* ---------- Варианты: поля, которые у каждого варианта свои ---------- */
-const VKEYS = ["kind","vname","pkg","setId","dishes","setDishes","swapPrice","ff","ffHours","ffPrice","ffExt","uff","uffPrice","uffExt","uffGuests","sel","bar","custom","discount","discUnit","tl"];
+const VKEYS = ["kind","vname","pkg","setId","dishes","setDishes","swapPrice","ff","ffHours","ffPrice","ffExt","uff","uffPrice","uffExt","uffGuests","uffHours","sel","bar","custom","discount","discUnit","tl"];
 const clone = o => JSON.parse(JSON.stringify(o));
 const pickVar = () => clone(Object.fromEntries(VKEYS.map(k => [k, ST[k]])));
 const syncVar = () => { if (ST.vars.length) ST.vars[ST.vi] = pickVar(); };
@@ -1143,6 +1143,8 @@ const uffOn = () => !!(ST.ff && ST.uff && CAT.uff);
 const uffPrice = () => ov(ST.uffPrice, CAT.uff.price), uffExt = () => ov(ST.uffExt, CAT.uff.ext);
 /* Ultra можно взять не на всех гостей, но не меньше чем на 70% */
 const uffMin = () => Math.ceil(+ST.guests * 0.7);
+/* Часы продления Ultra — свои, не как у free-flow (2026-11-13). Старые черновики без поля — как раньше, по free-flow. */
+const uffH = () => +(ST.uffHours ?? ST.ffHours) || 0;
 const uffQ = () => Math.min(+ST.guests, Math.max(uffMin(), ov(ST.uffGuests, +ST.guests)));
 const uffPart = () => uffQ() < +ST.guests ? X(` на ${uffQ()} из ${ST.guests} ${plural(+ST.guests,"гостя","гостей","гостей")}`, ` for ${uffQ()} of ${ST.guests} guests`, ` per ${uffQ()} ospiti su ${ST.guests}`) : "";
 const guestsLabel = () => ST.kind === "kids" ? `${+ST.kids||0} ${plx(+ST.kids,"ребёнок","ребёнка","детей","child","children","bambino","bambini")}${+ST.guests ? ` + ${ST.guests} ${plx(+ST.guests,"взрослый","взрослых","взрослых","adult","adults","adulto","adulti")}` : ""}` : `${+ST.guests||0} ${plx(+ST.guests,"гость","гостя","гостей","guest","guests","ospite","ospiti")}`;
@@ -1177,7 +1179,7 @@ function lines(){
     if (uffOn()){
       const u = CAT.uff;
       out.push({g:"Напитки", t:`${esc(u.title)} · ${X("крепкий алкоголь, 4 часа", "spirits, 4 hours", "superalcolici, 4 ore")}`, q:uffQ(), u:"гость", pr:uffPrice(), pr0:u.price, x:{k:"uff"}});
-      if (+ST.ffHours) out.push({g:"Напитки", t:`${X("Продление", "Extension:", "Prolungamento")} ${esc(u.title)}, +${ST.ffHours} ${X("ч", "h", "h")} <small>· ${rub(uffExt())} ${X("за час", "per hour", "all'ora")}</small>`, q:uffQ(), u:"гость", pr:uffExt() * +ST.ffHours, pr0:u.ext * +ST.ffHours, x:{k:"uffext", h:+ST.ffHours, ph:uffExt()}});
+      if (uffH()) out.push({g:"Напитки", t:`${X("Продление", "Extension:", "Prolungamento")} ${esc(u.title)}, +${uffH()} ${X("ч", "h", "h")} <small>· ${rub(uffExt())} ${X("за час", "per hour", "all'ora")}</small>`, q:uffQ(), u:"гость", pr:uffExt() * uffH(), pr0:u.ext * uffH(), x:{k:"uffext", h:uffH(), ph:uffExt()}});
     }
   }
   CAT.bar.forEach(c => c.items.forEach(it => {
@@ -1306,7 +1308,8 @@ function renderForm(){
       <label for="o-uff"><div class="t">${esc(C.uff.title)}</div><div class="s">${ST.ff ? `+1 час: ${rub(C.uff.ext)} / гость · ` + C.uff.bottles.map(b => b.n).join(", ") : "Только вместе с пакетом free-flow — сначала выберите пакет"}</div></label>
       <div class="pr">${rub(C.uff.price)}<div class="s">/ гость</div></div></div>` +
       (uffOn() ? `<div class="grid2" style="margin-top:8px"><label class="fld">Цена, ₽ / гость <small>(по лендингу ${rub(C.uff.price)})</small><input type="number" id="uffPrice" min="0" step="100" value="${uffPrice()}"></label>
-      <label class="fld">+1 час, ₽ / гость <small>(${rub(C.uff.ext)}) · часы — как у free-flow</small><input type="number" id="uffExt" min="0" step="50" value="${uffExt()}"></label>
+      <label class="fld">+1 час, ₽ / гость <small>(${rub(C.uff.ext)})</small><input type="number" id="uffExt" min="0" step="50" value="${uffExt()}"></label>
+      <label class="fld">Продление Ultra, часов <small>(база 4 часа, можно меньше, чем free-flow)</small><input type="number" id="uffHours" min="0" value="${uffH()}"></label>
       <label class="fld">Гостей с Ultra <small>(от ${uffMin()} до ${ST.guests} — не меньше 70%)</small><input type="number" id="uffGuests" min="${uffMin()}" max="${+ST.guests}" step="1" value="${uffQ()}"></label></div>` : "") : "");
   const barOn = Object.values(ST.bar).filter(b => +b.g || +b.b).length;
   const barHtml = `<input class="search" id="barSearch" placeholder="Поиск по барной карте…"><div class="scroller" id="barList">` + C.bar.map(c =>
@@ -1462,7 +1465,7 @@ F.addEventListener("change", e => {
     if (row.dataset.dish != null){ const d = row.dataset.dish; ST.dishes = t.checked ? [...ST.dishes, d] : ST.dishes.filter(x => x !== d); rerender(); return; }
     if (t.name === "pkg"){ ST.pkg = row.dataset.key; ST.setId = ""; ST.setDishes = null; ST.dishes = []; rerender(); return; }
     if (t.name === "ff"){ ST.ff = row.dataset.key; ST.ffHours = 0; ST.ffPrice = ""; ST.ffExt = ""; if (!ST.ff) ST.uff = false; rerender(); return; }
-    if (row.dataset.uff){ ST.uff = t.checked; rerender(); return; }
+    if (row.dataset.uff){ ST.uff = t.checked; ST.uffHours = 0; rerender(); return; }
     const key = row.dataset.key; ST.sel[key] = {...(ST.sel[key] || selAlt(key) || {}), on:t.checked}; rerender(); return;
   }
   if (t.id === "uffGuests"){ ST.uffGuests = t.value === "" ? "" : String(uffQ()); rerender(); return; }
@@ -1483,7 +1486,7 @@ F.addEventListener("input", e => {
   const t = e.target;
   if (["client","contact","occasion","note","wishes","vname"].includes(t.id)){ ST[t.id] = t.value; rerender(false); return; }
   if (["prepay","prepayDays","deposit"].includes(t.id)){ ST[t.id] = t.value === "" ? 0 : +t.value; softUpdate(); return; }
-  if (["guests","kids","discount","ffHours","hallHours"].includes(t.id)){ ST[t.id] = t.value === "" ? 0 : +t.value; softUpdate(); return; }
+  if (["guests","kids","discount","ffHours","uffHours","hallHours"].includes(t.id)){ ST[t.id] = t.value === "" ? 0 : +t.value; softUpdate(); return; }
   if (t.id === "uffGuests"){ ST.uffGuests = t.value; softUpdate(); return; }
   if (t.dataset.hext != null){ ST.hallExtP = {...(ST.hallExtP || {}), [t.dataset.hext]: t.value}; softUpdate(); return; }
   if (["ffPrice","ffExt","uffPrice","uffExt","swapPrice"].includes(t.id)){ ST[t.id] = t.value; softUpdate(); return; }
@@ -1520,10 +1523,10 @@ async function switchKind(k){
   $("#status").textContent = "Загружаю цены…";
   try { await load(k); } catch(e){ $("#status").textContent = "Не удалось загрузить: " + KINDS[k].files.join(" / "); return; }
   const same = KINDS[k].fmt && KINDS[k].fmt === KINDS[ST.kind].fmt;
-  const keep = same ? JSON.parse(JSON.stringify({pkg:ST.pkg, setId:ST.setId, sel:ST.sel, ff:ST.ff, ffHours:ST.ffHours, uff:ST.uff, bar:ST.bar, halls:ST.halls, dishes:ST.dishes})) : null;
+  const keep = same ? JSON.parse(JSON.stringify({pkg:ST.pkg, setId:ST.setId, sel:ST.sel, ff:ST.ff, ffHours:ST.ffHours, uff:ST.uff, uffHours:ST.uffHours, bar:ST.bar, halls:ST.halls, dishes:ST.dishes})) : null;
   const m = multi(), hallsShared = ST.halls, vn = ST.vname;
   if (!m){ ST.vars = []; ST.vi = 0; ST.vname = ""; }
-  ST.kind = k; ST.pkg = ""; ST.setId = ""; ST.setDishes = null; ST.ffPrice = ""; ST.ffExt = ""; ST.swapPrice = ""; ST.dishes = []; ST.sel = {}; ST.ff = ""; ST.ffHours = 0; ST.uff = false; ST.uffPrice = ""; ST.uffExt = ""; ST.uffGuests = ""; ST.bar = {}; ST.tl = null; ST.halls = [];
+  ST.kind = k; ST.pkg = ""; ST.setId = ""; ST.setDishes = null; ST.ffPrice = ""; ST.ffExt = ""; ST.swapPrice = ""; ST.dishes = []; ST.sel = {}; ST.ff = ""; ST.ffHours = 0; ST.uff = false; ST.uffHours = 0; ST.uffPrice = ""; ST.uffExt = ""; ST.uffGuests = ""; ST.bar = {}; ST.tl = null; ST.halls = [];
   CAT = catFor(k); $("#status").textContent = "Цены: " + KINDS[k].file;
   if (m){ ST.halls = hallsShared; ST.vname = vn; }
   if (keep){
@@ -1531,7 +1534,7 @@ async function switchKind(k){
     if (p){ ST.pkg = keep.pkg; if (p.setIds && p.setIds.includes(keep.setId)) ST.setId = keep.setId; ST.dishes = keep.dishes || []; }
     const keys = new Set([...CAT.buffet, ...CAT.services].flatMap(g => g.items).concat(CAT.soft).map(i => i.key));
     ST.sel = Object.fromEntries(Object.entries(keep.sel || {}).filter(([key]) => keys.has(key)));
-    if (CAT.ff.some(f => f.key === keep.ff)){ ST.ff = keep.ff; ST.ffHours = keep.ffHours; ST.uff = keep.uff && !!CAT.uff; }
+    if (CAT.ff.some(f => f.key === keep.ff)){ ST.ff = keep.ff; ST.ffHours = keep.ffHours; ST.uff = keep.uff && !!CAT.uff; ST.uffHours = keep.uffHours || 0; }
     const bk = new Set(CAT.bar.flatMap(c => c.items.map(it => `${c.h}|${it.name}`)));
     ST.bar = Object.fromEntries(Object.entries(keep.bar || {}).filter(([key]) => bk.has(key)));
     if (!m) ST.halls = (keep.halls || []).filter(h => CAT.halls.some(x => x.slug === h));
@@ -1569,7 +1572,7 @@ function variantBody(H, B, blocks){
   const fb = []; if (ib) fb.push(`${tr(ib.title)}${ib.wt ? ` (${tr(ib.wt)} ${perG})` : ""} — ${X("входит в пакет", "included in the package", "incluso nel pacchetto")}`); bufOn.forEach(it => fb.push(`${tr(it.title)}${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}`));
   if (fb.length) ov.push([X("Фуршет", "Buffet", "Buffet"), fb]);
   const dr = []; if (ff) dr.push(`${tr(ff.title)} — ${X("безлимит 4 часа", "unlimited for 4 hours", "a volontà per 4 ore")}${+ST.ffHours ? ` + ${ST.ffHours} ${X("ч", "h", "h")}` : ""}`);
-  if (uffOn()) dr.push(`${C.uff.title} — ${X("безлимитный крепкий алкоголь на то же время", "unlimited spirits for the same time", "superalcolici a volontà per la stessa durata")}${uffPart()}`); softOn.forEach(it => dr.push(tr(it.title))); barOn.forEach(({c, it, b}) => dr.push(`${tr(it.name)}${+b.b ? ` × ${b.b} ${bunit(c, b.b)}` : ""}${+b.g ? ` × ${b.g} ${RU() ? it.gUnit : unitFx(+b.g, it.gUnit)}` : ""}`));
+  if (uffOn()) dr.push(`${C.uff.title} — ${X(`безлимитный крепкий алкоголь 4 часа${uffH() ? ` + ${uffH()} ч` : ""}`, `unlimited spirits for 4 hours${uffH() ? ` + ${uffH()} h` : ""}`, `superalcolici a volontà per 4 ore${uffH() ? ` + ${uffH()} h` : ""}`)}${uffPart()}`); softOn.forEach(it => dr.push(tr(it.title))); barOn.forEach(({c, it, b}) => dr.push(`${tr(it.name)}${+b.b ? ` × ${b.b} ${bunit(c, b.b)}` : ""}${+b.g ? ` × ${b.g} ${RU() ? it.gUnit : unitFx(+b.g, it.gUnit)}` : ""}`));
   dr.push(tr(C.softNote) || X("Вода, чай и кофе включены", "Water, tea and coffee are included", "Acqua, tè e caffè inclusi"));
   ov.push([X("Напитки", "Drinks", "Bevande"), dr]);
   if (svcOn.length || ST.custom.some(c => c.t)) ov.push([X("Доп. услуги", "Extras", "Extra"), [...svcOn.map(it => tr(it.title) + (it.unit !== "гость" && qtyOf(it) > 1 ? ` × ${qtyOf(it)}` : "")), ...ST.custom.filter(c => c.t).map(c => c.t)]]);
@@ -1623,8 +1626,8 @@ function variantBody(H, B, blocks){
     if (ff) B(`<div class="card"><div class="meta">Free-flow · ${X("4 часа", "4 hours", "4 ore")}${hrs}</div><h3>${esc(tr(ff.title))}</h3>
       <p>${X(`Напитки из списка ниже — без ограничений в течение 4 часов${+ST.ffHours ? ` + ${ST.ffHours} ч продления` : ""}.`, `Unlimited drinks from the list below for 4 hours${+ST.ffHours ? ` + ${ST.ffHours} h extension` : ""}.`, `Bevande della lista qui sotto a volontà per 4 ore${+ST.ffHours ? ` + ${ST.ffHours} h di prolungamento` : ""}.`)}</p>
       <div class="wines">${ff.cats.map(c => `<div class="c"><b>${esc(tr(L(c.t)))}</b>${c.w.map(w => `<div>${esc(tr(w[0]))}${w[1] ? ` <span style="color:var(--muted)">· ${esc(tr(w[1]))}</span>` : ""}</div>`).join("")}</div>`).join("")}</div></div>`);
-    if (uffOn()) B(`<div class="card"><div class="meta">${X("Крепкий алкоголь", "Spirits", "Superalcolici")} · ${X("4 часа", "4 hours", "4 ore")}${hrs}</div><h3>${esc(C.uff.title)}${uffPart() ? ` · ${uffQ()} ${plx(uffQ(),"гость","гостя","гостей","guest","guests","ospite","ospiti")}` : ""}</h3>
-      <p>${X(`Дополнение к ${esc(ff.title)}: крепкие напитки из списка ниже — без ограничений на всё время free-flow.`, `An add-on to ${esc(tr(ff.title))}: unlimited spirits from the list below for the whole free-flow time.`, `In aggiunta all'${esc(tr(ff.title))}: superalcolici della lista qui sotto a volontà per tutta la durata dell'open bar.`)}</p>
+    if (uffOn()) B(`<div class="card"><div class="meta">${X("Крепкий алкоголь", "Spirits", "Superalcolici")} · ${X("4 часа", "4 hours", "4 ore")}${uffH() ? ` + ${uffH()} ${X("ч", "h", "h")}` : ""}</div><h3>${esc(C.uff.title)}${uffPart() ? ` · ${uffQ()} ${plx(uffQ(),"гость","гостя","гостей","guest","guests","ospite","ospiti")}` : ""}</h3>
+      <p>${X(`Дополнение к ${esc(ff.title)}: крепкие напитки из списка ниже — без ограничений в течение 4 часов${uffH() ? ` + ${uffH()} ч продления` : ""}.`, `An add-on to ${esc(tr(ff.title))}: unlimited spirits from the list below for 4 hours${uffH() ? ` + ${uffH()} h extension` : ""}.`, `In aggiunta all'${esc(tr(ff.title))}: superalcolici della lista qui sotto a volontà per 4 ore${uffH() ? ` + ${uffH()} h di prolungamento` : ""}.`)}</p>
       <div class="bottles">${C.uff.bottles.map(b => `<div class="it"><div class="ph" ${bg(b.img)}></div><div class="nm"><b>${esc(b.n)}</b><br>${esc(tr(b.t))}</div></div>`).join("")}</div></div>`);
     if (softOn.length) B(`<div class="card"><div class="meta">${X("Безалкогольное", "Soft drinks", "Analcolici")}</div><ul class="ticks one">${softOn.map(it => `<li><b>${esc(tr(it.title))}</b>${it.unit === "гость" ? "" : ` × ${qtyOf(it)}`}<br><span style="font-size:11.5px">${esc((it.detail || []).map(tr).join(", ") || tr(it.sub))}</span></li>`).join("")}</ul></div>`);
     if (barOn.length) B(`<div class="card"><div class="meta">${X("Из барной карты", "From the bar menu", "Dalla carta del bar")}</div><ul class="ticks one">${barOn.map(({c, it, b}) => `<li><b>${esc(tr(it.name))}</b> <span style="color:var(--muted)">${esc(tr(it.origin))}</span> — ${[+b.b ? `${b.b} ${bunit(c, b.b)}` : "", +b.g ? (RU() ? `${b.g} × ${it.gUnit}` : `${b.g} ${unitFx(+b.g, it.gUnit)}`) : ""].filter(Boolean).join(", ")}</li>`).join("")}</ul></div>`);
