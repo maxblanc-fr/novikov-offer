@@ -390,7 +390,7 @@
 const MANAGERS = {
   max:  {name:"Максим Бланк",   en:"Maxim Blanc",    phone:"+7 903 161-80-65", tel:"+79031618065", code:"",   ls:""},
   darya:{name:"Дарья Марушко",  en:"Daria Marushko", phone:"+7 915 089-18-18", tel:"+79150891818", code:"Д-", ls:"-darya"},
-  ilya: {name:"Илья Васильев",  en:"Ilya Vasilyev",  phone:"+7 912 912-52-72", tel:"+79129125272", code:"И-", ls:"-ilya"},
+  ilya: {name:"Илья Васильев",  en:"Ilya Vasilyev",  phone:"+7 967 237-86-57", tel:"+79672378657", code:"И-", ls:"-ilya"},
   alina:{name:"Алина Стефи",    en:"Alina Stefi",    phone:"+7 968 906-62-79", tel:"+79689066279", code:"А-", ls:"-alina"},
   gribacheva:{name:"Анастасия Грибачева", en:"Anastasia Gribacheva", phone:"+7 969 079-70-18", tel:"+79690797018", code:"АГ-", ls:"-gribacheva"},
   irkha:{name:"Юлия Ирха", en:"Yulia Irkha", phone:"+7 967 199-38-39", tel:"+79671993839", code:"ЮИ-", ls:"-irkha"},
@@ -450,7 +450,8 @@ FMTS.forEach(f => { if (KINDS[f.au]) Object.assign(KINDS[f.au], {fmt:f.k, ny:fal
 const fmtOf = k => FMTS.find(f => f.k === KINDS[k].fmt);
 const KGRP = {cook:"Кулинарное", casino:"Казино"};
 /* Шаблоны сметы Excel отдела продаж — по одному на тип кулинарного мероприятия (казино пока без шаблона) */
-const XL_TPL = {adult:"uploads/smeta/adult.xlsx", ny:"uploads/smeta/ny.xlsx", kids:"uploads/smeta/kids.xlsx"};
+const XL_TPL = {adult:"uploads/smeta/adult.xlsx", ny:"uploads/smeta/ny.xlsx", kids:"uploads/smeta/kids.xlsx",
+  wine:"uploads/smeta/wine.xlsx", cocktail:"uploads/smeta/cocktail.xlsx", nywine:"uploads/smeta/nywine.xlsx", nycocktail:"uploads/smeta/nycocktail.xlsx"};
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
 const TL_TEMPLATE = [
   {m:30,  t:"Welcome-фуршет: закуски{ff}, сбор гостей"},
@@ -2092,11 +2093,15 @@ function xlSheet(xml, sst, noVat){
     menuRows.forEach((r, i) => { if (dishes[i]) setStr(r, 2, dishes[i]); else { setStr(r, 2, ""); const c = cellOf(r, 5); clear(c); const f = cellOf(r, 6); clear(f); } });
     dishes.slice(menuRows.length).forEach(dn => ins.push({after:menuRows[menuRows.length - 1], b:dn, menu:true, sty:menuRows[menuRows.length - 1]}));
   }
+  /* В шаблонах казино у строк меню нет кол-ва — ставим ту же формулу, что во взрослом: сумма пакетов, ниже = строка выше */
+  menuRows.forEach((r, i) => { const c = cellOf(r, 5, false); if (get(r, 2).trim() && !(c && (fOf(c) || get(r, 5).trim())) && sec1.items.length) setF(r, 5, i ? `E${menuRows[i - 1]}` : sec1.items.map(it => "E" + it.r).join("+")); });
   if (menuRows.length && !pkgRow && pkg()) setNum(menuRows[0], 5, ST.kind === "kids" ? +ST.kids : +ST.guests);
 
   Object.entries(fills).forEach(([r, f]) => {
     if (f.incl){ setNum(+r, 5, f.e); setStr(+r, 6, "включено"); return; }
-    setNum(+r, 4, f.d); setNum(+r, 5, f.e); if (f.c) setStr(+r, 3, f.c); });
+    setNum(+r, 4, f.d); setNum(+r, 5, f.e); if (f.c) setStr(+r, 3, f.c);
+    /* В шаблонах казино у части строк вместо суммы стоит «включено» (Small set, Классика) — платная строка считается */
+    if (!fOf(cellOf(+r, 6))) setF(+r, 6, `D${r}*E${r}`); });
 
   /* Скидка, предоплата, депозит — по подписям в итогах */
   const T = totals(), rD1 = findLabel(/^Скидка на кулинарную/), rD2 = findLabel(/^Скидка на дополнительные/);
@@ -2277,7 +2282,7 @@ async function xlBuild(noVat = false){
 }
 const xlDownload = noVat => async e => {
   if (!CAT) return;
-  if (!XL_TPL[ST.kind]) return alert("Шаблон сметы есть для взрослого, детского и новогоднего мастер-класса. Для казино его пока нет.");
+  if (!XL_TPL[ST.kind]) return alert("Шаблон сметы есть для мастер-классов (взрослый, детский, новогодний) и винного/коктейльного казино. Для этого формата его пока нет.");
   const b = e.currentTarget; b.disabled = true; const old = b.textContent; b.textContent = "Собираю…";
   try {
     const {blob} = await xlBuild(noVat);
