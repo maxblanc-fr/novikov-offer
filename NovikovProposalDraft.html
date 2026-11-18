@@ -451,7 +451,8 @@ const fmtOf = k => FMTS.find(f => f.k === KINDS[k].fmt);
 const KGRP = {cook:"Кулинарное", casino:"Казино"};
 /* Шаблоны сметы Excel отдела продаж — по одному на тип кулинарного мероприятия (казино пока без шаблона) */
 const XL_TPL = {adult:"uploads/smeta/adult.xlsx", ny:"uploads/smeta/ny.xlsx", kids:"uploads/smeta/kids.xlsx",
-  wine:"uploads/smeta/wine.xlsx", cocktail:"uploads/smeta/cocktail.xlsx", nywine:"uploads/smeta/nywine.xlsx", nycocktail:"uploads/smeta/nycocktail.xlsx"};
+  wine:"uploads/smeta/wine.xlsx", cocktail:"uploads/smeta/cocktail.xlsx", nywine:"uploads/smeta/nywine.xlsx", nycocktail:"uploads/smeta/nycocktail.xlsx",
+  art:"uploads/smeta/art.xlsx", nyart:"uploads/smeta/nyart.xlsx", battle:"uploads/smeta/battle.xlsx", nybattle:"uploads/smeta/nybattle.xlsx"};
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
 const TL_TEMPLATE = [
   {m:30,  t:"Welcome-фуршет: закуски{ff}, сбор гостей"},
@@ -2282,7 +2283,7 @@ async function xlBuild(noVat = false){
 }
 const xlDownload = noVat => async e => {
   if (!CAT) return;
-  if (!XL_TPL[ST.kind]) return alert("Шаблон сметы есть для мастер-классов (взрослый, детский, новогодний) и винного/коктейльного казино. Для этого формата его пока нет.");
+  if (!XL_TPL[ST.kind]) return alert("Шаблон сметы есть для мастер-классов (взрослый, детский, новогодний), казино, арт-вечеринки и коктейльного баттла. Для этого формата его пока нет.");
   const b = e.currentTarget; b.disabled = true; const old = b.textContent; b.textContent = "Собираю…";
   try {
     const {blob} = await xlBuild(noVat);
