@@ -436,6 +436,8 @@ const KINDS = {
 KINDS.art        = {grp:"casino", label:"Арт-вечеринка", files:["art.html","NovikovArt.html"], kicker:"Арт-вечеринка", kickerEn:"Art Party", kickerIt:"Art party"};
 KINDS.battle     = {grp:"casino", label:"Коктейльный баттл", files:["cocktail-battle.html","NovikovCocktailBattle.html"], kicker:"Коктейльный баттл", kickerEn:"Cocktail Battle", kickerIt:"Cocktail Battle"};
 KINDS.nyart      = {grp:"casino", label:"НГ · арт-вечеринка", files:["newyear-art.html","NovikovNewYearArt.html"], kicker:"Новогодняя арт-вечеринка", kickerEn:"New Year Art Party", kickerIt:"Art party di Capodanno"};
+KINDS.meatwine   = {grp:"casino", label:"Винно-мясное казино", files:["meatwine-casino.html","NovikovMeatWineCasino.html"], kicker:"Винно-мясное казино", kickerEn:"Meat & Wine Casino", kickerIt:"Casinò di vino e carne"};
+KINDS.nymeatwine = {grp:"casino", label:"НГ · винно-мясное казино", files:["newyear-meatwine-casino.html","NovikovNewYearMeatWineCasino.html"], kicker:"Новогоднее винно-мясное казино", kickerEn:"New Year Meat & Wine Casino", kickerIt:"Casinò di vino e carne di Capodanno"};
 KINDS.nybattle   = {grp:"casino", label:"НГ · коктейльный баттл", files:["newyear-cocktail-battle.html","NovikovNewYearCocktailBattle.html"], kicker:"Новогодний коктейльный баттл", kickerEn:"New Year Cocktail Battle", kickerIt:"Cocktail Battle di Capodanno"};
 /* Черновик: форматы плитками + переключатель сезона. fmt — плитка, ny — новогодний вариант */
 const FMTS = [
@@ -443,6 +445,7 @@ const FMTS = [
   {k:"kids",     n:"Детский праздник",        au:"kids",     ny:null,         img:"images/halls/cafe/21.jpg", pkg:"Детский пакет"},
   {k:"wine",     n:"Винное казино",           au:"wine",     ny:"nywine",     img:"images/formats/wine/1.jpg", pkg:"Пакет казино"},
   {k:"cocktail", n:"Коктейльное казино",      au:"cocktail", ny:"nycocktail", img:"images/formats/cocktail/1.jpg", pkg:"Пакет казино"},
+  {k:"meatwine", n:"Винно-мясное казино",     au:"meatwine", ny:"nymeatwine", img:"images/formats/meatwine/hero.jpg", pkg:"Пакет казино"},
   {k:"art",      n:"Арт-вечеринка",           au:"art",      ny:"nyart",      img:"images/formats/art/1.jpg", pkg:"Пакет арт-вечеринки"},
   {k:"battle",   n:"Коктейльный баттл",       au:"battle",   ny:"nybattle",   img:"images/formats/battle/1.jpg", pkg:"Пакет баттла"}
 ];
@@ -452,7 +455,8 @@ const KGRP = {cook:"Кулинарное", casino:"Казино"};
 /* Шаблоны сметы Excel отдела продаж — по одному на тип кулинарного мероприятия (казино пока без шаблона) */
 const XL_TPL = {adult:"uploads/smeta/adult.xlsx", ny:"uploads/smeta/ny.xlsx", kids:"uploads/smeta/kids.xlsx",
   wine:"uploads/smeta/wine.xlsx", cocktail:"uploads/smeta/cocktail.xlsx", nywine:"uploads/smeta/nywine.xlsx", nycocktail:"uploads/smeta/nycocktail.xlsx",
-  art:"uploads/smeta/art.xlsx", nyart:"uploads/smeta/nyart.xlsx", battle:"uploads/smeta/battle.xlsx", nybattle:"uploads/smeta/nybattle.xlsx"};
+  art:"uploads/smeta/art.xlsx", nyart:"uploads/smeta/nyart.xlsx", battle:"uploads/smeta/battle.xlsx", nybattle:"uploads/smeta/nybattle.xlsx",
+  meatwine:"uploads/smeta/meatwine.xlsx", nymeatwine:"uploads/smeta/nymeatwine.xlsx"};
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
 const TL_TEMPLATE = [
   {m:30,  t:"Welcome-фуршет: закуски{ff}, сбор гостей"},
@@ -462,7 +466,8 @@ const TL_TEMPLATE = [
 ];
 const COVER_IMG = {adult:"images/halls/cafe/22.jpg", ny:"images/halls/cafe/23.jpg", kids:"images/halls/cafe/21.jpg",
   wine:"images/halls/cafe/22.jpg", cocktail:"images/halls/cafe/22.jpg", nywine:"images/halls/cafe/23.jpg", nycocktail:"images/halls/cafe/23.jpg",
-  art:"images/formats/art/1.jpg", nyart:"images/formats/art-ny/1.jpg", battle:"images/formats/battle/1.jpg", nybattle:"images/formats/battle/2.jpg"};
+  art:"images/formats/art/1.jpg", nyart:"images/formats/art-ny/1.jpg", battle:"images/formats/battle/1.jpg", nybattle:"images/formats/battle/2.jpg",
+  meatwine:"images/formats/meatwine/hero.jpg", nymeatwine:"images/formats/meatwine/hero.jpg"};
 const COOK_IMGS = ["images/halls/cafe/21.jpg","images/halls/cafe/24.jpg","images/halls/cafe/6.jpg"];
 const LS_KEY = "novikov-proposal-v1" + MANAGER.ls;
 
@@ -827,7 +832,28 @@ const IT_DICT = {
   "Мастер-класс по новогодней композиции из еловых веток":"Masterclass di composizioni natalizie con rami d'abete",
   "Новогодний венок":"Ghirlanda natalizia", "Еловый букет":"Bouquet di rami d'abete",
   "Будем создавать украшение из свежих еловых веток, веселиться и встречать Новый год! На мастер-классе мы предоставим всё необходимое для создания композиции: основу, живые ветки лапника, украшения. Два варианта на выбор.":
-    "Creeremo una decorazione con rami d'abete freschi, ci divertiremo e accoglieremo insieme il nuovo anno! Durante la masterclass forniamo tutto il necessario per la composizione: la base, rami d'abete freschi e decorazioni. Due varianti a scelta."
+    "Creeremo una decorazione con rami d'abete freschi, ci divertiremo e accoglieremo insieme il nuovo anno! Durante la masterclass forniamo tutto il necessario per la composizione: la base, rami d'abete freschi e decorazioni. Due varianti a scelta.",
+  /* Винно-мясное казино (2026-11-19) — ключи как их режет tr(): по «, », « · », «+», «(» */
+  "Винно-мясное казино":"Casinò di vino e carne", "Игра «Винно-мясное казино»":"Gioco «Casinò di vino e carne»", "Игра «Casinò di vino e carne»":"Gioco «Casinò di vino e carne»",  /* tr() сначала переводит название в «» */ "раунд Black Casino":"round Black Casino",
+  "3 вина стандартной категории (8 500 ₽/бут.":"3 vini della categoria standard (8.500 ₽/bott.",
+  "4 вина авторской категории (11 500 ₽/бут.":"4 vini della categoria d'autore (11.500 ₽/bott.",
+  "4 вина авторской категории (13 800 ₽/бут.":"4 vini della categoria d'autore (13.800 ₽/bott.",
+  "5 вин эксклюзивной категории (14 500 ₽/бут.":"5 vini della categoria esclusiva (14.500 ₽/bott.",
+  "дегустационная порция 50 мл)":"assaggio da 50 ml)",
+  "3 отборных мясных отруба стандартной категории с овощами":"3 tagli di carne scelti della categoria standard con verdure",
+  "4 отборных мясных отруба авторской категории с овощами":"4 tagli di carne scelti della categoria d'autore con verdure",
+  "4 отборных мясных отруба эксклюзивной категории с овощами":"4 tagli di carne scelti della categoria esclusiva con verdure",
+  "салат на выбор":"insalata a scelta", "Апельсиновый зал":"Sala Arancia",
+  "Играем":"Si gioca", "2 раунда винного и 2 раунда мясного казино":"2 round di casinò del vino e 2 round di casinò della carne",
+  "Перерыв":"Pausa", "Перерыв и салат":"Pausa e insalata", "Продолжаем":"Si continua",
+  "ещё 1 раунд вина и 1 раунд мяса":"ancora 1 round di vino e 1 round di carne",
+  "ещё 2 раунда вина и 2 раунда мяса":"ancora 2 round di vino e 2 round di carne",
+  "ещё 3 раунда вина":"ancora 3 round di vino", "включая Black Casino":"compreso il Black Casino", "и 2 раунда мяса":"e 2 round di carne",
+  "Десерт и итоги игры":"Dessert e risultati del gioco",
+  "Сомелье ведёт игру и наливает вино вслепую":"Il sommelier conduce il gioco e versa il vino alla cieca",
+  "шеф готовит и подаёт мясные отрубы":"lo chef cucina e serve i tagli di carne",
+  "гости угадывают и делают ставки фишками. Игра проходит в Апельсиновом зале.":"gli ospiti indovinano e puntano con le fiches. Il gioco si svolge nella sala Arancia.",
+  "3 вина и 3 отруба":"3 vini e 3 tagli", "4 вина и 4 отруба":"4 vini e 4 tagli", "5 вин":"5 vini", "4 отруба и Black Casino":"4 tagli e Black Casino"
 };
 function learn(o, seen = new Set()){
   if (!o || typeof o !== "object" || seen.has(o)) return; seen.add(o);
@@ -951,7 +977,7 @@ function buildCatalog(kind){
     st.tabs.filter(t => t !== chefs).forEach(t => t.levels.forEach((l, li) => C.pkgs.push({ casino:casinoGame(li)(t),
       key:`pkg:${t.k}:${l.k}`, group:L(t.n), title:`${L(t.n)} · ${L(l.n)}`, short:L(l.n), price:num(l.price), per:"guest", unit:"гость",
       desc:L(t.d), buffet:l.buffet, bwt:l.bwt, setIds:l.ids, prem:l.prem ? L(st.premNote) : "",
-      tl: t.k === "team" ? null : t.tl.map(r => ({m:r.m, t:r.ru})), imgs:COOK_IMGS})));
+      tl: t.k === "team" ? null : (l.tl || t.tl).map(r => ({m:r.m, t:r.ru})), imgs:COOK_IMGS})));  /* винно-мясное: тайминг у каждого уровня */
     const fm = sec(D, "formats");
     fm.groups.slice(1).forEach(g => g.items.forEach((it, i) => {
       const p = L(it.p) || it.p, parts = String(p).split("+");

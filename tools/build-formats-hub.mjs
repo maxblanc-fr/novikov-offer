@@ -35,6 +35,7 @@ const PRICES = {
   wine:     {adult:from("NovikovWineCasino.html"),      ny:from("NovikovNewYearWineCasino.html")},
   cocktail: {adult:from("NovikovCocktailCasino.html"),  ny:from("NovikovNewYearCocktailCasino.html")},
   battle:   {adult:from("NovikovCocktailBattle.html"),  ny:from("NovikovNewYearCocktailBattle.html")},
+  meatwine: {adult:from("NovikovMeatWineCasino.html"),  ny:from("NovikovNewYearMeatWineCasino.html")},
   art:      {adult:from("NovikovArt.html"),             ny:from("NovikovNewYearArt.html")},
   kids:     {adult:from("NovikovKids.html"),            ny:from("NovikovKids.html")}
 };
