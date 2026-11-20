@@ -2270,6 +2270,9 @@ function xlSheet(xml, sst, noVat){
     if (rVat){ setStr(rVat, 2, "НДС"); setStr(rVat, 6, "не облагается"); }
     if (rTot && rNet){ setStr(rTot, 2, "Итого к оплате (НДС не облагается)"); setF(rTot, 6, `F${rNet}`); }
   }
+  /* Есть скидка — строки «Скидка на …» и «… после скидки» видимые (в шаблоне они белым по белому) */
+  if (T.disc) [rD1, rD2, ...[...rowEl.keys()].filter(r => /после скидки$/.test(get(r, 2).trim()))].filter(Boolean)
+    .forEach(r => [...rowEl.get(r).children].forEach(c => { const st = c.getAttribute("s"); if (st != null && XL_SHOW[st] != null) c.setAttribute("s", XL_SHOW[st]); }));
 
   /* Что убрать: в разделе пакетов — цены невыбранных пакетов (в тех же строках пункты «что входит»),
      в остальных разделах — невыбранные позиции с описаниями; подзаголовки без позиций уберём после вставки */
@@ -2376,6 +2379,7 @@ function xlSheet(xml, sst, noVat){
   return {xml:new XMLSerializer().serializeToString(doc), shifts, dels, total:val(`F${findLabel(/^Всего к оплате \(без НДС\)/)}`)};
 }
 
+let XL_SHOW = {};
 async function xlBuild(noVat = false){
   await needZip();
   const zip = await JSZip.loadAsync(await (await fetch(XL_TPL[ST.kind] + "?v=" + Date.now())).arrayBuffer());
@@ -2384,6 +2388,24 @@ async function xlBuild(noVat = false){
   const sst = [...new DOMParser().parseFromString(sstXml || "<sst/>", "application/xml").getElementsByTagName("si")].map(si => [...si.getElementsByTagName("t")].map(t => t.textContent).join(""));
   const base = await zip.file("xl/worksheets/sheet1.xml").async("string");
   let wb = await zip.file("xl/workbook.xml").async("string");
+  /* В шаблонах строки скидки набраны белым по белому (цвет indexed 65) — при скидке их показываем:
+     для каждого такого стиля ячейки делаем копию с чёрным шрифтом, xlSheet подменяет стиль в строках скидки */
+  XL_SHOW = {};
+  if (zip.file("xl/styles.xml")){
+    const sx = new DOMParser().parseFromString(await zip.file("xl/styles.xml").async("string"), "application/xml");
+    const fontsEl = sx.getElementsByTagName("fonts")[0], xfsEl = sx.getElementsByTagName("cellXfs")[0];
+    if (fontsEl && xfsEl){
+      const fonts = [...fontsEl.children], xfs = [...xfsEl.children], fMap = {};
+      fonts.forEach((f, i) => { const c = [...f.children].find(e => e.localName === "color");
+        if (c && c.getAttribute("indexed") === "65"){ const nf = f.cloneNode(true), nc = [...nf.children].find(e => e.localName === "color");
+          nc.removeAttribute("indexed"); nc.setAttribute("theme", "1"); fontsEl.appendChild(nf); fMap[i] = fonts.length + Object.keys(fMap).length; } });
+      let nx = xfs.length;
+      xfs.forEach((x, i) => { const fid = x.getAttribute("fontId"); if (fid != null && fMap[fid] != null){
+        const n = x.cloneNode(true); n.setAttribute("fontId", fMap[fid]); n.setAttribute("applyFont", "1"); xfsEl.appendChild(n); XL_SHOW[i] = nx++; } });
+      fontsEl.setAttribute("count", fontsEl.children.length); xfsEl.setAttribute("count", xfsEl.children.length);
+      zip.file("xl/styles.xml", new XMLSerializer().serializeToString(sx));
+    }
+  }
   const lang = ST.lang; ST.lang = "ru";   /* смета всегда по-русски, как шаблон */
   try {
     syncVar();
