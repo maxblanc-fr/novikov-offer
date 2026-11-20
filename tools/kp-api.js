@@ -6,7 +6,8 @@
 // Бэкап: data/kp/backup/<менеджер>-<ГГГГ-ММ-ДД>.json — копия на начало каждого дня, когда были записи.
 // Доступ без пароля (решение пользователя 2026-11-20): архив открыт всем, кто знает адрес генератора.
 //
-//   GET  /api/kp/<менеджер>                         → {items, counter}
+//   GET  /api/kp/<менеджер>[?v=<версия>]            → {items, counter, v} | {same:true, v}, если архив не менялся
+//        (вкладки опрашивают раз в 30 с — без изменений передаётся пара десятков байт, а не весь архив)
 //   POST /api/kp/<менеджер> {op:"put", item, base, force} → {updated} | 409 {item: версия на сервере}
 //   POST /api/kp/<менеджер> {op:"merge", items}      → {added, updated}  (перенос старых КП из браузера)
 //   POST /api/kp/<менеджер> {op:"del", id}           → {ok}
@@ -21,6 +22,7 @@ const ID = /^[\w-]{4,64}$/
 const MAX_BODY = 10 * 1024 * 1024
 
 const file = k => path.join(DIR, k + '.json')
+const version = k => { try { const st = fs.statSync(file(k)); return `${Math.round(st.mtimeMs)}-${st.size}` } catch { return '0' } }
 function load(k) {
   try {
     const d = JSON.parse(fs.readFileSync(file(k), 'utf8'))
@@ -112,8 +114,10 @@ module.exports = function kpApi(req, res) {
   const k = m[1].toLowerCase()
   if (!KEY.test(k)) { send(res, 400, { error: 'bad manager' }); return true }
   if (req.method === 'GET') {
+    const v = version(k), q = (req.url.match(/[?&]v=([\w-]+)/) || [])[1]
+    if (q && q === v) { send(res, 200, { same: true, v }); return true }
     const d = load(k)
-    send(res, 200, { items: d.items.sort(byUpdated), counter: d.counter })
+    send(res, 200, { items: d.items.sort(byUpdated), counter: d.counter, v })
     return true
   }
   if (req.method !== 'POST') { send(res, 405, { error: 'method' }); return true }

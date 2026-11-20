@@ -1159,8 +1159,9 @@ const archSet = a => { ARCH = a; try { localStorage.setItem(ARCH_KEY, JSON.strin
 const baseSet = (id, u) => { if (u) BASE[id] = u; else delete BASE[id]; try { localStorage.setItem(BASE_KEY, JSON.stringify(BASE)); } catch(e){} };
 /* Содержимое КП для сравнения: без текущей вкладки варианта, она у каждого своя */
 const contentOf = st => { const o = clone(st || {}); delete o.vi; return JSON.stringify(o); };
+let ARCH_V = "";            /* версия архива на сервере: при опросе без изменений сервер отвечает {same:true} */
 async function api(body){
-  const r = await fetch(API, body ? {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)} : {cache:"no-store"});
+  const r = await fetch(body ? API : API + (ARCH_V ? "?v=" + encodeURIComponent(ARCH_V) : ""), body ? {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)} : {cache:"no-store"});
   if (r.status === 409) return {conflict:(await r.json()).item};
   if (!r.ok) throw new Error("HTTP " + r.status);
   return r.json();
@@ -1239,7 +1240,10 @@ let syncing = null;
 const kpSync = () => syncing || (syncing = (async () => {
   try {
     if (!SYNCED) await migrate();
-    const {items} = await api();
+    const got = await api();
+    if (got.same){ SYNCED = true; syncMark("ok"); return; }
+    ARCH_V = got.v || "";
+    const {items} = got;
     const prev = {...SRV};
     items.forEach(x => SRV[x.id] = x);
     const ids = new Set(items.map(x => x.id));
