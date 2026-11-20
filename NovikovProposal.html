@@ -46,6 +46,16 @@
   @media(max-width:1000px){aside.form{max-height:none;position:static}}
   main.preview{padding:20px;overflow:auto}
   #status{font-size:12px;opacity:.9}
+  #sync{font-size:11px;opacity:.75;white-space:nowrap}
+  #sync.off{opacity:1;color:#ffd2d2;font-weight:700}
+  #sync:empty{display:none}
+  .conflict{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:60;display:flex;gap:10px;align-items:center;max-width:min(900px,94vw);
+    background:#fff4d6;border:1px solid #e0b84a;padding:10px 14px;box-shadow:0 8px 30px rgba(0,0,0,.18);font-size:13px}
+  .conflict span{flex:1}
+  .toast{position:fixed;right:18px;bottom:18px;z-index:60;background:var(--ink,#1b1b1b);color:#fff;padding:10px 14px;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+  .conflict .btn{background:#fff;color:#7a1020;border-color:#c9a23c}
+  .conflict .btn.ghost{background:transparent;color:#5a4410}
+  .arch select#archMgr{font:inherit;font-size:13px;padding:5px 8px;max-width:220px}
 
   .kinds{display:flex;flex-wrap:wrap;gap:0;margin-bottom:12px}
   .kinds button{flex:1;border:1px solid var(--line);background:#fff;padding:10px 6px;cursor:pointer;font-family:var(--head);
@@ -350,6 +360,7 @@
   <div class="brand">NOVIKOV<b>SCHOOL</b><small>ГЕНЕРАТОР ПРЕДЛОЖЕНИЙ<span id="mgrName"></span></small></div>
   <span id="status">Загружаю цены с лендингов…</span>
   <span class="sp"></span>
+  <span id="sync"></span>
   <button class="btn ghost" id="bArch" type="button">Мои КП</button>
   <button class="btn ghost" id="bReset" type="button" title="Новое КП (Alt+N)">+ Новое</button>
   <details class="more"><summary class="btn ghost">Ещё</summary><div class="menu">
@@ -363,8 +374,10 @@
   </div></details>
   <button class="btn main" id="bPdf" type="button" title="Ctrl/⌘ + Enter">Сгенерировать PDF</button>
 </header>
+<div class="conflict" id="conflict" hidden><span id="conflictTxt"></span><button class="btn sm" type="button" id="cfTheirs">Открыть их версию</button><button class="btn sm ghost" type="button" id="cfMine">Сохранить мою поверх</button></div>
+<div class="toast" id="toast" hidden></div>
 <div class="arch" id="arch" hidden><div class="in">
-  <div class="hd"><b>Сохранённые предложения</b><label class="btn sm" style="cursor:pointer">Открыть из PDF…<input type="file" id="pdfIn" accept="application/pdf" hidden></label><button class="btn sm" type="button" id="archClose">Закрыть</button></div>
+  <div class="hd"><b>Сохранённые предложения</b><select id="archMgr" title="Открыть архив и генератор другого менеджера"></select><label class="btn sm" style="cursor:pointer">Открыть из PDF…<input type="file" id="pdfIn" accept="application/pdf" hidden></label><button class="btn sm" type="button" id="archClose">Закрыть</button></div>
   <input class="search" id="archSearch" placeholder="Поиск по клиенту или номеру…">
   <div id="archList"></div>
   <div class="hint" style="margin-top:10px">Список хранится в этом браузере. Любой PDF, собранный генератором, можно открыть кнопкой «Открыть из PDF» — на любом компьютере.</div>
@@ -1124,31 +1137,135 @@ function withVar(i, fn){
   try { return fn(); } finally { loadVar(cur); }
 }
 
-/* ---------- Архив КП (localStorage) + номер и версия ---------- */
-const ARCH_KEY = "novikov-proposal-archive-v1" + MANAGER.ls, CNT_KEY = "novikov-proposal-counter" + MANAGER.ls;
+/* ---------- Архив КП: общий на сервере (/api/kp/<менеджер>, tools/kp-api.js), копия в localStorage ----------
+   С любого компьютера по адресу менеджера видны все его КП; менеджер и ассистенты правят одно и то же.
+   BASE[id] — метка версии на сервере, с которой работает этот компьютер. Сервер отклоняет запись (409),
+   если КП с тех пор сохранили с другого компьютера, — тогда показываем выбор «их версия / моя поверх». */
+const MKEY = Object.keys(MANAGERS).find(k => MANAGERS[k] === MANAGER) || "max";
+const API = "api/kp/" + MKEY;
+const ARCH_KEY = "novikov-proposal-archive-v1" + MANAGER.ls, CNT_KEY = "novikov-proposal-counter" + MANAGER.ls, BASE_KEY = "novikov-kp-base" + MANAGER.ls;
 /* КП, сохранённые в черновике генератора (ноябрь 2026), — добавляем в основной архив, по одному разу */
 try { const dk = ARCH_KEY + "-draft", d = JSON.parse(localStorage.getItem(dk) || "[]");
   if (d.length){ const a = JSON.parse(localStorage.getItem(ARCH_KEY) || "[]"), have = new Map(a.map(x => [x.id, x]));
     d.forEach(x => { const o = have.get(x.id); if (!o) a.push(x); else if (String(x.updated || "") > String(o.updated || "")) Object.assign(o, x); });
     a.sort((x, y) => String(y.updated || "").localeCompare(String(x.updated || ""))); localStorage.setItem(ARCH_KEY, JSON.stringify(a)); localStorage.removeItem(dk); } } catch(e){}
 let aT = 0;
-const archGet = () => { try { return JSON.parse(localStorage.getItem(ARCH_KEY)) || []; } catch(e){ return []; } };
-const archSet = a => { try { localStorage.setItem(ARCH_KEY, JSON.stringify(a)); } catch(e){ $("#status").textContent = "Не хватает места для архива КП"; } };
+let ARCH = (() => { try { return JSON.parse(localStorage.getItem(ARCH_KEY)) || []; } catch(e){ return []; } })();
+let BASE = (() => { try { return JSON.parse(localStorage.getItem(BASE_KEY)) || {}; } catch(e){ return {}; } })();
+const SRV = {};            /* последняя известная серверная версия каждой КП */
+let ONLINE = false, SYNCED = false;
+const archGet = () => ARCH;
+const archSet = a => { ARCH = a; try { localStorage.setItem(ARCH_KEY, JSON.stringify(a)); } catch(e){ $("#status").textContent = "Не хватает места для копии архива КП в браузере"; } };
+const baseSet = (id, u) => { if (u) BASE[id] = u; else delete BASE[id]; try { localStorage.setItem(BASE_KEY, JSON.stringify(BASE)); } catch(e){} };
+/* Содержимое КП для сравнения: без текущей вкладки варианта, она у каждого своя */
+const contentOf = st => { const o = clone(st || {}); delete o.vi; return JSON.stringify(o); };
+async function api(body){
+  const r = await fetch(API, body ? {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)} : {cache:"no-store"});
+  if (r.status === 409) return {conflict:(await r.json()).item};
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.json();
+}
+function syncMark(st){
+  ONLINE = st !== "off";
+  const el = $("#sync"); if (!el) return;
+  el.textContent = st === "off" ? "нет связи с сервером — КП сохраняются только в этом браузере" : st === "busy" ? "сохраняю…" : "КП сохранены на сервере";
+  el.className = st;
+}
 /* Отпечаток содержимого — меняется, только если правили само предложение */
 const stateHash = () => { syncVar(); const o = clone(ST); ["id","no","ver","verDate","sentHash","vi"].forEach(k => delete o[k]); return JSON.stringify(o); };
 function archPut(){
   if (!CAT || !(ST.client || ST.no)) return;
   syncVar();
-  const a = archGet().filter(x => x.id !== ST.id);
+  const srv = SRV[ST.id];
+  if (srv && contentOf(srv.state) === contentOf(ST)) return;        /* на сервере уже ровно это */
   const tots = (ST.vars.length ? ST.vars.map((_, i) => i) : [0]).map(i => withVar(i, () => totals().tot));
-  a.unshift({id:ST.id, no:ST.no, ver:ST.ver, client:ST.client, date:ST.date, kind:ST.kind, tots, updated:new Date().toISOString(), state:clone(ST)});
-  archSet(a);
+  const rec = {id:ST.id, no:ST.no, ver:ST.ver, client:ST.client, date:ST.date, kind:ST.kind, tots, updated:new Date().toISOString(), state:clone(ST)};
+  archSet([rec, ...ARCH.filter(x => x.id !== ST.id)]);
+  push(rec);
 }
-function nextNo(){
+/* Запись на сервер — по очереди, чтобы метка версии не перепуталась */
+let Q = Promise.resolve();
+const push = (rec, force) => (Q = Q.then(() => send(rec, force)).catch(() => {}));
+async function send(rec, force){
+  if (!force && conflictId === rec.id) return;                       /* ждём решения по конфликту */
+  syncMark("busy");
+  try {
+    const r = await api({op:"put", item:rec, base:BASE[rec.id] || "", force:!!force});
+    if (r.conflict){ syncMark("ok"); showConflict(rec, r.conflict); return; }
+    rec.updated = r.updated; baseSet(rec.id, r.updated); SRV[rec.id] = clone(rec);
+    const x = ARCH.find(a => a.id === rec.id); if (x) x.updated = r.updated; archSet(ARCH);
+    if (conflictId === rec.id) hideConflict();
+    syncMark("ok");
+  } catch(e){ syncMark("off"); }
+}
+/* Конфликт: КП правили одновременно на двух компьютерах */
+let conflictId = "", conflictItem = null;
+function showConflict(mine, theirs){
+  conflictId = mine.id; conflictItem = theirs;
+  const t = new Date(theirs.updated).toLocaleString("ru-RU", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"});
+  $("#conflictTxt").textContent = `${theirs.no ? "КП № " + theirs.no : "Эту КП"} (${theirs.client || "без клиента"}) изменили на другом компьютере в ${t}, пока вы её правили.`;
+  $("#conflict").hidden = false;
+}
+function hideConflict(){ conflictId = ""; conflictItem = null; $("#conflict").hidden = true; }
+async function adopt(item, note){
+  /* Открываем серверную версию КП (без записи текущей — она и есть эта КП) */
+  const s = fixHalls(Object.assign(blank(), item.state));
+  try { await loadKinds(s); } catch(e){ return; }
+  const vi = ST.id === s.id ? ST.vi : 0;
+  SRV[item.id] = clone(item); baseSet(item.id, item.updated);
+  ST = s; if (ST.vars.length && ST.vars[vi]) loadVar(vi); CAT = catFor(ST.kind);
+  rerender();
+  if (note) toast(note);
+}
+function toast(t){ const el = $("#toast"); el.textContent = t; el.hidden = false; clearTimeout(el._t); el._t = setTimeout(() => el.hidden = true, 6000); }
+/* Перенос КП, сохранённых в браузерах до общего архива: все архивы всех менеджеров с этого сайта */
+async function migrate(){
+  const MK = "novikov-kp-merged-at", since = localStorage.getItem(MK) || "", by = {};
+  let top = since;
+  for (let i = 0; i < localStorage.length; i++){
+    const k = localStorage.key(i), m = k && k.match(/^novikov-proposal-archive-v1(.*?)(-draft)?$/); if (!m) continue;
+    const mk = Object.keys(MANAGERS).find(x => MANAGERS[x].ls === m[1]); if (!mk) continue;
+    let a = []; try { a = JSON.parse(localStorage.getItem(k)) || []; } catch(e){}
+    a.filter(x => x && x.id && x.state && String(x.updated || "") > since).forEach(x => { (by[mk] = by[mk] || []).push(x); if (String(x.updated) > top) top = String(x.updated); });
+  }
+  for (const mk of Object.keys(by)){
+    const r = await fetch("api/kp/" + mk, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({op:"merge", items:by[mk]})});
+    if (!r.ok) throw new Error("merge " + r.status);
+  }
+  try { localStorage.setItem(MK, top); } catch(e){}
+}
+/* Подтянуть архив с сервера; если открытую КП сохранили с другого компьютера — показать свежую */
+let syncing = null;
+const kpSync = () => syncing || (syncing = (async () => {
+  try {
+    if (!SYNCED) await migrate();
+    const {items} = await api();
+    const prev = {...SRV};
+    items.forEach(x => SRV[x.id] = x);
+    const ids = new Set(items.map(x => x.id));
+    /* У себя оставляем только то, что ещё не дошло до сервера (нет связи) */
+    const unsent = ARCH.filter(x => !ids.has(x.id) && !BASE[x.id] && x.id === ST.id);
+    archSet([...unsent, ...items]);
+    items.forEach(x => { if (x.id !== ST.id) baseSet(x.id, x.updated); });
+    SYNCED = true; syncMark("ok");
+    const now = SRV[ST.id];
+    if (now && now.updated !== BASE[ST.id] && conflictId !== ST.id){
+      const mine = contentOf(ST);
+      if (mine === contentOf(now.state)) baseSet(ST.id, now.updated);
+      else if (!prev[ST.id] || mine === contentOf(prev[ST.id].state)) await adopt(now, "КП обновлена: подтянуты изменения с другого компьютера");
+      else showConflict({id:ST.id}, now);
+    } else if (now && now.updated === BASE[ST.id] && contentOf(now.state) !== contentOf(ST)) archPut();   /* свои несохранённые правки */
+    else if (!now && (ST.client || ST.no)) archPut();
+    if (!$("#arch").hidden) renderArch();
+  } catch(e){ syncMark("off"); }
+  finally { syncing = null; }
+})());
+async function nextNo(){
   const yy = String(new Date().getFullYear() % 100);
   let n = 0; try { n = +localStorage.getItem(CNT_KEY + yy) || 0; } catch(e){}
   archGet().forEach(x => { const m = String(x.no || "").match(/(\d+)-(\d+)$/); if (m && m[1] === yy) n = Math.max(n, +m[2]); });
-  n++; try { localStorage.setItem(CNT_KEY + yy, n); } catch(e){}
+  try { n = (await api({op:"no", yy, min:n})).n; } catch(e){ n++; }   /* без связи — по счётчику браузера */
+  try { localStorage.setItem(CNT_KEY + yy, n); } catch(e){}
   return `${MANAGER.code}${yy}-${String(n).padStart(3, "0")}`;
 }
 const kpLabel = () => ST.no ? X(`КП № ${ST.no}${ST.ver > 1 ? `, версия ${ST.ver}` : ""}`, `Proposal No. ${ST.no}${ST.ver > 1 ? `, version ${ST.ver}` : ""}`, `Proposta n. ${ST.no}${ST.ver > 1 ? `, versione ${ST.ver}` : ""}`) : "";
@@ -1861,7 +1978,7 @@ $("#bPdf").addEventListener("click", async () => {
   try {
     /* Номер присваивается при первом PDF; повторный PDF после правок — новая версия */
     const h = stateHash();
-    if (!ST.no){ ST.no = nextNo(); ST.ver = 1; ST.verDate = new Date().toISOString(); }
+    if (!ST.no){ ST.no = await nextNo(); ST.ver = 1; ST.verDate = new Date().toISOString(); }
     else if (h !== ST.sentHash){ ST.ver = (ST.ver || 1) + 1; ST.verDate = new Date().toISOString(); }
     ST.sentHash = h; save(); archPut(); renderForm();
     clearTimeout(rT); renderPages();
@@ -2326,10 +2443,12 @@ $("#bXls").addEventListener("click", xlDownload(false));
 $("#bXlsNoVat").addEventListener("click", xlDownload(true));
 
 /* ---------- Мои КП ---------- */
-async function openState(st){
+async function openState(st, item){
   archPut();
   const s = fixHalls(Object.assign(blank(), st));
   try { await loadKinds(s); } catch(e){ alert("Не удалось загрузить цены: " + KINDS[s.kind].files.join(" / ")); return; }
+  if (item){ SRV[item.id] = clone(item); baseSet(item.id, item.updated); }
+  if (conflictId && conflictId !== s.id) hideConflict();
   ST = s; CAT = catFor(ST.kind); $("#status").textContent = "Цены: " + KINDS[ST.kind].file;
   $("#arch").hidden = true; rerender();
 }
@@ -2345,17 +2464,28 @@ function renderArch(){
     <td class="acts"><button type="button" data-a="open">Открыть</button><button type="button" data-a="copy" title="Новое КП с тем же составом">Копия</button><button type="button" data-a="del">×</button></td></tr>`).join("")}</tbody></table>`
     : `<div class="empty" style="padding:30px">${q ? "Ничего не найдено" : "Пока пусто — КП сохраняются сами, как только указан клиент"}</div>`;
 }
-$("#bArch").addEventListener("click", () => { archPut(); renderArch(); $("#arch").hidden = false; });
+$("#bArch").addEventListener("click", () => { archPut(); renderArch(); $("#arch").hidden = false; kpSync(); });
+/* Архив другого менеджера — его страница генератора */
+$("#archMgr").innerHTML = Object.keys(MANAGERS).map(k => `<option value="${k}"${k === MKEY ? " selected" : ""}>${esc(MANAGERS[k].name)}</option>`).join("");
+$("#archMgr").addEventListener("change", e => { const k = e.target.value; location.href = "kp-generator" + (k === "max" ? "" : "-" + k); });
+$("#cfTheirs").addEventListener("click", async () => { const it = conflictItem; hideConflict(); if (it) await adopt(it, "Открыта версия с другого компьютера"); });
+$("#cfMine").addEventListener("click", () => { const id = conflictId; hideConflict(); const rec = ARCH.find(x => x.id === id) || {id}; syncVar();
+  if (id === ST.id) Object.assign(rec, {no:ST.no, ver:ST.ver, client:ST.client, date:ST.date, kind:ST.kind, state:clone(ST)}); push(rec, true); });
+/* Свежие правки коллег: при возврате на вкладку и раз в 30 секунд */
+addEventListener("focus", () => kpSync());
+document.addEventListener("visibilitychange", () => { if (!document.hidden) kpSync(); });
+setInterval(() => { if (!document.hidden) kpSync(); }, 30000);
 $("#archClose").addEventListener("click", () => $("#arch").hidden = true);
 $("#arch").addEventListener("click", e => { if (e.target.id === "arch") $("#arch").hidden = true; });
 $("#archSearch").addEventListener("input", renderArch);
 $("#archList").addEventListener("click", async e => {
   const b = e.target.closest("[data-a]"); if (!b) return;
   const id = b.closest("tr").dataset.id, x = archGet().find(r => r.id === id); if (!x) return;
-  if (b.dataset.a === "open") await openState(x.state);
+  if (b.dataset.a === "open") await openState(x.state, x);
   else if (b.dataset.a === "copy"){ const n = blank(); await openState({...clone(x.state), id:n.id, no:"", ver:0, verDate:"", sentHash:"", valid:""}); }
   else if (b.dataset.a === "del" && confirm(`Удалить из списка ${x.no ? "КП № " + x.no : "черновик"} (${x.client || "без клиента"})?`)){
-    archSet(archGet().filter(r => r.id !== id)); if (id === ST.id) ST.id = blank().id; renderArch(); }
+    archSet(archGet().filter(r => r.id !== id)); delete SRV[id]; baseSet(id, ""); if (id === ST.id) ST.id = blank().id; renderArch();
+    api({op:"del", id}).catch(() => syncMark("off")); }
 });
 $("#pdfIn").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
@@ -2380,6 +2510,7 @@ $("#bExample").addEventListener("click", async () => {
     CAT = catFor(ST.kind);
     $("#status").textContent = "Цены: " + KINDS[ST.kind].file;
     renderForm(); renderPages();
+    kpSync();
   } catch(e){
     console.error(e);
     $("#status").textContent = "Ошибка загрузки данных";
