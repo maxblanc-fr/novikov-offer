@@ -49,12 +49,24 @@
   #sync{font-size:11px;opacity:.75;white-space:nowrap}
   #sync.off{opacity:1;color:#ffd2d2;font-weight:700}
   #sync:empty{display:none}
-  .conflict{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:60;display:flex;gap:10px;align-items:center;max-width:min(900px,94vw);
-    background:#fff4d6;border:1px solid #e0b84a;padding:10px 14px;box-shadow:0 8px 30px rgba(0,0,0,.18);font-size:13px}
-  .conflict span{flex:1}
-  .toast{position:fixed;right:18px;bottom:18px;z-index:60;background:var(--ink,#1b1b1b);color:#fff;padding:10px 14px;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
-  .conflict .btn{background:#fff;color:#7a1020;border-color:#c9a23c}
-  .conflict .btn.ghost{background:transparent;color:#5a4410}
+  .conflict{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px;
+    background:rgba(18,18,18,.45);backdrop-filter:blur(2px)}
+  .conflict[hidden]{display:none}
+  .cf-box{background:var(--card);width:min(560px,100%);box-shadow:0 24px 70px rgba(0,0,0,.35);border-top:4px solid var(--red)}
+  .cf-head{padding:22px 26px 6px}
+  .cf-head small{display:block;font-family:var(--head);font-weight:700;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+  .cf-head h3{margin:6px 0 0;font-family:var(--head);font-weight:900;font-size:21px;line-height:1.2;color:var(--maroon)}
+  .cf-head p{margin:10px 0 0;color:var(--ink-soft);font-size:13.5px}
+  .cf-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px 26px 24px}
+  @media(max-width:560px){.cf-opts{grid-template-columns:1fr}}
+  .cf-opt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;cursor:pointer;padding:14px 16px;
+    background:#fff;border:1px solid var(--line);transition:border-color .12s,box-shadow .12s,transform .12s}
+  .cf-opt:hover{border-color:var(--red);box-shadow:0 6px 18px rgba(142,10,27,.12);transform:translateY(-1px)}
+  .cf-opt b{font-family:var(--head);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--red-deep)}
+  .cf-opt span{font-size:12.5px;line-height:1.4;color:var(--muted)}
+  .cf-opt.main{background:linear-gradient(135deg,var(--red),var(--red-deep));border-color:transparent}
+  .cf-opt.main b{color:#fff} .cf-opt.main span{color:rgba(255,255,255,.85)}
+  .toast{position:fixed;right:18px;bottom:18px;z-index:61;background:var(--ink,#1b1b1b);color:#fff;padding:10px 14px;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
   .arch select#archMgr{font:inherit;font-size:13px;padding:5px 8px;max-width:220px}
 
   .kinds{display:flex;flex-wrap:wrap;gap:0;margin-bottom:12px}
@@ -374,7 +386,13 @@
   </div></details>
   <button class="btn main" id="bPdf" type="button" title="Ctrl/⌘ + Enter">Сгенерировать PDF</button>
 </header>
-<div class="conflict" id="conflict" hidden><span id="conflictTxt"></span><button class="btn sm" type="button" id="cfTheirs">Открыть их версию</button><button class="btn sm ghost" type="button" id="cfMine">Сохранить мою поверх</button></div>
+<div class="conflict" id="conflict" hidden><div class="cf-box" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+  <div class="cf-head"><small>Совместная работа</small><h3 id="cfTitle">Эту КП только что изменил коллега</h3><p id="conflictTxt"></p></div>
+  <div class="cf-opts">
+    <button class="cf-opt main" type="button" id="cfTheirs"><b>Открыть версию коллеги</b><span>Покажем КП с правками коллеги. Ваши последние изменения не сохранятся.</span></button>
+    <button class="cf-opt" type="button" id="cfMine"><b>Оставить мою версию</b><span>Сохраним то, что сейчас у вас на экране. Правки коллеги заменятся.</span></button>
+  </div>
+</div></div>
 <div class="toast" id="toast" hidden></div>
 <div class="arch" id="arch" hidden><div class="in">
   <div class="hd"><b>Сохранённые предложения</b><select id="archMgr" title="Открыть архив и генератор другого менеджера"></select><label class="btn sm" style="cursor:pointer">Открыть из PDF…<input type="file" id="pdfIn" accept="application/pdf" hidden></label><button class="btn sm" type="button" id="archClose">Закрыть</button></div>
@@ -1203,8 +1221,8 @@ async function send(rec, force){
 let conflictId = "", conflictItem = null;
 function showConflict(mine, theirs){
   conflictId = mine.id; conflictItem = theirs;
-  const t = new Date(theirs.updated).toLocaleString("ru-RU", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"});
-  $("#conflictTxt").textContent = `${theirs.no ? "КП № " + theirs.no : "Эту КП"} (${theirs.client || "без клиента"}) изменили на другом компьютере в ${t}, пока вы её правили.`;
+  const t = new Date(theirs.updated).toLocaleString("ru-RU", {day:"numeric", month:"long", hour:"2-digit", minute:"2-digit"}).replace(",", " в");
+  $("#conflictTxt").textContent = `${theirs.no ? "КП № " + theirs.no : "КП"}${theirs.client ? " · " + theirs.client : ""} — сохранена с другого компьютера ${t}, пока вы её редактировали. Какую версию оставить?`;
   $("#conflict").hidden = false;
 }
 function hideConflict(){ conflictId = ""; conflictItem = null; $("#conflict").hidden = true; }
@@ -2494,7 +2512,7 @@ $("#bArch").addEventListener("click", () => { archPut(); renderArch(); $("#arch"
 /* Архив другого менеджера — его страница генератора */
 $("#archMgr").innerHTML = Object.keys(MANAGERS).map(k => `<option value="${k}"${k === MKEY ? " selected" : ""}>${esc(MANAGERS[k].name)}</option>`).join("");
 $("#archMgr").addEventListener("change", e => { const k = e.target.value; location.href = "kp-generator" + (k === "max" ? "" : "-" + k); });
-$("#cfTheirs").addEventListener("click", async () => { const it = conflictItem; hideConflict(); if (it) await adopt(it, "Открыта версия с другого компьютера"); });
+$("#cfTheirs").addEventListener("click", async () => { const it = conflictItem; hideConflict(); if (it) await adopt(it, "Открыта версия коллеги"); });
 $("#cfMine").addEventListener("click", () => { const id = conflictId; hideConflict(); const rec = ARCH.find(x => x.id === id) || {id}; syncVar();
   if (id === ST.id) Object.assign(rec, {no:ST.no, ver:ST.ver, client:ST.client, date:ST.date, kind:ST.kind, state:clone(ST)}); push(rec, true); });
 /* Свежие правки коллег: при возврате на вкладку и раз в 30 секунд */
