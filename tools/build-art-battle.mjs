@@ -15,6 +15,7 @@
  * Доп. услуги не трогаем. Залы и вместимость — «Вместимость Новиков РОП (2).xlsx».
  *
  * + коктейльная вечеринка (2026-11-23): NovikovCocktailParty.html, NovikovNewYearCocktailParty.html.
+ * + рождественский венок, только НГ (2026-11-23): NovikovNewYearWreath.html.
  *
  * Готовые страницы руками не править:  node tools/build-art-battle.mjs
  */
@@ -237,6 +238,33 @@ const KIND = {
     setsTitle:{ru:"Программа и меню", en:"Programme & Menu"},
     setsIntro:{ru:"Выберите уровень — от него зависят сеты от шефа, включённый фуршет и цена за гостя.",
                en:"Choose the level — it defines the chef’s sets, the included buffet and the price per guest."}
+  },
+  /* Рождественские венки — только НГ. EventyOn /christmas-wreath-newyear-b2b стоит как НГ-арт,
+     поэтому цены = НГ-арт Новикова (SEASON.ny). FF как у арта (без изменений).
+     Залы — строка «Рожденственские венки» в РОП-таблице (2026-11-23). */
+  wreath: {
+    seasons:["ny"],
+    out:{ny:"NovikovNewYearWreath.html"},
+    ff:0,
+    name:{ru:"Рождественский венок", en:"Christmas Wreath"},
+    titleTag:{ny:"Novikov School — Рождественский венок · Новый год 2027 / Christmas Wreath Party 2027"},
+    h1:{ny:{ru:'Новогодние венки в <span>Novikov School</span>', en:'Christmas Wreaths at <span>Novikov School</span>'}},
+    lead:{ny:{ru:"Новогодний корпоратив в центре Москвы: венок или букет из живой ели с декоратором, готовые сеты от шефа, фуршет и барная карта — праздник под ключ.",
+              en:"A New Year party in central Moscow: a fresh-fir wreath or bouquet with a decorator, ready-made chef’s sets, a buffet and a full bar card — the whole celebration, turnkey."}},
+    intro:{ny:{ru:"Аромат хвои, праздничная музыка и бокал в руке: под руководством декоратора гости собирают новогодний венок или букет из свежих еловых веток и украшают его шишками, бубенцами, сухоцветами и гирляндами. Все материалы включены. Мероприятие длится 4 часа с приветствием гостей и фуршетом. Официанты включены в стоимость: 6–19 гостей — 1 официант, 20–30 — 2, 31–50 — 3.",
+               en:"The scent of pine, festive music and a glass in hand: guided by a decorator, guests make a New Year wreath or bouquet from fresh fir branches and dress it with cones, bells, dried flowers and garlands. All materials are included. The event runs 4 hours, including the guest welcome and the buffet. Waiters are included in the price: 6–19 guests — 1 waiter, 20–30 — 2, 31–50 — 3."}},
+    game:{ny:{ru:"Мастер-класс с декоратором: венок или букет из живой ели", en:"Masterclass with a decorator: a fresh-fir wreath or bouquet"}},
+    tabs:{ny:[{...TAB_WREATH, short:{ru:"Венок или букет из живой ели", en:"A fresh-fir wreath or bouquet"}}]},
+    stats:{ny:{n:"2", ru:"варианта: венок или букет", en:"options: wreath or bouquet"}},
+    foot:{ru:"Все материалы включены: живая ель, основа, шишки, бубенцы, сухоцветы и гирлянды.",
+          en:"All materials are included: fresh fir, the base, cones, bells, dried flowers and garlands."},
+    cap:() => ({...ART_CAP(true), granat:{ru:"до 12 гостей", en:"up to 12 guests"}}),
+    venuesSub:{ru:"Залы для мастер-класса — от 8 до 50 гостей на одной площадке", en:"Halls for the masterclass — 8 to 50 guests at one venue"},
+    combos:{ru:"Оливковый + Остров — до 50 гостей. В Томатном и Апельсиновом венки можно делать большим составом, а посадка под блюда в стол — до 24 гостей.",
+            en:"Olive + Island — up to 50 guests. Tomato and Orange take a bigger group for the wreaths, while seated dining is up to 24 guests."},
+    setsTitle:{ru:"Программа и меню", en:"Programme & Menu"},
+    setsIntro:{ru:"Выберите уровень — от него зависят сеты от шефа, включённый фуршет и цена за гостя.",
+               en:"Choose the level — it defines the chef’s sets, the included buffet and the price per guest."}
   }
 };
 /* Подпись окна коктейлей на странице вечеринки: 3 входят в пакет, дополнительный — по цене доп. услуги. */
@@ -404,4 +432,4 @@ ${tabs}
   console.log("→", K.out[seasonKey]);
 }
 
-for(const k of Object.keys(KIND)) for(const s of Object.keys(SEASON)) build(k, s);
+for(const k of Object.keys(KIND)) for(const s of (KIND[k].seasons || Object.keys(SEASON))) build(k, s);
