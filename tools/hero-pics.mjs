@@ -9,6 +9,7 @@ export const PICS = {
   cocktail: ["images/formats/cocktail/1.jpg","images/formats/cocktail/2.jpg","images/formats/cocktail/3.jpg","images/formats/cocktail/4.jpg","images/formats/cocktail/5.jpg"],
   art:      ["images/formats/art/1.jpg","images/formats/art/2.jpg","images/formats/art/3.jpg","images/formats/art/4.jpg","images/formats/art/5.jpg"],
   "art-ny": ["images/formats/art-ny/1.jpg","images/formats/art-ny/2.jpg","images/formats/art-ny/4.jpg","images/formats/art-ny/3.jpg","images/formats/art-ny/5.jpg"],
+  party:    ["images/formats/party/1.jpg","images/formats/party/2.jpg","images/formats/party/3.jpg","images/formats/party/4.jpg","images/formats/party/5.jpg"],
   battle:   ["images/formats/battle/1.jpg","images/formats/battle/2.jpg","images/formats/battle/3.jpg","uploads/cocktails/pornstar-martini.webp","uploads/cocktails/negroni.webp"],
 };
 

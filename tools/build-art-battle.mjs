@@ -14,6 +14,8 @@
  * Free-Flow: баттл — как казино (FF1–FF3 −1 000 ₽), арт — как кулинарный (без изменений).
  * Доп. услуги не трогаем. Залы и вместимость — «Вместимость Новиков РОП (2).xlsx».
  *
+ * + коктейльная вечеринка (2026-11-23): NovikovCocktailParty.html, NovikovNewYearCocktailParty.html.
+ *
  * Готовые страницы руками не править:  node tools/build-art-battle.mjs
  */
 import fs from "node:fs";
@@ -66,7 +68,17 @@ const TL_BATTLE = [
   [30, "Свободное время: общение, игры и активности", "Free time: mingling, games and activities"]
 ];
 
-const TAB_PAINT = {k:"paint", ic:"🎨", n:{ru:"Живопись PaintOn", en:"PaintOn painting"},
+const TL_PARTY = [
+  [30, "Сбор гостей, фуршет и приветственные напитки", "Guest welcome, buffet and welcome drinks"],
+  [40, "Знакомство с бартендером и первый коктейль", "Meet the bartender and mix cocktail one", true],
+  [25, "Первое блюдо от шефа", "First course from the chef"],
+  [30, "Второй коктейль", "Cocktail two", true],
+  [25, "Второе блюдо", "Second course"],
+  [30, "Третий коктейль — с авторской подачей", "Cocktail three — with your own twist", true],
+  [60, "Вечеринка продолжается: общение, музыка, игры и активности", "The party goes on: mingling, music, games and activities"]
+];
+
+const TAB_PAINT ={k:"paint", ic:"🎨", n:{ru:"Живопись PaintOn", en:"PaintOn painting"},
   short:{ru:"Своя картина или общая", en:"Your own canvas or a shared one"},
   d:{ru:"Художник ведёт мастер-класс. Индивидуально: картина акрилом, вином, кофе или 3D-картина. Командой: большая картина (команды по 4 человека) или картина-мозаика из фрагментов (от 12 гостей). Шеф тем временем готовит блюда сета.",
      en:"An artist leads the class. Individually: an acrylic, wine, coffee or 3D painting. As a team: a large canvas (teams of 4) or a mosaic painting made of fragments (from 12 guests). Meanwhile the chef cooks the set."},
@@ -86,6 +98,14 @@ const TAB_BATTLE = {k:"battle", ic:"🍹", n:{ru:"Коктейльный бат�
   d:{ru:"Бартендер ведёт игру, а шеф тем временем готовит блюда выбранного сета — их подают в перерывах между раундами.",
      en:"The bartender runs the game while the chef cooks the chosen set — the courses are served between rounds."},
   tl:TL_BATTLE};
+/* Меню коктейлей — новиковское (COCKTAILS со взрослого/НГ лендинга, 30 позиций), кнопка открывает его окно. */
+const CK_BTN = {ru:`<br><button type="button" class="svc-clickable mc-ck-btn" data-modal="cocktails">Смотреть меню коктейлей →</button>`,
+                en:`<br><button type="button" class="svc-clickable mc-ck-btn" data-modal="cocktails">View the cocktail menu →</button>`};
+const TAB_PARTY = {k:"party", ic:"🍸", n:{ru:"Коктейльная вечеринка", en:"Cocktail Party"},
+  short:{ru:"3 коктейля своими руками", en:"3 cocktails you mix yourself"},
+  d:{ru:"Бартендер показывает технику и барный инвентарь, а гости сами готовят 3 коктейля — вы выбираете их из 30 позиций нашего меню, от классики до тропических. Без соревнования: просто весело, вкусно и с бокалом в руке. Шеф тем временем готовит блюда выбранного сета, их подают между коктейлями." + CK_BTN.ru,
+     en:"The bartender shows the techniques and bar tools, and the guests mix 3 cocktails themselves — you pick them from the 30 drinks on our menu, from classics to tropical. No competition: just fun, tasty and glass in hand. Meanwhile the chef cooks the chosen set, served between the cocktails." + CK_BTN.en},
+  tl:TL_PARTY};
 
 /* ---------- залы ----------
    Арт — строки PaintOn / Fluid Art (одинаковые) и «Рождественские венки» (Гранатовый 12).
@@ -108,7 +128,17 @@ const BATTLE_CAP = () => ({
   tomato: {ru:`до 50 гостей · ${NOSEAT.ru}`, en:`up to 50 guests · ${NOSEAT.en}`},
   orange: {ru:`до 50 гостей · ${NOSEAT.ru}`, en:`up to 50 guests · ${NOSEAT.en}`}
 });
-const HALL_ORDER = ["cafe","olive","granat","art","tomato","orange"];
+/* Вечеринка — строка «Коктейльная вечеринка», совпадает с баттлом. */
+const NOSEAT_MC = {ru:"без посадки на время мастер-класса", en:"no seating during the masterclass"};
+const PARTY_CAP = () => ({
+  cafe:   {ru:"до 40 гостей", en:"up to 40 guests"},
+  olive:  {ru:"до 20 гостей", en:"up to 20 guests"},
+  granat: {ru:"до 20 гостей", en:"up to 20 guests"},
+  art:    {ru:`до 20 гостей в каждом зале · ${NOSEAT_MC.ru}`, en:`up to 20 guests per hall · ${NOSEAT_MC.en}`},
+  tomato: {ru:`до 50 гостей · ${NOSEAT_MC.ru}`, en:`up to 50 guests · ${NOSEAT_MC.en}`},
+  orange: {ru:`до 50 гостей · ${NOSEAT_MC.ru}`, en:`up to 50 guests · ${NOSEAT_MC.en}`}
+});
+const HALL_ORDER =["cafe","olive","granat","art","tomato","orange"];
 
 /* ---------- форматы ---------- */
 const DISH = [
@@ -173,8 +203,49 @@ const KIND = {
     setsTitle:{ru:"Программа и меню", en:"Programme & Menu"},
     setsIntro:{ru:"Выберите уровень — от него зависят сеты от шефа, включённый фуршет и цена за гостя.",
                en:"Choose the level — it defines the chef’s sets, the included buffet and the price per guest."}
+  },
+  /* Коктейльная вечеринка — EventyOn /cocktail_party_basic_offer_b2b, НГ /cocktail-party-newyear-b2b
+     (10 400 / 11 400 / 12 400 — как казино → цены казино Новикова). FF как у казино (−1 000).
+     Решение пользователя 2026-11-23: фуршет входит, меню коктейлей новиковское, залы — строка
+     «Коктейльная вечеринка» в РОП-таблице, весёлый формат без битвы команд. */
+  party: {
+    out:{adult:"NovikovCocktailParty.html", ny:"NovikovNewYearCocktailParty.html"},
+    ff:1000,
+    ckArea:true,
+    name:{ru:"Коктейльная вечеринка", en:"Cocktail Party"},
+    titleTag:{adult:"Novikov School — Коктейльная вечеринка 2026 / Cocktail Party 2026",
+              ny:"Novikov School — Коктейльная вечеринка · Новый год 2027 / New Year Cocktail Party 2027"},
+    h1:{adult:{ru:'Коктейльная вечеринка <span>Novikov School</span>', en:'<span>Novikov School</span> Cocktail Party'},
+        ny:{ru:'Новогодняя коктейльная вечеринка в <span>Novikov School</span>', en:'New Year Cocktail Party at <span>Novikov School</span>'}},
+    lead:{adult:{ru:"Гости сами готовят 3 коктейля вместе с бартендером, шеф подаёт сеты между ними, фуршет и барная карта — весёлый корпоратив, день рождения или вечер с друзьями.",
+                 en:"Guests mix 3 cocktails with a bartender, the chef serves the set in between, plus a buffet and a full bar card — a fun corporate party, birthday or night out with friends."},
+          ny:{ru:"Новогодний корпоратив в центре Москвы: 3 коктейля своими руками с бартендером, готовые сеты от шефа, фуршет и барная карта — праздник под ключ.",
+              en:"A New Year party in central Moscow: 3 cocktails you mix yourself with a bartender, ready-made chef’s sets, a buffet and a full bar card — the whole celebration, turnkey."}},
+    intro:{adult:{ru:"Весёлая вечеринка за барной стойкой: бартендер знакомит с инвентарём и техникой, и гости сами готовят 3 коктейля — классику, хиты или тропические, на выбор из 30 позиций нашего меню. Без командной битвы: общение, музыка и вкусные напитки. Мероприятие длится 4 часа с приветствием гостей и фуршетом. Официанты включены в стоимость: 6–19 гостей — 1 официант, 20–30 — 2, 31–50 — 3.",
+                  en:"A fun party behind the bar: the bartender introduces the tools and techniques, and the guests mix 3 cocktails themselves — classics, hits or tropical, chosen from the 30 drinks on our menu. No team battle: just mingling, music and great drinks. The event runs 4 hours, including the guest welcome and the buffet. Waiters are included in the price: 6–19 guests — 1 waiter, 20–30 — 2, 31–50 — 3."},
+           ny:{ru:"Праздничная вечеринка за барной стойкой: бартендер знакомит с инвентарём и техникой, и гости сами готовят 3 коктейля на выбор из 30 позиций нашего меню. Без командной битвы: общение, музыка и новогоднее настроение. Мероприятие длится 4 часа с приветствием гостей и фуршетом. Официанты включены в стоимость: 6–19 гостей — 1 официант, 20–30 — 2, 31–50 — 3.",
+               en:"A festive party behind the bar: the bartender introduces the tools and techniques, and the guests mix 3 cocktails chosen from the 30 drinks on our menu. No team battle: just mingling, music and the New Year spirit. The event runs 4 hours, including the guest welcome and the buffet. Waiters are included in the price: 6–19 guests — 1 waiter, 20–30 — 2, 31–50 — 3."}},
+    game:{adult:{ru:"Коктейльная вечеринка · мастер-класс с бартендером, 3 коктейля", en:"Cocktail Party · masterclass with a bartender, 3 cocktails"}},
+    tabs:{adult:[TAB_PARTY], ny:[TAB_PARTY]},
+    stats:{adult:{n:"30", ru:"коктейлей на выбор", en:"cocktails to choose from"}},
+    foot:{ru:"18+. Чрезмерное употребление алкоголя вредит вашему здоровью. Мохито, Moscow Mule и Lynchburg Lemonade можно приготовить без алкоголя.",
+          en:"18+. Excessive drinking is harmful to your health. Mojito, Moscow Mule and Lynchburg Lemonade can be made alcohol-free."},
+    cap:PARTY_CAP,
+    venuesSub:{ru:"Залы для коктейльной вечеринки — от 20 до 50 гостей на одной площадке", en:"Halls for the cocktail party — 20 to 50 guests at one venue"},
+    combos:{ru:"Оливковый + Остров — до 40 гостей. В Томатном, Апельсиновом и залах ART вечеринка проходит в барном формате: места для посадки на время мастер-класса нет.",
+            en:"Olive + Island — up to 40 guests. In Tomato, Orange and the ART halls the party runs bar-style: there is no seating during the masterclass."},
+    setsTitle:{ru:"Программа и меню", en:"Programme & Menu"},
+    setsIntro:{ru:"Выберите уровень — от него зависят сеты от шефа, включённый фуршет и цена за гостя.",
+               en:"Choose the level — it defines the chef’s sets, the included buffet and the price per guest."}
   }
 };
+/* Подпись окна коктейлей на странице вечеринки: 3 входят в пакет, дополнительный — по цене доп. услуги. */
+const CK_CSS = `
+  /* ---------- Кнопка меню коктейлей в «Программе» (build-art-battle.mjs) ---------- */
+  .mc-ck-btn{display:inline-flex; align-items:center; margin-top:12px; padding:9px 16px; border:1px solid var(--red); background:#fff; color:var(--red);
+    font:inherit; font-size:14px; font-weight:600; letter-spacing:.01em}
+  .mc-ck-btn:hover{background:var(--red); color:#fff}
+`;
 const pick = (o, s) => o[s] || o.adult;
 
 function build(kindKey, seasonKey){
@@ -312,6 +383,17 @@ ${tabs}
     "const cc = it.d.length===3 ? c : [];",
     "const cc = it.c ? it.c.map(k=>c[k]) : it.d.length===3 ? c : [];",
     "setCard");
+
+  if(K.ckArea){
+    const re = /<span class="hm-area">\$\{LANG==="ru"\?"([0-9  ]+ ₽) \/ гость за коктейль":"[^"]+"\}<\/span>/;
+    const m = src.match(re);
+    must(m, "нет подписи цены в окне коктейлей");
+    src = src.replace(re, `<span class="hm-area">\${LANG==="ru"?"3 коктейля входят в пакет · дополнительный — ${m[1]} / гость":"3 cocktails included · each extra — ${m[1]} / guest"}</span>`);
+    src = replaceOnce(src, " · обычно 2–3 коктейля за мероприятие`", "`", "ckCapRu");
+    src = replaceOnce(src, " · usually 2–3 per event`", "`", "ckCapEn");
+    const st = src.lastIndexOf("\n</style>");
+    src = src.slice(0, st) + CK_CSS + src.slice(st);
+  }
 
   const data = src.slice(src.indexOf("const DATA"), src.indexOf("const TR"));
   for(const bad of ["Демо-ужин","Индивидуальный мастер-класс (максимум",'"Prof"','"Лимонный"',"Кулинарная часть"])
