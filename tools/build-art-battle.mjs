@@ -100,13 +100,13 @@ const TAB_BATTLE = {k:"battle", ic:"🍹", n:{ru:"Коктейльный бат�
      en:"The bartender runs the game while the chef cooks the chosen set — the courses are served between rounds."},
   tl:TL_BATTLE};
 /* Меню коктейлей — новиковское (COCKTAILS со взрослого/НГ лендинга, 30 позиций), кнопка открывает его окно. */
-const CK_BTN = {ru:`<br><button type="button" class="svc-clickable mc-ck-btn" data-modal="cocktails">Смотреть меню коктейлей →</button>`,
-                en:`<br><button type="button" class="svc-clickable mc-ck-btn" data-modal="cocktails">View the cocktail menu →</button>`};
+/* Кнопку дорисовывает сама страница (tab.ck), в данных — чистый текст: его читает генератор КП. */
+const CK_BTN_JS = '${t.ck?`<br><button type="button" class="svc-clickable mc-ck-btn" data-modal="cocktails">${LANG==="ru"?"Смотреть меню коктейлей →":"View the cocktail menu →"}</button>`:""}';
 const TAB_PARTY = {k:"party", ic:"🍸", n:{ru:"Коктейльная вечеринка", en:"Cocktail Party"},
   short:{ru:"3 коктейля своими руками", en:"3 cocktails you mix yourself"},
-  d:{ru:"Бартендер показывает технику и барный инвентарь, а гости сами готовят 3 коктейля — вы выбираете их из 30 позиций нашего меню, от классики до тропических. Без соревнования: просто весело, вкусно и с бокалом в руке. Шеф тем временем готовит блюда выбранного сета, их подают между коктейлями." + CK_BTN.ru,
-     en:"The bartender shows the techniques and bar tools, and the guests mix 3 cocktails themselves — you pick them from the 30 drinks on our menu, from classics to tropical. No competition: just fun, tasty and glass in hand. Meanwhile the chef cooks the chosen set, served between the cocktails." + CK_BTN.en},
-  tl:TL_PARTY};
+  d:{ru:"Бартендер показывает технику и барный инвентарь, а гости сами готовят 3 коктейля — вы выбираете их из 30 позиций нашего меню, от классики до тропических. Без соревнования: просто весело, вкусно и с бокалом в руке. Шеф тем временем готовит блюда выбранного сета, их подают между коктейлями.",
+     en:"The bartender shows the techniques and bar tools, and the guests mix 3 cocktails themselves — you pick them from the 30 drinks on our menu, from classics to tropical. No competition: just fun, tasty and glass in hand. Meanwhile the chef cooks the chosen set, served between the cocktails."},
+  tl:TL_PARTY, ck:true};
 
 /* ---------- залы ----------
    Арт — строки PaintOn / Fluid Art (одинаковые) и «Рождественские венки» (Гранатовый 12).
@@ -373,7 +373,7 @@ ${halls}
       const tl = t.tl.map(([m,ru,en,hi])=>`           {m:${m}, ru:${q(ru)}, en:${q(en)}${hi?", hi:true":""}}`).join(",\n");
       const levels = LEVELS.map((l,i)=>`           {k:"${l.k}", n:${L(l.n)}, price:"${S.prices[i]}", buffet:"${l.buffet}", bwt:"${l.bwt}",
             ids:${q(LEVEL_IDS[i])}}`).join(",\n");
-      return `        {k:"${t.k}", ic:"${t.ic}",
+      return `        {k:"${t.k}", ic:"${t.ic}"${t.ck?", ck:true":""},
          n:${L(t.n)},
          short:${L(t.short)},
          d:${L(t.d)},
@@ -421,6 +421,7 @@ ${tabs}
     src = replaceOnce(src, " · usually 2–3 per event`", "`", "ckCapEn");
     const st = src.lastIndexOf("\n</style>");
     src = src.slice(0, st) + CK_CSS + src.slice(st);
+    src = replaceOnce(src, '<p class="mc-panel-d">${t.d[LANG]}</p>', '<p class="mc-panel-d">${t.d[LANG]}' + CK_BTN_JS + '</p>', "ckBtn");
   }
 
   const data = src.slice(src.indexOf("const DATA"), src.indexOf("const TR"));

@@ -470,6 +470,9 @@ KINDS.nyart      = {grp:"casino", label:"НГ · арт-вечеринка", fil
 KINDS.meatwine   = {grp:"casino", label:"Винно-мясное казино", files:["meatwine-casino.html","NovikovMeatWineCasino.html"], kicker:"Винно-мясное казино", kickerEn:"Meat & Wine Casino", kickerIt:"Casinò di vino e carne"};
 KINDS.nymeatwine = {grp:"casino", label:"НГ · винно-мясное казино", files:["newyear-meatwine-casino.html","NovikovNewYearMeatWineCasino.html"], kicker:"Новогоднее винно-мясное казино", kickerEn:"New Year Meat & Wine Casino", kickerIt:"Casinò di vino e carne di Capodanno"};
 KINDS.nybattle   = {grp:"casino", label:"НГ · коктейльный баттл", files:["newyear-cocktail-battle.html","NovikovNewYearCocktailBattle.html"], kicker:"Новогодний коктейльный баттл", kickerEn:"New Year Cocktail Battle", kickerIt:"Cocktail Battle di Capodanno"};
+KINDS.party      = {grp:"casino", label:"Коктейльная вечеринка", files:["cocktail-party.html","NovikovCocktailParty.html"], kicker:"Коктейльная вечеринка", kickerEn:"Cocktail Party", kickerIt:"Cocktail party"};
+KINDS.nyparty    = {grp:"casino", label:"НГ · коктейльная вечеринка", files:["newyear-cocktail-party.html","NovikovNewYearCocktailParty.html"], kicker:"Новогодняя коктейльная вечеринка", kickerEn:"New Year Cocktail Party", kickerIt:"Cocktail party di Capodanno"};
+KINDS.nywreath   = {grp:"casino", label:"НГ · новогодние венки", files:["newyear-wreath.html","NovikovNewYearWreath.html"], kicker:"Новогодние венки", kickerEn:"Christmas Wreaths", kickerIt:"Ghirlande natalizie"};
 /* Черновик: форматы плитками + переключатель сезона. fmt — плитка, ny — новогодний вариант */
 const FMTS = [
   {k:"cook",     n:"Кулинарный мастер-класс", au:"adult",    ny:"ny",         img:"images/halls/cafe/22.jpg", pkg:"Кулинарный пакет"},
@@ -478,7 +481,9 @@ const FMTS = [
   {k:"cocktail", n:"Коктейльное казино",      au:"cocktail", ny:"nycocktail", img:"images/formats/cocktail/1.jpg", pkg:"Пакет казино"},
   {k:"meatwine", n:"Винно-мясное казино",     au:"meatwine", ny:"nymeatwine", img:"images/formats/meatwine/hero.jpg", pkg:"Пакет казино"},
   {k:"art",      n:"Арт-вечеринка",           au:"art",      ny:"nyart",      img:"images/formats/art/1.jpg", pkg:"Пакет арт-вечеринки"},
-  {k:"battle",   n:"Коктейльный баттл",       au:"battle",   ny:"nybattle",   img:"images/formats/battle/1.jpg", pkg:"Пакет баттла"}
+  {k:"battle",   n:"Коктейльный баттл",       au:"battle",   ny:"nybattle",   img:"images/formats/battle/1.jpg", pkg:"Пакет баттла"},
+  {k:"party",    n:"Коктейльная вечеринка",   au:"party",    ny:"nyparty",    img:"images/formats/party/1.jpg", pkg:"Пакет вечеринки"},
+  {k:"wreath",   n:"Новогодние венки",        au:null,       ny:"nywreath",   img:"images/formats/wreath/1.jpg", pkg:"Пакет мастер-класса"}  /* только НГ */
 ];
 FMTS.forEach(f => { if (KINDS[f.au]) Object.assign(KINDS[f.au], {fmt:f.k, ny:false}); if (f.ny) Object.assign(KINDS[f.ny], {fmt:f.k, ny:true}); });
 const fmtOf = k => FMTS.find(f => f.k === KINDS[k].fmt);
@@ -487,7 +492,8 @@ const KGRP = {cook:"Кулинарное", casino:"Казино"};
 const XL_TPL = {adult:"uploads/smeta/adult.xlsx", ny:"uploads/smeta/ny.xlsx", kids:"uploads/smeta/kids.xlsx",
   wine:"uploads/smeta/wine.xlsx", cocktail:"uploads/smeta/cocktail.xlsx", nywine:"uploads/smeta/nywine.xlsx", nycocktail:"uploads/smeta/nycocktail.xlsx",
   art:"uploads/smeta/art.xlsx", nyart:"uploads/smeta/nyart.xlsx", battle:"uploads/smeta/battle.xlsx", nybattle:"uploads/smeta/nybattle.xlsx",
-  meatwine:"uploads/smeta/meatwine.xlsx", nymeatwine:"uploads/smeta/nymeatwine.xlsx"};
+  meatwine:"uploads/smeta/meatwine.xlsx", nymeatwine:"uploads/smeta/nymeatwine.xlsx",
+  party:"uploads/smeta/party.xlsx", nyparty:"uploads/smeta/nyparty.xlsx", nywreath:"uploads/smeta/nywreath.xlsx"};
 /* Шаблон тайминга, присланный Максимом 2026-10-07 */
 const TL_TEMPLATE = [
   {m:30,  t:"Welcome-фуршет: закуски{ff}, сбор гостей"},
@@ -498,7 +504,8 @@ const TL_TEMPLATE = [
 const COVER_IMG = {adult:"images/halls/cafe/22.jpg", ny:"images/halls/cafe/23.jpg", kids:"images/halls/cafe/21.jpg",
   wine:"images/halls/cafe/22.jpg", cocktail:"images/halls/cafe/22.jpg", nywine:"images/halls/cafe/23.jpg", nycocktail:"images/halls/cafe/23.jpg",
   art:"images/formats/art/1.jpg", nyart:"images/formats/art-ny/1.jpg", battle:"images/formats/battle/1.jpg", nybattle:"images/formats/battle/2.jpg",
-  meatwine:"images/formats/meatwine/hero.jpg", nymeatwine:"images/formats/meatwine/hero.jpg"};
+  meatwine:"images/formats/meatwine/hero.jpg", nymeatwine:"images/formats/meatwine/hero.jpg",
+  party:"images/formats/party/1.jpg", nyparty:"images/formats/party/1.jpg", nywreath:"images/formats/wreath/1.jpg"};
 const COOK_IMGS = ["images/halls/cafe/21.jpg","images/halls/cafe/24.jpg","images/halls/cafe/6.jpg"];
 const LS_KEY = "novikov-proposal-v1" + MANAGER.ls;
 
@@ -545,7 +552,8 @@ const GEN = {
   "Встреча гостей, welcome-фуршет":"Guests arrive, welcome buffet", "Шеф готовит, рассказывает о блюдах и угощает гостей":"The chef cooks, talks about the dishes and treats the guests",
   "Встреча гостей":"Guests arrive", "Мастер-класс: 3–4 блюда под руководством шефа":"Masterclass: 3–4 dishes guided by the chef", "Дегустация приготовленного":"Tasting what you cooked",
   "цена от":"price from", "игристое":"sparkling wine", "Сомелье":"Sommelier", "Рисование":"Painting", "Свечеварение":"Candle making",
-  "Утро / день":"Morning / afternoon", "будни":"weekdays", "Ассорти":"Assorted"
+  "Утро / день":"Morning / afternoon", "будни":"weekdays", "Ассорти":"Assorted",
+  "Коктейльная вечеринка":"Cocktail Party", "Рождественский венок":"Christmas wreath", "Новогодние венки":"Christmas Wreaths"
 };
 /* Итальянский для КП. Ключ — русский текст с лендинга или из генератора, значение — как это написал бы итальянский ресторан или event-площадка.
    Составные строки («Фартуки · Брендированные», «Игра, 1 час · минимум 20 000 ₽») tr() режет по « · », «: », «, » и переводит по частям,
@@ -884,7 +892,20 @@ const IT_DICT = {
   "Сомелье ведёт игру и наливает вино вслепую":"Il sommelier conduce il gioco e versa il vino alla cieca",
   "шеф готовит и подаёт мясные отрубы":"lo chef cucina e serve i tagli di carne",
   "гости угадывают и делают ставки фишками. Игра проходит в Апельсиновом зале.":"gli ospiti indovinano e puntano con le fiches. Il gioco si svolge nella sala Arancia.",
-  "3 вина и 3 отруба":"3 vini e 3 tagli", "4 вина и 4 отруба":"4 vini e 4 tagli", "5 вин":"5 vini", "4 отруба и Black Casino":"4 tagli e Black Casino"
+  "3 вина и 3 отруба":"3 vini e 3 tagli", "4 вина и 4 отруба":"4 vini e 4 tagli", "5 вин":"5 vini", "4 отруба и Black Casino":"4 tagli e Black Casino",
+  /* Коктейльная вечеринка и новогодние венки (2026-11-23) */
+  "Коктейльная вечеринка":"Cocktail party", "Рождественский венок":"Ghirlanda natalizia", "Новогодние венки":"Ghirlande natalizie",
+  "мастер-класс с бартендером, 3 коктейля":"masterclass con il bartender, 3 cocktail",
+  "Знакомство с бартендером и первый коктейль":"Conosciamo il bartender e prepariamo il primo cocktail",
+  "Второй коктейль":"Secondo cocktail", "Третий коктейль — с авторской подачей":"Terzo cocktail — con il vostro tocco personale",
+  "Вечеринка продолжается: общение, музыка, игры и активности":"La festa continua: chiacchiere, musica, giochi e attività",
+  "Бартендер показывает технику и барный инвентарь, а гости сами готовят 3 коктейля — вы выбираете их из 30 позиций нашего меню, от классики до тропических. Без соревнования: просто весело, вкусно и с бокалом в руке. Шеф тем временем готовит блюда выбранного сета, их подают между коктейлями.":
+    "Il bartender mostra le tecniche e l'attrezzatura da bar, e gli ospiti preparano da soli 3 cocktail, scelti da voi tra le 30 proposte del nostro menu, dai classici ai tropicali. Nessuna gara: solo divertimento, gusto e un bicchiere in mano. Nel frattempo lo chef prepara i piatti del set scelto, serviti tra un cocktail e l'altro.",
+  "Мастер-класс с декоратором: венок или букет из живой ели":"Masterclass con il decoratore: ghirlanda o bouquet di abete fresco",
+  "Создаём основу композиции из живой ели":"Creiamo la base della composizione con abete fresco",
+  "Украшаем венок: шишки, бубенцы, сухоцветы, гирлянды":"Decoriamo la ghirlanda: pigne, campanelli, fiori secchi, lucine",
+  "Декоратор помогает собрать новогодний венок или букет из свежих еловых веток и украсить его шишками, бубенцами, сухоцветами и гирляндами — под музыку и с бокалом в руке.":
+    "Il decoratore aiuta a comporre una ghirlanda o un bouquet natalizio con rami d'abete freschi e a decorarlo con pigne, campanelli, fiori secchi e lucine, con la musica e un bicchiere in mano."
 };
 function learn(o, seen = new Set()){
   if (!o || typeof o !== "object" || seen.has(o)) return; seen.add(o);
@@ -1425,10 +1446,10 @@ function fmtHtml(){
   const vhint = multi() ? `<div class="vfmt">Формат для <b>${esc(vName(ST.vi))}</b> — у каждого варианта может быть свой формат и сезон</div>` : "";
   return `<div class="fmt">${vhint}
     <div class="frow"><div class="season">${[[false,"Осень"],[true,"Новый год"]].map(([v, n]) => { const k = sKind(v);
-      return `<button type="button" ${k ? `data-kind="${k}"` : "disabled title=\"У этого формата нет новогодней версии\""} class="${ny === v ? "on" : ""}">${v ? "❄ " : ""}${n}</button>`; }).join("")}</div>
+      return `<button type="button" ${k ? `data-kind="${k}"` : `disabled title="${v ? "У этого формата нет новогодней версии" : "Этот формат только новогодний"}"`} class="${ny === v ? "on" : ""}">${v ? "❄ " : ""}${n}</button>`; }).join("")}</div>
     <div class="season lang" title="Язык КП">${[["ru","RU"],["en","EN"],["it","IT"]].map(([k, v]) => `<button type="button" data-lang="${k}" class="${(ST.lang || "ru") === k ? "on" : ""}">${v}</button>`).join("")}</div></div>
     <div class="tiles">${FMTS.map(f => { const k = ny ? f.ny : f.au;
-      return `<button type="button" class="tile${f.k === cur.k ? " on" : ""}" ${k ? `data-kind="${k}"` : "disabled"} style="--img:url('${f.img}')"><span>${f.n}</span>${k ? "" : "<small>нет НГ</small>"}</button>`; }).join("")}</div>
+      return `<button type="button" class="tile${f.k === cur.k ? " on" : ""}" ${k ? `data-kind="${k}"` : "disabled"} style="--img:url('${f.img}')"><span>${f.n}</span>${k ? "" : `<small>${ny ? "нет НГ" : "только НГ"}</small>`}</button>`; }).join("")}</div>
   </div>`;
 }
 function renderForm(){

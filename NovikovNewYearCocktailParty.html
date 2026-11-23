@@ -1037,10 +1037,10 @@ const DATA = {
       note:{ru:"Сет из 2 блюд (Эксклюзивный — 3) \u00b7 фуршет включён в стоимость", en:"2-course set (Exclusive — 3) \u00b7 buffet included"},
       intro:{ru:"Выберите уровень — от него зависят сеты от шефа, включённый фуршет и цена за гостя.", en:"Choose the level — it defines the chef’s sets, the included buffet and the price per guest."},
       tabs:[
-        {k:"party", ic:"🍸",
+        {k:"party", ic:"🍸", ck:true,
          n:{ru:"Коктейльная вечеринка", en:"Cocktail Party"},
          short:{ru:"3 коктейля своими руками", en:"3 cocktails you mix yourself"},
-         d:{ru:"Бартендер показывает технику и барный инвентарь, а гости сами готовят 3 коктейля — вы выбираете их из 30 позиций нашего меню, от классики до тропических. Без соревнования: просто весело, вкусно и с бокалом в руке. Шеф тем временем готовит блюда выбранного сета, их подают между коктейлями.<br><button type=\"button\" class=\"svc-clickable mc-ck-btn\" data-modal=\"cocktails\">Смотреть меню коктейлей →</button>", en:"The bartender shows the techniques and bar tools, and the guests mix 3 cocktails themselves — you pick them from the 30 drinks on our menu, from classics to tropical. No competition: just fun, tasty and glass in hand. Meanwhile the chef cooks the chosen set, served between the cocktails.<br><button type=\"button\" class=\"svc-clickable mc-ck-btn\" data-modal=\"cocktails\">View the cocktail menu →</button>"},
+         d:{ru:"Бартендер показывает технику и барный инвентарь, а гости сами готовят 3 коктейля — вы выбираете их из 30 позиций нашего меню, от классики до тропических. Без соревнования: просто весело, вкусно и с бокалом в руке. Шеф тем временем готовит блюда выбранного сета, их подают между коктейлями.", en:"The bartender shows the techniques and bar tools, and the guests mix 3 cocktails themselves — you pick them from the 30 drinks on our menu, from classics to tropical. No competition: just fun, tasty and glass in hand. Meanwhile the chef cooks the chosen set, served between the cocktails."},
          tl:[
            {m:30, ru:"Сбор гостей, фуршет и приветственные напитки", en:"Guest welcome, buffet and welcome drinks"},
            {m:40, ru:"Знакомство с бартендером и первый коктейль", en:"Meet the bartender and mix cocktail one", hi:true},
@@ -2192,7 +2192,7 @@ function renderSection(s, i){
       </button>`;
     const panels = s.tabs.map(t=>`
       <div class="mc-panel" data-mcfmt="${t.k}"${t.k===first?"":" hidden"}>
-        <div class="mc-top"><p class="mc-panel-d">${t.d[LANG]}</p>${t.tl?mcTimeline(t.tl):""}</div>
+        <div class="mc-top"><p class="mc-panel-d">${t.d[LANG]}${t.ck?`<br><button type="button" class="svc-clickable mc-ck-btn" data-modal="cocktails">${LANG==="ru"?"Смотреть меню коктейлей →":"View the cocktail menu →"}</button>`:""}</p>${t.tl?mcTimeline(t.tl):""}</div>
         <div class="lvl-cards" role="tablist" aria-label="${LANG==="ru"?"Уровень":"Level"}">${t.levels.map(l=>lvlCard(t,l)).join("")}</div>
         ${t.levels.map(l=>`<div class="lvl-panel" data-mcfmt="${t.k}" data-mclvl="${l.k}"${l.k==="std"?"":" hidden"}>${(l.prem&&s.premNote)?`<div class="lvl-prem">${s.premNote[LANG]}</div>`:""}${grid(l.ids)}</div>`).join("")}
       </div>`).join("");
