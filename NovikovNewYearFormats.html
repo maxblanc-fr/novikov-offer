@@ -208,7 +208,7 @@ body.ny .season{display:none}
 <section class="hero"><div class="snow" aria-hidden="true"></div><div class="snow s2" aria-hidden="true"></div><div class="wrap">
   <div class="kicker" data-t="kicker">Мероприятия в Novikov School</div>
   <h1 data-t="h1" data-html>Выберите<br><em>свой</em> формат</h1>
-  <p data-t="lead">Кулинарные мастер-классы, винное, коктейльное и винно-мясное казино, коктейльный баттл, арт-вечеринки и детские праздники — на одной площадке в центре Москвы. Откройте формат, чтобы увидеть пакеты, меню, залы и цены.</p>
+  <p data-t="lead">Кулинарные мастер-классы, винное, коктейльное и винно-мясное казино, коктейльный баттл и коктейльная вечеринка, арт-вечеринки и детские праздники — на одной площадке в центре Москвы. Откройте формат, чтобы увидеть пакеты, меню, залы и цены.</p>
   <div class="facts" id="facts"></div>
 </div></section>
 
@@ -320,6 +320,13 @@ const PRICES = {
   "adult": "15 200 ₽",
   "ny": "19 800 ₽"
  },
+ "party": {
+  "adult": "13 000 ₽",
+  "ny": "16 500 ₽"
+ },
+ "wreath": {
+  "ny": "16 500 ₽"
+ },
  "art": {
   "adult": "13 000 ₽",
   "ny": "16 500 ₽"
@@ -401,6 +408,16 @@ const CARDS = [
        {ru:"Сеты от шефа между раундами", en:"Chef’s sets between rounds"}],
    meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 50 гостей", en:"up to 50 guests"}],
    url:{adult:"https://cocktail-battle.novikov-school.ru", ny:"https://newyear-cocktail-battle.novikov-school.ru"}},
+  {id:"party", cat:"bar", wide:"full", isNew:true, img:"images/formats/party/1.jpg", imgs:["images/formats/party/3.jpg","images/formats/party/4.jpg","images/formats/party/5.jpg"],
+   tag:{ru:"Вечеринка", en:"Party"},
+   n:{ru:"Коктейльная вечеринка", en:"Cocktail Party"},
+   lead:{ru:"Гости сами готовят 3 коктейля вместе с бартендером — без соревнования, просто весело. Шеф подаёт сеты между коктейлями.",
+         en:"Guests mix 3 cocktails with a bartender — no competition, just fun. The chef serves the set in between."},
+   li:[{ru:"3 коктейля из 30 на выбор", en:"3 cocktails out of 30 to choose from"},
+       {ru:"Бартендер учит технике и подаче", en:"The bartender teaches technique and presentation"},
+       {ru:"Сеты от шефа и фуршет", en:"Chef’s sets and a buffet"}],
+   meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 50 гостей", en:"up to 50 guests"}],
+   url:{adult:"https://cocktail-party.novikov-school.ru", ny:"https://newyear-cocktail-party.novikov-school.ru"}},
   {id:"art", cat:"art", wide:true, img:"images/formats/art/1.jpg", imgs:{adult:["images/formats/art/1.jpg","images/formats/art/3.jpg","images/formats/art/4.jpg"], ny:["images/formats/art-ny/1.jpg","images/formats/art-ny/2.jpg","images/formats/art-ny/5.jpg"]},
    tag:{ru:"Творческий", en:"Creative"},
    n:{ru:"Арт-вечеринка", en:"Art Party"},
@@ -416,6 +433,16 @@ const CARDS = [
            {ru:"Сеты от шефа и фуршет", en:"Chef’s sets and a buffet"}]},
    meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 50 гостей", en:"up to 50 guests"}],
    url:{adult:"https://art.novikov-school.ru", ny:"https://newyear-art.novikov-school.ru"}},
+  {id:"wreath", cat:"art", wide:true, isNew:true, img:"images/formats/wreath/1.jpg", imgs:["images/formats/wreath/2.jpg","images/formats/wreath/3.jpg","images/formats/wreath/5.jpg"],
+   tag:{ru:"Творческий", en:"Creative"},
+   n:{ru:"Новогодние венки", en:"Christmas Wreaths"},
+   lead:{ru:"Венок или букет из живой ели с декоратором — под праздничную музыку и с бокалом в руке.",
+         en:"A fresh-fir wreath or bouquet with a decorator — to festive music, glass in hand."},
+   li:[{ru:"Венок или букет на выбор", en:"A wreath or a bouquet"},
+       {ru:"Живая ель и все материалы включены", en:"Fresh fir and all materials included"},
+       {ru:"Сеты от шефа и фуршет", en:"Chef’s sets and a buffet"}],
+   meta:[{ru:"4 часа", en:"4 hours"},{ru:"до 50 гостей", en:"up to 50 guests"}],
+   url:{ny:"https://newyear-wreath.novikov-school.ru"}},  /* только НГ: в осеннем сезоне карточки нет */
   {id:"kids", cat:"kids", wide:true, noNY:true, img:"uploads/balloons/01.jpg",
    tag:{ru:"Для детей", en:"For kids"},
    n:{ru:"Детские мастер-классы", en:"Kids’ Masterclasses"},
@@ -439,8 +466,8 @@ const T = {
   logoSub:{ru:"ВСЕ ФОРМАТЫ МЕРОПРИЯТИЙ", en:"ALL EVENT FORMATS"},
   kicker:{ru:"Мероприятия в Novikov School", en:"Events at Novikov School"},
   h1:{ru:"Выберите<br><em>свой</em> формат", en:"Choose<br><em>your</em> format"},
-  lead:{ru:"Кулинарные мастер-классы, винное, коктейльное и винно-мясное казино, коктейльный баттл, арт-вечеринки и детские праздники — на одной площадке в центре Москвы. Откройте формат, чтобы увидеть пакеты, меню, залы и цены.",
-        en:"Cooking masterclasses, wine, cocktail and meat & wine casinos, a cocktail battle, art parties and kids’ celebrations — all at one venue in central Moscow. Open a format to see the packages, menus, halls and prices."},
+  lead:{ru:"Кулинарные мастер-классы, винное, коктейльное и винно-мясное казино, коктейльный баттл и коктейльная вечеринка, арт-вечеринки и детские праздники — на одной площадке в центре Москвы. Откройте формат, чтобы увидеть пакеты, меню, залы и цены.",
+        en:"Cooking masterclasses, wine, cocktail and meat & wine casinos, a cocktail battle and a cocktail party, art parties and kids’ celebrations — all at one venue in central Moscow. Open a format to see the packages, menus, halls and prices."},
   sAdult:{ru:"Осень–весна", en:"Autumn–spring"},
   sNy:{ru:"Новый год 2026/27", en:"New Year 2026/27"},
   howT:{ru:"Как это устроено", en:"How it works"},
@@ -477,8 +504,8 @@ const T_NY = {
   logoSub:{ru:"НОВЫЙ ГОД 2026/27 · ВСЕ ФОРМАТЫ", en:"NEW YEAR 2026/27 · ALL FORMATS"},
   kicker:{ru:"Новый год 2026/27 в Novikov School", en:"New Year 2026/27 at Novikov School"},
   h1:{ru:"Новогодние<br><em>форматы</em>", en:"New Year<br><em>formats</em>"},
-  lead:{ru:"Новогодний корпоратив в центре Москвы: кулинарный мастер-класс, демо-ужин, винное, коктейльное и винно-мясное казино, коктейльный баттл и арт-вечеринка с рождественскими венками. Откройте формат — внутри пакеты, меню, залы и цены сезона.",
-        en:"A New Year party in central Moscow: a cooking masterclass, a demo dinner, wine, cocktail and meat & wine casinos, a cocktail battle and an art party with Christmas wreaths. Open a format to see the season’s packages, menus, halls and prices."},
+  lead:{ru:"Новогодний корпоратив в центре Москвы: кулинарный мастер-класс, демо-ужин, винное, коктейльное и винно-мясное казино, коктейльный баттл, коктейльная вечеринка, арт-вечеринка и новогодние венки. Откройте формат — внутри пакеты, меню, залы и цены сезона.",
+        en:"A New Year party in central Moscow: a cooking masterclass, a demo dinner, wine, cocktail and meat & wine casinos, a cocktail battle, a cocktail party, an art party and Christmas wreaths. Open a format to see the season’s packages, menus, halls and prices."},
   season:{ru:"сезон 2026/27", en:"season 2026/27"}
 };
 const qs = new URLSearchParams(location.search);
@@ -503,14 +530,16 @@ function render(){
   });
   document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on", b.dataset.lang===LANG));
   document.querySelectorAll("#season button").forEach(b=>b.classList.toggle("on", b.dataset.s===SEASON));
-  document.getElementById("chips").innerHTML = CATS.filter(c=>c.k==="all" || POOL.some(x=>x.cat===c.k)).map(c=>`<button data-c="${c.k}" class="${c.k===CAT?"on":""}">${tx(c)}</button>`).join("");
+  document.getElementById("chips").innerHTML = CATS.filter(c=>c.k==="all" || POOL.some(x=>x.cat===c.k && x.url[SEASON])).map(c=>`<button data-c="${c.k}" class="${c.k===CAT?"on":""}">${tx(c)}</button>`).join("");
 
-  const shown = POOL.filter(c=>CAT==="all" || c.cat===CAT);
+  const SP = POOL.filter(c=>c.url[SEASON]);  /* венки — только в НГ-сезоне */
+  const shown = SP.filter(c=>CAT==="all" || c.cat===CAT);
   document.getElementById("grid").innerHTML = shown.length ? shown.map((c,i)=>{
     const p = (PRICES[c.id]||{})[SEASON];
     const li = bySeason(c.li), lead = bySeason(c.lead);
-    /* ряды по 12: 6+6 / винно-мясное во всю ширину / 4+4+4 / арт 6 + дети 6 (на НГ-витрине детей нет — арт во всю ширину) */
-    const wide = CAT==="all" && (MODE==="ny" && c.id==="art" ? "full" : c.wide);
+    /* ряды по 12: 6+6 / винно-мясное во всю ширину / 4+4+4 / коктейльная вечеринка во всю ширину /
+       арт 6 + дети 6 (осень) или арт 6 + венки 6 (НГ; дети тогда во всю ширину, на НГ-витрине их нет) */
+    const wide = CAT==="all" && (c.id==="kids" && SEASON==="ny" ? "full" : c.wide);
     return `<a class="card${wide==="full" ? " full" : wide ? " wide":""}" href="${c.url[SEASON]}" target="_blank" rel="noopener">
       ${(c.imgs ? (Array.isArray(c.imgs) ? c.imgs : c.imgs[SEASON]) : [c.img]).map((u,k,a)=>`<div class="ph${a.length>1?" sl":""}" style="background-image:url('${u}');${c.pos?`background-position:${c.pos};`:""}${a.length>1?`animation-delay:${k*4-0.01}s`:""}"></div>`).join("")}
       <span class="tags"><span class="tag">${tx(c.tag)}</span>${c.isNew?`<span class="new">New</span>`:""}</span>
@@ -532,7 +561,7 @@ function render(){
     `<a class="lk" href="${l.url}" target="_blank" rel="noopener"><div class="ph" style="background-image:url('${l.img}')"></div><span>${tx(l.n)}<small>${tx(l.d)}</small></span></a>`).join("");
 
   document.getElementById("facts").innerHTML =
-    [`${POOL.length} ${tx(T.formats)}`, ...(MODE==="ny"?[tx(T.season)]:[]), tx(T.halls), tx(T.center)].map(s=>`<span>${s}</span>`).join("");
+    [`${POOL.filter(c=>c.url[SEASON]).length} ${tx(T.formats)}`, ...(MODE==="ny"?[tx(T.season)]:[]), tx(T.halls), tx(T.center)].map(s=>`<span>${s}</span>`).join("");
 }
 
 document.addEventListener("click", e=>{
