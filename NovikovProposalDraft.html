@@ -1742,6 +1742,8 @@ function hallPhotos(h, n){
   const base = h.tab ? `images/halls/${slug}/${h.tab}` : `images/halls/${slug}`;
   const list = MANIFEST[h.tab ? `${slug}/${h.tab}` : slug] || [];
   const files = Array.isArray(list) ? list : [];
+  /* Гранатовый в КП — свои три фото (выбор пользователя 2026-11-25), на лендингах галерея прежняя */
+  if (slug === "granat" && !h.tab) return ["1.jpg","2.jpg","3.jpg"].slice(0, n).map(f => `images/halls/granat-kp/${f}`);
   const pick = h.slug === "cafe" ? ["22.jpg","10.jpg","6.jpg","14.jpg"] : files;
   return pick.slice(0, n).map(f => `${base}/${f}`);
 }
