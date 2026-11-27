@@ -1115,8 +1115,8 @@ function buildCatalog(kind){
       it.tiers.forEach(t => { const pack = /^\d+ шт/.test(t.n || ""); const u = pack ? {per:"one", unit:"набор"} : unitOf(t.p, t.n);
         const mn = (t.n || "").match(/минимум ([\d\s]+)₽/);
         lines.push({lab:L(t.l) + (pack ? ` (${t.n})` : ""), price:num(t.p), note:pack ? "" : t.n, from:/^от/.test(t.p), min:mn ? num(mn[1]) : 0, ...u, step:t.step});
-        /* Фотограф на 2 часа — только в генераторе (на лендингах его нет), сразу под фотографом на 4 часа; цена от пользователя 2026-11-27 */
-        if (L(t.l) === "Профессиональный фотограф") lines.push({lab:"Профессиональный фотограф", id:"Профессиональный фотограф 2 часа", price:24000, note:"2 часа", per:"one", unit:"услуга", xlAdd:"Профессиональный фотограф (2 часа)"}); });
+        /* Фотограф на 2 часа — только в генераторе (на лендингах его нет), сразу под фотографом на 4 часа; цены от пользователя 2026-11-27: осень 24 000, НГ 27 000 */
+        if (L(t.l) === "Профессиональный фотограф") lines.push({lab:"Профессиональный фотограф", id:"Профессиональный фотограф 2 часа", price:KINDS[kind] && KINDS[kind].ny ? 27000 : 24000, note:"2 часа", per:"one", unit:"услуга", xlAdd:"Профессиональный фотограф (2 часа)"}); });
     } else if (/₽/.test(pstr)){
       const parts = pstr.split("·").filter(p => /\d/.test(p) && /₽/.test(p)), g = /гост/.test(pstr), min = (pstr.match(/минимум (\d+)/) || [])[1];
       parts.forEach(p => { const lab = p.replace(/(от\s*)?[\d\s]+₽.*$/,"").trim(); const u = g ? {per:"guest", unit:"гость"} : unitOf(p);
@@ -1528,10 +1528,15 @@ function renderForm(){
         <div class="bp">цена, ₽:${it.glass ? ` ${it.gUnit} <input type="number" min="0" step="50" data-f="gp" value="${ov(b.gp, it.glass)}">` : ""}${it.bottle ? ` ${c.kind === "cocktail" ? "порц." : "бут."} <input type="number" min="0" step="100" data-f="bp" value="${ov(b.bp, it.bottle)}">` : ""}</div></div>`; }).join("")).join("") + `</div>`;
 
   /* Активность с несколькими вариантами (Дед Мороз — 28 строк) свёрнута, пока менеджер её не откроет или не отметит вариант */
-  const svcHtml = C.services.map(g => { const rows = g.items.map(it => optRow({...it, title: it.short || it.title})).join(""), head = `${esc(g.h)}${g.min ? ` · ${esc(g.min)}` : ""}`;
-    if (g.items.length < 2) return `<div class="sub">${head}</div>` + rows;
-    const n = g.items.filter(isOn).length;
-    return `<details class="sgrp" data-g="${esc(g.h)}" ${(SG_OPEN[g.h] ?? n > 0) ? "open" : ""}><summary>${head} <span class="sn">${g.items.length} вар.</span>${n ? `<span class="cnt">${n}</span>` : ""}</summary>${rows}</details>`; }).join("");
+  /* В форме «Музыкальный сапёр» и «ИИдентификация» стоят внутри плашки «Интерактивные игры» (в PDF и смете — как раньше, отдельными услугами) */
+  const GAMES = C.services.find(g => /^Интерактивные игры/.test(g.h)), inGames = g => GAMES && g !== GAMES && /сап[её]р|ИИдент/i.test(g.h);
+  const svcHtml = C.services.filter(g => !inGames(g)).map(g => {
+    const its = g === GAMES ? [...g.items.map(it => ({...it, title: it.short || it.title})), ...C.services.filter(inGames).flatMap(x => x.items.map(it => ({...it, title: `${x.h}${it.short ? ` · ${it.short}` : ""}`})))]
+      : g.items.map(it => ({...it, title: it.short || it.title}));
+    const rows = its.map(it => optRow(it)).join(""), head = `${esc(g.h)}${g.min ? ` · ${esc(g.min)}` : ""}`;
+    if (its.length < 2) return `<div class="sub">${head}</div>` + rows;
+    const n = its.filter(isOn).length;
+    return `<details class="sgrp" data-g="${esc(g.h)}" ${(SG_OPEN[g.h] ?? n > 0) ? "open" : ""}><summary>${head} <span class="sn">${its.length} вар.</span>${n ? `<span class="cnt">${n}</span>` : ""}</summary>${rows}</details>`; }).join("");
   const tl = timeline();
   let t0 = ST.start;
   const tlHtml = tl.map((r, i) => { const s = t0; t0 = addMin(t0, +r.m || 0);
