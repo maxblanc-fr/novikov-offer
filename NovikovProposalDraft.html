@@ -694,7 +694,7 @@ const IT_DICT = {
     "Giochi per gli ospiti con un presentatore professionista: un'ora di gioco, scelto da voi tra quelli in elenco. A parte si può prenotare il karaoke per 2 ore.",
   "Дополнительный персонал":"Personale aggiuntivo", "Ведущий":"Presentatore", "Звёздный шеф":"Chef di fama", "Официант":"Cameriere",
   "Продление официанта, 1 час":"Cameriere, 1 ora in più", "Диджей и звуковое оборудование":"DJ e impianto audio", "Продление диджея, 1 час":"DJ, 1 ora in più",
-  "Профессиональный фотограф":"Fotografo professionista", "Топ-фотограф":"Fotografo top", "Продление фотографа, 1 час":"Fotografo, 1 ora in più",
+  "Профессиональный фотограф":"Fotografo professionista", "Топ-фотограф":"Fotografo top", "Продление фотографа, 1 час":"Fotografo, 1 ora in più", "Профессиональный фотограф, 2 часа":"Fotografo professionista, 2 ore",
   "Флористическое оформление":"Allestimento floreale",
   "Оформление залов и столов под концепцию мероприятия: композиции, президиум, свечи и декор. Портфолио реализованных примеров доступно.":
     "Allestimento di sale e tavoli secondo il concept dell'evento: composizioni, tavolo d'onore, candele e decorazioni. Disponibile un portfolio dei lavori realizzati.",
@@ -1114,13 +1114,15 @@ function buildCatalog(kind){
       if (/^[А-ЯA-Z][а-яa-z]+ \d/.test(pstr)){ const part = pstr.split("·")[0]; lines.push({lab:part.replace(/[\d\s]+₽.*$/,"").trim(), price:num(part), ...unitOf(part)}); }
       it.tiers.forEach(t => { const pack = /^\d+ шт/.test(t.n || ""); const u = pack ? {per:"one", unit:"набор"} : unitOf(t.p, t.n);
         const mn = (t.n || "").match(/минимум ([\d\s]+)₽/);
-        lines.push({lab:L(t.l) + (pack ? ` (${t.n})` : ""), price:num(t.p), note:pack ? "" : t.n, from:/^от/.test(t.p), min:mn ? num(mn[1]) : 0, ...u, step:t.step}); });
+        lines.push({lab:L(t.l) + (pack ? ` (${t.n})` : ""), price:num(t.p), note:pack ? "" : t.n, from:/^от/.test(t.p), min:mn ? num(mn[1]) : 0, ...u, step:t.step});
+        /* Фотограф на 2 часа — только в генераторе (на лендингах его нет), сразу под фотографом на 4 часа; цена от пользователя 2026-11-27 */
+        if (L(t.l) === "Профессиональный фотограф") lines.push({lab:"Профессиональный фотограф", id:"Профессиональный фотограф 2 часа", price:24000, note:"2 часа", per:"one", unit:"услуга", xlAdd:"Профессиональный фотограф (2 часа)"}); });
     } else if (/₽/.test(pstr)){
       const parts = pstr.split("·").filter(p => /\d/.test(p) && /₽/.test(p)), g = /гост/.test(pstr), min = (pstr.match(/минимум (\d+)/) || [])[1];
       parts.forEach(p => { const lab = p.replace(/(от\s*)?[\d\s]+₽.*$/,"").trim(); const u = g ? {per:"guest", unit:"гость"} : unitOf(p);
         lines.push({lab: lab ? lab[0].toUpperCase() + lab.slice(1) : "", price:num(p), from:/от/.test(p), ...u, q0: min ? +min : null}); });
     } else lines.push({lab:"", price:0, req:true, per:"one", unit:"услуга"});
-    C.services.push({h:name, desc, imgs, min:L(it.min), items: lines.map(l => ({key:`svc:${name}:${l.lab}`, svc:name,
+    C.services.push({h:name, desc, imgs, min:L(it.min), items: lines.map(l => ({key:`svc:${name}:${l.id || l.lab}`, svc:name, xlAdd:l.xlAdd,
       title: l.lab ? `${name} · ${l.lab}${/час/.test(l.note||"") ? `, ${l.note}` : ""}` : name, short:l.lab ? `${l.lab}${/час/.test(l.note||"") ? `, ${l.note}` : ""}` : "", lab:l.lab, sub:[l.note, l.from ? "цена от" : "", l.req ? "цена по запросу — впишите" : ""].filter(Boolean).join(" · "),
       price:l.price, per: kind === "kids" && l.per === "guest" ? "kids" : l.per, q0:l.q0 ?? (l.per === "one" ? 1 : null), unit:l.unit, req:l.req, desc, imgs, dur:/^1 час/.test(l.note||"") && it.tags ? 60 : 0, minSum:l.min || 0, generic:/персонал/i.test(name),
       /* Доплата-шаг (хамон: +3 500 ₽ за каждые 5 гостей сверх 20) не выбирается отдельно — идёт вместе с первой строкой услуги */
@@ -2316,8 +2318,8 @@ function xlSheet(xml, sst, noVat){
       case "svc": {
         const it0 = x.it, al = ALIAS.find(([a]) => a.test(it0.title));
         const nm = it0.lab ? String(it0.short || it0.lab).split(" · ")[0] : it0.svc;
-        const it = al ? byRe(svcSecs, al[1]) : pick(items(svcSecs), nm, it0.price, {grp:it0.svc});
-        return put(it, D, E) || add(svcSecs, it0.svc, name, D, E);
+        const it = it0.xlAdd ? null : al ? byRe(svcSecs, al[1]) : pick(items(svcSecs), nm, it0.price, {grp:it0.svc});
+        return put(it, D, E) || add(svcSecs, it0.svc, it0.xlAdd || name, D, E);
       }
       default: return add([secLast], "", name, D, E);
     }
