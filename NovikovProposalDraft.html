@@ -123,6 +123,14 @@
   .fld .hallpick input{width:auto;flex:none;border:0;padding:0;accent-color:var(--red);margin:0}
   .fld input,.fld select,.fld textarea{border:1px solid var(--line);background:var(--card);padding:8px 9px;font-size:14px;color:var(--ink);width:100%}
   .fld textarea{min-height:60px;resize:vertical}
+  details.sgrp{border:1px solid var(--line);margin:8px 0;background:var(--card)}
+  details.sgrp>summary{cursor:pointer;list-style:none;padding:9px 12px;font-family:var(--head);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink,#222);display:flex;align-items:center;gap:8px}
+  details.sgrp>summary::-webkit-details-marker{display:none}
+  details.sgrp>summary::before{content:"▸";color:var(--muted);transition:transform .15s}
+  details.sgrp[open]>summary::before{transform:rotate(90deg)}
+  details.sgrp>summary .sn{white-space:nowrap;color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none}
+  details.sgrp>summary .cnt{background:var(--red);color:#fff;font-size:11px;padding:1px 7px;border-radius:9px;letter-spacing:0;margin-left:auto}
+  details.sgrp[open]{padding:0 8px 6px}
   .sub{font-family:var(--head);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
   .sub:first-child{margin-top:4px}
   .hint{font-size:12px;color:var(--muted);margin:4px 0 8px}
@@ -1424,6 +1432,7 @@ function dateRu(d){
 }
 
 /* ---------- Форма ---------- */
+const SG_OPEN = {};
 function optRow(it, type = "checkbox", name = "", checked = isOn(it), editable = true){
   const pr = priceOf(it), q = qtyOf(it);
   return `<div class="opt${checked ? " on" : ""}" data-key="${esc(it.key)}">
@@ -1461,6 +1470,7 @@ function renderForm(){
   $("#bXls").hidden = $("#bXlsNoVat").hidden = $("#xlMenu").hidden = !XL_TPL[ST.kind];
   const cnt = arr => { const n = arr.filter(Boolean).length; return n ? `<span class="cnt">${n}</span>` : ""; };
   const openState = {}; F.querySelectorAll("details.box").forEach(d => openState[d.dataset.id] = d.open);
+  if (!F.classList.contains("searching")) F.querySelectorAll("details.sgrp").forEach(d => SG_OPEN[d.dataset.g] = d.open);
   const op = (id, def) => (openState[id] ?? def) ? "open" : "";
   const hallOpts = C.halls.map(h => { const on = ST.halls.includes(h.slug); return `<label class="${on ? "on" : ""}"><input type="checkbox" data-hall="${h.slug}" ${on ? "checked" : ""}><span>${esc(h.title)}${h.area ? ` <small>${h.area}</small>` : ""}</span></label>`; }).join("");
 
@@ -1515,7 +1525,11 @@ function renderForm(){
         <span class="q">${c.kind === "cocktail" ? "порц." : "бут."}<input type="number" min="0" data-f="b" value="${b.b || ""}" ${it.bottle ? "" : "disabled"}></span>
         <div class="bp">цена, ₽:${it.glass ? ` ${it.gUnit} <input type="number" min="0" step="50" data-f="gp" value="${ov(b.gp, it.glass)}">` : ""}${it.bottle ? ` ${c.kind === "cocktail" ? "порц." : "бут."} <input type="number" min="0" step="100" data-f="bp" value="${ov(b.bp, it.bottle)}">` : ""}</div></div>`; }).join("")).join("") + `</div>`;
 
-  const svcHtml = C.services.map(g => `<div class="sub">${esc(g.h)}${g.min ? ` · ${esc(g.min)}` : ""}</div>` + g.items.map(it => optRow({...it, title: it.short || it.title})).join("")).join("");
+  /* Активность с несколькими вариантами (Дед Мороз — 28 строк) свёрнута, пока менеджер её не откроет или не отметит вариант */
+  const svcHtml = C.services.map(g => { const rows = g.items.map(it => optRow({...it, title: it.short || it.title})).join(""), head = `${esc(g.h)}${g.min ? ` · ${esc(g.min)}` : ""}`;
+    if (g.items.length < 2) return `<div class="sub">${head}</div>` + rows;
+    const n = g.items.filter(isOn).length;
+    return `<details class="sgrp" data-g="${esc(g.h)}" ${(SG_OPEN[g.h] ?? n > 0) ? "open" : ""}><summary>${head} <span class="sn">${g.items.length} вар.</span>${n ? `<span class="cnt">${n}</span>` : ""}</summary>${rows}</details>`; }).join("");
   const tl = timeline();
   let t0 = ST.start;
   const tlHtml = tl.map((r, i) => { const s = t0; t0 = addMin(t0, +r.m || 0);
@@ -1591,6 +1605,12 @@ function applyQ(){
     let hits = 0;
     rows.forEach(r => { const ok = norm(r.dataset.s || r.textContent).includes(q); r.classList.toggle("qhit", ok); r.classList.toggle("qmiss", !ok); if (ok){ hits++; if (!first && r.matches(".opt")) first = r; } });
     d.hidden = !hits; if (hits){ d.open = true; n += hits; }
+  });
+  /* свёрнутые активности в услугах: при поиске открыть те, где есть совпадение, после — вернуть как было */
+  F.querySelectorAll("details.sgrp").forEach(g => {
+    if (!q){ g.hidden = false; if (g.dataset.qo != null){ g.open = g.dataset.qo === "1"; delete g.dataset.qo; } return; }
+    if (g.dataset.qo == null) g.dataset.qo = g.open ? "1" : "0";
+    const hit = !!g.querySelector(".opt.qhit"); g.hidden = !hit; g.open = hit;
   });
   $("#qcount") && ($("#qcount").textContent = q ? (n ? `${n} найдено · Enter — отметить первое` : "Ничего не найдено") : "");
   return first;
