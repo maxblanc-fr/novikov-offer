@@ -163,7 +163,11 @@
   table.est td s{color:var(--muted);font-size:10.5px;margin-right:4px}
   .scroller{max-height:360px;overflow:auto;border:1px solid var(--bone-2);padding:0 6px}
 
-  .tl-row{display:grid;grid-template-columns:52px 60px 1fr 26px;gap:6px;align-items:center;margin-bottom:5px}
+  .tl-row{display:grid;grid-template-columns:16px 46px 60px 1fr 22px 22px 22px;gap:5px;align-items:center;margin-bottom:5px;border-top:2px solid transparent;border-bottom:2px solid transparent}
+  .tl-row .grip{cursor:grab;color:var(--muted);font-size:14px;line-height:1;user-select:none;text-align:center}
+  .tl-row.drag{opacity:.4}
+  .tl-row.ins-b{border-top-color:var(--red)} .tl-row.ins-a{border-bottom-color:var(--red)}
+  .tl-row button:disabled{opacity:.25;cursor:default}
   .tl-row .tm{font-family:var(--head);font-weight:700;font-size:12px;color:var(--red-deep)}
   .tl-row input{border:1px solid var(--line);padding:6px;background:var(--card);font-size:13px;width:100%}
   .tl-row button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:16px}
@@ -1515,7 +1519,7 @@ function renderForm(){
   const tl = timeline();
   let t0 = ST.start;
   const tlHtml = tl.map((r, i) => { const s = t0; t0 = addMin(t0, +r.m || 0);
-    return `<div class="tl-row" data-i="${i}"><span class="tm">${s}</span><input type="number" data-f="m" value="${r.m}" min="0" step="5" title="минут"><input data-f="t" value="${esc(r.t)}"><button type="button" data-del="${i}" title="Удалить">×</button></div>`; }).join("");
+    return `<div class="tl-row" data-i="${i}"><span class="grip" title="Перетащите, чтобы поменять порядок — время пересчитается само">⋮⋮</span><span class="tm">${s}</span><input type="number" data-f="m" value="${r.m}" min="0" step="5" title="минут"><input data-f="t" value="${esc(r.t)}"><button type="button" data-tmv="-1" title="Выше" ${i ? "" : "disabled"}>↑</button><button type="button" data-tmv="1" title="Ниже" ${i < tl.length - 1 ? "" : "disabled"}>↓</button><button type="button" data-del="${i}" title="Удалить">×</button></div>`; }).join("");
   const custHtml = ST.custom.map((c, i) => `<div class="cust-row" data-i="${i}"><input data-f="t" placeholder="Название" value="${esc(c.t)}"><input type="number" data-f="p" placeholder="Цена" value="${c.p ?? ""}"><input type="number" data-f="q" placeholder="Кол." value="${c.q ?? 1}"><button type="button" data-cdel="${i}">×</button></div>`).join("");
   const T = totals();
 
@@ -1554,8 +1558,8 @@ function renderForm(){
     <div class="hint">Всё, чего нет в списках: индивидуальный декор, трансфер, подарки…</div>${custHtml}
     <button type="button" class="btn sm" id="addCustom">+ Добавить позицию</button></div></details>
   <details class="box" data-id="tl" ${op("tl", false)}><summary>Тайминг</summary><div class="bx">
-    <div class="hint">${ST.tl ? "Изменён вручную." : "Собирается автоматически из пакета и услуг."} Минуты · описание.</div>${tlHtml}
-    <button type="button" class="btn sm" id="addTl">+ Пункт</button> ${ST.tl ? `<button type="button" class="btn sm" id="resetTl">Сбросить по шаблону</button>` : ""}</div></details>
+    <div class="hint">${ST.tl ? "Изменён вручную." : "Собирается автоматически из пакета и услуг."} Минуты · описание. Порядок — перетащите за ⋮⋮ или стрелками, время пересчитается само.</div>${tlHtml}
+    <button type="button" class="btn sm" id="addTl0">+ В начало</button> <button type="button" class="btn sm" id="addTl">+ В конец</button> ${ST.tl ? `<button type="button" class="btn sm" id="resetTl">Сбросить по шаблону</button>` : ""}</div></details>
   <details class="box" data-id="terms" ${op("terms", true)}><summary>Скидка, оплата и условия</summary><div class="bx grid2">
     <label class="fld">Скидка на итог${multi() ? ` · ${esc(vName(ST.vi))}` : ""}<span class="seg"><input type="number" id="discount" min="0" ${ST.discUnit === "₽" ? 'step="1000"' : 'max="100"'} value="${ST.discount}"><select id="discUnit"><option ${ST.discUnit !== "₽" ? "selected" : ""}>%</option><option ${ST.discUnit === "₽" ? "selected" : ""}>₽</option></select></span></label>
     <label class="fld">Предложение действительно до<input type="date" id="valid" value="${esc(ST.valid)}"></label>
@@ -1646,6 +1650,8 @@ F.addEventListener("click", async e => {
   }
   if (e.target.dataset.cdel != null){ ST.custom.splice(+e.target.dataset.cdel, 1); rerender(); return; }
   if (e.target.id === "addTl"){ ST.tl = timeline().map(r => ({...r})); ST.tl.push({m:30, t:""}); rerender(); return; }
+  if (e.target.id === "addTl0"){ ST.tl = timeline().map(r => ({...r})); ST.tl.unshift({m:30, t:""}); rerender(); F.querySelector('.tl-row[data-i="0"] input[data-f="t"]')?.focus(); return; }
+  if (e.target.dataset.tmv != null){ const i = +e.target.closest(".tl-row").dataset.i; tlMove(i, i + +e.target.dataset.tmv); return; }
   if (e.target.id === "resetTl"){ ST.tl = null; rerender(); return; }
   if (e.target.dataset.swr != null){ if (ST.setDishes) ST.setDishes[+e.target.dataset.swr] = ""; rerender(); return; }
   if (e.target.dataset.del != null){ ST.tl = timeline().map(r => ({...r})); ST.tl.splice(+e.target.dataset.del, 1); rerender(); return; }
@@ -1699,6 +1705,26 @@ F.addEventListener("input", e => {
   const cr = t.closest(".cust-row");
   if (cr){ ST.custom[+cr.dataset.i][t.dataset.f] = t.value; softUpdate(); return; }
 });
+/* Тайминг: перенос пункта (стрелки и перетаскивание за ⋮⋮); время считается от начала по минутам, поэтому сдвигается само */
+function tlMove(from, to){
+  ST.tl = timeline().map(r => ({...r}));
+  if (to < 0 || to >= ST.tl.length || to === from) return;
+  const [r] = ST.tl.splice(from, 1); ST.tl.splice(to, 0, r); rerender();
+}
+let tlDrag = null;
+const tlClr = () => F.querySelectorAll(".tl-row").forEach(r => r.classList.remove("ins-b", "ins-a", "drag"));
+F.addEventListener("mousedown", e => { const g = e.target.closest(".tl-row .grip"); if (g) g.parentElement.draggable = true; });
+F.addEventListener("dragstart", e => { const r = e.target.closest && e.target.closest(".tl-row"); if (!r || !r.draggable) return;
+  tlDrag = +r.dataset.i; r.classList.add("drag"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", ""); });
+F.addEventListener("dragover", e => { if (tlDrag == null) return; const r = e.target.closest(".tl-row"); if (!r) return;
+  e.preventDefault(); const b = r.getBoundingClientRect(), up = e.clientY < b.top + b.height / 2;
+  F.querySelectorAll(".tl-row").forEach(x => x.classList.remove("ins-b", "ins-a")); r.classList.add(up ? "ins-b" : "ins-a"); });
+F.addEventListener("drop", e => { if (tlDrag == null) return; const r = e.target.closest(".tl-row"); if (!r) return; e.preventDefault();
+  const b = r.getBoundingClientRect(); let to = +r.dataset.i + (e.clientY < b.top + b.height / 2 ? 0 : 1); const from = tlDrag;
+  if (to > from) to--; tlDrag = null; tlClr(); tlMove(from, to); });
+F.addEventListener("mouseup", () => { if (tlDrag == null) F.querySelectorAll(".tl-row[draggable]").forEach(r => r.removeAttribute("draggable")); });
+F.addEventListener("dragend", e => { tlDrag = null; tlClr(); F.querySelectorAll(".tl-row[draggable]").forEach(r => r.removeAttribute("draggable")); });
+
 /* Ввод в полях не перерисовывает форму (фокус остаётся), только итог и предпросмотр */
 let fT = 0;
 function softUpdate(tl){
